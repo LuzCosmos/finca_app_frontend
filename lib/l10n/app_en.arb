@@ -1,0 +1,9 @@
+{
+  "testMedium":"Test in English",
+  "general_appTitle":"Farm App",
+  "@general_appTitle": {
+    "description": "Application Title",
+    "type": "text",
+    "context": "HomePage"
+  }
+}
