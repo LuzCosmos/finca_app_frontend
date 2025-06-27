@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/core/blocs/locale/locale_bloc.dart';
 import 'package:finca_app_frontend/core/utils/language.dart';
 
