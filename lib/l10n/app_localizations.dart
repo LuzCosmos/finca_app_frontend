@@ -170,6 +170,12 @@ abstract class AppLocalizations {
   /// **'An unexpected error occurred. Please try again later.'**
   String get login_unexpectedError;
 
+  /// No description provided for @home_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get home_title;
+
   /// No description provided for @home_purchase.
   ///
   /// In en, this message translates to:
@@ -193,6 +199,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sale'**
   String get home_sale;
+
+  /// No description provided for @cattlePurchase.
+  ///
+  /// In en, this message translates to:
+  /// **'Cattle Purchase'**
+  String get cattlePurchase;
+
+  /// No description provided for @cp_provider.
+  ///
+  /// In en, this message translates to:
+  /// **'Provider'**
+  String get cp_provider;
+
+  /// No description provided for @cp_nit.
+  ///
+  /// In en, this message translates to:
+  /// **'NIT'**
+  String get cp_nit;
+
+  /// No description provided for @cp_purchaseDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase Date'**
+  String get cp_purchaseDate;
+
+  /// No description provided for @cp_addLot.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Lot'**
+  String get cp_addLot;
+
+  /// No description provided for @cp_lot.
+  ///
+  /// In en, this message translates to:
+  /// **'Lot'**
+  String get cp_lot;
+
+  /// No description provided for @cp_origin.
+  ///
+  /// In en, this message translates to:
+  /// **'Origin'**
+  String get cp_origin;
+
+  /// No description provided for @cp_quantity.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity'**
+  String get cp_quantity;
+
+  /// No description provided for @cp_age.
+  ///
+  /// In en, this message translates to:
+  /// **'Age'**
+  String get cp_age;
+
+  /// No description provided for @cp_gender.
+  ///
+  /// In en, this message translates to:
+  /// **'Gender'**
+  String get cp_gender;
+
+  /// No description provided for @cp_avgWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg. Weight (kg)'**
+  String get cp_avgWeight;
+
+  /// No description provided for @cp_totalWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Weight'**
+  String get cp_totalWeight;
+
+  /// No description provided for @cp_pricePerKg.
+  ///
+  /// In en, this message translates to:
+  /// **'Price per Kg'**
+  String get cp_pricePerKg;
+
+  /// No description provided for @cp_totalValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Value'**
+  String get cp_totalValue;
+
+  /// No description provided for @cp_totalCattle.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Cattle'**
+  String get cp_totalCattle;
+
+  /// No description provided for @cp_createPurchase.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Purchase'**
+  String get cp_createPurchase;
+
+  /// No description provided for @cp_providerFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Provider found and loaded.'**
+  String get cp_providerFound;
+
+  /// No description provided for @cp_providerWillBeCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'New provider will be created with this NIT.'**
+  String get cp_providerWillBeCreated;
 }
 
 class _AppLocalizationsDelegate

@@ -54,3 +54,6 @@ build/
 *.xcworkspace
 xcuserdata/
 *.xcsettings
+
+
+main-copy.dart

@@ -48,6 +48,9 @@ class AppLocalizationsEs extends AppLocalizations {
       'Ocurrió un error inesperado. Intente más tarde.';
 
   @override
+  String get home_title => 'Inicio';
+
+  @override
   String get home_purchase => 'Compra';
 
   @override
@@ -58,4 +61,59 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get home_sale => 'Venta';
+
+  @override
+  String get cattlePurchase => 'Compra de Ganado';
+
+  @override
+  String get cp_provider => 'Proveedor';
+
+  @override
+  String get cp_nit => 'NIT';
+
+  @override
+  String get cp_purchaseDate => 'Fecha de Compra';
+
+  @override
+  String get cp_addLot => 'Agregar Lote';
+
+  @override
+  String get cp_lot => 'Lote';
+
+  @override
+  String get cp_origin => 'Procedencia';
+
+  @override
+  String get cp_quantity => 'Cantidad';
+
+  @override
+  String get cp_age => 'Edad';
+
+  @override
+  String get cp_gender => 'Sexo';
+
+  @override
+  String get cp_avgWeight => 'Peso Promedio (kg)';
+
+  @override
+  String get cp_totalWeight => 'Peso Total';
+
+  @override
+  String get cp_pricePerKg => 'Valor por Kilo';
+
+  @override
+  String get cp_totalValue => 'Valor Total';
+
+  @override
+  String get cp_totalCattle => 'Total de Reses';
+
+  @override
+  String get cp_createPurchase => 'Crear Compra';
+
+  @override
+  String get cp_providerFound => 'Proveedor encontrado y cargado.';
+
+  @override
+  String get cp_providerWillBeCreated =>
+      'Se creará un nuevo proveedor con este NIT.';
 }

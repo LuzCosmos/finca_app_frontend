@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../widgets/auth/login_form.dart';
 import '../../widgets/finca_scaffold.dart';
 
@@ -12,6 +13,9 @@ class LoginPage extends StatelessWidget {
   ) {
     // Aquí haces navegación o asignación de estado global
     // Ejemplo: Navigator.pushReplacementNamed(context, '/home');
+    //Navigator.pushReplacement(context,MaterialPageRoute(builder: (_) => const HomePage()),);
+    context.go('/home');
+
     print('Login exitoso. Usuario: ${loginData['user'].username}');
   }
 

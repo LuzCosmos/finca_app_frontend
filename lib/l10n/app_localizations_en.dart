@@ -47,6 +47,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'An unexpected error occurred. Please try again later.';
 
   @override
+  String get home_title => 'Home';
+
+  @override
   String get home_purchase => 'Purchase';
 
   @override
@@ -57,4 +60,59 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get home_sale => 'Sale';
+
+  @override
+  String get cattlePurchase => 'Cattle Purchase';
+
+  @override
+  String get cp_provider => 'Provider';
+
+  @override
+  String get cp_nit => 'NIT';
+
+  @override
+  String get cp_purchaseDate => 'Purchase Date';
+
+  @override
+  String get cp_addLot => 'Add Lot';
+
+  @override
+  String get cp_lot => 'Lot';
+
+  @override
+  String get cp_origin => 'Origin';
+
+  @override
+  String get cp_quantity => 'Quantity';
+
+  @override
+  String get cp_age => 'Age';
+
+  @override
+  String get cp_gender => 'Gender';
+
+  @override
+  String get cp_avgWeight => 'Avg. Weight (kg)';
+
+  @override
+  String get cp_totalWeight => 'Total Weight';
+
+  @override
+  String get cp_pricePerKg => 'Price per Kg';
+
+  @override
+  String get cp_totalValue => 'Total Value';
+
+  @override
+  String get cp_totalCattle => 'Total Cattle';
+
+  @override
+  String get cp_createPurchase => 'Create Purchase';
+
+  @override
+  String get cp_providerFound => 'Provider found and loaded.';
+
+  @override
+  String get cp_providerWillBeCreated =>
+      'New provider will be created with this NIT.';
 }

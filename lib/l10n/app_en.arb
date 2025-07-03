@@ -17,8 +17,31 @@
   "login_invalidCredentials": "Incorrect credentials. Please try again.",
   "login_unexpectedError": "An unexpected error occurred. Please try again later.",
 
+  "home_title": "Home",
   "home_purchase": "Purchase",
   "home_purchaseReception": "Purchase Reception",
   "home_massiveEvent": "Massive Event",
-  "home_sale": "Sale"
+  "home_sale": "Sale",
+
+  "cattlePurchase": "Cattle Purchase",
+  "cp_provider": "Provider",
+  "cp_nit": "NIT",
+  "cp_purchaseDate": "Purchase Date",
+  "cp_addLot": "Add Lot",
+  "cp_lot": "Lot",
+  "cp_origin": "Origin",
+  "cp_quantity": "Quantity",
+  "cp_age": "Age",
+  "cp_gender": "Gender",
+  "cp_avgWeight": "Avg. Weight (kg)",
+  "cp_totalWeight": "Total Weight",
+  "cp_pricePerKg": "Price per Kg",
+  "cp_totalValue": "Total Value",
+  "cp_totalCattle": "Total Cattle",
+  "cp_createPurchase": "Create Purchase",
+
+  "cp_provider": "Provider",
+  "cp_nit": "NIT",
+  "cp_providerFound": "Provider found and loaded.",
+  "cp_providerWillBeCreated": "New provider will be created with this NIT."
 }

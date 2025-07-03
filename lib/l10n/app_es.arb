@@ -14,8 +14,31 @@
   "login_invalidCredentials": "Credenciales incorrectas. Por favor, inténtelo de nuevo.",
   "login_unexpectedError": "Ocurrió un error inesperado. Intente más tarde.",
 
+  "home_title": "Inicio",
   "home_purchase": "Compra",
   "home_purchaseReception": "Recepción de compra",
   "home_massiveEvent": "Evento masivo",
-  "home_sale": "Venta"
+  "home_sale": "Venta",
+
+  "cattlePurchase": "Compra de Ganado",
+  "cp_provider": "Proveedor",
+  "cp_nit": "NIT",
+  "cp_purchaseDate": "Fecha de Compra",
+  "cp_addLot": "Agregar Lote",
+  "cp_lot": "Lote",
+  "cp_origin": "Procedencia",
+  "cp_quantity": "Cantidad",
+  "cp_age": "Edad",
+  "cp_gender": "Sexo",
+  "cp_avgWeight": "Peso Promedio (kg)",
+  "cp_totalWeight": "Peso Total",
+  "cp_pricePerKg": "Valor por Kilo",
+  "cp_totalValue": "Valor Total",
+  "cp_totalCattle": "Total de Reses",
+  "cp_createPurchase": "Crear Compra",
+
+  "cp_provider": "Proveedor",
+  "cp_nit": "NIT",
+  "cp_providerFound": "Proveedor encontrado y cargado.",
+  "cp_providerWillBeCreated": "Se creará un nuevo proveedor con este NIT."
 }
