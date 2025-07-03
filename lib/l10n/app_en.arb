@@ -1,8 +1,24 @@
 {
   "testMedium":"Test in English",
-  
   "general_appTitle":"Farm App",
   "@general_appTitle": {
     "description": "Application Title shown in the HomePage"
-  }
+  },
+
+  "appTitle": "Finca App",
+
+  "login_username": "Username",
+  "login_usernameRequired": "Please enter your username",
+  "login_password": "Password",
+  "login_passwordRequired": "Please enter your password",
+  "login_company": "Company",
+  "login_login": "Login",
+  "login_loginError": "Login failed, please try again",
+  "login_invalidCredentials": "Incorrect credentials. Please try again.",
+  "login_unexpectedError": "An unexpected error occurred. Please try again later.",
+
+  "home_purchase": "Purchase",
+  "home_purchaseReception": "Purchase Reception",
+  "home_massiveEvent": "Massive Event",
+  "home_sale": "Sale"
 }

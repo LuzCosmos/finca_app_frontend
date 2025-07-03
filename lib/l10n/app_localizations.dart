@@ -109,6 +109,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Farm App'**
   String get general_appTitle;
+
+  /// No description provided for @appTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Finca App'**
+  String get appTitle;
+
+  /// No description provided for @login_username.
+  ///
+  /// In en, this message translates to:
+  /// **'Username'**
+  String get login_username;
+
+  /// No description provided for @login_usernameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your username'**
+  String get login_usernameRequired;
+
+  /// No description provided for @login_password.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get login_password;
+
+  /// No description provided for @login_passwordRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your password'**
+  String get login_passwordRequired;
+
+  /// No description provided for @login_company.
+  ///
+  /// In en, this message translates to:
+  /// **'Company'**
+  String get login_company;
+
+  /// No description provided for @login_login.
+  ///
+  /// In en, this message translates to:
+  /// **'Login'**
+  String get login_login;
+
+  /// No description provided for @login_loginError.
+  ///
+  /// In en, this message translates to:
+  /// **'Login failed, please try again'**
+  String get login_loginError;
+
+  /// No description provided for @login_invalidCredentials.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect credentials. Please try again.'**
+  String get login_invalidCredentials;
+
+  /// No description provided for @login_unexpectedError.
+  ///
+  /// In en, this message translates to:
+  /// **'An unexpected error occurred. Please try again later.'**
+  String get login_unexpectedError;
+
+  /// No description provided for @home_purchase.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase'**
+  String get home_purchase;
+
+  /// No description provided for @home_purchaseReception.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase Reception'**
+  String get home_purchaseReception;
+
+  /// No description provided for @home_massiveEvent.
+  ///
+  /// In en, this message translates to:
+  /// **'Massive Event'**
+  String get home_massiveEvent;
+
+  /// No description provided for @home_sale.
+  ///
+  /// In en, this message translates to:
+  /// **'Sale'**
+  String get home_sale;
 }
 
 class _AppLocalizationsDelegate

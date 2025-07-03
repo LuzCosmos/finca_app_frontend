@@ -1,4 +1,21 @@
 {
   "testMedium":"Prueba en español",
-  "general_appTitle":"Finca App"
+  "general_appTitle":"Finca App",
+
+  "appTitle": "Finca App",
+
+  "login_username": "Usuario",
+  "login_usernameRequired": "Ingrese su usuario",
+  "login_password": "Contraseña",
+  "login_passwordRequired": "Ingrese su contraseña",
+  "login_company": "Compañía",
+  "login_login": "Iniciar sesión",
+  "login_loginError": "Error al iniciar sesión, por favor intente de nuevo",
+  "login_invalidCredentials": "Credenciales incorrectas. Por favor, inténtelo de nuevo.",
+  "login_unexpectedError": "Ocurrió un error inesperado. Intente más tarde.",
+
+  "home_purchase": "Compra",
+  "home_purchaseReception": "Recepción de compra",
+  "home_massiveEvent": "Evento masivo",
+  "home_sale": "Venta"
 }

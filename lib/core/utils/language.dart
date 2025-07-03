@@ -1,3 +1,5 @@
+//lib/core/utils/language.dart
+
 import 'dart:ui';
 
 enum Language { english, spanish }
@@ -45,5 +47,16 @@ extension LanguageExtension on Language {
       default:
         return const Locale('es', "ES");
     }
+  }
+}
+
+Language languageFromCode(String code) {
+  switch (code) {
+    case 'en':
+      return Language.english;
+    case 'es':
+      return Language.spanish;
+    default:
+      return Language.spanish;
   }
 }

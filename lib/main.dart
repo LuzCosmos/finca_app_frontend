@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/core/blocs/locale/locale_bloc.dart';
 import 'package:finca_app_frontend/core/utils/language.dart';
+import 'package:finca_app_frontend/modules/shared/features/auth/login_page.dart';
 
 void main() {
   runApp(const MainApp());
@@ -23,7 +24,7 @@ class MainApp extends StatelessWidget {
             locale: state.selectedLanguage.localeValue,
             supportedLocales: AppLocalizations.supportedLocales,
             localizationsDelegates: AppLocalizations.localizationsDelegates,
-            home: const MyHomePage(title: 'Finca App'),
+            home: const LoginPage(title: 'Finca App'),
           );
         },
       ),
