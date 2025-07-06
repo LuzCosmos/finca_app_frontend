@@ -37,8 +37,10 @@
   "cp_totalCattle": "Total de Reses",
   "cp_createPurchase": "Crear Compra",
 
-  "cp_provider": "Proveedor",
-  "cp_nit": "NIT",
+  "cp_createProvider": "Crear proveedor",
   "cp_providerFound": "Proveedor encontrado y cargado.",
-  "cp_providerWillBeCreated": "Se creará un nuevo proveedor con este NIT."
+  "cp_providerWillBeCreated": "Se creará un nuevo proveedor con este NIT.",
+  "cp_providerIsRequired":"El nombre del proveedor is requested",
+  "cp_nitIsRequired":"NIT is requested"
+  
 }

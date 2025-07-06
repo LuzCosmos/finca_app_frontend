@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../widgets/finca_scaffold.dart';
+import '../../auth/widgets/finca_scaffold.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
-import 'package:finca_app_frontend/modules/shared/widgets/home/home_option_card.dart';
+import 'package:finca_app_frontend/modules/shared/features/home/widgets/home_option_card.dart';
+import 'package:finca_app_frontend/modules/shared/features/home/widgets/home_option_with_permission.dart';
 import 'package:finca_app_frontend/core/services/platform_sevice.dart';
 
 class HomePage extends StatelessWidget {
@@ -23,7 +24,14 @@ class HomePage extends StatelessWidget {
             runSpacing: 16,
             alignment: WrapAlignment.center,
             children: [
-              if (isWeb)
+              HomeOptionWithPermission(
+                module: "COMMERCE",
+                resource: "purchases",
+                title: l10n.home_purchase,
+                icon: Icons.shopping_cart,
+                route: "/cattle-purchase",
+              ),
+              /*if (isWeb)
                 HomeOptionCard(
                   title: l10n.home_purchase,
                   icon: Icons.shopping_cart,
@@ -47,7 +55,7 @@ class HomePage extends StatelessWidget {
                 title: l10n.home_massiveEvent,
                 icon: Icons.event,
                 onTap: () {},
-              ),
+              ),*/
             ],
           ),
         ),

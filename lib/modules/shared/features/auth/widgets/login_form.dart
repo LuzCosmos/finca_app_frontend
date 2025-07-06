@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '/core/services/auth_service.dart';
 import '/core/services/auth_exception.dart';
+import '/core/services/session_service.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 
 class LoginForm extends StatefulWidget {
@@ -30,14 +31,16 @@ class _LoginFormState extends State<LoginForm> {
 
   void _submit() async {
     if (_formKey.currentState?.validate() != true) return;
-
     setState(() => loading = true);
-
     try {
       final result = await authService.login(
         username: username,
         password: password,
         companyUsername: companyUsername,
+      );
+      await SessionService.saveSession(
+        token: result['token'],
+        permissions: result['permissions'],
       );
       widget.onLoginSuccess(result);
     } catch (e) {

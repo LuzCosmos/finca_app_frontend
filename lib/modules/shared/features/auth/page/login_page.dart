@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../widgets/auth/login_form.dart';
-import '../../widgets/finca_scaffold.dart';
+import '../widgets/login_form.dart';
+import '../widgets/finca_scaffold.dart';
 
 class LoginPage extends StatelessWidget {
   final String title;

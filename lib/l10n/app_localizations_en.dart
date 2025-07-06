@@ -110,9 +110,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cp_createPurchase => 'Create Purchase';
 
   @override
+  String get cp_createProvider => 'Create Provider';
+
+  @override
   String get cp_providerFound => 'Provider found and loaded.';
 
   @override
   String get cp_providerWillBeCreated =>
       'New provider will be created with this NIT.';
+
+  @override
+  String get cp_providerIsRequired => 'Provider name is requested';
+
+  @override
+  String get cp_nitIsRequired => 'NIT is requested';
 }

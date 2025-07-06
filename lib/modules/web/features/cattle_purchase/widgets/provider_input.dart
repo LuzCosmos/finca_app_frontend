@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
+import '../services/provider_service.dart';
 
 class ProviderInput extends StatefulWidget {
-  const ProviderInput({super.key});
+  final void Function(Map<String, dynamic> providerData) onProviderSelected;
+
+  const ProviderInput({super.key, required this.onProviderSelected});
 
   @override
   State<ProviderInput> createState() => _ProviderInputState();
@@ -14,24 +17,55 @@ class _ProviderInputState extends State<ProviderInput> {
 
   bool _providerExists = false;
   bool _isLoading = false;
+  Map<String, dynamic>? _selectedProvider;
 
   Future<void> _checkProviderByNit(String nit) async {
     if (nit.isEmpty) return;
 
     setState(() => _isLoading = true);
 
-    // Simulación de consulta. Reemplazar por servicio real.
-    await Future.delayed(const Duration(seconds: 1));
-
-    if (nit == '123456789') {
-      _providerExists = true;
-      _nameController.text = 'Ganadería La Esperanza';
-    } else {
-      _providerExists = false;
-      _nameController.clear();
+    try {
+      final provider = await ProviderService.getByNit(nit);
+      if (provider != null) {
+        _providerExists = true;
+        _nameController.text = provider['name'];
+        _selectedProvider = provider;
+        widget.onProviderSelected(provider);
+      } else {
+        _providerExists = false;
+        _nameController.clear();
+        _selectedProvider = null;
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error buscando proveedor: $e')));
+    } finally {
+      setState(() => _isLoading = false);
     }
+  }
 
-    setState(() => _isLoading = false);
+  void _createProviderIfNeeded() async {
+    if (_providerExists || _selectedProvider != null) return;
+
+    final nit = _nitController.text.trim();
+    final name = _nameController.text.trim();
+    if (nit.isEmpty || name.isEmpty) return;
+
+    setState(() => _isLoading = true);
+
+    try {
+      final created = await ProviderService.create(name: name, nit: nit);
+      _providerExists = true;
+      _selectedProvider = created;
+      widget.onProviderSelected(created);
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error creando proveedor: $e')));
+    } finally {
+      setState(() => _isLoading = false);
+    }
   }
 
   @override
@@ -71,7 +105,7 @@ class _ProviderInputState extends State<ProviderInput> {
                 validator:
                     (val) =>
                         val == null || val.isEmpty
-                            ? '${l10n.cp_nit} is required'
+                            ? l10n.cp_nitIsRequired
                             : null,
               ),
             ),
@@ -81,31 +115,22 @@ class _ProviderInputState extends State<ProviderInput> {
               child: TextFormField(
                 controller: _nameController,
                 decoration: InputDecoration(labelText: l10n.cp_provider),
-                enabled: !_providerExists, // si ya existe, no se puede editar
+                enabled: !_providerExists,
                 validator:
                     (val) =>
                         val == null || val.isEmpty
-                            ? '${l10n.cp_provider} is required'
+                            ? l10n.cp_providerIsRequired
                             : null,
               ),
             ),
           ],
         ),
-        if (_providerExists)
-          Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: Text(
-              l10n.cp_providerFound,
-              style: TextStyle(color: Colors.green.shade700),
-            ),
-          ),
+        const SizedBox(height: 8),
         if (!_providerExists && _nitController.text.isNotEmpty && !_isLoading)
-          Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: Text(
-              l10n.cp_providerWillBeCreated,
-              style: TextStyle(color: Colors.orange.shade700),
-            ),
+          ElevatedButton.icon(
+            onPressed: _createProviderIfNeeded,
+            icon: const Icon(Icons.add),
+            label: Text(l10n.cp_createProvider),
           ),
       ],
     );

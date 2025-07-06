@@ -1,6 +1,6 @@
 import 'package:go_router/go_router.dart';
-import '../modules/shared/features/auth/login_page.dart';
-import '../modules/shared/features/home/home_page.dart';
+import '../modules/shared/features/auth/page/login_page.dart';
+import '../modules/shared/features/home/page/home_page.dart';
 import '../modules/shared/features/loading/loading_page.dart';
 import '../modules/web/features/cattle_purchase/views/purchase_form_page.dart';
 

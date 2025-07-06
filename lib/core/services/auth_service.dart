@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/user_model.dart';
 import 'auth_exception.dart';
-import 'session_service.dart';
 
 class AuthService {
   final http.Client client;
@@ -29,7 +28,6 @@ class AuthService {
       final user = User.fromJson(data['user']);
       final token = data['access_token'];
       final permissions = data['permissions'];
-      await SessionService.saveToken(token);
       return {'user': user, 'token': token, 'permissions': permissions};
     } else if (response.statusCode == 401) {
       throw AuthException('invalidCredentials');

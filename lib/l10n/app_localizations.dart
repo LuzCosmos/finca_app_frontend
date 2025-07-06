@@ -296,6 +296,12 @@ abstract class AppLocalizations {
   /// **'Create Purchase'**
   String get cp_createPurchase;
 
+  /// No description provided for @cp_createProvider.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Provider'**
+  String get cp_createProvider;
+
   /// No description provided for @cp_providerFound.
   ///
   /// In en, this message translates to:
@@ -307,6 +313,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'New provider will be created with this NIT.'**
   String get cp_providerWillBeCreated;
+
+  /// No description provided for @cp_providerIsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Provider name is requested'**
+  String get cp_providerIsRequired;
+
+  /// No description provided for @cp_nitIsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'NIT is requested'**
+  String get cp_nitIsRequired;
 }
 
 class _AppLocalizationsDelegate

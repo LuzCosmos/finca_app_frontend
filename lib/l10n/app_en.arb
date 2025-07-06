@@ -40,8 +40,10 @@
   "cp_totalCattle": "Total Cattle",
   "cp_createPurchase": "Create Purchase",
 
-  "cp_provider": "Provider",
-  "cp_nit": "NIT",
+  "cp_createProvider": "Create Provider",
   "cp_providerFound": "Provider found and loaded.",
-  "cp_providerWillBeCreated": "New provider will be created with this NIT."
+  "cp_providerWillBeCreated": "New provider will be created with this NIT.",
+  "cp_providerIsRequired":"Provider name is requested",
+  "cp_nitIsRequired":"NIT is requested"
+  
 }
