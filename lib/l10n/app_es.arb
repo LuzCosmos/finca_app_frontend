@@ -41,6 +41,9 @@
   "cp_providerFound": "Proveedor encontrado y cargado.",
   "cp_providerWillBeCreated": "Se creará un nuevo proveedor con este NIT.",
   "cp_providerIsRequired":"El nombre del proveedor is requested",
-  "cp_nitIsRequired":"NIT is requested"
+  "cp_nitIsRequired":"NIT is requested",
+  "cp_providerCreatedSuccessfully": "Proveedor creado exitosamente",
+  "cp_providerNitAlreadyExists": "Ya existe un proveedor con ese NIT",
+  "cp_providerCreationError": "Error al crear proveedor"
   
 }

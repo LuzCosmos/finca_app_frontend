@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../../../../../core/services/session_service.dart';
 import '../models/provider.dart';
+import '../../../../../core/services/exceptions.dart';
 
 class ProviderService {
   static const String _baseUrl = 'http://localhost:3000/api/v1/providers';
@@ -10,7 +11,6 @@ class ProviderService {
   static Future<Map<String, dynamic>?> getByNit(String nit) async {
     final token = await SessionService.getToken();
     final url = Uri.parse('$_baseUrl/nit/$nit');
-
     final response = await http.get(
       url,
       headers: {
@@ -18,22 +18,18 @@ class ProviderService {
         'Content-Type': 'application/json',
       },
     );
-
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
     }
-
     if (response.statusCode == 404) {
       return null; // Proveedor no encontrado
     }
-
     throw Exception('Error fetching provider by NIT: ${response.body}');
   }
 
   static Future<List<ProviderModel>> searchByNit(String query) async {
     final token = await SessionService.getToken();
     final url = Uri.parse('$_baseUrl/search/by-nit?query=$query');
-
     final response = await http.get(
       url,
       headers: {
@@ -41,12 +37,10 @@ class ProviderService {
         'Content-Type': 'application/json',
       },
     );
-
     if (response.statusCode == 200) {
       final List list = jsonDecode(response.body);
       return list.map((item) => ProviderModel.fromJson(item)).toList();
     }
-
     throw Exception('Error searching providers: ${response.body}');
   }
 
@@ -57,7 +51,6 @@ class ProviderService {
   }) async {
     final token = await SessionService.getToken();
     final url = Uri.parse(_baseUrl);
-
     final response = await http.post(
       url,
       headers: {
@@ -66,11 +59,13 @@ class ProviderService {
       },
       body: jsonEncode({'name': name, 'nit': nit}),
     );
-
     if (response.statusCode == 201) {
       return jsonDecode(response.body);
+    } else if (response.statusCode == 409) {
+      throw ProviderCreationException('providerCreationDuplicateNit');
+    } else {
+      throw ProviderCreationException('providerCreationGenericError');
     }
-
-    throw Exception('Error creating provider: ${response.body}');
+    //throw Exception('Error creating provider: ${response.body}');
   }
 }

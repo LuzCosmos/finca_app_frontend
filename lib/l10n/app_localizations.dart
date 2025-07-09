@@ -325,6 +325,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'NIT is requested'**
   String get cp_nitIsRequired;
+
+  /// No description provided for @cp_providerCreatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Provider created successfully'**
+  String get cp_providerCreatedSuccessfully;
+
+  /// No description provided for @cp_providerNitAlreadyExists.
+  ///
+  /// In en, this message translates to:
+  /// **'A provider with this NIT already exists'**
+  String get cp_providerNitAlreadyExists;
+
+  /// No description provided for @cp_providerCreationError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error creating provider'**
+  String get cp_providerCreationError;
 }
 
 class _AppLocalizationsDelegate

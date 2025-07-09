@@ -125,4 +125,14 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get cp_nitIsRequired => 'NIT is requested';
+
+  @override
+  String get cp_providerCreatedSuccessfully => 'Proveedor creado exitosamente';
+
+  @override
+  String get cp_providerNitAlreadyExists =>
+      'Ya existe un proveedor con ese NIT';
+
+  @override
+  String get cp_providerCreationError => 'Error al crear proveedor';
 }

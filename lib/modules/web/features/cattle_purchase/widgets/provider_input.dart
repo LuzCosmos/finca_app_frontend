@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import '../services/provider_service.dart';
 import '../models/provider.dart';
+import '../../../../../core/services/exceptions.dart';
 
 class ProviderInput extends StatefulWidget {
   final void Function(Map<String, dynamic> providerData) onProviderSelected;
-
   const ProviderInput({super.key, required this.onProviderSelected});
 
   @override
@@ -20,8 +20,10 @@ class _ProviderInputState extends State<ProviderInput> {
   String _enteredNit = '';
   Map<String, dynamic>? _selectedProvider;
   Timer? _debounce;
+  List<ProviderModel> _cachedSuggestions = [];
 
   void _createProviderIfNeeded() async {
+    final l10n = AppLocalizations.of(context)!;
     final nit = _enteredNit.trim();
     final name = _nameController.text.trim();
     if (nit.isEmpty || name.isEmpty || _providerExists) return;
@@ -32,11 +34,31 @@ class _ProviderInputState extends State<ProviderInput> {
       final created = await ProviderService.create(name: name, nit: nit);
       _selectedProvider = created;
       _providerExists = true;
+      _cachedSuggestions.add(ProviderModel.fromJson(created));
       widget.onProviderSelected(_selectedProvider!);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.cp_providerCreatedSuccessfully)),
+        );
+      }
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Error creando proveedor: $e')));
+      if (mounted) {
+        String message;
+        if (e is ProviderCreationException) {
+          final l10n = AppLocalizations.of(context)!;
+          message = switch (e.message) {
+            'providerCreationDuplicateNit' => l10n.cp_providerNitAlreadyExists,
+            _ => l10n.cp_providerCreationError,
+          };
+        } else {
+          message = l10n.cp_providerCreationError;
+        }
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(message)));
+      }
+      //ScaffoldMessenger.of(context,).showSnackBar(SnackBar(content: Text('Error creando proveedor: $e')));
     } finally {
       setState(() => _isLoading = false);
     }
@@ -58,7 +80,6 @@ class _ProviderInputState extends State<ProviderInput> {
       children: [
         Text(l10n.cp_provider, style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 12),
-
         Row(
           children: [
             Flexible(
@@ -66,28 +87,25 @@ class _ProviderInputState extends State<ProviderInput> {
               child: RawAutocomplete<ProviderModel>(
                 optionsBuilder: (TextEditingValue textEditingValue) {
                   _enteredNit = textEditingValue.text;
-
-                  if (textEditingValue.text.length < 3) {
+                  if (_enteredNit.length < 3) {
                     return Future.value([]);
                   }
-
                   final completer = Completer<List<ProviderModel>>();
-
                   _debounce?.cancel();
                   _debounce = Timer(
                     const Duration(milliseconds: 1000),
                     () async {
                       try {
                         final results = await ProviderService.searchByNit(
-                          textEditingValue.text,
+                          _enteredNit,
                         );
+                        _cachedSuggestions = results;
                         if (!completer.isCompleted) completer.complete(results);
                       } catch (_) {
                         if (!completer.isCompleted) completer.complete([]);
                       }
                     },
                   );
-
                   return completer.future;
                 },
                 displayStringForOption: (ProviderModel option) => option.nit,
@@ -100,7 +118,6 @@ class _ProviderInputState extends State<ProviderInput> {
                   controller.addListener(() {
                     setState(() {
                       _enteredNit = controller.text;
-
                       if (_providerExists && _selectedProvider != null) {
                         if (_enteredNit != _selectedProvider!['nit']) {
                           _selectedProvider = null;
@@ -185,9 +202,7 @@ class _ProviderInputState extends State<ProviderInput> {
             ),
           ],
         ),
-
         const SizedBox(height: 8),
-
         if (!_providerExists && _enteredNit.isNotEmpty && !_isLoading)
           ElevatedButton.icon(
             onPressed: _createProviderIfNeeded,
