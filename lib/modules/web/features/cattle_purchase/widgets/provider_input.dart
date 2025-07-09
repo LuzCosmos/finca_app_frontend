@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import '../services/provider_service.dart';
+import '../models/provider.dart';
 
 class ProviderInput extends StatefulWidget {
   final void Function(Map<String, dynamic> providerData) onProviderSelected;
@@ -12,53 +14,25 @@ class ProviderInput extends StatefulWidget {
 }
 
 class _ProviderInputState extends State<ProviderInput> {
-  final TextEditingController _nitController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
-
   bool _providerExists = false;
   bool _isLoading = false;
+  String _enteredNit = '';
   Map<String, dynamic>? _selectedProvider;
-
-  Future<void> _checkProviderByNit(String nit) async {
-    if (nit.isEmpty) return;
-
-    setState(() => _isLoading = true);
-
-    try {
-      final provider = await ProviderService.getByNit(nit);
-      if (provider != null) {
-        _providerExists = true;
-        _nameController.text = provider['name'];
-        _selectedProvider = provider;
-        widget.onProviderSelected(provider);
-      } else {
-        _providerExists = false;
-        _nameController.clear();
-        _selectedProvider = null;
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Error buscando proveedor: $e')));
-    } finally {
-      setState(() => _isLoading = false);
-    }
-  }
+  Timer? _debounce;
 
   void _createProviderIfNeeded() async {
-    if (_providerExists || _selectedProvider != null) return;
-
-    final nit = _nitController.text.trim();
+    final nit = _enteredNit.trim();
     final name = _nameController.text.trim();
-    if (nit.isEmpty || name.isEmpty) return;
+    if (nit.isEmpty || name.isEmpty || _providerExists) return;
 
     setState(() => _isLoading = true);
 
     try {
       final created = await ProviderService.create(name: name, nit: nit);
-      _providerExists = true;
       _selectedProvider = created;
-      widget.onProviderSelected(created);
+      _providerExists = true;
+      widget.onProviderSelected(_selectedProvider!);
     } catch (e) {
       ScaffoldMessenger.of(
         context,
@@ -66,6 +40,13 @@ class _ProviderInputState extends State<ProviderInput> {
     } finally {
       setState(() => _isLoading = false);
     }
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    _nameController.dispose();
+    super.dispose();
   }
 
   @override
@@ -77,41 +58,120 @@ class _ProviderInputState extends State<ProviderInput> {
       children: [
         Text(l10n.cp_provider, style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 12),
+
         Row(
           children: [
-            Expanded(
+            Flexible(
               flex: 2,
-              child: TextFormField(
-                controller: _nitController,
-                decoration: InputDecoration(
-                  labelText: l10n.cp_nit,
-                  suffixIcon:
-                      _isLoading
-                          ? const Padding(
-                            padding: EdgeInsets.all(10),
-                            child: SizedBox(
-                              width: 18,
-                              height: 18,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            ),
-                          )
-                          : IconButton(
-                            icon: const Icon(Icons.search),
-                            onPressed:
-                                () => _checkProviderByNit(_nitController.text),
-                          ),
-                ),
-                keyboardType: TextInputType.number,
-                validator:
-                    (val) =>
-                        val == null || val.isEmpty
-                            ? l10n.cp_nitIsRequired
-                            : null,
+              child: RawAutocomplete<ProviderModel>(
+                optionsBuilder: (TextEditingValue textEditingValue) {
+                  _enteredNit = textEditingValue.text;
+
+                  if (textEditingValue.text.length < 3) {
+                    return Future.value([]);
+                  }
+
+                  final completer = Completer<List<ProviderModel>>();
+
+                  _debounce?.cancel();
+                  _debounce = Timer(
+                    const Duration(milliseconds: 1000),
+                    () async {
+                      try {
+                        final results = await ProviderService.searchByNit(
+                          textEditingValue.text,
+                        );
+                        if (!completer.isCompleted) completer.complete(results);
+                      } catch (_) {
+                        if (!completer.isCompleted) completer.complete([]);
+                      }
+                    },
+                  );
+
+                  return completer.future;
+                },
+                displayStringForOption: (ProviderModel option) => option.nit,
+                fieldViewBuilder: (
+                  context,
+                  controller,
+                  focusNode,
+                  onFieldSubmitted,
+                ) {
+                  controller.addListener(() {
+                    setState(() {
+                      _enteredNit = controller.text;
+
+                      if (_providerExists && _selectedProvider != null) {
+                        if (_enteredNit != _selectedProvider!['nit']) {
+                          _selectedProvider = null;
+                          _providerExists = false;
+                          _nameController.text = '';
+                        }
+                      }
+                    });
+                  });
+
+                  return TextFormField(
+                    controller: controller,
+                    focusNode: focusNode,
+                    decoration: InputDecoration(
+                      labelText: l10n.cp_nit,
+                      suffixIcon:
+                          _isLoading
+                              ? const Padding(
+                                padding: EdgeInsets.all(10),
+                                child: SizedBox(
+                                  width: 18,
+                                  height: 18,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                ),
+                              )
+                              : null,
+                    ),
+                    keyboardType: TextInputType.number,
+                    validator:
+                        (val) =>
+                            val == null || val.isEmpty
+                                ? l10n.cp_nitIsRequired
+                                : null,
+                  );
+                },
+                onSelected: (ProviderModel selected) {
+                  setState(() {
+                    _providerExists = true;
+                    _selectedProvider = selected.toJson();
+                    _nameController.text = selected.name;
+                  });
+                  widget.onProviderSelected(_selectedProvider!);
+                },
+                optionsViewBuilder: (context, onSelected, options) {
+                  return Align(
+                    alignment: Alignment.topLeft,
+                    child: Material(
+                      elevation: 4,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        padding: EdgeInsets.zero,
+                        itemCount: options.length,
+                        itemBuilder: (context, index) {
+                          final ProviderModel option = options.elementAt(index);
+                          return ListTile(
+                            title: Text(option.name),
+                            subtitle: Text(option.nit),
+                            onTap: () => onSelected(option),
+                          );
+                        },
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
             const SizedBox(width: 16),
-            Expanded(
-              flex: 3,
+            Flexible(
+              flex: 4,
               child: TextFormField(
                 controller: _nameController,
                 decoration: InputDecoration(labelText: l10n.cp_provider),
@@ -125,8 +185,10 @@ class _ProviderInputState extends State<ProviderInput> {
             ),
           ],
         ),
+
         const SizedBox(height: 8),
-        if (!_providerExists && _nitController.text.isNotEmpty && !_isLoading)
+
+        if (!_providerExists && _enteredNit.isNotEmpty && !_isLoading)
           ElevatedButton.icon(
             onPressed: _createProviderIfNeeded,
             icon: const Icon(Icons.add),

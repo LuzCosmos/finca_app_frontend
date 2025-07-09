@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../../../../../core/services/session_service.dart';
+import '../models/provider.dart';
 
 class ProviderService {
   static const String _baseUrl = 'http://localhost:3000/api/v1/providers';
@@ -27,6 +28,26 @@ class ProviderService {
     }
 
     throw Exception('Error fetching provider by NIT: ${response.body}');
+  }
+
+  static Future<List<ProviderModel>> searchByNit(String query) async {
+    final token = await SessionService.getToken();
+    final url = Uri.parse('$_baseUrl/search/by-nit?query=$query');
+
+    final response = await http.get(
+      url,
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final List list = jsonDecode(response.body);
+      return list.map((item) => ProviderModel.fromJson(item)).toList();
+    }
+
+    throw Exception('Error searching providers: ${response.body}');
   }
 
   /// Crea un nuevo proveedor con nombre y nit
