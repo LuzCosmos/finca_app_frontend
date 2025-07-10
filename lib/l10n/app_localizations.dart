@@ -343,6 +343,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error creating provider'**
   String get cp_providerCreationError;
+
+  /// No description provided for @fieldRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'This field is mandatory'**
+  String get fieldRequired;
 }
 
 class _AppLocalizationsDelegate

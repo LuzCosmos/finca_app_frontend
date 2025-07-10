@@ -55,6 +55,7 @@ dependency_overrides:
 dev_dependencies:
   flutter_lints: ^5.0.0
   mockito: ^5.4.4
+  mocktail: ^1.0.0
   build_runner: ^2.4.13 # (solo si generas mocks automáticos)
   flutter_test:
     sdk: flutter

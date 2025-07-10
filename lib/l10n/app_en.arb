@@ -47,7 +47,9 @@
   "cp_nitIsRequired":"NIT is requested",
   "cp_providerCreatedSuccessfully": "Provider created successfully",
   "cp_providerNitAlreadyExists": "A provider with this NIT already exists",
-  "cp_providerCreationError": "Error creating provider"
+  "cp_providerCreationError": "Error creating provider",
 
+
+  "fieldRequired":"This field is mandatory"
   
 }

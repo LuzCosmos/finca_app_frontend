@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import '../../../../shared/features/auth/widgets/finca_scaffold.dart';
 import '../widgets/provider_input.dart';
+import '../models/provider.dart';
 //import '../widgets/purchase_summary.dart';
 
 class PurchaseFormPage extends StatefulWidget {
@@ -13,7 +14,7 @@ class PurchaseFormPage extends StatefulWidget {
 
 class _PurchaseFormPageState extends State<PurchaseFormPage> {
   final _formKey = GlobalKey<FormState>();
-  Map<String, dynamic>? selectedProvider;
+  ProviderModel? selectedProvider;
 
   // Estado inicial
   DateTime selectedDate = DateTime.now();

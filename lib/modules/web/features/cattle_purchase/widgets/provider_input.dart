@@ -6,8 +6,14 @@ import '../models/provider.dart';
 import '../../../../../core/services/exceptions.dart';
 
 class ProviderInput extends StatefulWidget {
-  final void Function(Map<String, dynamic> providerData) onProviderSelected;
-  const ProviderInput({super.key, required this.onProviderSelected});
+  final void Function(ProviderModel) onProviderSelected;
+  final ProviderService? providerService;
+
+  const ProviderInput({
+    super.key,
+    required this.onProviderSelected,
+    this.providerService,
+  });
 
   @override
   State<ProviderInput> createState() => _ProviderInputState();
@@ -18,11 +24,12 @@ class _ProviderInputState extends State<ProviderInput> {
   bool _providerExists = false;
   bool _isLoading = false;
   String _enteredNit = '';
-  Map<String, dynamic>? _selectedProvider;
+  ProviderModel? _selectedProvider;
   Timer? _debounce;
   List<ProviderModel> _cachedSuggestions = [];
+  ProviderService get _service => widget.providerService ?? ProviderService();
 
-  void _createProviderIfNeeded() async {
+  void _createProviderIfNeeded(BuildContext context) async {
     final l10n = AppLocalizations.of(context)!;
     final nit = _enteredNit.trim();
     final name = _nameController.text.trim();
@@ -31,10 +38,10 @@ class _ProviderInputState extends State<ProviderInput> {
     setState(() => _isLoading = true);
 
     try {
-      final created = await ProviderService.create(name: name, nit: nit);
+      final created = await _service.create(name: name, nit: nit);
       _selectedProvider = created;
       _providerExists = true;
-      _cachedSuggestions.add(ProviderModel.fromJson(created));
+      _cachedSuggestions.add(created);
       widget.onProviderSelected(_selectedProvider!);
 
       if (mounted) {
@@ -96,9 +103,7 @@ class _ProviderInputState extends State<ProviderInput> {
                     const Duration(milliseconds: 1000),
                     () async {
                       try {
-                        final results = await ProviderService.searchByNit(
-                          _enteredNit,
-                        );
+                        final results = await _service.searchByNit(_enteredNit);
                         _cachedSuggestions = results;
                         if (!completer.isCompleted) completer.complete(results);
                       } catch (_) {
@@ -119,7 +124,7 @@ class _ProviderInputState extends State<ProviderInput> {
                     setState(() {
                       _enteredNit = controller.text;
                       if (_providerExists && _selectedProvider != null) {
-                        if (_enteredNit != _selectedProvider!['nit']) {
+                        if (_enteredNit != _selectedProvider!.nit) {
                           _selectedProvider = null;
                           _providerExists = false;
                           _nameController.text = '';
@@ -158,7 +163,7 @@ class _ProviderInputState extends State<ProviderInput> {
                 onSelected: (ProviderModel selected) {
                   setState(() {
                     _providerExists = true;
-                    _selectedProvider = selected.toJson();
+                    _selectedProvider = selected;
                     _nameController.text = selected.name;
                   });
                   widget.onProviderSelected(_selectedProvider!);
@@ -205,7 +210,7 @@ class _ProviderInputState extends State<ProviderInput> {
         const SizedBox(height: 8),
         if (!_providerExists && _enteredNit.isNotEmpty && !_isLoading)
           ElevatedButton.icon(
-            onPressed: _createProviderIfNeeded,
+            onPressed: () => _createProviderIfNeeded(context),
             icon: const Icon(Icons.add),
             label: Text(l10n.cp_createProvider),
           ),

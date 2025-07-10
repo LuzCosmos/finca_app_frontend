@@ -44,6 +44,7 @@
   "cp_nitIsRequired":"NIT is requested",
   "cp_providerCreatedSuccessfully": "Proveedor creado exitosamente",
   "cp_providerNitAlreadyExists": "Ya existe un proveedor con ese NIT",
-  "cp_providerCreationError": "Error al crear proveedor"
+  "cp_providerCreationError": "Error al crear proveedor",
   
+  "fieldRequired":"Este campo es obligatorio"
 }

@@ -134,4 +134,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cp_providerCreationError => 'Error creating provider';
+
+  @override
+  String get fieldRequired => 'This field is mandatory';
 }
