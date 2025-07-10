@@ -16,8 +16,8 @@ class LoginForm extends StatefulWidget {
 
 class _LoginFormState extends State<LoginForm> {
   final _formKey = GlobalKey<FormState>();
-  String username = 'admin.finca_alamos';
-  String password = 'Contraseña123!';
+  String username = '';
+  String password = '';
   String companyUsername = 'finca_alamos';
 
   bool loading = false;
@@ -75,14 +75,14 @@ class _LoginFormState extends State<LoginForm> {
       child: Column(
         children: [
           TextFormField(
-            initialValue: 'admin.finca_alamos',
+            initialValue: '',
             decoration: InputDecoration(labelText: l10n.login_username),
             onChanged: (val) => username = val,
             validator:
                 (val) => val!.isEmpty ? l10n.login_usernameRequired : null,
           ),
           TextFormField(
-            initialValue: 'Contraseña123!',
+            initialValue: '',
             decoration: InputDecoration(labelText: l10n.login_password),
             obscureText: true,
             onChanged: (val) => password = val,
