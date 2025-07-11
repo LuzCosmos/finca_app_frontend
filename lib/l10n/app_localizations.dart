@@ -110,6 +110,12 @@ abstract class AppLocalizations {
   /// **'This field is mandatory'**
   String get fieldRequired;
 
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
   /// No description provided for @login_username.
   ///
   /// In en, this message translates to:

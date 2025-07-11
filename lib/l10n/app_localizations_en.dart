@@ -15,6 +15,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fieldRequired => 'This field is mandatory';
 
   @override
+  String get delete => 'Delete';
+
+  @override
   String get login_username => 'Username';
 
   @override

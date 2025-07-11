@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import '../../../../shared/features/auth/widgets/finca_scaffold.dart';
 import '../widgets/provider_input.dart';
+import '../widgets/lots_section.dart';
 import '../models/provider.dart';
-import '../widgets/lot_input.dart';
 import '../models/lot.dart';
 
 class PurchaseFormPage extends StatefulWidget {
@@ -17,9 +17,7 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
   final _formKey = GlobalKey<FormState>();
   ProviderModel? selectedProvider;
   DateTime selectedDate = DateTime.now();
-
-  // Lista dinámica de GlobalKeys para los LotInputs
-  final List<GlobalKey<LotInputState>> _lotInputKeys = [];
+  List<LotModel> lots = [];
 
   void _selectDate() async {
     final DateTime? picked = await showDatePicker(
@@ -33,15 +31,9 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
     }
   }
 
-  void _addLotForm() {
+  void _onLotsChanged(List<LotModel> updatedLots) {
     setState(() {
-      _lotInputKeys.add(GlobalKey<LotInputState>());
-    });
-  }
-
-  void _removeLotForm(int index) {
-    setState(() {
-      _lotInputKeys.removeAt(index);
+      lots = updatedLots;
     });
   }
 
@@ -64,7 +56,7 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
               ),
               const SizedBox(height: 24),
 
-              // PROVEEDOR
+              /// PROVEEDOR
               ProviderInput(
                 onProviderSelected: (providerData) {
                   setState(() {
@@ -74,7 +66,7 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
               ),
               const SizedBox(height: 16),
 
-              // FECHA
+              /// FECHA DE COMPRA
               Row(
                 children: [
                   Text('${l10n.cp_purchaseDate}: '),
@@ -89,46 +81,31 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
               ),
               const SizedBox(height: 24),
 
-              // LOTES HEADER
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(l10n.lot, style: Theme.of(context).textTheme.titleLarge),
-                  ElevatedButton.icon(
-                    onPressed: _addLotForm,
-                    icon: const Icon(Icons.add),
-                    label: Text(l10n.addLot),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
+              /// LOTES
+              LotsSection(onLotsChanged: _onLotsChanged),
+              const SizedBox(height: 24),
 
-              // LOTES INPUTS
-              ..._lotInputKeys.asMap().entries.map((entry) {
-                final index = entry.key;
-                final key = entry.value;
-                return Column(
-                  children: [
-                    LotInput(
-                      key: key,
-                      onChanged: (lot) {
-                        // Por ahora puedes dejarlo vacío o para logs
-                      },
-                      onRemove: () => _removeLotForm(index),
-                    ),
-                    const SizedBox(height: 16),
-                  ],
-                );
-              }),
-
-              const Divider(height: 32),
-
-              // BOTÓN DE GUARDAR
+              /// BOTÓN DE GUARDAR
               Align(
                 alignment: Alignment.centerRight,
                 child: ElevatedButton.icon(
                   onPressed: () {
-                    // TODO: validación y envío
+                    if (!_formKey.currentState!.validate()) return;
+                    if (selectedProvider == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(l10n.cp_errors_cattleCountRequired),
+                        ),
+                      );
+                      return;
+                    }
+                    if (lots.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(l10n.cp_errors_noLots)),
+                      );
+                      return;
+                    }
+                    // TODO: enviar compra
                   },
                   icon: const Icon(Icons.save),
                   label: Text(l10n.cp_createPurchase),

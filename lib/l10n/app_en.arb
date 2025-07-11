@@ -4,6 +4,7 @@
     "description": "Application Title shown in the bar"
   },
   "fieldRequired":"This field is mandatory",
+  "delete": "Delete",
 
   "login_username": "Username",
   "login_usernameRequired": "Please enter your username",

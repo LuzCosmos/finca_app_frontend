@@ -4,6 +4,7 @@
 
 
   "fieldRequired":"Este campo es obligatorio",
+  "delete": "Eliminar",
 
   "login_username": "Usuario",
   "login_usernameRequired": "Ingrese su usuario",
@@ -51,8 +52,8 @@
   "lot_origin": "Procedencia",
   "lot_age": "Edad",
   "lot_gender": "Sexo",
-  "lot_avgWeight": "Peso Promedio (kg)",
-  "lot_pricePerKg": "Valor por Kilo",
+  "lot_avgWeight": "Peso Prom. (kg)",
+  "lot_pricePerKg": "Vlr. por Kilo",
   "lot_cattleCount": "Cantidad",
   "lot_totalWeight": "Peso Total",
   "lot_totalValue": "Valor Total",

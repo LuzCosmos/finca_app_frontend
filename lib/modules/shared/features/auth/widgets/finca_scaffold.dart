@@ -34,6 +34,7 @@ class FincaScaffold extends StatelessWidget {
   ) {
     return DropdownButtonHideUnderline(
       child: DropdownButton<String>(
+        padding: const EdgeInsets.only(right: 10),
         value: state.selectedLanguage.locale,
         icon: const Icon(Icons.language, color: Colors.white),
         dropdownColor: theme.colorScheme.primary,

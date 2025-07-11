@@ -3,7 +3,7 @@ class LotModel {
   final String lotNumber;
   final String origin;
   final String age;
-  final String gender; // 'cria', 'levante', etc.
+  final String gender;
   final double avgWeight;
   final double pricePerKg;
   final int cattleCount;

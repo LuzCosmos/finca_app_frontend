@@ -56,5 +56,5 @@ xcuserdata/
 *.xcsettings
 
 
-main-copy.dart
+aux/
 doc_/

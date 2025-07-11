@@ -15,6 +15,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get fieldRequired => 'Este campo es obligatorio';
 
   @override
+  String get delete => 'Eliminar';
+
+  @override
   String get login_username => 'Usuario';
 
   @override
@@ -148,10 +151,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get lot_gender => 'Sexo';
 
   @override
-  String get lot_avgWeight => 'Peso Promedio (kg)';
+  String get lot_avgWeight => 'Peso Prom. (kg)';
 
   @override
-  String get lot_pricePerKg => 'Valor por Kilo';
+  String get lot_pricePerKg => 'Vlr. por Kilo';
 
   @override
   String get lot_cattleCount => 'Cantidad';
