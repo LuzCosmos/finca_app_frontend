@@ -1,18 +1,20 @@
-class LotDetail {
+class LotModel {
+  final String? id;
   final String lotNumber;
   final String origin;
-  final int quantity;
   final String age;
   final String gender; // 'cria', 'levante', etc.
   final double avgWeight;
-  final double totalWeight;
   final double pricePerKg;
+  final int cattleCount;
+  final double totalWeight;
   final double totalValue;
 
-  LotDetail({
+  LotModel({
+    this.id,
     required this.lotNumber,
     required this.origin,
-    required this.quantity,
+    required this.cattleCount,
     required this.age,
     required this.gender,
     required this.avgWeight,

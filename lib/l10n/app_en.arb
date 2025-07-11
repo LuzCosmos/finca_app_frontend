@@ -1,11 +1,9 @@
 {
-  "testMedium":"Test in English",
-  "general_appTitle":"Farm App",
-  "@general_appTitle": {
-    "description": "Application Title shown in the HomePage"
-  },
-
   "appTitle": "Finca App",
+  "@appTitle": {
+    "description": "Application Title shown in the bar"
+  },
+  "fieldRequired":"This field is mandatory",
 
   "login_username": "Username",
   "login_usernameRequired": "Please enter your username",
@@ -24,22 +22,18 @@
   "home_sale": "Sale",
 
   "cattlePurchase": "Cattle Purchase",
+  "purchaseLotCountError": "The cattle count must be greater than 0.",
+  "cp_purchaseDate": "Purchase Date",
+  "cp_createPurchase": "Create Purchase",
+  "cp_errors_noLots": "At least one lot is required",
+  "cp_errors_cattleCountRequired": "Cattle quantity must be greater than 0",
+  "purchase_provider_required": "Please select a provider.",
+  "purchase_no_valid_lots": "At least one valid lot is required.",
+  "purchase_save_success": "Purchase saved successfully.",
+  "purchase_save_error": "Failed to save purchase.",
+
   "cp_provider": "Provider",
   "cp_nit": "NIT",
-  "cp_purchaseDate": "Purchase Date",
-  "cp_addLot": "Add Lot",
-  "cp_lot": "Lot",
-  "cp_origin": "Origin",
-  "cp_quantity": "Quantity",
-  "cp_age": "Age",
-  "cp_gender": "Gender",
-  "cp_avgWeight": "Avg. Weight (kg)",
-  "cp_totalWeight": "Total Weight",
-  "cp_pricePerKg": "Price per Kg",
-  "cp_totalValue": "Total Value",
-  "cp_totalCattle": "Total Cattle",
-  "cp_createPurchase": "Create Purchase",
-
   "cp_createProvider": "Create Provider",
   "cp_providerFound": "Provider found and loaded.",
   "cp_providerWillBeCreated": "New provider will be created with this NIT.",
@@ -49,7 +43,29 @@
   "cp_providerNitAlreadyExists": "A provider with this NIT already exists",
   "cp_providerCreationError": "Error creating provider",
 
+  "lotsTitle":"Lots",
+  "lot": "Lot",
+  "addLot": "Add Lot",
+  "removeLot": "Remove lot",
+  "lot_lotNumber": "Lot number",
+  "lot_origin": "Origin",
+  "lot_age": "Age",
+  "lot_gender": "Gender",
+  "lot_avgWeight": "Avg. Weight (kg)",
+  "lot_pricePerKg": "Price per Kg",
+  "lot_cattleCount": "Cattle count",
+  "lot_totalWeight": "Total Weight",
+  "lot_totalValue": "Total Value",
 
-  "fieldRequired":"This field is mandatory"
+  "lot_cattleCountRequired": "Please enter the number of cattle",
+  "lot_totalWeightRequired": "Please enter the total weight",
+  "lot_pricePerKgRequired": "Please enter the price per kilo",
+  "lot_cattleCountInvalid": "Enter a valid cattle count",
+  "lot_totalWeightInvalid": "Enter a valid weight",
+  "lot_pricePerKgInvalid": "Enter a valid price per kilo",
+  "lotRequired": "Please enter the lot number"
+
+
+  
   
 }

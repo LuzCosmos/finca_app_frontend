@@ -9,13 +9,10 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
-  String get testMedium => 'Prueba en español';
-
-  @override
-  String get general_appTitle => 'Finca App';
-
-  @override
   String get appTitle => 'Finca App';
+
+  @override
+  String get fieldRequired => 'Este campo es obligatorio';
 
   @override
   String get login_username => 'Usuario';
@@ -66,49 +63,39 @@ class AppLocalizationsEs extends AppLocalizations {
   String get cattlePurchase => 'Compra de Ganado';
 
   @override
-  String get cp_provider => 'Proveedor';
-
-  @override
-  String get cp_nit => 'NIT';
+  String get purchaseLotCountError =>
+      'La cantidad de reses en el lote debe ser mayor a 0.';
 
   @override
   String get cp_purchaseDate => 'Fecha de Compra';
 
   @override
-  String get cp_addLot => 'Agregar Lote';
-
-  @override
-  String get cp_lot => 'Lote';
-
-  @override
-  String get cp_origin => 'Procedencia';
-
-  @override
-  String get cp_quantity => 'Cantidad';
-
-  @override
-  String get cp_age => 'Edad';
-
-  @override
-  String get cp_gender => 'Sexo';
-
-  @override
-  String get cp_avgWeight => 'Peso Promedio (kg)';
-
-  @override
-  String get cp_totalWeight => 'Peso Total';
-
-  @override
-  String get cp_pricePerKg => 'Valor por Kilo';
-
-  @override
-  String get cp_totalValue => 'Valor Total';
-
-  @override
-  String get cp_totalCattle => 'Total de Reses';
-
-  @override
   String get cp_createPurchase => 'Crear Compra';
+
+  @override
+  String get cp_errors_noLots => 'Debe agregar al menos un lote';
+
+  @override
+  String get cp_errors_cattleCountRequired =>
+      'La cantidad de ganado debe ser mayor a 0';
+
+  @override
+  String get purchase_provider_required => 'Por favor seleccione un proveedor.';
+
+  @override
+  String get purchase_no_valid_lots => 'At least one valid lot is required.';
+
+  @override
+  String get purchase_save_success => 'Compra guardada exitosamente.';
+
+  @override
+  String get purchase_save_error => 'Falló el guardado de compra.';
+
+  @override
+  String get cp_provider => 'Proveedor';
+
+  @override
+  String get cp_nit => 'NIT';
 
   @override
   String get cp_createProvider => 'Crear proveedor';
@@ -137,5 +124,63 @@ class AppLocalizationsEs extends AppLocalizations {
   String get cp_providerCreationError => 'Error al crear proveedor';
 
   @override
-  String get fieldRequired => 'Este campo es obligatorio';
+  String get lotsTitle => 'Lotes';
+
+  @override
+  String get lot => 'Lote';
+
+  @override
+  String get addLot => 'Agregar lote';
+
+  @override
+  String get removeLot => 'Eliminar lote';
+
+  @override
+  String get lot_lotNumber => 'Número de lote';
+
+  @override
+  String get lot_origin => 'Procedencia';
+
+  @override
+  String get lot_age => 'Edad';
+
+  @override
+  String get lot_gender => 'Sexo';
+
+  @override
+  String get lot_avgWeight => 'Peso Promedio (kg)';
+
+  @override
+  String get lot_pricePerKg => 'Valor por Kilo';
+
+  @override
+  String get lot_cattleCount => 'Cantidad';
+
+  @override
+  String get lot_totalWeight => 'Peso Total';
+
+  @override
+  String get lot_totalValue => 'Valor Total';
+
+  @override
+  String get lot_cattleCountRequired =>
+      'Por favor ingrese la cantidad de reses';
+
+  @override
+  String get lot_totalWeightRequired => 'Por favor ingrese el peso total';
+
+  @override
+  String get lot_pricePerKgRequired => 'Please enter the price per kilo';
+
+  @override
+  String get lot_cattleCountInvalid => 'Ingrese una cantidad válida de reses';
+
+  @override
+  String get lot_totalWeightInvalid => 'Ingrese un peso válido';
+
+  @override
+  String get lot_pricePerKgInvalid => 'Enter a valid price per kilo';
+
+  @override
+  String get lotRequired => 'Por favor ingrese el número de lote';
 }

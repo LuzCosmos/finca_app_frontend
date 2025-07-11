@@ -4,7 +4,7 @@ import './provider.dart';
 class Purchase {
   final DateTime date;
   final ProviderModel provider;
-  final List<LotDetail> lots;
+  final List<LotModel> lots;
   final int totalCattle;
   final double totalWeight;
   final double totalValue;

@@ -3,7 +3,8 @@ import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import '../../../../shared/features/auth/widgets/finca_scaffold.dart';
 import '../widgets/provider_input.dart';
 import '../models/provider.dart';
-//import '../widgets/purchase_summary.dart';
+import '../widgets/lot_input.dart';
+import '../models/lot.dart';
 
 class PurchaseFormPage extends StatefulWidget {
   const PurchaseFormPage({super.key});
@@ -15,9 +16,10 @@ class PurchaseFormPage extends StatefulWidget {
 class _PurchaseFormPageState extends State<PurchaseFormPage> {
   final _formKey = GlobalKey<FormState>();
   ProviderModel? selectedProvider;
-
-  // Estado inicial
   DateTime selectedDate = DateTime.now();
+
+  // Lista dinámica de GlobalKeys para los LotInputs
+  final List<GlobalKey<LotInputState>> _lotInputKeys = [];
 
   void _selectDate() async {
     final DateTime? picked = await showDatePicker(
@@ -29,6 +31,18 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
     if (picked != null && picked != selectedDate) {
       setState(() => selectedDate = picked);
     }
+  }
+
+  void _addLotForm() {
+    setState(() {
+      _lotInputKeys.add(GlobalKey<LotInputState>());
+    });
+  }
+
+  void _removeLotForm(int index) {
+    setState(() {
+      _lotInputKeys.removeAt(index);
+    });
   }
 
   @override
@@ -50,7 +64,7 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
               ),
               const SizedBox(height: 24),
 
-              /// PROVEEDOR
+              // PROVEEDOR
               ProviderInput(
                 onProviderSelected: (providerData) {
                   setState(() {
@@ -60,7 +74,7 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
               ),
               const SizedBox(height: 16),
 
-              /// FECHA DE COMPRA
+              // FECHA
               Row(
                 children: [
                   Text('${l10n.cp_purchaseDate}: '),
@@ -75,34 +89,41 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
               ),
               const SizedBox(height: 24),
 
-              /// SECCIÓN: Lotes
+              // LOTES HEADER
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    l10n.cp_lot,
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
+                  Text(l10n.lot, style: Theme.of(context).textTheme.titleLarge),
                   ElevatedButton.icon(
-                    onPressed: () {
-                      // TODO: agregar nuevo formulario de lote
-                    },
+                    onPressed: _addLotForm,
                     icon: const Icon(Icons.add),
-                    label: Text(l10n.cp_addLot),
+                    label: Text(l10n.addLot),
                   ),
                 ],
               ),
-
               const SizedBox(height: 16),
 
-              // Aquí irán los lotes agregados (ExpansionTiles o lista)
+              // LOTES INPUTS
+              ..._lotInputKeys.asMap().entries.map((entry) {
+                final index = entry.key;
+                final key = entry.value;
+                return Column(
+                  children: [
+                    LotInput(
+                      key: key,
+                      onChanged: (lot) {
+                        // Por ahora puedes dejarlo vacío o para logs
+                      },
+                      onRemove: () => _removeLotForm(index),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                );
+              }),
+
               const Divider(height: 32),
 
-              /// RESUMEN
-              // PurchaseSummary(),
-              const SizedBox(height: 24),
-
-              /// BOTÓN DE GUARDAR
+              // BOTÓN DE GUARDAR
               Align(
                 alignment: Alignment.centerRight,
                 child: ElevatedButton.icon(

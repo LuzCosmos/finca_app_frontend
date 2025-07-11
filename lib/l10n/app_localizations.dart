@@ -98,23 +98,17 @@ abstract class AppLocalizations {
     Locale('es'),
   ];
 
-  /// No description provided for @testMedium.
-  ///
-  /// In en, this message translates to:
-  /// **'Test in English'**
-  String get testMedium;
-
-  /// Application Title shown in the HomePage
-  ///
-  /// In en, this message translates to:
-  /// **'Farm App'**
-  String get general_appTitle;
-
-  /// No description provided for @appTitle.
+  /// Application Title shown in the bar
   ///
   /// In en, this message translates to:
   /// **'Finca App'**
   String get appTitle;
+
+  /// No description provided for @fieldRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'This field is mandatory'**
+  String get fieldRequired;
 
   /// No description provided for @login_username.
   ///
@@ -206,6 +200,60 @@ abstract class AppLocalizations {
   /// **'Cattle Purchase'**
   String get cattlePurchase;
 
+  /// No description provided for @purchaseLotCountError.
+  ///
+  /// In en, this message translates to:
+  /// **'The cattle count must be greater than 0.'**
+  String get purchaseLotCountError;
+
+  /// No description provided for @cp_purchaseDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase Date'**
+  String get cp_purchaseDate;
+
+  /// No description provided for @cp_createPurchase.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Purchase'**
+  String get cp_createPurchase;
+
+  /// No description provided for @cp_errors_noLots.
+  ///
+  /// In en, this message translates to:
+  /// **'At least one lot is required'**
+  String get cp_errors_noLots;
+
+  /// No description provided for @cp_errors_cattleCountRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Cattle quantity must be greater than 0'**
+  String get cp_errors_cattleCountRequired;
+
+  /// No description provided for @purchase_provider_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a provider.'**
+  String get purchase_provider_required;
+
+  /// No description provided for @purchase_no_valid_lots.
+  ///
+  /// In en, this message translates to:
+  /// **'At least one valid lot is required.'**
+  String get purchase_no_valid_lots;
+
+  /// No description provided for @purchase_save_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase saved successfully.'**
+  String get purchase_save_success;
+
+  /// No description provided for @purchase_save_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save purchase.'**
+  String get purchase_save_error;
+
   /// No description provided for @cp_provider.
   ///
   /// In en, this message translates to:
@@ -217,84 +265,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'NIT'**
   String get cp_nit;
-
-  /// No description provided for @cp_purchaseDate.
-  ///
-  /// In en, this message translates to:
-  /// **'Purchase Date'**
-  String get cp_purchaseDate;
-
-  /// No description provided for @cp_addLot.
-  ///
-  /// In en, this message translates to:
-  /// **'Add Lot'**
-  String get cp_addLot;
-
-  /// No description provided for @cp_lot.
-  ///
-  /// In en, this message translates to:
-  /// **'Lot'**
-  String get cp_lot;
-
-  /// No description provided for @cp_origin.
-  ///
-  /// In en, this message translates to:
-  /// **'Origin'**
-  String get cp_origin;
-
-  /// No description provided for @cp_quantity.
-  ///
-  /// In en, this message translates to:
-  /// **'Quantity'**
-  String get cp_quantity;
-
-  /// No description provided for @cp_age.
-  ///
-  /// In en, this message translates to:
-  /// **'Age'**
-  String get cp_age;
-
-  /// No description provided for @cp_gender.
-  ///
-  /// In en, this message translates to:
-  /// **'Gender'**
-  String get cp_gender;
-
-  /// No description provided for @cp_avgWeight.
-  ///
-  /// In en, this message translates to:
-  /// **'Avg. Weight (kg)'**
-  String get cp_avgWeight;
-
-  /// No description provided for @cp_totalWeight.
-  ///
-  /// In en, this message translates to:
-  /// **'Total Weight'**
-  String get cp_totalWeight;
-
-  /// No description provided for @cp_pricePerKg.
-  ///
-  /// In en, this message translates to:
-  /// **'Price per Kg'**
-  String get cp_pricePerKg;
-
-  /// No description provided for @cp_totalValue.
-  ///
-  /// In en, this message translates to:
-  /// **'Total Value'**
-  String get cp_totalValue;
-
-  /// No description provided for @cp_totalCattle.
-  ///
-  /// In en, this message translates to:
-  /// **'Total Cattle'**
-  String get cp_totalCattle;
-
-  /// No description provided for @cp_createPurchase.
-  ///
-  /// In en, this message translates to:
-  /// **'Create Purchase'**
-  String get cp_createPurchase;
 
   /// No description provided for @cp_createProvider.
   ///
@@ -344,11 +314,125 @@ abstract class AppLocalizations {
   /// **'Error creating provider'**
   String get cp_providerCreationError;
 
-  /// No description provided for @fieldRequired.
+  /// No description provided for @lotsTitle.
   ///
   /// In en, this message translates to:
-  /// **'This field is mandatory'**
-  String get fieldRequired;
+  /// **'Lots'**
+  String get lotsTitle;
+
+  /// No description provided for @lot.
+  ///
+  /// In en, this message translates to:
+  /// **'Lot'**
+  String get lot;
+
+  /// No description provided for @addLot.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Lot'**
+  String get addLot;
+
+  /// No description provided for @removeLot.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove lot'**
+  String get removeLot;
+
+  /// No description provided for @lot_lotNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Lot number'**
+  String get lot_lotNumber;
+
+  /// No description provided for @lot_origin.
+  ///
+  /// In en, this message translates to:
+  /// **'Origin'**
+  String get lot_origin;
+
+  /// No description provided for @lot_age.
+  ///
+  /// In en, this message translates to:
+  /// **'Age'**
+  String get lot_age;
+
+  /// No description provided for @lot_gender.
+  ///
+  /// In en, this message translates to:
+  /// **'Gender'**
+  String get lot_gender;
+
+  /// No description provided for @lot_avgWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg. Weight (kg)'**
+  String get lot_avgWeight;
+
+  /// No description provided for @lot_pricePerKg.
+  ///
+  /// In en, this message translates to:
+  /// **'Price per Kg'**
+  String get lot_pricePerKg;
+
+  /// No description provided for @lot_cattleCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Cattle count'**
+  String get lot_cattleCount;
+
+  /// No description provided for @lot_totalWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Weight'**
+  String get lot_totalWeight;
+
+  /// No description provided for @lot_totalValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Value'**
+  String get lot_totalValue;
+
+  /// No description provided for @lot_cattleCountRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter the number of cattle'**
+  String get lot_cattleCountRequired;
+
+  /// No description provided for @lot_totalWeightRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter the total weight'**
+  String get lot_totalWeightRequired;
+
+  /// No description provided for @lot_pricePerKgRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter the price per kilo'**
+  String get lot_pricePerKgRequired;
+
+  /// No description provided for @lot_cattleCountInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid cattle count'**
+  String get lot_cattleCountInvalid;
+
+  /// No description provided for @lot_totalWeightInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid weight'**
+  String get lot_totalWeightInvalid;
+
+  /// No description provided for @lot_pricePerKgInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid price per kilo'**
+  String get lot_pricePerKgInvalid;
+
+  /// No description provided for @lotRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter the lot number'**
+  String get lotRequired;
 }
 
 class _AppLocalizationsDelegate

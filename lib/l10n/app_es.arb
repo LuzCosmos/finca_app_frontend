@@ -1,8 +1,9 @@
 {
-  "testMedium":"Prueba en español",
-  "general_appTitle":"Finca App",
-
   "appTitle": "Finca App",
+
+
+
+  "fieldRequired":"Este campo es obligatorio",
 
   "login_username": "Usuario",
   "login_usernameRequired": "Ingrese su usuario",
@@ -21,22 +22,18 @@
   "home_sale": "Venta",
 
   "cattlePurchase": "Compra de Ganado",
-  "cp_provider": "Proveedor",
-  "cp_nit": "NIT",
+  "purchaseLotCountError": "La cantidad de reses en el lote debe ser mayor a 0.",
   "cp_purchaseDate": "Fecha de Compra",
-  "cp_addLot": "Agregar Lote",
-  "cp_lot": "Lote",
-  "cp_origin": "Procedencia",
-  "cp_quantity": "Cantidad",
-  "cp_age": "Edad",
-  "cp_gender": "Sexo",
-  "cp_avgWeight": "Peso Promedio (kg)",
-  "cp_totalWeight": "Peso Total",
-  "cp_pricePerKg": "Valor por Kilo",
-  "cp_totalValue": "Valor Total",
-  "cp_totalCattle": "Total de Reses",
   "cp_createPurchase": "Crear Compra",
+  "cp_errors_noLots": "Debe agregar al menos un lote",
+  "cp_errors_cattleCountRequired": "La cantidad de ganado debe ser mayor a 0",
+  "purchase_provider_required": "Por favor seleccione un proveedor.",
+  "purchase_no_valid_lots": "At least one valid lot is required.",
+  "purchase_save_success": "Compra guardada exitosamente.",
+  "purchase_save_error": "Falló el guardado de compra.",
 
+  "cp_provider": "Proveedor",  
+  "cp_nit": "NIT",
   "cp_createProvider": "Crear proveedor",
   "cp_providerFound": "Proveedor encontrado y cargado.",
   "cp_providerWillBeCreated": "Se creará un nuevo proveedor con este NIT.",
@@ -46,5 +43,26 @@
   "cp_providerNitAlreadyExists": "Ya existe un proveedor con ese NIT",
   "cp_providerCreationError": "Error al crear proveedor",
   
-  "fieldRequired":"Este campo es obligatorio"
+  "lotsTitle":"Lotes",
+  "lot": "Lote",
+  "addLot": "Agregar lote",
+  "removeLot": "Eliminar lote",
+  "lot_lotNumber": "Número de lote",
+  "lot_origin": "Procedencia",
+  "lot_age": "Edad",
+  "lot_gender": "Sexo",
+  "lot_avgWeight": "Peso Promedio (kg)",
+  "lot_pricePerKg": "Valor por Kilo",
+  "lot_cattleCount": "Cantidad",
+  "lot_totalWeight": "Peso Total",
+  "lot_totalValue": "Valor Total",
+
+  "lot_cattleCountRequired": "Por favor ingrese la cantidad de reses",
+  "lot_totalWeightRequired": "Por favor ingrese el peso total",
+  "lot_pricePerKiloRequired": "Por favor ingrese el precio por kilo",
+  "lot_cattleCountInvalid": "Ingrese una cantidad válida de reses",
+  "lot_totalWeightInvalid": "Ingrese un peso válido",
+  "lot_pricePerKiloInvalid": "Ingrese un precio por kilo válido",
+  "lotRequired": "Por favor ingrese el número de lote"
+  
 }
