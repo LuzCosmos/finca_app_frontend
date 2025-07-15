@@ -187,7 +187,7 @@ class _ValueCell extends StatelessWidget {
     return Container(
       width: width,
       margin: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
-      padding: const EdgeInsets.symmetric(vertical: 2),
+      //padding: const EdgeInsets.symmetric(vertical: 2),
       alignment: Alignment.center,
       decoration: BoxDecoration(
         color: Colors.grey.shade100,

@@ -14,7 +14,7 @@ class FincaScaffold extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(title ?? 'Finca App'),
+        title: Text(title ?? 'Finca App', style: const TextStyle(fontSize: 16)),
         actions: <Widget>[
           BlocBuilder<LocaleBloc, LocaleState>(
             builder: (context, state) {

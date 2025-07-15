@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import '../models/lot.dart';
+import 'package:flutter/services.dart';
 
 class LotInput extends StatefulWidget {
   final void Function(LotModel) onChanged;
@@ -79,10 +80,10 @@ class LotInputState extends State<LotInput> {
         _buildReadOnlyCell(label: r'$', width: 120),
         // Botón eliminar
         SizedBox(
-          width: 24,
-          height: 24,
+          width: 28,
+          height: 28,
           child: IconButton(
-            icon: const Icon(Icons.delete, size: 24),
+            icon: const Icon(Icons.delete, size: 20),
             onPressed: widget.onRemove,
             tooltip: l10n.delete,
             padding: EdgeInsets.zero,
@@ -101,11 +102,16 @@ class LotInputState extends State<LotInput> {
   }) {
     return Container(
       width: width,
-      height: 25,
+      height: 28,
       margin: const EdgeInsets.symmetric(horizontal: 2),
       child: TextFormField(
         controller: controller,
         keyboardType: isNumeric ? TextInputType.number : TextInputType.text,
+        inputFormatters:
+            isNumeric
+                ? [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}'))]
+                : null,
+        style: const TextStyle(fontSize: 13),
         decoration: InputDecoration(
           labelText: label,
           border: const OutlineInputBorder(),
@@ -119,14 +125,14 @@ class LotInputState extends State<LotInput> {
   Widget _buildReadOnlyCell({required String label, double width = 100}) {
     return Container(
       width: width,
-      height: 25,
+      height: 28,
       margin: const EdgeInsets.symmetric(horizontal: 2),
       alignment: Alignment.center,
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey.shade300),
         borderRadius: BorderRadius.circular(4),
       ),
-      child: Text(label, style: const TextStyle(fontSize: 11)),
+      child: Text(label, style: const TextStyle(fontSize: 13)),
     );
   }
 
