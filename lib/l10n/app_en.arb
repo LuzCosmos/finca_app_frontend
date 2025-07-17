@@ -5,6 +5,7 @@
   },
   "fieldRequired":"This field is mandatory",
   "delete": "Delete",
+  "fixErrors": "Please fix the errors highlighted in red.",
 
   "login_username": "Username",
   "login_usernameRequired": "Please enter your username",
@@ -22,27 +23,32 @@
   "home_massiveEvent": "Massive Event",
   "home_sale": "Sale",
 
+  
+  "purchase_date": "Purchase Date",
+  "purchase_dateRequired": "You must select a purchase date.",
+  "purchase_create": "Create Purchase",
+  "purchase_saveSuccess": "Purchase saved successfully.",
+  "purchase_saveError": "Failed to save purchase.",
   "cattlePurchase": "Cattle Purchase",
-  "purchaseLotCountError": "The cattle count must be greater than 0.",
-  "cp_purchaseDate": "Purchase Date",
-  "cp_createPurchase": "Create Purchase",
-  "cp_errors_noLots": "At least one lot is required",
-  "cp_errors_cattleCountRequired": "Cattle quantity must be greater than 0",
-  "purchase_provider_required": "Please select a provider.",
-  "purchase_no_valid_lots": "At least one valid lot is required.",
-  "purchase_save_success": "Purchase saved successfully.",
-  "purchase_save_error": "Failed to save purchase.",
+  "cp_error_noLots": "At least one lot is required",
+  "cp_error_providerRequired": "Please select or create a provider.",
 
-  "cp_provider": "Provider",
-  "cp_nit": "NIT",
-  "cp_createProvider": "Create Provider",
-  "cp_providerFound": "Provider found and loaded.",
-  "cp_providerWillBeCreated": "New provider will be created with this NIT.",
-  "cp_providerIsRequired":"Provider name is requested",
-  "cp_nitIsRequired":"NIT is requested",
-  "cp_providerCreatedSuccessfully": "Provider created successfully",
-  "cp_providerNitAlreadyExists": "A provider with this NIT already exists",
-  "cp_providerCreationError": "Error creating provider",
+  "provider": "Provider",
+  "provider_nit": "NIT",
+  "provider_create": "Create Provider",
+  "provider_found": "Provider found and loaded.",
+  "provider_willBeCreated": "New provider will be created with this NIT.",
+  "provider_nameIsRequired":"Provider name is requested",
+  "provider_nitIsRequired":"NIT is requested",
+  "provider_createdSuccessfully": "Provider created successfully",
+  "provider_nitAlreadyExists": "A provider with this NIT already exists",
+  "provider_creationError": "Error creating provider",
+
+
+  "purchaseLotCountError": "The cattle count must be greater than 0.",
+  
+  "cp_errors_cattleCountRequired": "Cattle count must be greater than 0",
+
 
   "lotsTitle":"Lots",
   "lot": "Lot",
@@ -58,13 +64,17 @@
   "lot_totalWeight": "Total Weight",
   "lot_totalValue": "Total Value",
 
-  "lot_cattleCountRequired": "Please enter the number of cattle",
-  "lot_totalWeightRequired": "Please enter the total weight",
+  "lot_numberRequired": "Please enter the lot number.",
+  "lot_avgWeightRequired": "Please enter the average weight (Kg).",
   "lot_pricePerKgRequired": "Please enter the price per kilo",
+  "lot_pricePerKgInvalid": "Enter a valid price per kilo.",
+  "lot_cattleCountRequired": "Please enter the cattle count.",
   "lot_cattleCountInvalid": "Enter a valid cattle count",
-  "lot_totalWeightInvalid": "Enter a valid weight",
-  "lot_pricePerKgInvalid": "Enter a valid price per kilo",
-  "lotRequired": "Please enter the lot number"
+  "lot_totalWeightRequired": "Please enter the total weight.",
+  "lot_totalWeightInvalid": "Enter a valid total weight",
+  "lot_countAvWeightPriceKgRequired":"Each lot must have cattle count, average weight and price per kg greater than zero."
+
+
 
 
   

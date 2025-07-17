@@ -15,26 +15,61 @@ class PurchaseFormPage extends StatefulWidget {
 
 class _PurchaseFormPageState extends State<PurchaseFormPage> {
   final _formKey = GlobalKey<FormState>();
-  ProviderModel? selectedProvider;
-  DateTime selectedDate = DateTime.now();
-  List<LotModel> lots = [];
+  ProviderModel? _selectedProvider;
+  DateTime _selectedDate = DateTime.now();
+  List<LotModel> _lots = [];
 
   void _selectDate() async {
-    final DateTime? picked = await showDatePicker(
+    final picked = await showDatePicker(
       context: context,
-      initialDate: selectedDate,
+      initialDate: _selectedDate,
       firstDate: DateTime(DateTime.now().year - 2),
       lastDate: DateTime.now(),
     );
-    if (picked != null && picked != selectedDate) {
-      setState(() => selectedDate = picked);
+    if (picked != null && picked != _selectedDate) {
+      setState(() {
+        _selectedDate = picked;
+      });
     }
   }
 
   void _onLotsChanged(List<LotModel> updatedLots) {
     setState(() {
-      lots = updatedLots;
+      _lots = updatedLots;
     });
+  }
+
+  void _onSubmit() {
+    final l10n = AppLocalizations.of(context)!;
+    if (!_formKey.currentState!.validate()) {
+      _showError(l10n.fixErrors);
+      return;
+    }
+    if (_selectedProvider == null) {
+      _showError(l10n.cp_error_providerRequired);
+      return;
+    }
+    if (_selectedDate == null) {
+      _showError(l10n.purchase_dateRequired);
+      return;
+    }
+    if (_lots.isEmpty) {
+      _showError(l10n.cp_error_noLots);
+      return;
+    }
+    for (final lot in _lots) {
+      if (lot.cattleCount <= 0 || lot.avgWeight <= 0 || lot.pricePerKg <= 0) {
+        _showError(l10n.lot_countAvWeightPriceKgRequired);
+        return;
+      }
+    }
+    // TODO: Llamar a tu servicio de guardado aquí con _selectedProvider, _selectedDate y _lots
+  }
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -43,55 +78,20 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
 
     return FincaScaffold(
       title: l10n.cattlePurchase,
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: Form(
-          key: _formKey,
+      body: Form(
+        key: _formKey,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                l10n.cattlePurchase,
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
-              const SizedBox(height: 24),
-
-              /// PROVEEDOR
-              ProviderInput(
-                onProviderSelected: (providerData) {
-                  setState(() {
-                    selectedProvider = providerData;
-                  });
-                },
-              ),
-              const SizedBox(height: 16),
-
-              /// FECHA DE COMPRA
-              Row(
-                children: [
-                  Text('${l10n.cp_purchaseDate}: '),
-                  TextButton.icon(
-                    icon: const Icon(Icons.calendar_today),
-                    label: Text(
-                      '${selectedDate.day}/${selectedDate.month}/${selectedDate.year}',
-                    ),
-                    onPressed: _selectDate,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
-
-              /// LOTES
-              LotsSection(onLotsChanged: _onLotsChanged),
-              const SizedBox(height: 24),
-
-              /// BOTÓN DE GUARDAR
+              /// Save Button
               Align(
                 alignment: Alignment.centerRight,
                 child: ElevatedButton.icon(
                   onPressed: () {
                     if (!_formKey.currentState!.validate()) return;
-                    if (selectedProvider == null) {
+                    if (_selectedProvider == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(l10n.cp_errors_cattleCountRequired),
@@ -99,18 +99,52 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
                       );
                       return;
                     }
-                    if (lots.isEmpty) {
+                    if (_lots.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(l10n.cp_errors_noLots)),
+                        SnackBar(content: Text(l10n.cp_error_noLots)),
                       );
                       return;
                     }
                     // TODO: enviar compra
                   },
                   icon: const Icon(Icons.save),
-                  label: Text(l10n.cp_createPurchase),
+                  label: Text(l10n.purchase_create),
                 ),
               ),
+              const SizedBox(height: 24),
+              Text(
+                l10n.provider,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(height: 12),
+
+              /// Provider
+              ProviderInput(
+                onProviderSelected: (providerData) {
+                  setState(() {
+                    _selectedProvider = providerData;
+                  });
+                },
+              ),
+              const SizedBox(height: 16),
+
+              /// Purchase Date
+              Row(
+                children: [
+                  Text('${l10n.purchase_date}: '),
+                  TextButton.icon(
+                    icon: const Icon(Icons.calendar_today),
+                    label: Text(
+                      '${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}',
+                    ),
+                    onPressed: _selectDate,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+
+              /// Lots
+              LotsSection(onLotsChanged: _onLotsChanged),
             ],
           ),
         ),

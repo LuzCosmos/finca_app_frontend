@@ -4,9 +4,12 @@ import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/core/blocs/locale/locale_bloc.dart';
 import 'package:finca_app_frontend/core/utils/language.dart';
 import 'router/router.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:finca_app_frontend/core/theme/theme.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
   runApp(const MainApp());
 }
 
@@ -25,6 +28,7 @@ class MainApp extends StatelessWidget {
             locale: state.selectedLanguage.localeValue,
             supportedLocales: AppLocalizations.supportedLocales,
             localizationsDelegates: AppLocalizations.localizationsDelegates,
+            //theme: AppTheme.lightTheme,
             //home: const LoginPage(title: 'Finca App'),
             routerConfig: appRouter,
           );

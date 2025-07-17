@@ -1,16 +1,16 @@
 import './lot.dart';
 import './provider.dart';
 
-class Purchase {
-  final DateTime date;
+class PurchaseModel {
+  final DateTime purchaseDate;
   final ProviderModel provider;
   final List<LotModel> lots;
   final int totalCattle;
   final double totalWeight;
   final double totalValue;
 
-  Purchase({
-    required this.date,
+  PurchaseModel({
+    required this.purchaseDate,
     required this.provider,
     required this.lots,
     required this.totalCattle,

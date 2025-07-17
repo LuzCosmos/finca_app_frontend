@@ -5,6 +5,7 @@
 
   "fieldRequired":"Este campo es obligatorio",
   "delete": "Eliminar",
+  "fixErrors": "Por favor corrige los errores resaltados en rojo.",
 
   "login_username": "Usuario",
   "login_usernameRequired": "Ingrese su usuario",
@@ -22,28 +23,30 @@
   "home_massiveEvent": "Evento masivo",
   "home_sale": "Venta",
 
+  "purchase_date": "Fecha de Compra",
+  "purchase_dateRequired": "Debes seleccionar una fecha de compra.",
+  "purchase_create": "Crear Compra",
+  "purchase_saveSuccess": "Compra guardada exitosamente.",
+  "purchase_saveError": "Falló el guardado de compra.",
   "cattlePurchase": "Compra de Ganado",
-  "purchaseLotCountError": "La cantidad de reses en el lote debe ser mayor a 0.",
-  "cp_purchaseDate": "Fecha de Compra",
-  "cp_createPurchase": "Crear Compra",
   "cp_errors_noLots": "Debe agregar al menos un lote",
-  "cp_errors_cattleCountRequired": "La cantidad de ganado debe ser mayor a 0",
-  "purchase_provider_required": "Por favor seleccione un proveedor.",
-  "purchase_no_valid_lots": "At least one valid lot is required.",
-  "purchase_save_success": "Compra guardada exitosamente.",
-  "purchase_save_error": "Falló el guardado de compra.",
+  "cp_error_providerRequired": "Por favor seleccione o cree un proveedor.",
 
-  "cp_provider": "Proveedor",  
-  "cp_nit": "NIT",
-  "cp_createProvider": "Crear proveedor",
-  "cp_providerFound": "Proveedor encontrado y cargado.",
-  "cp_providerWillBeCreated": "Se creará un nuevo proveedor con este NIT.",
-  "cp_providerIsRequired":"El nombre del proveedor is requested",
-  "cp_nitIsRequired":"NIT is requested",
-  "cp_providerCreatedSuccessfully": "Proveedor creado exitosamente",
-  "cp_providerNitAlreadyExists": "Ya existe un proveedor con ese NIT",
-  "cp_providerCreationError": "Error al crear proveedor",
+  "provider": "Proveedor",  
+  "provider_nit": "NIT",
+  "provider_create": "Crear proveedor",
+  "provider_found": "Proveedor encontrado y cargado.",
+  "provider_willBeCreated": "Se creará un nuevo proveedor con este NIT.",
+  "provider_nameIsRequired":"El nombre del proveedor es requerido.",
+  "provider_nitIsRequired":"NIT es requerido.",
+  "provider_createdSuccessfully": "Proveedor creado exitosamente",
+  "provider_nitAlreadyExists": "Ya existe un proveedor con ese NIT",
+  "provider_creationError": "Error al crear proveedor",
   
+ "purchaseLotCountError": "La cantidad de reses en el lote debe ser mayor a 0.",
+ 
+  "cp_errors_cattleCountRequired": "La cantidad de ganado debe ser mayor a 0",
+
   "lotsTitle":"Lotes",
   "lot": "Lote",
   "addLot": "Agregar lote",
@@ -58,12 +61,14 @@
   "lot_totalWeight": "Peso Total",
   "lot_totalValue": "Valor Total",
 
-  "lot_cattleCountRequired": "Por favor ingrese la cantidad de reses",
-  "lot_totalWeightRequired": "Por favor ingrese el peso total",
+  "lot_numberRequired": "Por favor ingrese el número de lote.",
+  "lot_avgWeightRequired": "Por favor ingrese el peso promedio(Kg).",
   "lot_pricePerKiloRequired": "Por favor ingrese el precio por kilo",
-  "lot_cattleCountInvalid": "Ingrese una cantidad válida de reses",
-  "lot_totalWeightInvalid": "Ingrese un peso válido",
   "lot_pricePerKiloInvalid": "Ingrese un precio por kilo válido",
-  "lotRequired": "Por favor ingrese el número de lote"
+  "lot_cattleCountRequired": "Por favor ingrese la cantidad de reses en el lote.",
+  "lot_cattleCountInvalid": "La cantidad de reses en el lote debe ser mayor a 0.",
+  "lot_totalWeightRequired": "Por favor ingrese el peso total.",
+  "lot_totalWeightInvalid": "Ingrese un peso total válido",
+  "lot_countAvWeightPriceKgRequired": "Cada lote debe tener cantidad de reses, peso promedio y precio por kg mayor que cero."
   
 }

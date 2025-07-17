@@ -18,6 +18,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get delete => 'Delete';
 
   @override
+  String get fixErrors => 'Please fix the errors highlighted in red.';
+
+  @override
   String get login_username => 'Username';
 
   @override
@@ -62,68 +65,68 @@ class AppLocalizationsEn extends AppLocalizations {
   String get home_sale => 'Sale';
 
   @override
+  String get purchase_date => 'Purchase Date';
+
+  @override
+  String get purchase_dateRequired => 'You must select a purchase date.';
+
+  @override
+  String get purchase_create => 'Create Purchase';
+
+  @override
+  String get purchase_saveSuccess => 'Purchase saved successfully.';
+
+  @override
+  String get purchase_saveError => 'Failed to save purchase.';
+
+  @override
   String get cattlePurchase => 'Cattle Purchase';
+
+  @override
+  String get cp_error_noLots => 'At least one lot is required';
+
+  @override
+  String get cp_error_providerRequired => 'Please select or create a provider.';
+
+  @override
+  String get provider => 'Provider';
+
+  @override
+  String get provider_nit => 'NIT';
+
+  @override
+  String get provider_create => 'Create Provider';
+
+  @override
+  String get provider_found => 'Provider found and loaded.';
+
+  @override
+  String get provider_willBeCreated =>
+      'New provider will be created with this NIT.';
+
+  @override
+  String get provider_nameIsRequired => 'Provider name is requested';
+
+  @override
+  String get provider_nitIsRequired => 'NIT is requested';
+
+  @override
+  String get provider_createdSuccessfully => 'Provider created successfully';
+
+  @override
+  String get provider_nitAlreadyExists =>
+      'A provider with this NIT already exists';
+
+  @override
+  String get provider_creationError => 'Error creating provider';
 
   @override
   String get purchaseLotCountError =>
       'The cattle count must be greater than 0.';
 
   @override
-  String get cp_purchaseDate => 'Purchase Date';
-
-  @override
-  String get cp_createPurchase => 'Create Purchase';
-
-  @override
-  String get cp_errors_noLots => 'At least one lot is required';
-
-  @override
   String get cp_errors_cattleCountRequired =>
-      'Cattle quantity must be greater than 0';
-
-  @override
-  String get purchase_provider_required => 'Please select a provider.';
-
-  @override
-  String get purchase_no_valid_lots => 'At least one valid lot is required.';
-
-  @override
-  String get purchase_save_success => 'Purchase saved successfully.';
-
-  @override
-  String get purchase_save_error => 'Failed to save purchase.';
-
-  @override
-  String get cp_provider => 'Provider';
-
-  @override
-  String get cp_nit => 'NIT';
-
-  @override
-  String get cp_createProvider => 'Create Provider';
-
-  @override
-  String get cp_providerFound => 'Provider found and loaded.';
-
-  @override
-  String get cp_providerWillBeCreated =>
-      'New provider will be created with this NIT.';
-
-  @override
-  String get cp_providerIsRequired => 'Provider name is requested';
-
-  @override
-  String get cp_nitIsRequired => 'NIT is requested';
-
-  @override
-  String get cp_providerCreatedSuccessfully => 'Provider created successfully';
-
-  @override
-  String get cp_providerNitAlreadyExists =>
-      'A provider with this NIT already exists';
-
-  @override
-  String get cp_providerCreationError => 'Error creating provider';
+      'Cattle count must be greater than 0';
 
   @override
   String get lotsTitle => 'Lots';
@@ -165,23 +168,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get lot_totalValue => 'Total Value';
 
   @override
-  String get lot_cattleCountRequired => 'Please enter the number of cattle';
+  String get lot_numberRequired => 'Please enter the lot number.';
 
   @override
-  String get lot_totalWeightRequired => 'Please enter the total weight';
+  String get lot_avgWeightRequired => 'Please enter the average weight (Kg).';
 
   @override
   String get lot_pricePerKgRequired => 'Please enter the price per kilo';
 
   @override
+  String get lot_pricePerKgInvalid => 'Enter a valid price per kilo.';
+
+  @override
+  String get lot_cattleCountRequired => 'Please enter the cattle count.';
+
+  @override
   String get lot_cattleCountInvalid => 'Enter a valid cattle count';
 
   @override
-  String get lot_totalWeightInvalid => 'Enter a valid weight';
+  String get lot_totalWeightRequired => 'Please enter the total weight.';
 
   @override
-  String get lot_pricePerKgInvalid => 'Enter a valid price per kilo';
+  String get lot_totalWeightInvalid => 'Enter a valid total weight';
 
   @override
-  String get lotRequired => 'Please enter the lot number';
+  String get lot_countAvWeightPriceKgRequired =>
+      'Each lot must have cattle count, average weight and price per kg greater than zero.';
 }

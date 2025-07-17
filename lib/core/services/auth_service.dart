@@ -2,11 +2,12 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/user_model.dart';
 import 'auth_exception.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class AuthService {
   final http.Client client;
   AuthService({http.Client? client}) : client = client ?? http.Client();
-  static const String _baseUrl = 'http://localhost:3000/api/v1/auth/login';
+  static final String _baseUrl = '${dotenv.env['API_BASE_URL']}/auth/login';
 
   Future<Map<String, dynamic>> login({
     required String username,

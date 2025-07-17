@@ -55,6 +55,6 @@ build/
 xcuserdata/
 *.xcsettings
 
-
+.env
 aux/
 doc_/

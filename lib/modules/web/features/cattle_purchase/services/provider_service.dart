@@ -3,15 +3,15 @@ import 'package:http/http.dart' as http;
 import '../../../../../core/services/session_service.dart';
 import '../models/provider.dart';
 import '../../../../../core/services/exceptions.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import '../../../../../core/utils/logger.dart';
 
 class ProviderService {
-  final String baseUrl;
-
-  ProviderService({this.baseUrl = 'http://localhost:3000/api/v1'});
+  final String baseUrl = '${dotenv.env['API_BASE_URL']}/providers';
 
   Future<List<ProviderModel>> searchByNit(String query) async {
     final token = await SessionService.getToken();
-    final url = Uri.parse('$baseUrl/providers/search/by-nit?query=$query');
+    final url = Uri.parse('$baseUrl/search/by-nit?query=$query');
     final response = await http.get(
       url,
       headers: {
@@ -21,7 +21,9 @@ class ProviderService {
     );
     if (response.statusCode == 200) {
       final List list = jsonDecode(response.body);
-      return list.map((item) => ProviderModel.fromJson(item)).toList();
+      final List<ProviderModel> providers =
+          list.map((item) => ProviderModel.fromJson(item)).toList();
+      return providers;
     } else {
       throw Exception('Failed to load providers');
       //throw Exception('Error searching providers: ${response.body}');
@@ -33,7 +35,7 @@ class ProviderService {
     required String nit,
   }) async {
     final token = await SessionService.getToken();
-    final url = Uri.parse('$baseUrl/providers');
+    final url = Uri.parse(baseUrl);
     final response = await http.post(
       url,
       headers: {

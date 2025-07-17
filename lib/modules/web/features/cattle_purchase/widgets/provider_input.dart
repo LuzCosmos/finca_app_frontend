@@ -43,10 +43,9 @@ class _ProviderInputState extends State<ProviderInput> {
       _providerExists = true;
       _cachedSuggestions.add(created);
       widget.onProviderSelected(_selectedProvider!);
-
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.cp_providerCreatedSuccessfully)),
+          SnackBar(content: Text(l10n.provider_createdSuccessfully)),
         );
       }
     } catch (e) {
@@ -55,11 +54,11 @@ class _ProviderInputState extends State<ProviderInput> {
         if (e is ProviderCreationException) {
           final l10n = AppLocalizations.of(context)!;
           message = switch (e.message) {
-            'providerCreationDuplicateNit' => l10n.cp_providerNitAlreadyExists,
-            _ => l10n.cp_providerCreationError,
+            'providerCreationDuplicateNit' => l10n.provider_nitAlreadyExists,
+            _ => l10n.provider_creationError,
           };
         } else {
-          message = l10n.cp_providerCreationError;
+          message = l10n.provider_creationError;
         }
         ScaffoldMessenger.of(
           context,
@@ -85,16 +84,13 @@ class _ProviderInputState extends State<ProviderInput> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(l10n.cp_provider, style: Theme.of(context).textTheme.titleMedium),
-        const SizedBox(height: 12),
         Row(
           children: [
             Flexible(
               flex: 2,
               child: RawAutocomplete<ProviderModel>(
                 optionsBuilder: (TextEditingValue textEditingValue) {
-                  _enteredNit = textEditingValue.text;
-                  if (_enteredNit.length < 3) {
+                  if (textEditingValue.text.length < 3) {
                     return Future.value([]);
                   }
                   final completer = Completer<List<ProviderModel>>();
@@ -103,7 +99,9 @@ class _ProviderInputState extends State<ProviderInput> {
                     const Duration(milliseconds: 1000),
                     () async {
                       try {
-                        final results = await _service.searchByNit(_enteredNit);
+                        final results = await _service.searchByNit(
+                          textEditingValue.text,
+                        );
                         _cachedSuggestions = results;
                         if (!completer.isCompleted) completer.complete(results);
                       } catch (_) {
@@ -137,7 +135,7 @@ class _ProviderInputState extends State<ProviderInput> {
                     controller: controller,
                     focusNode: focusNode,
                     decoration: InputDecoration(
-                      labelText: l10n.cp_nit,
+                      labelText: l10n.provider_nit,
                       suffixIcon:
                           _isLoading
                               ? const Padding(
@@ -156,7 +154,7 @@ class _ProviderInputState extends State<ProviderInput> {
                     validator:
                         (val) =>
                             val == null || val.isEmpty
-                                ? l10n.cp_nitIsRequired
+                                ? l10n.provider_nitIsRequired
                                 : null,
                   );
                 },
@@ -196,23 +194,25 @@ class _ProviderInputState extends State<ProviderInput> {
               flex: 4,
               child: TextFormField(
                 controller: _nameController,
-                decoration: InputDecoration(labelText: l10n.cp_provider),
+                decoration: InputDecoration(labelText: l10n.provider),
                 enabled: !_providerExists,
                 validator:
                     (val) =>
                         val == null || val.isEmpty
-                            ? l10n.cp_providerIsRequired
+                            ? l10n.cp_error_providerRequired
                             : null,
               ),
             ),
           ],
         ),
+
         const SizedBox(height: 8),
+
         if (!_providerExists && _enteredNit.isNotEmpty && !_isLoading)
           ElevatedButton.icon(
             onPressed: () => _createProviderIfNeeded(context),
             icon: const Icon(Icons.add),
-            label: Text(l10n.cp_createProvider),
+            label: Text(l10n.provider_create),
           ),
       ],
     );

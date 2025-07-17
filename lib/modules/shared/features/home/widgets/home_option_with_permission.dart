@@ -37,7 +37,7 @@ class HomeOptionWithPermission extends StatelessWidget {
         return HomeOptionCard(
           title: title,
           icon: icon,
-          onTap: () => context.push(route),
+          onTap: () => {context.go(route), context.push(route)},
         );
       },
     );

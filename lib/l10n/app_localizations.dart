@@ -116,6 +116,12 @@ abstract class AppLocalizations {
   /// **'Delete'**
   String get delete;
 
+  /// No description provided for @fixErrors.
+  ///
+  /// In en, this message translates to:
+  /// **'Please fix the errors highlighted in red.'**
+  String get fixErrors;
+
   /// No description provided for @login_username.
   ///
   /// In en, this message translates to:
@@ -200,11 +206,113 @@ abstract class AppLocalizations {
   /// **'Sale'**
   String get home_sale;
 
+  /// No description provided for @purchase_date.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase Date'**
+  String get purchase_date;
+
+  /// No description provided for @purchase_dateRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'You must select a purchase date.'**
+  String get purchase_dateRequired;
+
+  /// No description provided for @purchase_create.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Purchase'**
+  String get purchase_create;
+
+  /// No description provided for @purchase_saveSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase saved successfully.'**
+  String get purchase_saveSuccess;
+
+  /// No description provided for @purchase_saveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save purchase.'**
+  String get purchase_saveError;
+
   /// No description provided for @cattlePurchase.
   ///
   /// In en, this message translates to:
   /// **'Cattle Purchase'**
   String get cattlePurchase;
+
+  /// No description provided for @cp_error_noLots.
+  ///
+  /// In en, this message translates to:
+  /// **'At least one lot is required'**
+  String get cp_error_noLots;
+
+  /// No description provided for @cp_error_providerRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select or create a provider.'**
+  String get cp_error_providerRequired;
+
+  /// No description provided for @provider.
+  ///
+  /// In en, this message translates to:
+  /// **'Provider'**
+  String get provider;
+
+  /// No description provided for @provider_nit.
+  ///
+  /// In en, this message translates to:
+  /// **'NIT'**
+  String get provider_nit;
+
+  /// No description provided for @provider_create.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Provider'**
+  String get provider_create;
+
+  /// No description provided for @provider_found.
+  ///
+  /// In en, this message translates to:
+  /// **'Provider found and loaded.'**
+  String get provider_found;
+
+  /// No description provided for @provider_willBeCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'New provider will be created with this NIT.'**
+  String get provider_willBeCreated;
+
+  /// No description provided for @provider_nameIsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Provider name is requested'**
+  String get provider_nameIsRequired;
+
+  /// No description provided for @provider_nitIsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'NIT is requested'**
+  String get provider_nitIsRequired;
+
+  /// No description provided for @provider_createdSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Provider created successfully'**
+  String get provider_createdSuccessfully;
+
+  /// No description provided for @provider_nitAlreadyExists.
+  ///
+  /// In en, this message translates to:
+  /// **'A provider with this NIT already exists'**
+  String get provider_nitAlreadyExists;
+
+  /// No description provided for @provider_creationError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error creating provider'**
+  String get provider_creationError;
 
   /// No description provided for @purchaseLotCountError.
   ///
@@ -212,113 +320,11 @@ abstract class AppLocalizations {
   /// **'The cattle count must be greater than 0.'**
   String get purchaseLotCountError;
 
-  /// No description provided for @cp_purchaseDate.
-  ///
-  /// In en, this message translates to:
-  /// **'Purchase Date'**
-  String get cp_purchaseDate;
-
-  /// No description provided for @cp_createPurchase.
-  ///
-  /// In en, this message translates to:
-  /// **'Create Purchase'**
-  String get cp_createPurchase;
-
-  /// No description provided for @cp_errors_noLots.
-  ///
-  /// In en, this message translates to:
-  /// **'At least one lot is required'**
-  String get cp_errors_noLots;
-
   /// No description provided for @cp_errors_cattleCountRequired.
   ///
   /// In en, this message translates to:
-  /// **'Cattle quantity must be greater than 0'**
+  /// **'Cattle count must be greater than 0'**
   String get cp_errors_cattleCountRequired;
-
-  /// No description provided for @purchase_provider_required.
-  ///
-  /// In en, this message translates to:
-  /// **'Please select a provider.'**
-  String get purchase_provider_required;
-
-  /// No description provided for @purchase_no_valid_lots.
-  ///
-  /// In en, this message translates to:
-  /// **'At least one valid lot is required.'**
-  String get purchase_no_valid_lots;
-
-  /// No description provided for @purchase_save_success.
-  ///
-  /// In en, this message translates to:
-  /// **'Purchase saved successfully.'**
-  String get purchase_save_success;
-
-  /// No description provided for @purchase_save_error.
-  ///
-  /// In en, this message translates to:
-  /// **'Failed to save purchase.'**
-  String get purchase_save_error;
-
-  /// No description provided for @cp_provider.
-  ///
-  /// In en, this message translates to:
-  /// **'Provider'**
-  String get cp_provider;
-
-  /// No description provided for @cp_nit.
-  ///
-  /// In en, this message translates to:
-  /// **'NIT'**
-  String get cp_nit;
-
-  /// No description provided for @cp_createProvider.
-  ///
-  /// In en, this message translates to:
-  /// **'Create Provider'**
-  String get cp_createProvider;
-
-  /// No description provided for @cp_providerFound.
-  ///
-  /// In en, this message translates to:
-  /// **'Provider found and loaded.'**
-  String get cp_providerFound;
-
-  /// No description provided for @cp_providerWillBeCreated.
-  ///
-  /// In en, this message translates to:
-  /// **'New provider will be created with this NIT.'**
-  String get cp_providerWillBeCreated;
-
-  /// No description provided for @cp_providerIsRequired.
-  ///
-  /// In en, this message translates to:
-  /// **'Provider name is requested'**
-  String get cp_providerIsRequired;
-
-  /// No description provided for @cp_nitIsRequired.
-  ///
-  /// In en, this message translates to:
-  /// **'NIT is requested'**
-  String get cp_nitIsRequired;
-
-  /// No description provided for @cp_providerCreatedSuccessfully.
-  ///
-  /// In en, this message translates to:
-  /// **'Provider created successfully'**
-  String get cp_providerCreatedSuccessfully;
-
-  /// No description provided for @cp_providerNitAlreadyExists.
-  ///
-  /// In en, this message translates to:
-  /// **'A provider with this NIT already exists'**
-  String get cp_providerNitAlreadyExists;
-
-  /// No description provided for @cp_providerCreationError.
-  ///
-  /// In en, this message translates to:
-  /// **'Error creating provider'**
-  String get cp_providerCreationError;
 
   /// No description provided for @lotsTitle.
   ///
@@ -398,17 +404,17 @@ abstract class AppLocalizations {
   /// **'Total Value'**
   String get lot_totalValue;
 
-  /// No description provided for @lot_cattleCountRequired.
+  /// No description provided for @lot_numberRequired.
   ///
   /// In en, this message translates to:
-  /// **'Please enter the number of cattle'**
-  String get lot_cattleCountRequired;
+  /// **'Please enter the lot number.'**
+  String get lot_numberRequired;
 
-  /// No description provided for @lot_totalWeightRequired.
+  /// No description provided for @lot_avgWeightRequired.
   ///
   /// In en, this message translates to:
-  /// **'Please enter the total weight'**
-  String get lot_totalWeightRequired;
+  /// **'Please enter the average weight (Kg).'**
+  String get lot_avgWeightRequired;
 
   /// No description provided for @lot_pricePerKgRequired.
   ///
@@ -416,29 +422,41 @@ abstract class AppLocalizations {
   /// **'Please enter the price per kilo'**
   String get lot_pricePerKgRequired;
 
+  /// No description provided for @lot_pricePerKgInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid price per kilo.'**
+  String get lot_pricePerKgInvalid;
+
+  /// No description provided for @lot_cattleCountRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter the cattle count.'**
+  String get lot_cattleCountRequired;
+
   /// No description provided for @lot_cattleCountInvalid.
   ///
   /// In en, this message translates to:
   /// **'Enter a valid cattle count'**
   String get lot_cattleCountInvalid;
 
+  /// No description provided for @lot_totalWeightRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter the total weight.'**
+  String get lot_totalWeightRequired;
+
   /// No description provided for @lot_totalWeightInvalid.
   ///
   /// In en, this message translates to:
-  /// **'Enter a valid weight'**
+  /// **'Enter a valid total weight'**
   String get lot_totalWeightInvalid;
 
-  /// No description provided for @lot_pricePerKgInvalid.
+  /// No description provided for @lot_countAvWeightPriceKgRequired.
   ///
   /// In en, this message translates to:
-  /// **'Enter a valid price per kilo'**
-  String get lot_pricePerKgInvalid;
-
-  /// No description provided for @lotRequired.
-  ///
-  /// In en, this message translates to:
-  /// **'Please enter the lot number'**
-  String get lotRequired;
+  /// **'Each lot must have cattle count, average weight and price per kg greater than zero.'**
+  String get lot_countAvWeightPriceKgRequired;
 }
 
 class _AppLocalizationsDelegate
