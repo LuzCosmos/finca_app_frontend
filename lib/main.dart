@@ -28,7 +28,7 @@ class MainApp extends StatelessWidget {
             locale: state.selectedLanguage.localeValue,
             supportedLocales: AppLocalizations.supportedLocales,
             localizationsDelegates: AppLocalizations.localizationsDelegates,
-            //theme: AppTheme.lightTheme,
+            theme: AppTheme.lightTheme,
             //home: const LoginPage(title: 'Finca App'),
             routerConfig: appRouter,
           );

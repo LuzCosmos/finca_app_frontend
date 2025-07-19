@@ -9,7 +9,7 @@ class LotModel {
   final int cattleCount;
   final double totalWeight;
   final double totalValue;
-  bool? isValid;
+  bool isValid;
 
   LotModel({
     this.id,
@@ -22,10 +22,10 @@ class LotModel {
     required this.totalWeight,
     required this.pricePerKg,
     required this.totalValue,
-    this.isValid,
+    this.isValid = true,
   });
 
-  setIsValid(bool isValid) {
+  bool isValidFields({bool isValid = true}) {
     bool isValidFields =
         lotNumber.isNotEmpty &&
         origin.isNotEmpty &&
@@ -36,21 +36,11 @@ class LotModel {
         totalWeight > 0 &&
         pricePerKg > 0 &&
         totalValue > 0;
-    this.isValid = isValidFields && isValid;
+    setIsValid(isValidFields && isValid);
+    return isValidFields && isValid;
   }
 
-  static bool validateList(List<LotModel> lots) {
-    List<String> existingLotNumbers = [];
-    bool isValidList = true;
-    for (var lot in lots) {
-      if (existingLotNumbers.contains(lot.lotNumber)) {
-        lot.setIsValid(false);
-        isValidList = false;
-      } else {
-        existingLotNumbers.add(lot.lotNumber);
-        lot.setIsValid(true);
-      }
-    }
-    return isValidList;
+  setIsValid(bool isValid) {
+    this.isValid = isValid;
   }
 }

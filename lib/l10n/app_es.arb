@@ -6,6 +6,8 @@
   "fieldRequired":"Este campo es obligatorio",
   "delete": "Eliminar",
   "fixErrors": "Por favor corrige los errores resaltados en rojo.",
+  "numberFormat":"#,##0.##",
+  "numberFormat_country":"es_CO",
 
   "login_username": "Usuario",
   "login_usernameRequired": "Ingrese su usuario",
@@ -62,7 +64,9 @@
   "lot_totalValue": "Valor Total",
 
   "lot_numberRequired": "Por favor ingrese el número de lote.",
+  "lot_duplicateLotNumber": "Dos o más lotes tienen el mismo número de lote.",
   "lot_avgWeightRequired": "Por favor ingrese el peso promedio(Kg).",
+  "lot_avgWeightInvalid": "El peso promedio debe ser mayor a 0.",
   "lot_pricePerKiloRequired": "Por favor ingrese el precio por kilo",
   "lot_pricePerKiloInvalid": "Ingrese un precio por kilo válido",
   "lot_cattleCountRequired": "Por favor ingrese la cantidad de reses en el lote.",

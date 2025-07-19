@@ -21,6 +21,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fixErrors => 'Please fix the errors highlighted in red.';
 
   @override
+  String get numberFormat => '#,##0.##';
+
+  @override
+  String get numberFormat_country => 'en_US';
+
+  @override
   String get login_username => 'Username';
 
   @override
@@ -125,10 +131,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'The cattle count must be greater than 0.';
 
   @override
-  String get cp_errors_cattleCountRequired =>
-      'Cattle count must be greater than 0';
-
-  @override
   String get lotsTitle => 'Lots';
 
   @override
@@ -171,7 +173,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get lot_numberRequired => 'Please enter the lot number.';
 
   @override
+  String get lot_duplicateLotNumber =>
+      'Dos o más lotes tienen el mismo número de lote.';
+
+  @override
   String get lot_avgWeightRequired => 'Please enter the average weight (Kg).';
+
+  @override
+  String get lot_avgWeightInvalid =>
+      'Enter a valid average weight, it must be greater than zero';
 
   @override
   String get lot_pricePerKgRequired => 'Please enter the price per kilo';
@@ -183,7 +193,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get lot_cattleCountRequired => 'Please enter the cattle count.';
 
   @override
-  String get lot_cattleCountInvalid => 'Enter a valid cattle count';
+  String get lot_cattleCountInvalid =>
+      'Enter a valid cattle count, it must be greater than zero';
 
   @override
   String get lot_totalWeightRequired => 'Please enter the total weight.';

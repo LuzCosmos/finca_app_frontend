@@ -21,6 +21,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get fixErrors => 'Por favor corrige los errores resaltados en rojo.';
 
   @override
+  String get numberFormat => '#,##0.##';
+
+  @override
+  String get numberFormat_country => 'es_CO';
+
+  @override
   String get login_username => 'Usuario';
 
   @override
@@ -126,10 +132,6 @@ class AppLocalizationsEs extends AppLocalizations {
       'La cantidad de reses en el lote debe ser mayor a 0.';
 
   @override
-  String get cp_errors_cattleCountRequired =>
-      'La cantidad de ganado debe ser mayor a 0';
-
-  @override
   String get lotsTitle => 'Lotes';
 
   @override
@@ -172,7 +174,14 @@ class AppLocalizationsEs extends AppLocalizations {
   String get lot_numberRequired => 'Por favor ingrese el número de lote.';
 
   @override
+  String get lot_duplicateLotNumber =>
+      'Dos o más lotes tienen el mismo número de lote.';
+
+  @override
   String get lot_avgWeightRequired => 'Por favor ingrese el peso promedio(Kg).';
+
+  @override
+  String get lot_avgWeightInvalid => 'El peso promedio debe ser mayor a 0.';
 
   @override
   String get lot_pricePerKgRequired => 'Please enter the price per kilo';

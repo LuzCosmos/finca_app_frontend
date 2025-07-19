@@ -122,6 +122,18 @@ abstract class AppLocalizations {
   /// **'Please fix the errors highlighted in red.'**
   String get fixErrors;
 
+  /// No description provided for @numberFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'#,##0.##'**
+  String get numberFormat;
+
+  /// No description provided for @numberFormat_country.
+  ///
+  /// In en, this message translates to:
+  /// **'en_US'**
+  String get numberFormat_country;
+
   /// No description provided for @login_username.
   ///
   /// In en, this message translates to:
@@ -320,12 +332,6 @@ abstract class AppLocalizations {
   /// **'The cattle count must be greater than 0.'**
   String get purchaseLotCountError;
 
-  /// No description provided for @cp_errors_cattleCountRequired.
-  ///
-  /// In en, this message translates to:
-  /// **'Cattle count must be greater than 0'**
-  String get cp_errors_cattleCountRequired;
-
   /// No description provided for @lotsTitle.
   ///
   /// In en, this message translates to:
@@ -410,11 +416,23 @@ abstract class AppLocalizations {
   /// **'Please enter the lot number.'**
   String get lot_numberRequired;
 
+  /// No description provided for @lot_duplicateLotNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Dos o más lotes tienen el mismo número de lote.'**
+  String get lot_duplicateLotNumber;
+
   /// No description provided for @lot_avgWeightRequired.
   ///
   /// In en, this message translates to:
   /// **'Please enter the average weight (Kg).'**
   String get lot_avgWeightRequired;
+
+  /// No description provided for @lot_avgWeightInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid average weight, it must be greater than zero'**
+  String get lot_avgWeightInvalid;
 
   /// No description provided for @lot_pricePerKgRequired.
   ///
@@ -437,7 +455,7 @@ abstract class AppLocalizations {
   /// No description provided for @lot_cattleCountInvalid.
   ///
   /// In en, this message translates to:
-  /// **'Enter a valid cattle count'**
+  /// **'Enter a valid cattle count, it must be greater than zero'**
   String get lot_cattleCountInvalid;
 
   /// No description provided for @lot_totalWeightRequired.

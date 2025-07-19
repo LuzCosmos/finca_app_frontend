@@ -24,6 +24,11 @@ class AppTheme {
       backgroundColor: Color(0xFF7CA77C), // Verde más suave para AppBar
       foregroundColor: Colors.white, // Texto e íconos en AppBar
       centerTitle: true,
+      titleTextStyle: TextStyle(
+        fontSize: 38,
+        //fontWeight: FontWeight.bold,
+        color: Colors.white,
+      ),
       elevation: 0,
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
@@ -46,17 +51,17 @@ class AppTheme {
       ),
     ),
     inputDecorationTheme: InputDecorationTheme(
-      filled: true,
-      fillColor: const Color(0xFFF0F5F0),
-      border: OutlineInputBorder(
+      filled: false,
+      //fillColor: const Color(0xFFF0F5F0),
+      /*border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
         borderSide: const BorderSide(color: Color(0xFFB5D6B4)),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
         borderSide: const BorderSide(color: Color(0xFF7CA77C), width: 2),
-      ),
-      labelStyle: const TextStyle(color: Color(0xFF374137)),
+      ),*/
+      floatingLabelStyle: const TextStyle(color: Color(0xFF374137)),
     ),
   );
 }
@@ -108,7 +113,7 @@ class AppThemeDark {
         borderRadius: BorderRadius.circular(8),
         borderSide: const BorderSide(color: Color(0xFF6CA36C), width: 2),
       ),
-      labelStyle: const TextStyle(color: Color(0xFF374137)),
+      floatingLabelStyle: const TextStyle(color: Color(0xFF374137)),
     ),
   );
 }

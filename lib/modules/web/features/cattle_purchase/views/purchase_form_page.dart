@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
-import '../../../../shared/features/auth/widgets/finca_scaffold.dart';
+import '../../../../shared/widgets/finca_scaffold.dart';
 import '../widgets/provider_input.dart';
 import '../widgets/lots_section.dart';
 import '../models/provider.dart';
 import '../models/lot.dart';
+import '../../../../shared/widgets/message_banner.dart';
+import 'package:logger/logger.dart';
 
 class PurchaseFormPage extends StatefulWidget {
   const PurchaseFormPage({super.key});
@@ -18,8 +20,12 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
   ProviderModel? _selectedProvider;
   DateTime _selectedDate = DateTime.now();
   List<LotModel> _lots = [];
+  String? _globalErrorMessage;
+  final GlobalKey<LotsSectionState> _lotsSectionKey =
+      GlobalKey<LotsSectionState>();
 
   void _selectDate() async {
+    _globalErrorMessage = null;
     final picked = await showDatePicker(
       context: context,
       initialDate: _selectedDate,
@@ -34,6 +40,7 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
   }
 
   void _onLotsChanged(List<LotModel> updatedLots) {
+    _globalErrorMessage = null;
     setState(() {
       _lots = updatedLots;
     });
@@ -41,35 +48,30 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
 
   void _onSubmit() {
     final l10n = AppLocalizations.of(context)!;
-    if (!_formKey.currentState!.validate()) {
-      _showError(l10n.fixErrors);
+    if (!_formKey.currentState!.validate()) return;
+    if (_selectedDate == null) {
+      _showError(l10n.purchase_dateRequired);
       return;
     }
     if (_selectedProvider == null) {
       _showError(l10n.cp_error_providerRequired);
       return;
     }
-    if (_selectedDate == null) {
-      _showError(l10n.purchase_dateRequired);
-      return;
-    }
     if (_lots.isEmpty) {
       _showError(l10n.cp_error_noLots);
       return;
     }
-    for (final lot in _lots) {
-      if (lot.cattleCount <= 0 || lot.avgWeight <= 0 || lot.pricePerKg <= 0) {
-        _showError(l10n.lot_countAvWeightPriceKgRequired);
-        return;
-      }
+    if (!_lotsSectionKey.currentState!.validateDuplicatedLotNumbers(context)) {
+      _showError(l10n.lot_duplicateLotNumber);
+      return;
     }
-    // TODO: Llamar a tu servicio de guardado aquí con _selectedProvider, _selectedDate y _lots
+    Logger().d('submit');
   }
 
   void _showError(String message) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+    setState(() {
+      _globalErrorMessage = message;
+    });
   }
 
   @override
@@ -85,28 +87,14 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              if (_globalErrorMessage != null)
+                MessageBanner.error(_globalErrorMessage!),
+
               /// Save Button
               Align(
                 alignment: Alignment.centerRight,
                 child: ElevatedButton.icon(
-                  onPressed: () {
-                    if (!_formKey.currentState!.validate()) return;
-                    if (_selectedProvider == null) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(l10n.cp_errors_cattleCountRequired),
-                        ),
-                      );
-                      return;
-                    }
-                    if (_lots.isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(l10n.cp_error_noLots)),
-                      );
-                      return;
-                    }
-                    // TODO: enviar compra
-                  },
+                  onPressed: _onSubmit,
                   icon: const Icon(Icons.save),
                   label: Text(l10n.purchase_create),
                 ),
@@ -144,7 +132,7 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
               const SizedBox(height: 24),
 
               /// Lots
-              LotsSection(onLotsChanged: _onLotsChanged),
+              LotsSection(key: _lotsSectionKey, onLotsChanged: _onLotsChanged),
             ],
           ),
         ),

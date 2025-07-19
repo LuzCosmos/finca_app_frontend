@@ -6,6 +6,8 @@
   "fieldRequired":"This field is mandatory",
   "delete": "Delete",
   "fixErrors": "Please fix the errors highlighted in red.",
+  "numberFormat":"#,##0.##",
+  "numberFormat_country":"en_US",
 
   "login_username": "Username",
   "login_usernameRequired": "Please enter your username",
@@ -47,7 +49,7 @@
 
   "purchaseLotCountError": "The cattle count must be greater than 0.",
   
-  "cp_errors_cattleCountRequired": "Cattle count must be greater than 0",
+
 
 
   "lotsTitle":"Lots",
@@ -65,11 +67,13 @@
   "lot_totalValue": "Total Value",
 
   "lot_numberRequired": "Please enter the lot number.",
+  "lot_duplicateLotNumber": "Dos o más lotes tienen el mismo número de lote.",
   "lot_avgWeightRequired": "Please enter the average weight (Kg).",
+  "lot_avgWeightInvalid": "Enter a valid average weight, it must be greater than zero",
   "lot_pricePerKgRequired": "Please enter the price per kilo",
   "lot_pricePerKgInvalid": "Enter a valid price per kilo.",
   "lot_cattleCountRequired": "Please enter the cattle count.",
-  "lot_cattleCountInvalid": "Enter a valid cattle count",
+  "lot_cattleCountInvalid": "Enter a valid cattle count, it must be greater than zero",
   "lot_totalWeightRequired": "Please enter the total weight.",
   "lot_totalWeightInvalid": "Enter a valid total weight",
   "lot_countAvWeightPriceKgRequired":"Each lot must have cattle count, average weight and price per kg greater than zero."

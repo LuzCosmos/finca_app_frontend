@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import '../models/lot.dart';
 import 'lot_input.dart';
+import 'package:intl/intl.dart';
 
 class LotsSection extends StatefulWidget {
   final void Function(List<LotModel>) onLotsChanged;
@@ -9,11 +10,18 @@ class LotsSection extends StatefulWidget {
   const LotsSection({super.key, required this.onLotsChanged});
 
   @override
-  State<LotsSection> createState() => _LotsSectionState();
+  State<LotsSection> createState() => LotsSectionState();
 }
 
-class _LotsSectionState extends State<LotsSection> {
+class LotsSectionState extends State<LotsSection> {
   final List<GlobalKey<LotInputState>> _lotKeys = [];
+  final ScrollController _horizontalScrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _horizontalScrollController.dispose();
+    super.dispose();
+  }
 
   void _addLot() {
     setState(() {
@@ -34,8 +42,20 @@ class _LotsSectionState extends State<LotsSection> {
             .map((key) => key.currentState?.getLotOrNull())
             .whereType<LotModel>()
             .toList();
-
     widget.onLotsChanged(lots);
+  }
+
+  bool validateDuplicatedLotNumbers(BuildContext context) {
+    final seenLotNumbers = <String>{};
+    for (final key in _lotKeys) {
+      final lot = key.currentState?.getLotOrNull();
+      if (lot == null) continue;
+      if (seenLotNumbers.contains(lot.lotNumber)) {
+        return false;
+      }
+      seenLotNumbers.add(lot.lotNumber);
+    }
+    return true;
   }
 
   @override
@@ -46,11 +66,14 @@ class _LotsSectionState extends State<LotsSection> {
             .map((key) => key.currentState?.getLotOrNull())
             .whereType<LotModel>()
             .toList();
-
     final totalCattle = lots.fold<int>(0, (sum, l) => sum + l.cattleCount);
-    final totalWeight = lots.fold<double>(0, (sum, l) => sum + l.totalWeight);
-    final totalValue = lots.fold<double>(0, (sum, l) => sum + l.totalValue);
-
+    final rawTotalWeight = lots.fold<double>(
+      0,
+      (sum, l) => sum + l.totalWeight,
+    );
+    final rawTotalValue = lots.fold<double>(0, (sum, l) => sum + l.totalValue);
+    final totalWeight = double.parse(rawTotalWeight.toStringAsFixed(2));
+    final totalValue = double.parse(rawTotalValue.toStringAsFixed(2));
     final avgWeight = lots.isEmpty ? 0 : totalWeight / totalCattle;
     final avgPrice =
         lots.isEmpty
@@ -72,29 +95,43 @@ class _LotsSectionState extends State<LotsSection> {
           ],
         ),
         const SizedBox(height: 8),
-        _buildHeaderRow(l10n),
-        const SizedBox(height: 8),
-        ..._lotKeys.asMap().entries.map((entry) {
-          final index = entry.key;
-          final key = entry.value;
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4.0),
-            child: LotInput(
-              key: key,
-              onChanged: (_) => _notifyChange(),
-              onRemove: () => _removeLot(index),
+        Scrollbar(
+          //thumbVisibility: true,
+          trackVisibility: true,
+          controller: _horizontalScrollController,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            controller: _horizontalScrollController,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildHeaderRow(l10n),
+                const SizedBox(height: 8),
+                ..._lotKeys.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final key = entry.value;
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: LotInput(
+                      key: key,
+                      onChanged: (_) => _notifyChange(),
+                      onRemove: () => _removeLot(index),
+                    ),
+                  );
+                }),
+                const SizedBox(height: 4),
+                //const Divider(),
+                _buildSummaryRow(
+                  l10n,
+                  avgWeight.toDouble(),
+                  avgPrice.toDouble(),
+                  totalCattle,
+                  totalWeight,
+                  totalValue,
+                ),
+              ],
             ),
-          );
-        }),
-        const SizedBox(height: 16),
-        const Divider(),
-        _buildSummaryRow(
-          l10n,
-          avgWeight.toDouble(),
-          avgPrice.toDouble(),
-          totalCattle,
-          totalWeight,
-          totalValue,
+          ),
         ),
       ],
     );
@@ -126,13 +163,19 @@ class _LotsSectionState extends State<LotsSection> {
     double totalWeight,
     double totalValue,
   ) {
+    final l10n = AppLocalizations.of(context)!;
+    final numberFormat = NumberFormat(
+      l10n.numberFormat,
+      l10n.numberFormat_country,
+    );
     return Column(
       children: [
         Row(
           children: [
-            const _HeaderCell(label: 'Promedio', width: 374),
-            _ValueCell(value: avgWeight.toStringAsFixed(0), width: 110),
-            _ValueCell(value: avgPrice.toStringAsFixed(0), width: 100),
+            const _HeaderCell(label: '', width: 288),
+            const _HeaderCell(label: 'Promedio', width: 80),
+            _ValueCell(value: numberFormat.format(avgWeight), width: 110),
+            _ValueCell(value: numberFormat.format(avgPrice), width: 100),
             const _HeaderCell(label: '', width: 80),
             const _HeaderCell(label: '', width: 90),
             const _HeaderCell(label: '', width: 120),
@@ -141,12 +184,13 @@ class _LotsSectionState extends State<LotsSection> {
         ),
         Row(
           children: [
-            const _HeaderCell(label: 'Total', width: 374),
+            const _HeaderCell(label: '', width: 288),
+            const _HeaderCell(label: 'Total', width: 80),
             const _HeaderCell(label: '', width: 110),
             const _HeaderCell(label: '', width: 100),
-            _ValueCell(value: totalCattle.toString(), width: 80),
-            _ValueCell(value: totalWeight.toStringAsFixed(0), width: 90),
-            //_ValueCell(value: totalValue.toStringAsFixed(0), width: 120),
+            _ValueCell(value: numberFormat.format(totalCattle), width: 80),
+            _ValueCell(value: numberFormat.format(totalWeight), width: 90),
+            //_ValueCell(value: numberFormat.format(totalValue), width: 120),
             const _HeaderCell(label: '', width: 120),
             const SizedBox(width: 23),
           ],
@@ -159,7 +203,6 @@ class _LotsSectionState extends State<LotsSection> {
 class _HeaderCell extends StatelessWidget {
   final String label;
   final double width;
-
   const _HeaderCell({required this.label, this.width = 100});
 
   @override
