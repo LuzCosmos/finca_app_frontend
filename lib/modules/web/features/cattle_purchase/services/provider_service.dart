@@ -4,7 +4,6 @@ import '../../../../../core/services/session_service.dart';
 import '../models/provider.dart';
 import '../../../../../core/services/exceptions.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import '../../../../../core/utils/logger.dart';
 
 class ProviderService {
   final String baseUrl = '${dotenv.env['API_BASE_URL']}/providers';

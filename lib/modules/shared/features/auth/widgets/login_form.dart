@@ -1,8 +1,10 @@
+import 'package:finca_app_frontend/modules/shared/widgets/message_banner.dart';
 import 'package:flutter/material.dart';
 import '/core/services/auth_service.dart';
 import '/core/services/auth_exception.dart';
 import '/core/services/session_service.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
+import '../../../../shared/widgets/message_banner.dart';
 
 class LoginForm extends StatefulWidget {
   final void Function(Map<String, dynamic>) onLoginSuccess;
@@ -58,10 +60,7 @@ class _LoginFormState extends State<LoginForm> {
       } else {
         errorMessage = l10n.login_unexpectedError;
       }
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(errorMessage)));
-      //ScaffoldMessenger.of(context,).showSnackBar(SnackBar(content: Text(e.toString())));
+      MessageBanner.error(errorMessage);
     } finally {
       setState(() => loading = false);
     }

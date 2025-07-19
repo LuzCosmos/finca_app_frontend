@@ -419,7 +419,7 @@ abstract class AppLocalizations {
   /// No description provided for @lot_duplicateLotNumber.
   ///
   /// In en, this message translates to:
-  /// **'Dos o más lotes tienen el mismo número de lote.'**
+  /// **'Two or more lots have the same lot number.'**
   String get lot_duplicateLotNumber;
 
   /// No description provided for @lot_avgWeightRequired.
@@ -475,6 +475,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Each lot must have cattle count, average weight and price per kg greater than zero.'**
   String get lot_countAvWeightPriceKgRequired;
+
+  /// Label used in the lots section summary row for averages
+  ///
+  /// In en, this message translates to:
+  /// **'Average'**
+  String get lots_summaryAverageTitle;
+
+  /// Label used in the lots section summary row for totals
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get lots_summaryTotalTitle;
 }
 
 class _AppLocalizationsDelegate

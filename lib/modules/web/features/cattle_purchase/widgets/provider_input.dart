@@ -8,11 +8,15 @@ import '../../../../../core/services/exceptions.dart';
 class ProviderInput extends StatefulWidget {
   final void Function(ProviderModel) onProviderSelected;
   final ProviderService? providerService;
+  final void Function(String message)? onError;
+  final void Function(String message)? onSuccess;
 
   const ProviderInput({
     super.key,
     required this.onProviderSelected,
     this.providerService,
+    this.onError,
+    this.onSuccess,
   });
 
   @override
@@ -44,9 +48,8 @@ class _ProviderInputState extends State<ProviderInput> {
       _cachedSuggestions.add(created);
       widget.onProviderSelected(_selectedProvider!);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.provider_createdSuccessfully)),
-        );
+        //MessageBanner.success(l10n.provider_createdSuccessfully);
+        widget.onSuccess?.call(l10n.provider_createdSuccessfully);
       }
     } catch (e) {
       if (mounted) {
@@ -60,11 +63,9 @@ class _ProviderInputState extends State<ProviderInput> {
         } else {
           message = l10n.provider_creationError;
         }
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(message)));
+        //MessageBanner.error(message);
+        widget.onError?.call(message);
       }
-      //ScaffoldMessenger.of(context,).showSnackBar(SnackBar(content: Text('Error creando proveedor: $e')));
     } finally {
       setState(() => _isLoading = false);
     }
@@ -130,12 +131,13 @@ class _ProviderInputState extends State<ProviderInput> {
                       }
                     });
                   });
-
                   return TextFormField(
                     controller: controller,
                     focusNode: focusNode,
+                    style: const TextStyle(fontSize: 11.5),
                     decoration: InputDecoration(
                       labelText: l10n.provider_nit,
+                      labelStyle: const TextStyle(fontSize: 9),
                       suffixIcon:
                           _isLoading
                               ? const Padding(
@@ -194,7 +196,11 @@ class _ProviderInputState extends State<ProviderInput> {
               flex: 4,
               child: TextFormField(
                 controller: _nameController,
-                decoration: InputDecoration(labelText: l10n.provider),
+                //textStyle: const TextStyle(fontSize: 11.5),
+                decoration: InputDecoration(
+                  labelText: l10n.provider,
+                  labelStyle: const TextStyle(fontSize: 9),
+                ),
                 enabled: !_providerExists,
                 validator:
                     (val) =>

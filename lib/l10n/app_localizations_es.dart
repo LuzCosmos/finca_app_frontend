@@ -206,4 +206,10 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get lot_countAvWeightPriceKgRequired =>
       'Cada lote debe tener cantidad de reses, peso promedio y precio por kg mayor que cero.';
+
+  @override
+  String get lots_summaryAverageTitle => 'Promedio';
+
+  @override
+  String get lots_summaryTotalTitle => 'Total';
 }

@@ -194,10 +194,10 @@ class LotInputState extends State<LotInput> {
             isNumeric
                 ? [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}'))]
                 : null,
-        style: const TextStyle(fontSize: 11),
+        style: const TextStyle(fontSize: 11.5),
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: const TextStyle(fontSize: 12),
+          labelStyle: const TextStyle(fontSize: 11),
           border: const OutlineInputBorder(),
           isDense: true,
           contentPadding: const EdgeInsets.symmetric(
@@ -228,11 +228,11 @@ class LotInputState extends State<LotInput> {
       child: TextField(
         controller: controller,
         readOnly: true,
-        style: const TextStyle(fontSize: 12),
+        style: const TextStyle(fontSize: 11.5),
         textAlign: TextAlign.right,
         decoration: InputDecoration(
           //labelText: label,
-          labelStyle: const TextStyle(fontSize: 12),
+          labelStyle: const TextStyle(fontSize: 11.5),
           border: InputBorder.none,
           isDense: true,
           contentPadding: const EdgeInsets.symmetric(

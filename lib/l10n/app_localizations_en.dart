@@ -174,7 +174,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get lot_duplicateLotNumber =>
-      'Dos o más lotes tienen el mismo número de lote.';
+      'Two or more lots have the same lot number.';
 
   @override
   String get lot_avgWeightRequired => 'Please enter the average weight (Kg).';
@@ -205,4 +205,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get lot_countAvWeightPriceKgRequired =>
       'Each lot must have cattle count, average weight and price per kg greater than zero.';
+
+  @override
+  String get lots_summaryAverageTitle => 'Average';
+
+  @override
+  String get lots_summaryTotalTitle => 'Total';
 }

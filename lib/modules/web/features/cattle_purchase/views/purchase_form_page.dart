@@ -21,6 +21,7 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
   DateTime _selectedDate = DateTime.now();
   List<LotModel> _lots = [];
   String? _globalErrorMessage;
+  String? _globalSuccessMessage;
   final GlobalKey<LotsSectionState> _lotsSectionKey =
       GlobalKey<LotsSectionState>();
 
@@ -65,7 +66,7 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
       _showError(l10n.lot_duplicateLotNumber);
       return;
     }
-    Logger().d('submit');
+    // TODO: Implement the logic to create the purchase, and send the data to the backend
   }
 
   void _showError(String message) {
@@ -89,6 +90,8 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
             children: [
               if (_globalErrorMessage != null)
                 MessageBanner.error(_globalErrorMessage!),
+              if (_globalSuccessMessage != null)
+                MessageBanner.success(_globalSuccessMessage!),
 
               /// Save Button
               Align(
@@ -99,22 +102,42 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
                   label: Text(l10n.purchase_create),
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 5),
               Text(
                 l10n.provider,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 5),
 
               /// Provider
               ProviderInput(
                 onProviderSelected: (providerData) {
                   setState(() {
                     _selectedProvider = providerData;
+                    _globalErrorMessage = null;
+                  });
+                },
+                onError: (msg) {
+                  setState(() {
+                    _globalSuccessMessage = null;
+                    _globalErrorMessage = msg;
+                  });
+                },
+                onSuccess: (msg) {
+                  setState(() {
+                    _globalErrorMessage = null;
+                    _globalSuccessMessage = msg;
+                  });
+                  Future.delayed(const Duration(seconds: 3), () {
+                    if (mounted) {
+                      setState(() {
+                        _globalSuccessMessage = null;
+                      });
+                    }
                   });
                 },
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 5),
 
               /// Purchase Date
               Row(
@@ -129,7 +152,7 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 16),
 
               /// Lots
               LotsSection(key: _lotsSectionKey, onLotsChanged: _onLotsChanged),

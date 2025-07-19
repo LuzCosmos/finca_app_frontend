@@ -25,7 +25,7 @@ class LotModel {
     this.isValid = true,
   });
 
-  bool isValidFields({bool isValid = true}) {
+  bool isValidFields2({bool isValid = true}) {
     bool isValidFields =
         lotNumber.isNotEmpty &&
         origin.isNotEmpty &&
@@ -36,7 +36,6 @@ class LotModel {
         totalWeight > 0 &&
         pricePerKg > 0 &&
         totalValue > 0;
-    setIsValid(isValidFields && isValid);
     return isValidFields && isValid;
   }
 

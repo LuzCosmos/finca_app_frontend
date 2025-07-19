@@ -67,7 +67,7 @@
   "lot_totalValue": "Total Value",
 
   "lot_numberRequired": "Please enter the lot number.",
-  "lot_duplicateLotNumber": "Dos o más lotes tienen el mismo número de lote.",
+  "lot_duplicateLotNumber": "Two or more lots have the same lot number.",
   "lot_avgWeightRequired": "Please enter the average weight (Kg).",
   "lot_avgWeightInvalid": "Enter a valid average weight, it must be greater than zero",
   "lot_pricePerKgRequired": "Please enter the price per kilo",
@@ -76,10 +76,15 @@
   "lot_cattleCountInvalid": "Enter a valid cattle count, it must be greater than zero",
   "lot_totalWeightRequired": "Please enter the total weight.",
   "lot_totalWeightInvalid": "Enter a valid total weight",
-  "lot_countAvWeightPriceKgRequired":"Each lot must have cattle count, average weight and price per kg greater than zero."
-
-
-
+  "lot_countAvWeightPriceKgRequired":"Each lot must have cattle count, average weight and price per kg greater than zero.",
+  "lots_summaryAverageTitle": "Average",
+  "lots_summaryTotalTitle": "Total",
+  "@lots_summaryAverageTitle": {
+    "description": "Label used in the lots section summary row for averages"
+  },
+  "@lots_summaryTotalTitle": {
+    "description": "Label used in the lots section summary row for totals"
+  }
 
   
   

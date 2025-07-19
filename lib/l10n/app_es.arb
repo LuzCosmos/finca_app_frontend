@@ -73,6 +73,13 @@
   "lot_cattleCountInvalid": "La cantidad de reses en el lote debe ser mayor a 0.",
   "lot_totalWeightRequired": "Por favor ingrese el peso total.",
   "lot_totalWeightInvalid": "Ingrese un peso total válido",
-  "lot_countAvWeightPriceKgRequired": "Cada lote debe tener cantidad de reses, peso promedio y precio por kg mayor que cero."
-  
+  "lot_countAvWeightPriceKgRequired": "Cada lote debe tener cantidad de reses, peso promedio y precio por kg mayor que cero.",
+  "lots_summaryAverageTitle": "Promedio",
+  "lots_summaryTotalTitle": "Total",
+  "@lots_summaryAverageTitle": {
+    "description": "Etiqueta usada en la fila de resumen de lotes para promedios"
+  },
+  "@lots_summaryTotalTitle": {
+    "description": "Etiqueta usada en la fila de resumen de lotes para totales"
+  }
 }

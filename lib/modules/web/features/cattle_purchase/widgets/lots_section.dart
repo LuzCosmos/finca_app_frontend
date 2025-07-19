@@ -111,7 +111,7 @@ class LotsSectionState extends State<LotsSection> {
                   final index = entry.key;
                   final key = entry.value;
                   return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    padding: const EdgeInsets.symmetric(vertical: 2.0),
                     child: LotInput(
                       key: key,
                       onChanged: (_) => _notifyChange(),
@@ -120,7 +120,6 @@ class LotsSectionState extends State<LotsSection> {
                   );
                 }),
                 const SizedBox(height: 4),
-                //const Divider(),
                 _buildSummaryRow(
                   l10n,
                   avgWeight.toDouble(),
@@ -129,6 +128,7 @@ class LotsSectionState extends State<LotsSection> {
                   totalWeight,
                   totalValue,
                 ),
+                const Divider(),
               ],
             ),
           ),
@@ -168,12 +168,14 @@ class LotsSectionState extends State<LotsSection> {
       l10n.numberFormat,
       l10n.numberFormat_country,
     );
+    final summaryAverageTitle = l10n.lots_summaryAverageTitle;
+    final summaryTotalTitle = l10n.lots_summaryTotalTitle;
     return Column(
       children: [
         Row(
           children: [
             const _HeaderCell(label: '', width: 288),
-            const _HeaderCell(label: 'Promedio', width: 80),
+            _HeaderCell(label: summaryAverageTitle, width: 80),
             _ValueCell(value: numberFormat.format(avgWeight), width: 110),
             _ValueCell(value: numberFormat.format(avgPrice), width: 100),
             const _HeaderCell(label: '', width: 80),
@@ -185,7 +187,7 @@ class LotsSectionState extends State<LotsSection> {
         Row(
           children: [
             const _HeaderCell(label: '', width: 288),
-            const _HeaderCell(label: 'Total', width: 80),
+            _HeaderCell(label: summaryTotalTitle, width: 80),
             const _HeaderCell(label: '', width: 110),
             const _HeaderCell(label: '', width: 100),
             _ValueCell(value: numberFormat.format(totalCattle), width: 80),
