@@ -122,11 +122,17 @@ class _ProviderInputState extends State<ProviderInput> {
                   controller.addListener(() {
                     setState(() {
                       _enteredNit = controller.text;
-                      if (_providerExists && _selectedProvider != null) {
-                        if (_enteredNit != _selectedProvider!.nit) {
-                          _selectedProvider = null;
-                          _providerExists = false;
-                          _nameController.text = '';
+                      if (_enteredNit.length < 3) {
+                        _cachedSuggestions.clear();
+                        _providerExists = false;
+                        _selectedProvider = null;
+                      } else {
+                        if (_providerExists && _selectedProvider != null) {
+                          if (_enteredNit != _selectedProvider!.nit) {
+                            _selectedProvider = null;
+                            _providerExists = false;
+                            _nameController.text = '';
+                          }
                         }
                       }
                     });
