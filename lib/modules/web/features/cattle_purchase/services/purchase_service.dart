@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../../../../../core/services/session_service.dart';
-import '../models/purchase.dart'; // o crea un DTO específico
 import '../../../../../core/services/api_exception.dart';
 
 class PurchaseService {

@@ -52,10 +52,6 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
   Future<void> _onSubmit() async {
     final l10n = AppLocalizations.of(context)!;
     if (!_formKey.currentState!.validate()) return;
-    if (_selectedDate == null) {
-      _showError(l10n.purchase_dateRequired);
-      return;
-    }
     if (_selectedProvider == null) {
       _showError(l10n.cp_error_providerRequired);
       return;

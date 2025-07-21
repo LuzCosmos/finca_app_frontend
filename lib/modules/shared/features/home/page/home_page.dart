@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import '../../../widgets/finca_scaffold.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
-import 'package:finca_app_frontend/modules/shared/features/home/widgets/home_option_card.dart';
 import 'package:finca_app_frontend/modules/shared/features/home/widgets/home_option_with_permission.dart';
-import 'package:finca_app_frontend/core/services/platform_sevice.dart';
+//import 'package:finca_app_frontend/core/services/platform_sevice.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -12,7 +10,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final isWeb = PlatformService().isWeb();
+    //final isWeb = PlatformService().isWeb();
 
     return FincaScaffold(
       title: l10n.home_title,
