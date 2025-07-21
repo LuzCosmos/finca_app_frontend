@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import '../services/provider_service.dart';
 import '../models/provider.dart';
-import '../../../../../core/services/exceptions.dart';
+import '../../../../../core/services/api_exception.dart';
 
 class ProviderInput extends StatefulWidget {
   final void Function(ProviderModel) onProviderSelected;
@@ -51,20 +51,30 @@ class _ProviderInputState extends State<ProviderInput> {
         //MessageBanner.success(l10n.provider_createdSuccessfully);
         widget.onSuccess?.call(l10n.provider_createdSuccessfully);
       }
+    } on ApiException catch (e) {
+      if (mounted) {
+        String? error;
+        switch (e.code) {
+          case 'providerCreationDuplicateNit':
+            error = l10n.provider_nitAlreadyExists;
+            break;
+          case 'serverError':
+            error = l10n.error_server;
+            break;
+          case 'unauthorized':
+            error = l10n.error_unauthorized;
+            break;
+          case 'unknownError':
+            error = l10n.provider_creationError;
+            break;
+          default:
+            error = l10n.provider_creationError;
+        }
+        widget.onError?.call(error);
+      }
     } catch (e) {
       if (mounted) {
-        String message;
-        if (e is ProviderCreationException) {
-          final l10n = AppLocalizations.of(context)!;
-          message = switch (e.message) {
-            'providerCreationDuplicateNit' => l10n.provider_nitAlreadyExists,
-            _ => l10n.provider_creationError,
-          };
-        } else {
-          message = l10n.provider_creationError;
-        }
-        //MessageBanner.error(message);
-        widget.onError?.call(message);
+        widget.onError?.call(l10n.provider_creationError);
       }
     } finally {
       setState(() => _isLoading = false);
@@ -105,6 +115,12 @@ class _ProviderInputState extends State<ProviderInput> {
                         );
                         _cachedSuggestions = results;
                         if (!completer.isCompleted) completer.complete(results);
+                      } on ApiException catch (e) {
+                        if (e.code == 'unauthorized') {
+                          if (mounted) {
+                            widget.onError?.call(l10n.error_unauthorized);
+                          }
+                        }
                       } catch (_) {
                         if (!completer.isCompleted) completer.complete([]);
                       }

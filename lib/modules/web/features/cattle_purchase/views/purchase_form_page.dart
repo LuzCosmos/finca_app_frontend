@@ -6,7 +6,9 @@ import '../widgets/lots_section.dart';
 import '../models/provider.dart';
 import '../models/lot.dart';
 import '../../../../shared/widgets/message_banner.dart';
-import 'package:logger/logger.dart';
+import '../services/purchase_service.dart';
+import '../../../../../core/services/api_exception.dart';
+import 'package:go_router/go_router.dart';
 
 class PurchaseFormPage extends StatefulWidget {
   const PurchaseFormPage({super.key});
@@ -47,7 +49,7 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
     });
   }
 
-  void _onSubmit() {
+  Future<void> _onSubmit() async {
     final l10n = AppLocalizations.of(context)!;
     if (!_formKey.currentState!.validate()) return;
     if (_selectedDate == null) {
@@ -66,7 +68,66 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
       _showError(l10n.lot_duplicateLotNumber);
       return;
     }
-    // TODO: Implement the logic to create the purchase, and send the data to the backend
+
+    final lotsJson =
+        _lots.map((lot) {
+          return {
+            "lotNumber": lot.lotNumber,
+            "originPlace": lot.origin,
+            "cattleCount": lot.cattleCount,
+            "totalWeight": lot.totalWeight,
+            "pricePerKg": lot.pricePerKg,
+            "totalValue": lot.totalValue,
+            "age": lot.age,
+            "sex": lot.gender,
+          };
+        }).toList();
+
+    try {
+      setState(() {
+        _globalErrorMessage = null;
+        _globalSuccessMessage = null;
+      });
+
+      final service = PurchaseService();
+      await service.createPurchase(
+        idProvider: _selectedProvider!.id,
+        purchaseDate: _selectedDate,
+        lots: lotsJson,
+      );
+
+      setState(() {
+        _globalSuccessMessage = l10n.purchase_saveSuccess;
+      });
+      Future.delayed(const Duration(seconds: 2), () {
+        if (mounted) {
+          setState(() {
+            _globalSuccessMessage = null;
+          });
+          context.go('/home');
+        }
+      });
+    } on ApiException catch (e) {
+      setState(() {
+        switch (e.code) {
+          case 'invalidData':
+            _globalErrorMessage = l10n.purchase_saveError;
+            break;
+          case 'forbidden':
+            _globalErrorMessage = l10n.purchase_saveError;
+            break;
+          case 'serverError':
+            _globalErrorMessage = l10n.error_server;
+            break;
+          default:
+            _globalErrorMessage = l10n.purchase_saveError;
+        }
+      });
+    } catch (e) {
+      setState(() {
+        _globalErrorMessage = l10n.purchase_saveError;
+      });
+    }
   }
 
   void _showError(String message) {
@@ -105,7 +166,9 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
               const SizedBox(height: 5),
               Text(
                 l10n.provider,
-                style: Theme.of(context).textTheme.titleMedium,
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 5),
 
@@ -152,7 +215,7 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 10),
 
               /// Lots
               LotsSection(key: _lotsSectionKey, onLotsChanged: _onLotsChanged),

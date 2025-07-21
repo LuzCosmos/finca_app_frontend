@@ -27,6 +27,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get numberFormat_country => 'en_US';
 
   @override
+  String get error_invalidData => 'Invalid data in the form.';
+
+  @override
+  String get error_forbidden =>
+      'You do not have permission to perform this action.';
+
+  @override
+  String get error_server => 'Internal server error. Please try again later.';
+
+  @override
+  String get error_generic => 'Could not save object.';
+
+  @override
+  String get error_unauthorized =>
+      'Your session has expired and you need to log in again.';
+
+  @override
   String get login_username => 'Username';
 
   @override
@@ -127,10 +144,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get provider_creationError => 'Error creating provider';
 
   @override
-  String get purchaseLotCountError =>
-      'The cattle count must be greater than 0.';
-
-  @override
   String get lotsTitle => 'Lots';
 
   @override
@@ -161,13 +174,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get lot_pricePerKg => 'Price per Kg';
 
   @override
-  String get lot_cattleCount => 'Cattle count';
+  String get lot_cattleCount => 'Count';
 
   @override
   String get lot_totalWeight => 'Total Weight';
 
   @override
   String get lot_totalValue => 'Total Value';
+
+  @override
+  String get lot_pricePerHead => 'Avg. Price per Head';
+
+  @override
+  String get lot_pricePerHeadRequired =>
+      'Please enter the average price per head.';
+
+  @override
+  String get lot_pricePerHeadInvalid => 'Enter a valid average price per head.';
 
   @override
   String get lot_numberRequired => 'Please enter the lot number.';

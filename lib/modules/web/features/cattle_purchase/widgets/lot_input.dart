@@ -14,16 +14,99 @@ class LotInput extends StatefulWidget {
   State<LotInput> createState() => LotInputState();
 }
 
+enum PriceInputMode { perKg, perHead }
+
 class LotInputState extends State<LotInput> {
   final _lotNumberController = TextEditingController();
   final _originController = TextEditingController();
   final _ageController = TextEditingController();
   final _genderController = TextEditingController();
-  final _avgWeightController = TextEditingController();
-  final _pricePerKgController = TextEditingController();
   final _cattleCountController = TextEditingController();
+  final _avgWeightController = TextEditingController();
   final _totalWeightController = TextEditingController();
+  final _pricePerKgController = TextEditingController();
+  final _pricePerHeadController = TextEditingController();
   final _totalValueController = TextEditingController();
+
+  PriceInputMode? _lastEditedPriceMode;
+
+  void _onPricePerKgChanged() {
+    _lastEditedPriceMode = PriceInputMode.perKg;
+    _updateWithPricePerKg();
+    _notifyLotChanged();
+  }
+
+  void _updateWithPricePerKg() {
+    final l10n = AppLocalizations.of(context)!;
+    final numberFormat = NumberFormat(
+      l10n.numberFormat,
+      l10n.numberFormat_country,
+    );
+    final avgWeight =
+        double.tryParse(_avgWeightController.text.replaceAll(',', '')) ?? 0;
+    final pricePerKg =
+        double.tryParse(_pricePerKgController.text.replaceAll(',', '')) ?? 0;
+    final pricePerHead = double.parse(
+      (pricePerKg * avgWeight).toStringAsFixed(2),
+    );
+    final totalWeight =
+        double.tryParse(_totalWeightController.text.replaceAll(',', '')) ?? 0;
+    final totalValue = double.parse(
+      (pricePerKg * totalWeight).toStringAsFixed(2),
+    );
+    _pricePerHeadController.text = pricePerHead.toString();
+    _totalValueController.text = numberFormat.format(totalValue);
+  }
+
+  void _onPricePerHeadChanged() {
+    _lastEditedPriceMode = PriceInputMode.perHead;
+    _updateWithPricePerHead();
+    _notifyLotChanged();
+  }
+
+  void _updateWithPricePerHead() {
+    final l10n = AppLocalizations.of(context)!;
+    final numberFormat = NumberFormat(
+      l10n.numberFormat,
+      l10n.numberFormat_country,
+    );
+    final cattleCount = int.tryParse(_cattleCountController.text) ?? 0;
+    final avgWeight =
+        double.tryParse(_avgWeightController.text.replaceAll(',', '')) ?? 0;
+    final pricePerHead =
+        double.tryParse(_pricePerHeadController.text.replaceAll(',', '')) ?? 0;
+    double pricePerKg = 0;
+    if (avgWeight > 0) {
+      pricePerKg = double.parse((pricePerHead / avgWeight).toStringAsFixed(2));
+    }
+    _pricePerKgController.text = pricePerKg.toString();
+    _totalValueController.text = numberFormat.format(
+      pricePerHead * cattleCount,
+    );
+  }
+
+  void _notifyLotChanged() {
+    final cattleCount =
+        int.tryParse(_cattleCountController.text.replaceAll(',', '')) ?? 0;
+    final totalWeight =
+        double.tryParse(_totalWeightController.text.replaceAll(',', '')) ?? 0;
+    final pricePerKg =
+        double.tryParse(_pricePerKgController.text.replaceAll(',', '')) ?? 0;
+    final totalValue =
+        double.tryParse(_totalValueController.text.replaceAll(',', '')) ?? 0;
+    final lot = LotModel(
+      lotNumber: _lotNumberController.text,
+      origin: _originController.text,
+      age: _ageController.text,
+      gender: _genderController.text,
+      avgWeight: (cattleCount > 0) ? totalWeight / cattleCount : 0,
+      pricePerKg: pricePerKg,
+      cattleCount: cattleCount,
+      totalWeight: totalWeight,
+      totalValue: totalValue,
+    );
+    widget.onChanged(lot);
+  }
 
   void _onFieldChanged() {
     try {
@@ -32,17 +115,30 @@ class LotInputState extends State<LotInput> {
         l10n.numberFormat,
         l10n.numberFormat_country,
       );
-      final cattleCount = int.tryParse(_cattleCountController.text) ?? 0;
-      final avgWeight = double.tryParse(_avgWeightController.text) ?? 0;
-      final pricePerKg = double.tryParse(_pricePerKgController.text) ?? 0;
-      final totalWeight = double.parse(
-        (cattleCount * avgWeight).toStringAsFixed(2),
-      );
-      final totalValue = double.parse(
-        (totalWeight * pricePerKg).toStringAsFixed(2),
-      );
-      _totalWeightController.text = numberFormat.format(totalWeight);
-      _totalValueController.text = numberFormat.format(totalValue);
+      final cattleCount =
+          int.tryParse(_cattleCountController.text.replaceAll(',', '')) ?? 0;
+      final totalWeight =
+          double.tryParse(_totalWeightController.text.replaceAll(',', '')) ?? 0;
+      double avgWeight = 0;
+      if (cattleCount > 0) {
+        avgWeight = double.parse(
+          (totalWeight / cattleCount).toStringAsFixed(2),
+        );
+      } else {
+        avgWeight = 0;
+      }
+      _avgWeightController.text = numberFormat.format(avgWeight);
+      if (cattleCount > 0 && _lastEditedPriceMode != null) {
+        if (_lastEditedPriceMode == PriceInputMode.perKg) {
+          _updateWithPricePerKg();
+        } else if (avgWeight > 0) {
+          _updateWithPricePerHead();
+        }
+      }
+      final pricePerKg =
+          double.tryParse(_pricePerKgController.text.replaceAll(',', '')) ?? 0;
+      final totalValue =
+          double.tryParse(_totalValueController.text.replaceAll(',', '')) ?? 0;
       final lot = LotModel(
         lotNumber: _lotNumberController.text,
         origin: _originController.text,
@@ -69,6 +165,7 @@ class LotInputState extends State<LotInput> {
     _cattleCountController.dispose();
     _totalWeightController.dispose();
     _totalValueController.dispose();
+    _pricePerHeadController.dispose();
     super.dispose();
   }
 
@@ -81,66 +178,70 @@ class LotInputState extends State<LotInput> {
         _buildCell(
           _lotNumberController,
           '',
-          width: 80,
+          width: 60,
           validator: _validateNotEmpty(l10n.lot_numberRequired),
         ),
         _buildCell(_originController, '', width: 120),
         _buildCell(
           _ageController,
           '',
-          width: 80,
+          width: 60,
           validator: _validateNotEmpty(l10n.fieldRequired),
         ),
         _buildCell(
           _genderController,
           '',
-          width: 80,
+          width: 70,
           validator: _validateNotEmpty(l10n.fieldRequired),
-        ),
-        _buildCell(
-          _avgWeightController,
-          '',
-          width: 110,
-          isNumeric: true,
-          validator: _validateNumericMandatory(
-            l10n.lot_avgWeightRequired,
-            l10n.lot_avgWeightInvalid,
-          ),
-        ),
-        _buildCell(
-          _pricePerKgController,
-          '',
-          width: 100,
-          isNumeric: true,
-          validator: _validateNumericMandatory(
-            l10n.lot_pricePerKgRequired,
-            l10n.lot_pricePerKgInvalid,
-          ),
         ),
         _buildCell(
           _cattleCountController,
           '',
-          width: 80,
+          width: 40,
           isNumeric: true,
           validator: _validateNumericMandatory(
             l10n.lot_cattleCountRequired,
             l10n.lot_cattleCountInvalid,
           ),
         ),
-        _buildReadOnlyCell(
-          label: 'kg',
+        _buildReadOnlyCell(_avgWeightController, '', width: 70),
+        _buildCell(
+          _totalWeightController,
+          '',
+          width: 60,
+          isNumeric: true,
+          validator: _validateNumericMandatory(
+            l10n.lot_totalWeightRequired,
+            l10n.lot_totalWeightInvalid,
+          ),
+        ),
+        _buildCell(
+          _pricePerKgController,
+          '',
+          width: 70,
+          isNumeric: true,
+          validator: _validateNumericMandatory(
+            l10n.lot_pricePerKgRequired,
+            l10n.lot_pricePerKgInvalid,
+          ),
+          onChangedCustom: (value) => _onPricePerKgChanged(),
+        ),
+        _buildCell(
+          _pricePerHeadController,
+          '', //l10n.lot_pricePerHead, // agrega esta key a tu .arb
           width: 90,
-          controller: _totalWeightController,
+          isNumeric: true,
+          validator: _validateNumericMandatory(
+            l10n.lot_pricePerHeadRequired,
+            l10n.lot_pricePerHeadInvalid,
+          ),
+          onChangedCustom: (value) => _onPricePerHeadChanged(),
         ),
-        _buildReadOnlyCell(
-          label: r'$',
-          width: 120,
-          controller: _totalValueController,
-        ),
+        _buildReadOnlyCell(_totalValueController, r'$', width: 90),
         // Delete button
         SizedBox(
-          width: 28,
-          height: 28,
+          width: 22,
+          height: 22,
           child: IconButton(
             icon: const Icon(Icons.delete, size: 20),
             onPressed: widget.onRemove,
@@ -178,10 +279,11 @@ class LotInputState extends State<LotInput> {
     double width = 100,
     bool isNumeric = false,
     FormFieldValidator<String>? validator,
+    void Function(String)? onChangedCustom, // 👈 nuevo
   }) {
     return Container(
       width: width,
-      height: 28,
+      height: 22,
       margin: const EdgeInsets.symmetric(horizontal: 2),
       alignment: Alignment.center,
       child: TextFormField(
@@ -197,28 +299,28 @@ class LotInputState extends State<LotInput> {
         style: const TextStyle(fontSize: 11.5),
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: const TextStyle(fontSize: 11),
+          labelStyle: const TextStyle(fontSize: 11.5),
           border: const OutlineInputBorder(),
           isDense: true,
           contentPadding: const EdgeInsets.symmetric(
-            horizontal: 8,
-            vertical: 10,
+            horizontal: 2,
+            vertical: 6,
           ),
           errorStyle: const TextStyle(fontSize: 0, height: 0),
         ),
-        onChanged: (value) => _onFieldChanged(),
+        onChanged: onChangedCustom ?? (value) => _onFieldChanged(),
       ),
     );
   }
 
-  Widget _buildReadOnlyCell({
-    required String label,
+  Widget _buildReadOnlyCell(
+    TextEditingController controller,
+    String label, {
     double width = 100,
-    required TextEditingController controller,
   }) {
     return Container(
       width: width,
-      height: 28,
+      height: 22,
       margin: const EdgeInsets.symmetric(horizontal: 2),
       alignment: Alignment.center,
       decoration: BoxDecoration(
@@ -236,8 +338,8 @@ class LotInputState extends State<LotInput> {
           border: InputBorder.none,
           isDense: true,
           contentPadding: const EdgeInsets.symmetric(
-            horizontal: 8,
-            vertical: 10,
+            horizontal: 2,
+            vertical: 6,
           ),
           errorStyle: const TextStyle(fontSize: 0, height: 0),
         ),
@@ -246,12 +348,18 @@ class LotInputState extends State<LotInput> {
   }
 
   LotModel? getLotOrNull() {
-    final cattleCount = int.tryParse(_cattleCountController.text);
+    final cattleCount = int.tryParse(
+      _cattleCountController.text.replaceAll(',', ''),
+    );
     if (cattleCount == null || cattleCount == 0) return null;
-    final avgWeight = double.tryParse(_avgWeightController.text) ?? 0;
-    final pricePerKg = double.tryParse(_pricePerKgController.text) ?? 0;
-    final totalWeight = cattleCount * avgWeight;
-    final totalValue = totalWeight * pricePerKg;
+    final avgWeight =
+        double.tryParse(_avgWeightController.text.replaceAll(',', '')) ?? 0;
+    final pricePerKg =
+        double.tryParse(_pricePerKgController.text.replaceAll(',', '')) ?? 0;
+    final totalWeight =
+        double.tryParse(_totalWeightController.text.replaceAll(',', '')) ?? 0;
+    final totalValue =
+        double.tryParse(_totalValueController.text.replaceAll(',', '')) ?? 0;
     return LotModel(
       lotNumber: _lotNumberController.text,
       origin: _originController.text,

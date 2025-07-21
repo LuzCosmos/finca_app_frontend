@@ -3,11 +3,29 @@
   "@appTitle": {
     "description": "Application Title shown in the bar"
   },
+
+
+
+
+
+
   "fieldRequired":"This field is mandatory",
   "delete": "Delete",
   "fixErrors": "Please fix the errors highlighted in red.",
   "numberFormat":"#,##0.##",
   "numberFormat_country":"en_US",
+
+
+
+  "error_invalidData": "Invalid data in the form.",
+  "error_forbidden": "You do not have permission to perform this action.",
+  "error_server": "Internal server error. Please try again later.",
+  "error_generic": "Could not save object.",
+  "error_unauthorized": "Your session has expired and you need to log in again.",
+  "@error_unauthorized": {
+    "description": "Shown when the user's session has expired or they are unauthorized, requiring a new login."
+  },
+
 
   "login_username": "Username",
   "login_usernameRequired": "Please enter your username",
@@ -47,11 +65,6 @@
   "provider_creationError": "Error creating provider",
 
 
-  "purchaseLotCountError": "The cattle count must be greater than 0.",
-  
-
-
-
   "lotsTitle":"Lots",
   "lot": "Lot",
   "addLot": "Add Lot",
@@ -62,9 +75,22 @@
   "lot_gender": "Gender",
   "lot_avgWeight": "Avg. Weight (kg)",
   "lot_pricePerKg": "Price per Kg",
-  "lot_cattleCount": "Cattle count",
+  "lot_cattleCount": "Count",
   "lot_totalWeight": "Total Weight",
   "lot_totalValue": "Total Value",
+
+  "lot_pricePerHead": "Avg. Price per Head",
+  "@lot_pricePerHead": {
+    "description": "Label for the field where the user enters the average price per head (per cattle)"
+  },
+  "lot_pricePerHeadRequired": "Please enter the average price per head.",
+  "@lot_pricePerHeadRequired": {
+    "description": "Validation message when the average price per head is required"
+  },
+  "lot_pricePerHeadInvalid": "Enter a valid average price per head.",
+  "@lot_pricePerHeadInvalid": {
+    "description": "Validation message when the average price per head is invalid"
+  },
 
   "lot_numberRequired": "Please enter the lot number.",
   "lot_duplicateLotNumber": "Two or more lots have the same lot number.",

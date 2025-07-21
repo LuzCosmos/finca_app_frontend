@@ -24,7 +24,23 @@ class AppLocalizationsEs extends AppLocalizations {
   String get numberFormat => '#,##0.##';
 
   @override
-  String get numberFormat_country => 'es_CO';
+  String get numberFormat_country => 'en_US';
+
+  @override
+  String get error_invalidData => 'Datos inválidos en el formulario.';
+
+  @override
+  String get error_forbidden => 'No tienes permiso para realizar esta acción.';
+
+  @override
+  String get error_server => 'Error interno del servidor. Intenta más tarde.';
+
+  @override
+  String get error_generic => 'No se pudo guardar objeto.';
+
+  @override
+  String get error_unauthorized =>
+      'Tu sesión ha expirado y necesitas iniciar sesión nuevamente.';
 
   @override
   String get login_username => 'Usuario';
@@ -128,10 +144,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get provider_creationError => 'Error al crear proveedor';
 
   @override
-  String get purchaseLotCountError =>
-      'La cantidad de reses en el lote debe ser mayor a 0.';
-
-  @override
   String get lotsTitle => 'Lotes';
 
   @override
@@ -162,13 +174,24 @@ class AppLocalizationsEs extends AppLocalizations {
   String get lot_pricePerKg => 'Vlr. por Kilo';
 
   @override
-  String get lot_cattleCount => 'Cantidad';
+  String get lot_cattleCount => 'Cant.';
 
   @override
   String get lot_totalWeight => 'Peso Total';
 
   @override
   String get lot_totalValue => 'Valor Total';
+
+  @override
+  String get lot_pricePerHead => 'Precio Prom. por Res';
+
+  @override
+  String get lot_pricePerHeadRequired =>
+      'Por favor ingrese el precio promedio por res.';
+
+  @override
+  String get lot_pricePerHeadInvalid =>
+      'Ingrese un precio promedio por res válido.';
 
   @override
   String get lot_numberRequired => 'Por favor ingrese el número de lote.';

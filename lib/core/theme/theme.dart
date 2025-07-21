@@ -25,8 +25,8 @@ class AppTheme {
       foregroundColor: Colors.white, // Texto e íconos en AppBar
       centerTitle: true,
       titleTextStyle: TextStyle(
-        fontSize: 38,
-        //fontWeight: FontWeight.bold,
+        fontSize: 20,
+        fontWeight: FontWeight.w400,
         color: Colors.white,
       ),
       elevation: 0,
@@ -39,7 +39,7 @@ class AppTheme {
         ), // Texto por defecto oscuro para no saturar
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
       ),
     ),
     textButtonTheme: TextButtonThemeData(
@@ -93,7 +93,7 @@ class AppThemeDark {
         foregroundColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
       ),
     ),
     textButtonTheme: TextButtonThemeData(

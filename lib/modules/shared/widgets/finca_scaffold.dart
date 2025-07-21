@@ -14,7 +14,7 @@ class FincaScaffold extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(title ?? 'Finca App', style: const TextStyle(fontSize: 16)),
+        title: Text(title ?? 'Finca App'),
         actions: <Widget>[
           BlocBuilder<LocaleBloc, LocaleState>(
             builder: (context, state) {
@@ -36,7 +36,7 @@ class FincaScaffold extends StatelessWidget {
       child: DropdownButton<String>(
         padding: const EdgeInsets.only(right: 10),
         value: state.selectedLanguage.locale,
-        icon: const Icon(Icons.language, color: Colors.white),
+        icon: const Icon(Icons.language, color: Colors.white, size: 11),
         dropdownColor: theme.colorScheme.primary,
         onChanged: (String? newLangCode) {
           if (newLangCode != null) {
@@ -50,7 +50,7 @@ class FincaScaffold extends StatelessWidget {
                 value: lang.locale,
                 child: Text(
                   '${lang.flag} ${lang.name}',
-                  style: const TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white, fontSize: 11),
                 ),
               );
             }).toList(),

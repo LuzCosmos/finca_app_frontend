@@ -75,10 +75,13 @@ class LotsSectionState extends State<LotsSection> {
     final totalWeight = double.parse(rawTotalWeight.toStringAsFixed(2));
     final totalValue = double.parse(rawTotalValue.toStringAsFixed(2));
     final avgWeight = lots.isEmpty ? 0 : totalWeight / totalCattle;
-    final avgPrice =
-        lots.isEmpty
+    double avgPrice = 0;
+    if (totalWeight > 0) {
+      avgPrice = totalValue / totalWeight;
+    }
+    /*lots.isEmpty
             ? 0
-            : lots.fold(0.0, (sum, l) => sum + l.pricePerKg) / lots.length;
+            : lots.fold(0.0, (sum, l) => sum + l.pricePerKg) / lots.length;*/
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,7 +89,12 @@ class LotsSectionState extends State<LotsSection> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(l10n.lot, style: Theme.of(context).textTheme.titleLarge),
+            Text(
+              l10n.lotsTitle,
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
+            ),
             ElevatedButton.icon(
               onPressed: _addLot,
               icon: const Icon(Icons.add),
@@ -106,12 +114,12 @@ class LotsSectionState extends State<LotsSection> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildHeaderRow(l10n),
-                const SizedBox(height: 8),
+                const SizedBox(height: 5),
                 ..._lotKeys.asMap().entries.map((entry) {
                   final index = entry.key;
                   final key = entry.value;
                   return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 2.0),
+                    padding: const EdgeInsets.symmetric(vertical: 1),
                     child: LotInput(
                       key: key,
                       onChanged: (_) => _notifyChange(),
@@ -119,7 +127,7 @@ class LotsSectionState extends State<LotsSection> {
                     ),
                   );
                 }),
-                const SizedBox(height: 4),
+                const SizedBox(height: 2),
                 _buildSummaryRow(
                   l10n,
                   avgWeight.toDouble(),
@@ -141,16 +149,17 @@ class LotsSectionState extends State<LotsSection> {
     final l10n = AppLocalizations.of(context)!;
     return Row(
       children: [
-        _HeaderCell(label: l10n.lot, width: 80),
+        _HeaderCell(label: l10n.lot, width: 60),
         _HeaderCell(label: l10n.lot_origin, width: 120),
-        _HeaderCell(label: l10n.lot_age, width: 80),
-        _HeaderCell(label: l10n.lot_gender, width: 80),
-        _HeaderCell(label: l10n.lot_avgWeight, width: 110),
-        _HeaderCell(label: l10n.lot_pricePerKg, width: 100),
-        _HeaderCell(label: l10n.lot_cattleCount, width: 80),
-        _HeaderCell(label: l10n.lot_totalWeight, width: 90),
-        _HeaderCell(label: l10n.lot_totalValue, width: 120),
-        SizedBox(width: 23), // Para el botón de eliminar
+        _HeaderCell(label: l10n.lot_age, width: 60),
+        _HeaderCell(label: l10n.lot_gender, width: 70),
+        _HeaderCell(label: l10n.lot_cattleCount, width: 40),
+        _HeaderCell(label: l10n.lot_avgWeight, width: 70),
+        _HeaderCell(label: l10n.lot_totalWeight, width: 60),
+        _HeaderCell(label: l10n.lot_pricePerKg, width: 70),
+        _HeaderCell(label: l10n.lot_pricePerHead, width: 90),
+        _HeaderCell(label: l10n.lot_totalValue, width: 90),
+        SizedBox(width: 22), // Para el botón de eliminar
       ],
     );
   }
@@ -174,27 +183,29 @@ class LotsSectionState extends State<LotsSection> {
       children: [
         Row(
           children: [
-            const _HeaderCell(label: '', width: 288),
-            _HeaderCell(label: summaryAverageTitle, width: 80),
-            _ValueCell(value: numberFormat.format(avgWeight), width: 110),
-            _ValueCell(value: numberFormat.format(avgPrice), width: 100),
-            const _HeaderCell(label: '', width: 80),
+            const _HeaderCell(label: '', width: 248),
+            _HeaderCell(label: summaryAverageTitle, width: 70),
+            const _HeaderCell(label: '', width: 40),
+            _ValueCell(value: numberFormat.format(avgWeight), width: 70),
+            const _HeaderCell(label: '', width: 60),
+            _ValueCell(value: numberFormat.format(avgPrice), width: 70),
             const _HeaderCell(label: '', width: 90),
-            const _HeaderCell(label: '', width: 120),
-            const SizedBox(width: 23),
+            const _HeaderCell(label: '', width: 90),
+            const SizedBox(width: 22),
           ],
         ),
         Row(
           children: [
-            const _HeaderCell(label: '', width: 288),
-            _HeaderCell(label: summaryTotalTitle, width: 80),
-            const _HeaderCell(label: '', width: 110),
-            const _HeaderCell(label: '', width: 100),
-            _ValueCell(value: numberFormat.format(totalCattle), width: 80),
-            _ValueCell(value: numberFormat.format(totalWeight), width: 90),
-            //_ValueCell(value: numberFormat.format(totalValue), width: 120),
-            const _HeaderCell(label: '', width: 120),
-            const SizedBox(width: 23),
+            const _HeaderCell(label: '', width: 248),
+            _HeaderCell(label: summaryTotalTitle, width: 70),
+            _ValueCell(value: numberFormat.format(totalCattle), width: 40),
+            const _HeaderCell(label: '', width: 70),
+            _ValueCell(value: numberFormat.format(totalWeight), width: 60),
+            const _HeaderCell(label: '', width: 70),
+            const _HeaderCell(label: '', width: 90),
+            //_ValueCell(value: numberFormat.format(totalValue), width: 90),
+            const _HeaderCell(label: '', width: 90),
+            const SizedBox(width: 22),
           ],
         ),
       ],
@@ -214,7 +225,7 @@ class _HeaderCell extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 2),
       child: Text(
         label,
-        style: Theme.of(context).textTheme.labelLarge,
+        style: Theme.of(context).textTheme.labelMedium,
         textAlign: TextAlign.center,
       ),
     );
@@ -231,7 +242,7 @@ class _ValueCell extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: width,
-      margin: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+      margin: const EdgeInsets.symmetric(horizontal: 2, vertical: 1),
       //padding: const EdgeInsets.symmetric(vertical: 2),
       alignment: Alignment.center,
       decoration: BoxDecoration(
@@ -239,7 +250,7 @@ class _ValueCell extends StatelessWidget {
         borderRadius: BorderRadius.circular(4),
         border: Border.all(color: Colors.grey.shade300),
       ),
-      child: Text(value),
+      child: Text(value, style: const TextStyle(fontSize: 11.5)),
     );
   }
 }

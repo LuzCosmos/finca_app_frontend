@@ -134,6 +134,36 @@ abstract class AppLocalizations {
   /// **'en_US'**
   String get numberFormat_country;
 
+  /// No description provided for @error_invalidData.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid data in the form.'**
+  String get error_invalidData;
+
+  /// No description provided for @error_forbidden.
+  ///
+  /// In en, this message translates to:
+  /// **'You do not have permission to perform this action.'**
+  String get error_forbidden;
+
+  /// No description provided for @error_server.
+  ///
+  /// In en, this message translates to:
+  /// **'Internal server error. Please try again later.'**
+  String get error_server;
+
+  /// No description provided for @error_generic.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save object.'**
+  String get error_generic;
+
+  /// Shown when the user's session has expired or they are unauthorized, requiring a new login.
+  ///
+  /// In en, this message translates to:
+  /// **'Your session has expired and you need to log in again.'**
+  String get error_unauthorized;
+
   /// No description provided for @login_username.
   ///
   /// In en, this message translates to:
@@ -326,12 +356,6 @@ abstract class AppLocalizations {
   /// **'Error creating provider'**
   String get provider_creationError;
 
-  /// No description provided for @purchaseLotCountError.
-  ///
-  /// In en, this message translates to:
-  /// **'The cattle count must be greater than 0.'**
-  String get purchaseLotCountError;
-
   /// No description provided for @lotsTitle.
   ///
   /// In en, this message translates to:
@@ -395,7 +419,7 @@ abstract class AppLocalizations {
   /// No description provided for @lot_cattleCount.
   ///
   /// In en, this message translates to:
-  /// **'Cattle count'**
+  /// **'Count'**
   String get lot_cattleCount;
 
   /// No description provided for @lot_totalWeight.
@@ -409,6 +433,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Total Value'**
   String get lot_totalValue;
+
+  /// Label for the field where the user enters the average price per head (per cattle)
+  ///
+  /// In en, this message translates to:
+  /// **'Avg. Price per Head'**
+  String get lot_pricePerHead;
+
+  /// Validation message when the average price per head is required
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter the average price per head.'**
+  String get lot_pricePerHeadRequired;
+
+  /// Validation message when the average price per head is invalid
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid average price per head.'**
+  String get lot_pricePerHeadInvalid;
 
   /// No description provided for @lot_numberRequired.
   ///

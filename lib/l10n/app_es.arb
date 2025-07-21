@@ -1,13 +1,23 @@
 {
   "appTitle": "Finca App",
 
-
-
   "fieldRequired":"Este campo es obligatorio",
   "delete": "Eliminar",
-  "fixErrors": "Por favor corrige los errores resaltados en rojo.",
+
   "numberFormat":"#,##0.##",
-  "numberFormat_country":"es_CO",
+  "numberFormat_country":"en_US",
+
+  "fixErrors": "Por favor corrige los errores resaltados en rojo.",
+  "error_invalidData": "Datos inválidos en el formulario.",
+  "error_forbidden": "No tienes permiso para realizar esta acción.",
+  "error_server": "Error interno del servidor. Intenta más tarde.",
+  "error_generic": "No se pudo guardar objeto.",
+  "error_unauthorized": "Tu sesión ha expirado y necesitas iniciar sesión nuevamente.",
+  "@error_unauthorized": {
+    "description": "Se muestra cuando la sesión del usuario ha expirado o no está autorizado, requiriendo un nuevo inicio de sesión."
+},
+
+
 
   "login_username": "Usuario",
   "login_usernameRequired": "Ingrese su usuario",
@@ -44,10 +54,6 @@
   "provider_createdSuccessfully": "Proveedor creado exitosamente",
   "provider_nitAlreadyExists": "Ya existe un proveedor con ese NIT",
   "provider_creationError": "Error al crear proveedor",
-  
- "purchaseLotCountError": "La cantidad de reses en el lote debe ser mayor a 0.",
- 
-  "cp_errors_cattleCountRequired": "La cantidad de ganado debe ser mayor a 0",
 
   "lotsTitle":"Lotes",
   "lot": "Lote",
@@ -59,9 +65,14 @@
   "lot_gender": "Sexo",
   "lot_avgWeight": "Peso Prom. (kg)",
   "lot_pricePerKg": "Vlr. por Kilo",
-  "lot_cattleCount": "Cantidad",
+  "lot_cattleCount": "Cant.",
   "lot_totalWeight": "Peso Total",
   "lot_totalValue": "Valor Total",
+
+  "lot_pricePerHead": "Precio Prom. por Res",
+  "lot_pricePerHeadRequired": "Por favor ingrese el precio promedio por res.",
+  "lot_pricePerHeadInvalid": "Ingrese un precio promedio por res válido.",
+
 
   "lot_numberRequired": "Por favor ingrese el número de lote.",
   "lot_duplicateLotNumber": "Dos o más lotes tienen el mismo número de lote.",
