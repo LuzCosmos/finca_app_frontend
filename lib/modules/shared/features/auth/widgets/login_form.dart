@@ -4,7 +4,6 @@ import '/core/services/auth_service.dart';
 import '/core/services/auth_exception.dart';
 import '/core/services/session_service.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
-import '../../../../shared/widgets/message_banner.dart';
 
 class LoginForm extends StatefulWidget {
   final void Function(Map<String, dynamic>) onLoginSuccess;

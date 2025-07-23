@@ -3,6 +3,7 @@ import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import '../models/lot.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:finca_app_frontend/core/utils/regex_patterns.dart';
 
 class LotInput extends StatefulWidget {
   final void Function(LotModel) onChanged;
@@ -179,20 +180,28 @@ class LotInputState extends State<LotInput> {
           _lotNumberController,
           '',
           width: 60,
-          validator: _validateNotEmpty(l10n.lot_numberRequired),
+          validator: _validateNotEmpty(
+            l10n.lot_numberRequired,
+            RegexPatterns.positiveIntegerNoZero,
+          ),
+          customRegex: RegexPatterns.permissivePositiveInteger,
         ),
         _buildCell(_originController, '', width: 120),
         _buildCell(
           _ageController,
           '',
           width: 60,
-          validator: _validateNotEmpty(l10n.fieldRequired),
+          validator: _validateNotEmpty(
+            l10n.fieldRequired,
+            RegexPatterns.cattleAge,
+          ),
+          customRegex: RegexPatterns.permissiveCattleAge,
         ),
         _buildCell(
           _genderController,
           '',
           width: 70,
-          validator: _validateNotEmpty(l10n.fieldRequired),
+          validator: _validateNotEmpty(l10n.fieldRequired, null),
         ),
         _buildCell(
           _cattleCountController,
@@ -202,7 +211,9 @@ class LotInputState extends State<LotInput> {
           validator: _validateNumericMandatory(
             l10n.lot_cattleCountRequired,
             l10n.lot_cattleCountInvalid,
+            RegexPatterns.positiveIntegerNoZero,
           ),
+          customRegex: RegexPatterns.permissivePositiveInteger,
         ),
         _buildReadOnlyCell(_avgWeightController, '', width: 70),
         _buildCell(
@@ -213,7 +224,9 @@ class LotInputState extends State<LotInput> {
           validator: _validateNumericMandatory(
             l10n.lot_totalWeightRequired,
             l10n.lot_totalWeightInvalid,
+            RegexPatterns.positiveDecimalTwoDigitsNoZero,
           ),
+          customRegex: RegexPatterns.permissivePositiveDecimalTwoDigits,
         ),
         _buildCell(
           _pricePerKgController,
@@ -223,8 +236,10 @@ class LotInputState extends State<LotInput> {
           validator: _validateNumericMandatory(
             l10n.lot_pricePerKgRequired,
             l10n.lot_pricePerKgInvalid,
+            RegexPatterns.positiveDecimalTwoDigitsNoZero,
           ),
           onChangedCustom: (value) => _onPricePerKgChanged(),
+          customRegex: RegexPatterns.permissivePositiveDecimalTwoDigits,
         ),
         _buildCell(
           _pricePerHeadController,
@@ -234,8 +249,10 @@ class LotInputState extends State<LotInput> {
           validator: _validateNumericMandatory(
             l10n.lot_pricePerHeadRequired,
             l10n.lot_pricePerHeadInvalid,
+            RegexPatterns.positiveDecimalTwoDigitsNoZero,
           ),
           onChangedCustom: (value) => _onPricePerHeadChanged(),
+          customRegex: RegexPatterns.permissivePositiveDecimalTwoDigits,
         ),
         _buildReadOnlyCell(_totalValueController, r'$', width: 90),
         // Delete button
@@ -254,9 +271,15 @@ class LotInputState extends State<LotInput> {
     );
   }
 
-  FormFieldValidator<String> _validateNotEmpty(String errorMessage) {
+  FormFieldValidator<String> _validateNotEmpty(
+    String errorMessage,
+    RegExp? customRegex,
+  ) {
     return (String? value) {
       if (value == null || value.isEmpty) return errorMessage;
+      if (customRegex != null) {
+        if (!customRegex.hasMatch(value)) return errorMessage;
+      }
       return null;
     };
   }
@@ -264,11 +287,15 @@ class LotInputState extends State<LotInput> {
   FormFieldValidator<String> _validateNumericMandatory(
     String requiredMessage,
     String invalidMessage,
+    RegExp? customRegex,
   ) {
     return (String? value) {
       if (value == null || value.isEmpty) return requiredMessage;
       final parsed = double.tryParse(value);
       if (parsed == null || parsed <= 0) return invalidMessage;
+      if (customRegex != null) {
+        if (!customRegex.hasMatch(value)) return invalidMessage;
+      }
       return null;
     };
   }
@@ -279,7 +306,8 @@ class LotInputState extends State<LotInput> {
     double width = 100,
     bool isNumeric = false,
     FormFieldValidator<String>? validator,
-    void Function(String)? onChangedCustom, // 👈 nuevo
+    void Function(String)? onChangedCustom,
+    RegExp? customRegex,
   }) {
     return Container(
       width: width,
@@ -292,10 +320,14 @@ class LotInputState extends State<LotInput> {
         autovalidateMode: AutovalidateMode.onUserInteraction,
         validator: validator,
         keyboardType: isNumeric ? TextInputType.number : TextInputType.text,
-        inputFormatters:
-            isNumeric
-                ? [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}'))]
-                : null,
+        inputFormatters: [
+          if (isNumeric && customRegex == null)
+            FilteringTextInputFormatter.allow(
+              RegExp(RegexPatterns.positiveDecimalTwoDigits.pattern),
+            ),
+          if (customRegex != null)
+            FilteringTextInputFormatter.allow(RegExp(customRegex.pattern)),
+        ],
         style: const TextStyle(fontSize: 11.5),
         decoration: InputDecoration(
           labelText: label,
