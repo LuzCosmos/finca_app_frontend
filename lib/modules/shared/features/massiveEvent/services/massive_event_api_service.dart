@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_config.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_type.dart';
 
 class MassiveEventApiService {
   // Obtén baseUrl directo de dotenv (asegúrate de tener cargado dotenv antes de usar)
@@ -60,10 +61,10 @@ class MassiveEventApiService {
     // Construye el dataJson según el tipo
     Map<String, dynamic> dataJson;
     switch (config.type) {
-      case 'medication':
+      case EventType.medication:
         dataJson = {'name': config.name};
         break;
-      case 'brand':
+      case EventType.brand:
         dataJson = {'brandName': config.name};
         break;
       default:

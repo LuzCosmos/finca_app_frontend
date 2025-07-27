@@ -51,6 +51,19 @@ dependencies:
 
   flutter_dotenv: ^5.1.0
 
+  # Drift runtime
+  drift: ^2.15.0
+  drift_flutter: ^0.2.5
+  # Driver de SQLite nativo para Android/iOS
+  drift_sqflite: ^2.0.1
+  # (opcional) para web, usa un driver basado en IndexedDB //  drift_web: ^2.2.0
+
+  # Para manejar rutas de archivos (SQLite necesita un path)
+  path: ^1.9.0
+  path_provider: ^2.1.5
+  uuid: ^4.5.1
+  connectivity_plus: ^5.0.2
+
 dependency_overrides:
   win32: ^5.0.0
 
@@ -59,6 +72,8 @@ dev_dependencies:
   mockito: ^5.4.4
   mocktail: ^1.0.0
   build_runner: ^2.4.13 # (solo si generas mocks automáticos)
+  drift_dev: ^2.15.0
+
   flutter_test:
     sdk: flutter
 

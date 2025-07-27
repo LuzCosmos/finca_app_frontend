@@ -37,27 +37,27 @@ class _EventDetailFormState extends State<EventDetailForm> {
                   (value) => setState(() => selectedType = value ?? 'weight'),
               items: [
                 DropdownMenuItem(
-                  value: 'weight',
+                  value: EventType.weight.name,
                   child: Text(EventType.weight.asText(context)),
                 ),
                 DropdownMenuItem(
-                  value: 'castration',
+                  value: EventType.castration.name,
                   child: Text(EventType.castration.asText(context)),
                 ),
                 DropdownMenuItem(
-                  value: 'tracker',
+                  value: EventType.tracker.name,
                   child: Text(EventType.tracker.asText(context)),
                 ),
                 DropdownMenuItem(
-                  value: 'eartag',
+                  value: EventType.eartag.name,
                   child: Text(EventType.eartag.asText(context)),
                 ),
                 DropdownMenuItem(
-                  value: 'medication',
+                  value: EventType.medication.name,
                   child: Text(EventType.medication.asText(context)),
                 ),
                 DropdownMenuItem(
-                  value: 'brand',
+                  value: EventType.brand.name,
                   child: Text(EventType.brand.asText(context)),
                 ),
               ],
@@ -88,7 +88,7 @@ class _EventDetailFormState extends State<EventDetailForm> {
               ),
             ],
 
-            if (selectedType == 'brand') ...[
+            if (selectedType == EventType.brand.name) ...[
               DropdownButtonFormField<String>(
                 value: selectedBrand,
                 onChanged: (value) => setState(() => selectedBrand = value),
@@ -127,7 +127,7 @@ class _EventDetailFormState extends State<EventDetailForm> {
         ElevatedButton(
           onPressed: () {
             final Map<String, String> data = {'type': selectedType};
-            if (selectedType == 'medication') {
+            if (selectedType == EventType.medication.name) {
               data['name'] = _nameController.text;
               data['dataJson'] = jsonEncode({
                 'medicationName': _nameController.text,
@@ -135,7 +135,7 @@ class _EventDetailFormState extends State<EventDetailForm> {
                 'dosage': _dosageController.text,
                 'lot': _lotController.text,
               });
-            } else if (selectedType == 'brand') {
+            } else if (selectedType == EventType.brand.name) {
               data['name'] = selectedBrand ?? '';
               data['dataJson'] = jsonEncode({
                 'idBrand': selectedBrand ?? '',

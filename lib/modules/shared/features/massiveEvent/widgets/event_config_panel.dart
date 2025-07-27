@@ -30,7 +30,7 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
     );
     if (result != null) {
       final type = result['type'] ?? '';
-      final name = (type == 'brand') ? result['brand'] : result['name'];
+      final name = result['name'];
 
       if (_canAddDetail(type, name)) {
         final newConfig = SimpleEventConfig.create(
@@ -105,9 +105,11 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
       }
     }
 
-    if (type == 'brand' && name != null && name.isNotEmpty) {
+    if (type == EventType.brand.name && name != null && name.isNotEmpty) {
       final idx = _allDetails.indexWhere(
-        (d) => d.type == 'brand' && d.name.toLowerCase() == name.toLowerCase(),
+        (d) =>
+            d.type == EventType.brand &&
+            d.name.toLowerCase() == name.toLowerCase(),
       );
       if (idx != -1) {
         final existing = _allDetails[idx];
