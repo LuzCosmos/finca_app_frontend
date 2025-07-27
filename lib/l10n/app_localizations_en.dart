@@ -234,4 +234,133 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get lots_summaryTotalTitle => 'Total';
+
+  @override
+  String get addAnimalTitle => 'Add Animal';
+
+  @override
+  String get animalNumberLabel => 'Animal Number';
+
+  @override
+  String get weightLabel => 'Weight (kg)';
+
+  @override
+  String get trackerLabel => 'Tracker';
+
+  @override
+  String get applyButton => 'Apply';
+
+  @override
+  String get eventConfigTitle => 'Event Configuration';
+
+  @override
+  String get addEventDetail => 'Add Event';
+
+  @override
+  String get activeDetails => 'Active Events:';
+
+  @override
+  String get noActiveDetails => 'No active Events';
+
+  @override
+  String get deactivateTooltip => 'Deactivate';
+
+  @override
+  String get historyTitle => 'History:';
+
+  @override
+  String get noHistory => 'No history yet';
+
+  @override
+  String get reactivateTooltip => 'Reactivate';
+
+  @override
+  String onlyOneType(Object type) {
+    return 'Only one event of type $type is allowed in this Massive Event.';
+  }
+
+  @override
+  String brandAlreadyExists(Object brand) {
+    return 'The brand \"$brand\" already exists in this Massive Event.';
+  }
+
+  @override
+  String reactivatedInfo(Object name) {
+    return '\"$name\" has been reactivated.';
+  }
+
+  @override
+  String get eventTypeWeight => 'Weight';
+
+  @override
+  String get eventTypeCastration => 'Castration';
+
+  @override
+  String get eventTypeTracker => 'Assign Tracker';
+
+  @override
+  String get eventTypeEartag => 'Put Eartag';
+
+  @override
+  String get eventTypeMedication => 'Medication';
+
+  @override
+  String get eventTypeBrand => 'Brand Marking';
+
+  @override
+  String get medicationName => 'Name';
+
+  @override
+  String get medicationDosage => 'Dosage';
+
+  @override
+  String get medicationRoute => 'Application route';
+
+  @override
+  String get medicationLot => 'Manufacturing lot';
+
+  @override
+  String get selectBrand => 'Select a brand';
+
+  @override
+  String get createNewBrand => 'Create new brand';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get add => 'Add';
+
+  @override
+  String get createNewBrandTitle => 'Create New Brand';
+
+  @override
+  String get brandName => 'Name';
+
+  @override
+  String get selectImage => 'Select image';
+
+  @override
+  String get create => 'Create';
+
+  @override
+  String get noAnimals => 'No animals added yet';
+
+  @override
+  String get tableAnimal => 'Animal';
+
+  @override
+  String get tableWeight => 'Weight';
+
+  @override
+  String get tableTracker => 'Tracker';
+
+  @override
+  String get tableStatus => 'Status';
+
+  @override
+  String get simpleEventAdded => 'Detail successfully added';
+
+  @override
+  String get simpleEventError => 'An error occurred while adding detail';
 }

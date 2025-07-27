@@ -29,7 +29,13 @@ class AuthService {
       final user = User.fromJson(data['user']);
       final token = data['access_token'];
       final permissions = data['permissions'];
-      return {'user': user, 'token': token, 'permissions': permissions};
+      final idTenant = data['tenant_id'];
+      return {
+        'user': user,
+        'token': token,
+        'permissions': permissions,
+        'idTenant': idTenant,
+      };
     } else if (response.statusCode == 401) {
       throw AuthException('invalidCredentials');
     } else {

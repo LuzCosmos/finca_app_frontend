@@ -3,6 +3,7 @@ import '../modules/shared/features/auth/page/login_page.dart';
 import '../modules/shared/features/home/page/home_page.dart';
 import '../modules/shared/features/loading/loading_page.dart';
 import '../modules/web/features/cattle_purchase/views/purchase_form_page.dart';
+import '../modules/shared/features/massiveEvent/page/massive_event_page.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: '/loading', // temporal, ahora lo explico abajo
@@ -16,6 +17,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/loading', // pantalla inicial mientras decidimos a dónde ir
       builder: (context, state) => const LoadingPage(),
+    ),
+    GoRoute(
+      path: '/massive-events',
+      builder: (context, state) => const MassiveEventPage(),
     ),
   ],
   redirect: (context, state) => null,

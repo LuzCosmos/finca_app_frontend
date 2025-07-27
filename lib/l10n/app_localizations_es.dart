@@ -235,4 +235,133 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get lots_summaryTotalTitle => 'Total';
+
+  @override
+  String get addAnimalTitle => 'Agregar Animal';
+
+  @override
+  String get animalNumberLabel => 'Número de Animal';
+
+  @override
+  String get weightLabel => 'Peso (kg)';
+
+  @override
+  String get trackerLabel => 'Identificador';
+
+  @override
+  String get applyButton => 'Aplicar';
+
+  @override
+  String get eventConfigTitle => 'Configuración de Eventos';
+
+  @override
+  String get addEventDetail => 'Agregar Evento';
+
+  @override
+  String get activeDetails => 'Eventos activos:';
+
+  @override
+  String get noActiveDetails => 'Sin detalles activos';
+
+  @override
+  String get deactivateTooltip => 'Desactivar';
+
+  @override
+  String get historyTitle => 'Historial:';
+
+  @override
+  String get noHistory => 'Sin historial todavía';
+
+  @override
+  String get reactivateTooltip => 'Reactivar';
+
+  @override
+  String onlyOneType(Object type) {
+    return 'Solo puede haber un evento de tipo $type en este Massive Event.';
+  }
+
+  @override
+  String brandAlreadyExists(Object brand) {
+    return 'Ya existe la marca \"$brand\" en este Massive Event.';
+  }
+
+  @override
+  String reactivatedInfo(Object name) {
+    return 'Se reactivó \"$name\".';
+  }
+
+  @override
+  String get eventTypeWeight => 'Peso';
+
+  @override
+  String get eventTypeCastration => 'Castración';
+
+  @override
+  String get eventTypeTracker => 'Asignar Tracker';
+
+  @override
+  String get eventTypeEartag => 'Poner Arete';
+
+  @override
+  String get eventTypeMedication => 'Medicación';
+
+  @override
+  String get eventTypeBrand => 'Marcado';
+
+  @override
+  String get medicationName => 'Nombre';
+
+  @override
+  String get medicationDosage => 'Dosis';
+
+  @override
+  String get medicationRoute => 'Vía de aplicación';
+
+  @override
+  String get medicationLot => 'Lote de fabricación';
+
+  @override
+  String get selectBrand => 'Seleccione una marca';
+
+  @override
+  String get createNewBrand => 'Crear nueva marca';
+
+  @override
+  String get cancel => 'Cancelar';
+
+  @override
+  String get add => 'Agregar';
+
+  @override
+  String get createNewBrandTitle => 'Crear Nueva Brand';
+
+  @override
+  String get brandName => 'Nombre';
+
+  @override
+  String get selectImage => 'Seleccionar imagen';
+
+  @override
+  String get create => 'Crear';
+
+  @override
+  String get noAnimals => 'Aún no se han agregado animales';
+
+  @override
+  String get tableAnimal => 'Animal';
+
+  @override
+  String get tableWeight => 'Peso';
+
+  @override
+  String get tableTracker => 'Identificador';
+
+  @override
+  String get tableStatus => 'Estado';
+
+  @override
+  String get simpleEventAdded => 'Detalle agregado correctamente';
+
+  @override
+  String get simpleEventError => 'Ocurrió un error al agregar el detalle';
 }

@@ -4,18 +4,11 @@
     "description": "Application Title shown in the bar"
   },
 
-
-
-
-
-
   "fieldRequired":"This field is mandatory",
   "delete": "Delete",
   "fixErrors": "Please fix the errors highlighted in red.",
   "numberFormat":"#,##0.##",
   "numberFormat_country":"en_US",
-
-
 
   "error_invalidData": "Invalid data in the form.",
   "error_forbidden": "You do not have permission to perform this action.",
@@ -25,7 +18,6 @@
   "@error_unauthorized": {
     "description": "Shown when the user's session has expired or they are unauthorized, requiring a new login."
   },
-
 
   "login_username": "Username",
   "login_usernameRequired": "Please enter your username",
@@ -43,7 +35,6 @@
   "home_massiveEvent": "Massive Event",
   "home_sale": "Sale",
 
-  
   "purchase_date": "Purchase Date",
   "purchase_dateRequired": "You must select a purchase date.",
   "purchase_create": "Create Purchase",
@@ -64,7 +55,6 @@
   "provider_nitAlreadyExists": "A provider with this NIT already exists",
   "provider_creationError": "Error creating provider",
 
-
   "lotsTitle":"Lots",
   "lot": "Lot",
   "addLot": "Add Lot",
@@ -78,7 +68,6 @@
   "lot_cattleCount": "Count",
   "lot_totalWeight": "Total Weight",
   "lot_totalValue": "Total Value",
-
   "lot_pricePerHead": "Avg. Price per Head",
   "@lot_pricePerHead": {
     "description": "Label for the field where the user enters the average price per head (per cattle)"
@@ -91,7 +80,6 @@
   "@lot_pricePerHeadInvalid": {
     "description": "Validation message when the average price per head is invalid"
   },
-
   "lot_numberRequired": "Please enter the lot number.",
   "lot_duplicateLotNumber": "Two or more lots have the same lot number.",
   "lot_avgWeightRequired": "Please enter the average weight (Kg).",
@@ -110,8 +98,58 @@
   },
   "@lots_summaryTotalTitle": {
     "description": "Label used in the lots section summary row for totals"
-  }
+  },
 
+  "addAnimalTitle": "Add Animal",
+  "animalNumberLabel": "Animal Number",
+  "weightLabel": "Weight (kg)",
+  "trackerLabel": "Tracker",
+  "applyButton": "Apply",
+
+  "eventConfigTitle": "Event Configuration",
+  "addEventDetail": "Add Event",
+  "activeDetails": "Active Events:",
+  "noActiveDetails": "No active Events",
+  "deactivateTooltip": "Deactivate",
+  "historyTitle": "History:",
+  "noHistory": "No history yet",
+  "reactivateTooltip": "Reactivate",
+  "onlyOneType": "Only one event of type {type} is allowed in this Massive Event.",
+  "brandAlreadyExists": "The brand \"{brand}\" already exists in this Massive Event.",
+  "reactivatedInfo": "\"{name}\" has been reactivated.",
   
-  
+  "eventTypeWeight": "Weight",
+  "eventTypeCastration": "Castration",
+  "eventTypeTracker": "Assign Tracker",
+  "eventTypeEartag": "Put Eartag",
+  "eventTypeMedication": "Medication",
+  "eventTypeBrand": "Brand Marking",
+  "medicationName": "Name",
+  "medicationDosage": "Dosage",
+  "medicationRoute": "Application route",
+  "medicationLot": "Manufacturing lot",
+  "selectBrand": "Select a brand",
+  "createNewBrand": "Create new brand",
+  "cancel": "Cancel",
+  "add": "Add",
+  "createNewBrandTitle": "Create New Brand",
+  "brandName": "Name",
+  "selectImage": "Select image",
+  "create": "Create",
+
+  "noAnimals": "No animals added yet",
+  "tableAnimal": "Animal",
+  "tableWeight": "Weight",
+  "tableTracker": "Tracker",
+  "tableStatus": "Status",
+
+  "eventTypeWeight": "Weight",
+  "eventTypeCastration": "Castration",
+  "eventTypeTracker": "Assign Tracker",
+  "eventTypeEartag": "Put Eartag",
+  "eventTypeMedication": "Medication",
+  "eventTypeBrand": "Brand Marking",
+
+  "simpleEventAdded": "Detail successfully added",
+  "simpleEventError": "An error occurred while adding detail"
 }

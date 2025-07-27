@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import '../../../widgets/finca_scaffold.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/shared/features/home/widgets/home_option_with_permission.dart';
-//import 'package:finca_app_frontend/core/services/platform_sevice.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/navigation/massive_event_navigation.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -29,31 +30,15 @@ class HomePage extends StatelessWidget {
                 icon: Icons.shopping_cart,
                 route: "/cattle-purchase",
               ),
-              /*if (isWeb)
-                HomeOptionCard(
-                  title: l10n.home_purchase,
-                  icon: Icons.shopping_cart,
-                  onTap: () {
-                    context.push('/cattle-purchase');
-                  },
-                ),
-              if (isWeb)
-                HomeOptionCard(
-                  title: l10n.home_purchaseReception,
-                  icon: Icons.inventory,
-                  onTap: () {},
-                ),
-              if (isWeb)
-                HomeOptionCard(
-                  title: l10n.home_sale,
-                  icon: Icons.point_of_sale,
-                  onTap: () {},
-                ),
-              HomeOptionCard(
+              HomeOptionWithPermission(
+                module: "FARM",
+                resource: "massive_events",
                 title: l10n.home_massiveEvent,
-                icon: Icons.event,
-                onTap: () {},
-              ),*/
+                icon: CupertinoIcons.list_bullet,
+                route: "/massive-events",
+                forWebOnly: false,
+                onTapOverride: () => openMassiveEventPage(context),
+              ),
             ],
           ),
         ),

@@ -3,7 +3,7 @@
 
   "fieldRequired":"Este campo es obligatorio",
   "delete": "Eliminar",
-
+  "fixErrors": "Por favor corrige los errores resaltados en rojo.",
   "numberFormat":"#,##0.##",
   "numberFormat_country":"en_US",
 
@@ -15,9 +15,7 @@
   "error_unauthorized": "Tu sesión ha expirado y necesitas iniciar sesión nuevamente.",
   "@error_unauthorized": {
     "description": "Se muestra cuando la sesión del usuario ha expirado o no está autorizado, requiriendo un nuevo inicio de sesión."
-},
-
-
+  },
 
   "login_username": "Usuario",
   "login_usernameRequired": "Ingrese su usuario",
@@ -68,12 +66,9 @@
   "lot_cattleCount": "Cant.",
   "lot_totalWeight": "Peso Total",
   "lot_totalValue": "Valor Total",
-
   "lot_pricePerHead": "Precio Prom. por Res",
   "lot_pricePerHeadRequired": "Por favor ingrese el precio promedio por res.",
   "lot_pricePerHeadInvalid": "Ingrese un precio promedio por res válido.",
-
-
   "lot_numberRequired": "Por favor ingrese el número de lote.",
   "lot_duplicateLotNumber": "Dos o más lotes tienen el mismo número de lote.",
   "lot_avgWeightRequired": "Por favor ingrese el peso promedio(Kg).",
@@ -92,5 +87,60 @@
   },
   "@lots_summaryTotalTitle": {
     "description": "Etiqueta usada en la fila de resumen de lotes para totales"
-  }
+  },
+
+  "addAnimalTitle": "Agregar Animal",
+  "animalNumberLabel": "Número de Animal",
+  "weightLabel": "Peso (kg)",
+  "trackerLabel": "Identificador",
+  "applyButton": "Aplicar",
+
+  "eventConfigTitle": "Configuración de Eventos",
+  "addEventDetail": "Agregar Evento",
+  "activeDetails": "Eventos activos:",
+  "noActiveDetails": "Sin detalles activos",
+  "deactivateTooltip": "Desactivar",
+  "historyTitle": "Historial:",
+  "noHistory": "Sin historial todavía",
+  "reactivateTooltip": "Reactivar",
+  "onlyOneType": "Solo puede haber un evento de tipo {type} en este Massive Event.",
+  "brandAlreadyExists": "Ya existe la marca \"{brand}\" en este Massive Event.",
+  "reactivatedInfo": "Se reactivó \"{name}\".",
+
+  "eventTypeWeight": "Peso",
+  "eventTypeCastration": "Castración",
+  "eventTypeTracker": "Asignar Tracker",
+  "eventTypeEartag": "Poner Eartag",
+  "eventTypeMedication": "Medicación",
+  "eventTypeBrand": "Marcado Brand",
+
+  "medicationName": "Nombre",
+  "medicationDosage": "Dosis",
+  "medicationRoute": "Vía de aplicación",
+  "medicationLot": "Lote de fabricación",
+  "selectBrand": "Seleccione una marca",
+  "createNewBrand": "Crear nueva marca",
+  "cancel": "Cancelar",
+  "add": "Agregar",
+  "createNewBrandTitle": "Crear Nueva Brand",
+  "brandName": "Nombre",
+  "selectImage": "Seleccionar imagen",
+  "create": "Crear",
+
+  "noAnimals": "Aún no se han agregado animales",
+  "tableAnimal": "Animal",
+  "tableWeight": "Peso",
+  "tableTracker": "Identificador",
+  "tableStatus": "Estado",
+
+  "eventTypeWeight": "Peso",
+  "eventTypeCastration": "Castración",
+  "eventTypeTracker": "Asignar Tracker",
+  "eventTypeEartag": "Poner Arete",
+  "eventTypeMedication": "Medicación",
+  "eventTypeBrand": "Marcado",
+
+  "simpleEventAdded": "Detalle agregado correctamente",
+  "simpleEventError": "Ocurrió un error al agregar el detalle"
+
 }

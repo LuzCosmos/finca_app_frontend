@@ -1,17 +1,21 @@
 import 'dart:convert';
+import 'package:finca_app_frontend/core/utils/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SessionService {
   static const _tokenKey = 'access_token';
   static const _permissionsKey = 'user_permissions';
+  static const _idTenantKey = 'id_tenant';
 
   static Future<void> saveSession({
     required String token,
     required Map<String, dynamic> permissions,
+    required String idTenant,
   }) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_tokenKey, token);
     await prefs.setString(_permissionsKey, jsonEncode(permissions));
+    await prefs.setString(_idTenantKey, idTenant);
   }
 
   static Future<String?> getToken() async {
@@ -30,8 +34,14 @@ class SessionService {
     }
   }
 
+  static Future<String?> getIdTenant() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_idTenantKey);
+  }
+
   static Future<bool> hasPermission(String module, String resource) async {
     final permissions = await getPermissions();
+    logger.d(permissions);
     if (permissions[module] == null) return false;
     final moduleData = permissions[module];
     return moduleData is Map && moduleData.containsKey(resource);
@@ -46,5 +56,6 @@ class SessionService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_tokenKey);
     await prefs.remove(_permissionsKey);
+    await prefs.remove(_idTenantKey);
   }
 }

@@ -529,6 +529,252 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Total'**
   String get lots_summaryTotalTitle;
+
+  /// No description provided for @addAnimalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Animal'**
+  String get addAnimalTitle;
+
+  /// No description provided for @animalNumberLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Animal Number'**
+  String get animalNumberLabel;
+
+  /// No description provided for @weightLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight (kg)'**
+  String get weightLabel;
+
+  /// No description provided for @trackerLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Tracker'**
+  String get trackerLabel;
+
+  /// No description provided for @applyButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply'**
+  String get applyButton;
+
+  /// No description provided for @eventConfigTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Event Configuration'**
+  String get eventConfigTitle;
+
+  /// No description provided for @addEventDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Event'**
+  String get addEventDetail;
+
+  /// No description provided for @activeDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Events:'**
+  String get activeDetails;
+
+  /// No description provided for @noActiveDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'No active Events'**
+  String get noActiveDetails;
+
+  /// No description provided for @deactivateTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Deactivate'**
+  String get deactivateTooltip;
+
+  /// No description provided for @historyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'History:'**
+  String get historyTitle;
+
+  /// No description provided for @noHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'No history yet'**
+  String get noHistory;
+
+  /// No description provided for @reactivateTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Reactivate'**
+  String get reactivateTooltip;
+
+  /// No description provided for @onlyOneType.
+  ///
+  /// In en, this message translates to:
+  /// **'Only one event of type {type} is allowed in this Massive Event.'**
+  String onlyOneType(Object type);
+
+  /// No description provided for @brandAlreadyExists.
+  ///
+  /// In en, this message translates to:
+  /// **'The brand \"{brand}\" already exists in this Massive Event.'**
+  String brandAlreadyExists(Object brand);
+
+  /// No description provided for @reactivatedInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'\"{name}\" has been reactivated.'**
+  String reactivatedInfo(Object name);
+
+  /// No description provided for @eventTypeWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight'**
+  String get eventTypeWeight;
+
+  /// No description provided for @eventTypeCastration.
+  ///
+  /// In en, this message translates to:
+  /// **'Castration'**
+  String get eventTypeCastration;
+
+  /// No description provided for @eventTypeTracker.
+  ///
+  /// In en, this message translates to:
+  /// **'Assign Tracker'**
+  String get eventTypeTracker;
+
+  /// No description provided for @eventTypeEartag.
+  ///
+  /// In en, this message translates to:
+  /// **'Put Eartag'**
+  String get eventTypeEartag;
+
+  /// No description provided for @eventTypeMedication.
+  ///
+  /// In en, this message translates to:
+  /// **'Medication'**
+  String get eventTypeMedication;
+
+  /// No description provided for @eventTypeBrand.
+  ///
+  /// In en, this message translates to:
+  /// **'Brand Marking'**
+  String get eventTypeBrand;
+
+  /// No description provided for @medicationName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get medicationName;
+
+  /// No description provided for @medicationDosage.
+  ///
+  /// In en, this message translates to:
+  /// **'Dosage'**
+  String get medicationDosage;
+
+  /// No description provided for @medicationRoute.
+  ///
+  /// In en, this message translates to:
+  /// **'Application route'**
+  String get medicationRoute;
+
+  /// No description provided for @medicationLot.
+  ///
+  /// In en, this message translates to:
+  /// **'Manufacturing lot'**
+  String get medicationLot;
+
+  /// No description provided for @selectBrand.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a brand'**
+  String get selectBrand;
+
+  /// No description provided for @createNewBrand.
+  ///
+  /// In en, this message translates to:
+  /// **'Create new brand'**
+  String get createNewBrand;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @add.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get add;
+
+  /// No description provided for @createNewBrandTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create New Brand'**
+  String get createNewBrandTitle;
+
+  /// No description provided for @brandName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get brandName;
+
+  /// No description provided for @selectImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Select image'**
+  String get selectImage;
+
+  /// No description provided for @create.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get create;
+
+  /// No description provided for @noAnimals.
+  ///
+  /// In en, this message translates to:
+  /// **'No animals added yet'**
+  String get noAnimals;
+
+  /// No description provided for @tableAnimal.
+  ///
+  /// In en, this message translates to:
+  /// **'Animal'**
+  String get tableAnimal;
+
+  /// No description provided for @tableWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight'**
+  String get tableWeight;
+
+  /// No description provided for @tableTracker.
+  ///
+  /// In en, this message translates to:
+  /// **'Tracker'**
+  String get tableTracker;
+
+  /// No description provided for @tableStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get tableStatus;
+
+  /// No description provided for @simpleEventAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Detail successfully added'**
+  String get simpleEventAdded;
+
+  /// No description provided for @simpleEventError.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred while adding detail'**
+  String get simpleEventError;
 }
 
 class _AppLocalizationsDelegate
