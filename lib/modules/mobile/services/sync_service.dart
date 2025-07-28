@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
-import 'package:finca_app_frontend/modules/mobile/data/database/app_database_mobile.dart';
-import 'package:finca_app_frontend/modules/mobile/data/database/repositories/animal_simple_event_repository.dart';
-import 'package:finca_app_frontend/modules/mobile/data/database/repositories/brand_repository.dart';
-import 'package:finca_app_frontend/modules/mobile/data/database/repositories/massive_event_repository.dart';
-import 'package:finca_app_frontend/modules/mobile/data/database/repositories/simple_event_repository.dart';
+import 'package:finca_app_frontend/core/data/database/app_database_mobile.dart';
+import 'package:finca_app_frontend/core/data/database/repositories/animal_simple_event_repository.dart';
+import 'package:finca_app_frontend/core/data/database/repositories/brand_repository.dart';
+import 'package:finca_app_frontend/core/data/database/repositories/massive_event_repository.dart';
+import 'package:finca_app_frontend/core/data/database/repositories/simple_event_repository.dart';
 
 class SyncResult {
   final bool success;

@@ -119,8 +119,10 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
 
   bool _canAddDetail(String type, String? name) {
     final l10n = AppLocalizations.of(context)!;
-
-    if (type == 'weight' || type == 'tracker' || type == 'eartag') {
+    if (type == EventType.weight.name ||
+        type == EventType.tracker.name ||
+        type == EventType.eartag.name ||
+        type == EventType.castration.name) {
       final idx = _allDetails.indexWhere(
         (d) => d.type == EventType.values.firstWhere((e) => e.name == type),
       );

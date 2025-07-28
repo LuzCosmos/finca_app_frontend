@@ -1,10 +1,10 @@
 import 'dart:convert';
-import 'package:finca_app_frontend/modules/mobile/data/database/services/simple_event_service.dart';
+import 'package:finca_app_frontend/core/data/database/services/simple_event_service.dart';
 import 'package:http/http.dart' as http;
 import 'package:uuid/uuid.dart';
 import 'package:drift/drift.dart';
-import 'package:finca_app_frontend/modules/mobile/data/database/app_database_mobile.dart';
-import 'package:finca_app_frontend/modules/mobile/data/database/repositories/massive_event_repository.dart';
+import 'package:finca_app_frontend/core/data/database/app_database_mobile.dart';
+import 'package:finca_app_frontend/core/data/database/repositories/massive_event_repository.dart';
 
 class MassiveEventService {
   final MassiveEventRepository repo;

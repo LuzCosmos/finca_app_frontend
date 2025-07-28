@@ -1,5 +1,5 @@
-import 'package:finca_app_frontend/modules/mobile/data/database/app_database_mobile.dart';
-import 'package:finca_app_frontend/modules/mobile/data/database/daos/massive_event_dao.dart';
+import 'package:finca_app_frontend/core/data/database/app_database_mobile.dart';
+import 'package:finca_app_frontend/core/data/database/daos/massive_event_dao.dart';
 import 'package:drift/drift.dart';
 
 class MassiveEventRepository {

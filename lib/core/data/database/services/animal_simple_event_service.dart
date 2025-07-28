@@ -2,40 +2,47 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:uuid/uuid.dart';
 import 'package:drift/drift.dart';
-import 'package:finca_app_frontend/modules/mobile/data/database/app_database_mobile.dart';
-import 'package:finca_app_frontend/modules/mobile/data/database/repositories/simple_event_repository.dart';
+import 'package:finca_app_frontend/core/data/database/app_database_mobile.dart';
+import 'package:finca_app_frontend/core/data/database/repositories/animal_simple_event_repository.dart';
 
-class SimpleEventService {
-  final SimpleEventRepository repo;
+class AnimalSimpleEventService {
+  final AnimalSimpleEventRepository repo;
   final String baseUrl;
   final Future<String> Function() getToken;
   final Future<bool> Function() hasNetwork;
 
-  SimpleEventService({
+  AnimalSimpleEventService({
     required this.repo,
     required this.baseUrl,
     required this.getToken,
     required this.hasNetwork,
   });
 
-  Future<void> createSimpleEvent({
+  Future<void> createAnimalSimpleEvent({
     required String idTenant,
-    required String idMassiveEvent,
+    required String animalNumber,
     required String type,
-    Map<String, dynamic>? data,
+    required Map<String, dynamic> data,
+    required String appliedBy,
+    String? idMassiveEvent,
   }) async {
     final uuid = const Uuid().v4();
-    final entity = SimpleEventLocalCompanion.insert(
+    final entity = AnimalSimpleEventLocalCompanion.insert(
       id: uuid,
       idTenant: idTenant,
-      idMassiveEvent: idMassiveEvent,
+      animalNumber: animalNumber,
       type: type,
-      data: Value(data != null ? jsonEncode(data) : null),
+      data: Value(jsonEncode(data)),
+      appliedAt: DateTime.now(),
+      appliedBy: Value(appliedBy),
+      recordedInMassiveEvent: Value(idMassiveEvent),
       isSynced: const Value(false),
     );
 
+    // 1️⃣ guardar siempre local
     await repo.create(entity);
 
+    // 2️⃣ intentar enviar si hay red
     if (await hasNetwork()) {
       final token = await getToken();
       final res = await http.post(
@@ -51,19 +58,16 @@ class SimpleEventService {
               "idTenant": idTenant,
               "massiveEventServerId": idMassiveEvent,
               "type": type,
-              "data": data != null ? jsonEncode(data) : null,
-              "createdAt": DateTime.now().toIso8601String(),
+              "data": jsonEncode(data),
+              "appliedAt": DateTime.now().toIso8601String(),
+              "appliedBy": appliedBy,
             },
           ],
         }),
       );
       if (res.statusCode == 200) {
-        await repo.markAsSynced(entity.id.value);
+        await repo.markSynced(entity.id.value);
       }
     }
-  }
-
-  Future<List<SimpleEvent>> getByidMassiveEvent(String id) async {
-    return await repo.getByidMassiveEvent(id);
   }
 }

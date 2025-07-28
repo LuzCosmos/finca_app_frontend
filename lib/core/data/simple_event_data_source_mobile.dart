@@ -1,7 +1,7 @@
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/data/simple_event_data_source.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_model.dart';
-import 'package:finca_app_frontend/modules/mobile/data/database/repositories/simple_event_repository.dart';
-import 'package:finca_app_frontend/modules/mobile/mappers/simple_event_model_mapper.dart';
+import 'package:finca_app_frontend/core/data/database/repositories/simple_event_repository.dart';
+import 'package:finca_app_frontend/core/data/mappers/simple_event_model_mapper.dart';
 
 class SimpleEventDataSourceMobile implements ISimpleEventDataSource {
   final SimpleEventRepository repo;
