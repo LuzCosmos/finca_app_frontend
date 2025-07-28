@@ -6,16 +6,19 @@ class SessionService {
   static const _tokenKey = 'access_token';
   static const _permissionsKey = 'user_permissions';
   static const _idTenantKey = 'id_tenant';
+  static const _idUserKey = 'id_user';
 
   static Future<void> saveSession({
     required String token,
     required Map<String, dynamic> permissions,
     required String idTenant,
+    required String idUser,
   }) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_tokenKey, token);
     await prefs.setString(_permissionsKey, jsonEncode(permissions));
     await prefs.setString(_idTenantKey, idTenant);
+    await prefs.setString(_idUserKey, idUser);
   }
 
   static Future<String?> getToken() async {
@@ -37,6 +40,11 @@ class SessionService {
   static Future<String?> getIdTenant() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(_idTenantKey);
+  }
+
+  static Future<String?> getIdUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_idUserKey);
   }
 
   static Future<bool> hasPermission(String module, String resource) async {

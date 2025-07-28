@@ -135,7 +135,7 @@ class SyncService {
                         "id": s.id,
                         "idTenant": s.idTenant,
                         "type": s.type,
-                        "dataJson": s.dataJson,
+                        "data": s.data,
                         "createdAt": s.createdAt?.toIso8601String(),
                       },
                     )
@@ -169,7 +169,7 @@ class SyncService {
         for (var m in unsyncedMassive) {
           await massiveEventRepository.markAsSynced(m.id);
           final relatedSimpleEvents = await simpleEventRepository
-              .getByMassiveEventId(m.id);
+              .getByidMassiveEvent(m.id);
           for (var s in relatedSimpleEvents.where((s) => s.isSynced == false)) {
             await simpleEventRepository.markAsSynced(s.id);
           }
@@ -203,7 +203,7 @@ class SyncService {
             "idTenant": s.idTenant,
             "massiveEventServerId": s.idMassiveEvent,
             "type": s.type,
-            "dataJson": s.dataJson,
+            "data": s.data,
             "createdAt": s.createdAt?.toIso8601String(),
           },
       markSynced: (id) => simpleEventRepository.markAsSynced(id),
@@ -222,7 +222,7 @@ class SyncService {
             "idTenant": a.idTenant,
             "massiveEventServerId": a.recordedInMassiveEvent,
             "type": a.type,
-            "dataJson": a.dataJson,
+            "data": a.data,
             "appliedAt": a.appliedAt.toIso8601String(),
             "appliedBy": a.appliedBy,
           },

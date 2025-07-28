@@ -20,17 +20,17 @@ class SimpleEventService {
 
   Future<void> createSimpleEvent({
     required String idTenant,
-    required String massiveEventId,
+    required String idMassiveEvent,
     required String type,
-    Map<String, dynamic>? dataJson,
+    Map<String, dynamic>? data,
   }) async {
     final uuid = const Uuid().v4();
     final entity = SimpleEventLocalCompanion.insert(
       id: uuid,
       idTenant: idTenant,
-      idMassiveEvent: massiveEventId,
+      idMassiveEvent: idMassiveEvent,
       type: type,
-      dataJson: Value(dataJson != null ? jsonEncode(dataJson) : null),
+      data: Value(data != null ? jsonEncode(data) : null),
       isSynced: const Value(false),
     );
 
@@ -49,9 +49,9 @@ class SimpleEventService {
             {
               "id": entity.id.value,
               "idTenant": idTenant,
-              "massiveEventServerId": massiveEventId,
+              "massiveEventServerId": idMassiveEvent,
               "type": type,
-              "dataJson": dataJson != null ? jsonEncode(dataJson) : null,
+              "data": data != null ? jsonEncode(data) : null,
               "createdAt": DateTime.now().toIso8601String(),
             },
           ],
@@ -63,7 +63,7 @@ class SimpleEventService {
     }
   }
 
-  Future<List<SimpleEvent>> getByMassiveEventId(String id) async {
-    return await repo.getByMassiveEventId(id);
+  Future<List<SimpleEvent>> getByidMassiveEvent(String id) async {
+    return await repo.getByidMassiveEvent(id);
   }
 }

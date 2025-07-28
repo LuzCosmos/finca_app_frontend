@@ -7,18 +7,18 @@ class MassiveEventBloc extends Bloc<MassiveEventEvent, MassiveEventState> {
   final ISimpleEventDataSource dataSource;
 
   MassiveEventBloc({required this.dataSource}) : super(MassiveEventInitial()) {
-    on<AddSimpleEventConfig>(_onAddSimpleEventConfig);
+    on<AddSimpleEvent>(_onAddSimpleEventConfig);
   }
 
   Future<void> _onAddSimpleEventConfig(
-    AddSimpleEventConfig event,
+    AddSimpleEvent event,
     Emitter<MassiveEventState> emit,
   ) async {
     emit(MassiveEventLoading());
     try {
       await dataSource.saveSimpleEvent(
-        config: event.config,
-        massiveEventId: event.massiveEventId,
+        simpleEvent: event.config,
+        idMassiveEvent: event.idMassiveEvent,
         idTenant: event.idTenant,
       );
       emit(

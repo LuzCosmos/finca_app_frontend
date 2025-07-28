@@ -7,7 +7,7 @@ class SimpleEventLocal extends Table {
   TextColumn get idTenant => text()();
   TextColumn get idMassiveEvent => text()(); // FK a MassiveEventLocal.id
   TextColumn get type => text()();
-  TextColumn get dataJson => text().nullable()();
+  TextColumn get data => text().nullable()();
   BoolColumn get isSynced => boolean().withDefault(const Constant(false))();
   DateTimeColumn get createdAt => dateTime().nullable()();
 

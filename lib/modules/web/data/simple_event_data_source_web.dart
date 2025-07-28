@@ -1,35 +1,30 @@
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/data/simple_event_data_source.dart';
-import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_config.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/services/massive_event_api_service.dart';
 
 class SimpleEventDataSourceWeb implements ISimpleEventDataSource {
-  final MassiveEventApiService apiService;
-  final String createdBy; // puedes inyectar datos de sesión aquí
-
   String? _massiveEventServerId;
   bool _massiveEventCreated = false;
 
-  SimpleEventDataSourceWeb({required this.apiService, required this.createdBy});
+  SimpleEventDataSourceWeb();
 
   @override
   Future<void> saveSimpleEvent({
-    required SimpleEventConfig config,
-    required String massiveEventId, // ignorado, lo maneja el servidor
+    required SimpleEventModel simpleEvent,
+    required String idMassiveEvent, // ignorado, lo maneja el servidor
     required String idTenant,
   }) async {
     if (!_massiveEventCreated) {
-      _massiveEventServerId = await apiService.createMassiveEvent(
-        idTenant: idTenant,
+      _massiveEventServerId = await MassiveEventApiService.createMassiveEvent(
         eventDate: DateTime.now(),
-        createdBy: createdBy,
+        simpleEvents: [simpleEvent],
       );
       _massiveEventCreated = true;
+    } else {
+      await MassiveEventApiService.createSimpleEvent(
+        massiveEventServerId: _massiveEventServerId!,
+        simpleEvent: simpleEvent,
+      );
     }
-
-    await apiService.createSimpleEvent(
-      massiveEventServerId: _massiveEventServerId!,
-      idTenant: idTenant,
-      config: config,
-    );
   }
 }

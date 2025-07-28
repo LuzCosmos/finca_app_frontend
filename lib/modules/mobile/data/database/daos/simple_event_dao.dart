@@ -21,9 +21,9 @@ class SimpleEventDao extends DatabaseAccessor<AppDatabase>
       ..where((tbl) => tbl.isSynced.equals(false))).get();
   }
 
-  Future<List<SimpleEvent>> getByMassiveEventId(String massiveEventId) {
+  Future<List<SimpleEvent>> getByidMassiveEvent(String idMassiveEvent) {
     return (select(simpleEventLocal)
-      ..where((t) => t.idMassiveEvent.equals(massiveEventId))).get();
+      ..where((t) => t.idMassiveEvent.equals(idMassiveEvent))).get();
   }
 
   Future<int> deleteSimpleEvent(String id) {

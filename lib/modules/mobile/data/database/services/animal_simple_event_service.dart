@@ -24,7 +24,7 @@ class AnimalSimpleEventService {
     required String type,
     required Map<String, dynamic> data,
     required String appliedBy,
-    String? massiveEventId,
+    String? idMassiveEvent,
   }) async {
     final uuid = const Uuid().v4();
     final entity = AnimalSimpleEventLocalCompanion.insert(
@@ -32,10 +32,10 @@ class AnimalSimpleEventService {
       idTenant: idTenant,
       animalNumber: animalNumber,
       type: type,
-      dataJson: Value(jsonEncode(data)),
+      data: Value(jsonEncode(data)),
       appliedAt: DateTime.now(),
       appliedBy: Value(appliedBy),
-      recordedInMassiveEvent: Value(massiveEventId),
+      recordedInMassiveEvent: Value(idMassiveEvent),
       isSynced: const Value(false),
     );
 
@@ -56,9 +56,9 @@ class AnimalSimpleEventService {
             {
               "id": entity.id.value,
               "idTenant": idTenant,
-              "massiveEventServerId": massiveEventId,
+              "massiveEventServerId": idMassiveEvent,
               "type": type,
-              "dataJson": jsonEncode(data),
+              "data": jsonEncode(data),
               "appliedAt": DateTime.now().toIso8601String(),
               "appliedBy": appliedBy,
             },

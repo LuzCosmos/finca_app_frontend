@@ -1,70 +1,88 @@
 import 'package:uuid/uuid.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_type.dart';
 
-class SimpleEventConfig {
+class SimpleEventModel {
   final String id; // UUID
-  final String name; // nombre o descripción (ej: "Medication A")
+  String? idTenant; // UUID
   final EventType type; // tipo: medication, brand, weight, etc.
-  final String? dataJson; // datos adicionales en formato JSON
+  final String? data; // datos adicionales en formato JSON
   final bool isActive; // si está activo para aplicar a nuevas reses
   final DateTime createdAt;
+  final String? idMassiveEvent;
 
-  SimpleEventConfig({
+  SimpleEventModel({
     required this.id,
-    required this.name,
+    this.idTenant,
     required this.type,
-    this.dataJson,
+    this.data,
     required this.isActive,
     required this.createdAt,
+    this.idMassiveEvent,
   });
 
   /// Crea un nuevo evento activo
-  factory SimpleEventConfig.create({
+  factory SimpleEventModel.create({
     required String name,
     required EventType type,
-    String? dataJson,
+    String? data,
+    String? idMassiveEvent,
+    String? idTenant,
   }) {
-    return SimpleEventConfig(
+    return SimpleEventModel(
       id: const Uuid().v4(),
-      name: name,
+      idTenant: idTenant,
       type: type,
-      dataJson: dataJson,
+      data: data,
       isActive: true,
       createdAt: DateTime.now(),
+      idMassiveEvent: idMassiveEvent,
     );
   }
 
   /// Devuelve una copia con isActive modificado
-  SimpleEventConfig copyWith({bool? isActive}) {
-    return SimpleEventConfig(
+  SimpleEventModel copyWith({bool? isActive}) {
+    return SimpleEventModel(
       id: id,
-      name: name,
+      idTenant: idTenant,
       type: type,
-      dataJson: dataJson,
+      data: data,
       isActive: isActive ?? this.isActive,
       createdAt: createdAt,
+      idMassiveEvent: idMassiveEvent,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'name': name,
+      'idTenant': idTenant,
       'type': type.name,
-      'dataJson': dataJson, // guarda como string
+      'data': data, // guarda como string
       'createdAt': createdAt.toIso8601String(),
       'isActive': isActive,
+      'idMassiveEvent': idMassiveEvent,
     };
   }
 
-  factory SimpleEventConfig.fromJson(Map<String, dynamic> json) {
-    return SimpleEventConfig(
+  Map<String, dynamic> toJsonOnlineApi() {
+    return {
+      'id': id,
+      'idTenant': idTenant,
+      'type': type.name,
+      'data': data,
+      'idMassiveEvent': idMassiveEvent,
+    };
+  }
+
+  factory SimpleEventModel.fromJson(Map<String, dynamic> json) {
+    return SimpleEventModel(
       id: json['id'] as String,
-      name: json['name'] as String,
+      idTenant: json['idTenant'] as String,
       type: EventType.values.firstWhere((e) => e.name == json['type']),
-      dataJson: json['dataJson'] as String?,
+      data: json['data'] as String?,
       createdAt: DateTime.parse(json['createdAt'] as String),
       isActive: json['isActive'] as bool,
+      idMassiveEvent: json['idMassiveEvent'] as String?,
     );
   }
 }

@@ -675,12 +675,10 @@ class $SimpleEventLocalTable extends SimpleEventLocal
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _dataJsonMeta = const VerificationMeta(
-    'dataJson',
-  );
+  static const VerificationMeta _dataMeta = const VerificationMeta('data');
   @override
-  late final GeneratedColumn<String> dataJson = GeneratedColumn<String>(
-    'data_json',
+  late final GeneratedColumn<String> data = GeneratedColumn<String>(
+    'data',
     aliasedName,
     true,
     type: DriftSqlType.string,
@@ -719,7 +717,7 @@ class $SimpleEventLocalTable extends SimpleEventLocal
     idTenant,
     idMassiveEvent,
     type,
-    dataJson,
+    data,
     isSynced,
     createdAt,
   ];
@@ -773,10 +771,10 @@ class $SimpleEventLocalTable extends SimpleEventLocal
     } else if (isInserting) {
       context.missing(_typeMeta);
     }
-    if (data.containsKey('data_json')) {
+    if (data.containsKey('data')) {
       context.handle(
-        _dataJsonMeta,
-        dataJson.isAcceptableOrUnknown(data['data_json']!, _dataJsonMeta),
+        _dataMeta,
+        this.data.isAcceptableOrUnknown(data['data']!, _dataMeta),
       );
     }
     if (data.containsKey('is_synced')) {
@@ -824,9 +822,9 @@ class $SimpleEventLocalTable extends SimpleEventLocal
             DriftSqlType.string,
             data['${effectivePrefix}type'],
           )!,
-      dataJson: attachedDatabase.typeMapping.read(
+      data: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
-        data['${effectivePrefix}data_json'],
+        data['${effectivePrefix}data'],
       ),
       isSynced:
           attachedDatabase.typeMapping.read(
@@ -852,7 +850,7 @@ class SimpleEvent extends DataClass implements Insertable<SimpleEvent> {
   final String idTenant;
   final String idMassiveEvent;
   final String type;
-  final String? dataJson;
+  final String? data;
   final bool isSynced;
   final DateTime? createdAt;
   const SimpleEvent({
@@ -861,7 +859,7 @@ class SimpleEvent extends DataClass implements Insertable<SimpleEvent> {
     required this.idTenant,
     required this.idMassiveEvent,
     required this.type,
-    this.dataJson,
+    this.data,
     required this.isSynced,
     this.createdAt,
   });
@@ -875,8 +873,8 @@ class SimpleEvent extends DataClass implements Insertable<SimpleEvent> {
     map['id_tenant'] = Variable<String>(idTenant);
     map['id_massive_event'] = Variable<String>(idMassiveEvent);
     map['type'] = Variable<String>(type);
-    if (!nullToAbsent || dataJson != null) {
-      map['data_json'] = Variable<String>(dataJson);
+    if (!nullToAbsent || data != null) {
+      map['data'] = Variable<String>(data);
     }
     map['is_synced'] = Variable<bool>(isSynced);
     if (!nullToAbsent || createdAt != null) {
@@ -895,10 +893,7 @@ class SimpleEvent extends DataClass implements Insertable<SimpleEvent> {
       idTenant: Value(idTenant),
       idMassiveEvent: Value(idMassiveEvent),
       type: Value(type),
-      dataJson:
-          dataJson == null && nullToAbsent
-              ? const Value.absent()
-              : Value(dataJson),
+      data: data == null && nullToAbsent ? const Value.absent() : Value(data),
       isSynced: Value(isSynced),
       createdAt:
           createdAt == null && nullToAbsent
@@ -918,7 +913,7 @@ class SimpleEvent extends DataClass implements Insertable<SimpleEvent> {
       idTenant: serializer.fromJson<String>(json['idTenant']),
       idMassiveEvent: serializer.fromJson<String>(json['idMassiveEvent']),
       type: serializer.fromJson<String>(json['type']),
-      dataJson: serializer.fromJson<String?>(json['dataJson']),
+      data: serializer.fromJson<String?>(json['data']),
       isSynced: serializer.fromJson<bool>(json['isSynced']),
       createdAt: serializer.fromJson<DateTime?>(json['createdAt']),
     );
@@ -932,7 +927,7 @@ class SimpleEvent extends DataClass implements Insertable<SimpleEvent> {
       'idTenant': serializer.toJson<String>(idTenant),
       'idMassiveEvent': serializer.toJson<String>(idMassiveEvent),
       'type': serializer.toJson<String>(type),
-      'dataJson': serializer.toJson<String?>(dataJson),
+      'data': serializer.toJson<String?>(data),
       'isSynced': serializer.toJson<bool>(isSynced),
       'createdAt': serializer.toJson<DateTime?>(createdAt),
     };
@@ -944,7 +939,7 @@ class SimpleEvent extends DataClass implements Insertable<SimpleEvent> {
     String? idTenant,
     String? idMassiveEvent,
     String? type,
-    Value<String?> dataJson = const Value.absent(),
+    Value<String?> data = const Value.absent(),
     bool? isSynced,
     Value<DateTime?> createdAt = const Value.absent(),
   }) => SimpleEvent(
@@ -953,7 +948,7 @@ class SimpleEvent extends DataClass implements Insertable<SimpleEvent> {
     idTenant: idTenant ?? this.idTenant,
     idMassiveEvent: idMassiveEvent ?? this.idMassiveEvent,
     type: type ?? this.type,
-    dataJson: dataJson.present ? dataJson.value : this.dataJson,
+    data: data.present ? data.value : this.data,
     isSynced: isSynced ?? this.isSynced,
     createdAt: createdAt.present ? createdAt.value : this.createdAt,
   );
@@ -967,7 +962,7 @@ class SimpleEvent extends DataClass implements Insertable<SimpleEvent> {
               ? data.idMassiveEvent.value
               : this.idMassiveEvent,
       type: data.type.present ? data.type.value : this.type,
-      dataJson: data.dataJson.present ? data.dataJson.value : this.dataJson,
+      data: data.data.present ? data.data.value : this.data,
       isSynced: data.isSynced.present ? data.isSynced.value : this.isSynced,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
@@ -981,7 +976,7 @@ class SimpleEvent extends DataClass implements Insertable<SimpleEvent> {
           ..write('idTenant: $idTenant, ')
           ..write('idMassiveEvent: $idMassiveEvent, ')
           ..write('type: $type, ')
-          ..write('dataJson: $dataJson, ')
+          ..write('data: $data, ')
           ..write('isSynced: $isSynced, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
@@ -995,7 +990,7 @@ class SimpleEvent extends DataClass implements Insertable<SimpleEvent> {
     idTenant,
     idMassiveEvent,
     type,
-    dataJson,
+    data,
     isSynced,
     createdAt,
   );
@@ -1008,7 +1003,7 @@ class SimpleEvent extends DataClass implements Insertable<SimpleEvent> {
           other.idTenant == this.idTenant &&
           other.idMassiveEvent == this.idMassiveEvent &&
           other.type == this.type &&
-          other.dataJson == this.dataJson &&
+          other.data == this.data &&
           other.isSynced == this.isSynced &&
           other.createdAt == this.createdAt);
 }
@@ -1019,7 +1014,7 @@ class SimpleEventLocalCompanion extends UpdateCompanion<SimpleEvent> {
   final Value<String> idTenant;
   final Value<String> idMassiveEvent;
   final Value<String> type;
-  final Value<String?> dataJson;
+  final Value<String?> data;
   final Value<bool> isSynced;
   final Value<DateTime?> createdAt;
   final Value<int> rowid;
@@ -1029,7 +1024,7 @@ class SimpleEventLocalCompanion extends UpdateCompanion<SimpleEvent> {
     this.idTenant = const Value.absent(),
     this.idMassiveEvent = const Value.absent(),
     this.type = const Value.absent(),
-    this.dataJson = const Value.absent(),
+    this.data = const Value.absent(),
     this.isSynced = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -1040,7 +1035,7 @@ class SimpleEventLocalCompanion extends UpdateCompanion<SimpleEvent> {
     required String idTenant,
     required String idMassiveEvent,
     required String type,
-    this.dataJson = const Value.absent(),
+    this.data = const Value.absent(),
     this.isSynced = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -1054,7 +1049,7 @@ class SimpleEventLocalCompanion extends UpdateCompanion<SimpleEvent> {
     Expression<String>? idTenant,
     Expression<String>? idMassiveEvent,
     Expression<String>? type,
-    Expression<String>? dataJson,
+    Expression<String>? data,
     Expression<bool>? isSynced,
     Expression<DateTime>? createdAt,
     Expression<int>? rowid,
@@ -1065,7 +1060,7 @@ class SimpleEventLocalCompanion extends UpdateCompanion<SimpleEvent> {
       if (idTenant != null) 'id_tenant': idTenant,
       if (idMassiveEvent != null) 'id_massive_event': idMassiveEvent,
       if (type != null) 'type': type,
-      if (dataJson != null) 'data_json': dataJson,
+      if (data != null) 'data': data,
       if (isSynced != null) 'is_synced': isSynced,
       if (createdAt != null) 'created_at': createdAt,
       if (rowid != null) 'rowid': rowid,
@@ -1078,7 +1073,7 @@ class SimpleEventLocalCompanion extends UpdateCompanion<SimpleEvent> {
     Value<String>? idTenant,
     Value<String>? idMassiveEvent,
     Value<String>? type,
-    Value<String?>? dataJson,
+    Value<String?>? data,
     Value<bool>? isSynced,
     Value<DateTime?>? createdAt,
     Value<int>? rowid,
@@ -1089,7 +1084,7 @@ class SimpleEventLocalCompanion extends UpdateCompanion<SimpleEvent> {
       idTenant: idTenant ?? this.idTenant,
       idMassiveEvent: idMassiveEvent ?? this.idMassiveEvent,
       type: type ?? this.type,
-      dataJson: dataJson ?? this.dataJson,
+      data: data ?? this.data,
       isSynced: isSynced ?? this.isSynced,
       createdAt: createdAt ?? this.createdAt,
       rowid: rowid ?? this.rowid,
@@ -1114,8 +1109,8 @@ class SimpleEventLocalCompanion extends UpdateCompanion<SimpleEvent> {
     if (type.present) {
       map['type'] = Variable<String>(type.value);
     }
-    if (dataJson.present) {
-      map['data_json'] = Variable<String>(dataJson.value);
+    if (data.present) {
+      map['data'] = Variable<String>(data.value);
     }
     if (isSynced.present) {
       map['is_synced'] = Variable<bool>(isSynced.value);
@@ -1137,7 +1132,7 @@ class SimpleEventLocalCompanion extends UpdateCompanion<SimpleEvent> {
           ..write('idTenant: $idTenant, ')
           ..write('idMassiveEvent: $idMassiveEvent, ')
           ..write('type: $type, ')
-          ..write('dataJson: $dataJson, ')
+          ..write('data: $data, ')
           ..write('isSynced: $isSynced, ')
           ..write('createdAt: $createdAt, ')
           ..write('rowid: $rowid')
@@ -1192,12 +1187,10 @@ class $AnimalSimpleEventLocalTable extends AnimalSimpleEventLocal
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _dataJsonMeta = const VerificationMeta(
-    'dataJson',
-  );
+  static const VerificationMeta _dataMeta = const VerificationMeta('data');
   @override
-  late final GeneratedColumn<String> dataJson = GeneratedColumn<String>(
-    'data_json',
+  late final GeneratedColumn<String> data = GeneratedColumn<String>(
+    'data',
     aliasedName,
     true,
     type: DriftSqlType.string,
@@ -1272,7 +1265,7 @@ class $AnimalSimpleEventLocalTable extends AnimalSimpleEventLocal
     idTenant,
     animalNumber,
     type,
-    dataJson,
+    data,
     appliedAt,
     appliedBy,
     recordedInMassiveEvent,
@@ -1323,10 +1316,10 @@ class $AnimalSimpleEventLocalTable extends AnimalSimpleEventLocal
     } else if (isInserting) {
       context.missing(_typeMeta);
     }
-    if (data.containsKey('data_json')) {
+    if (data.containsKey('data')) {
       context.handle(
-        _dataJsonMeta,
-        dataJson.isAcceptableOrUnknown(data['data_json']!, _dataJsonMeta),
+        _dataMeta,
+        this.data.isAcceptableOrUnknown(data['data']!, _dataMeta),
       );
     }
     if (data.containsKey('applied_at')) {
@@ -1393,9 +1386,9 @@ class $AnimalSimpleEventLocalTable extends AnimalSimpleEventLocal
             DriftSqlType.string,
             data['${effectivePrefix}type'],
           )!,
-      dataJson: attachedDatabase.typeMapping.read(
+      data: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
-        data['${effectivePrefix}data_json'],
+        data['${effectivePrefix}data'],
       ),
       appliedAt:
           attachedDatabase.typeMapping.read(
@@ -1435,7 +1428,7 @@ class AnimalSimpleEvent extends DataClass
   final String idTenant;
   final String animalNumber;
   final String type;
-  final String? dataJson;
+  final String? data;
   final DateTime appliedAt;
   final String? appliedBy;
   final String? recordedInMassiveEvent;
@@ -1446,7 +1439,7 @@ class AnimalSimpleEvent extends DataClass
     required this.idTenant,
     required this.animalNumber,
     required this.type,
-    this.dataJson,
+    this.data,
     required this.appliedAt,
     this.appliedBy,
     this.recordedInMassiveEvent,
@@ -1460,8 +1453,8 @@ class AnimalSimpleEvent extends DataClass
     map['id_tenant'] = Variable<String>(idTenant);
     map['animal_number'] = Variable<String>(animalNumber);
     map['type'] = Variable<String>(type);
-    if (!nullToAbsent || dataJson != null) {
-      map['data_json'] = Variable<String>(dataJson);
+    if (!nullToAbsent || data != null) {
+      map['data'] = Variable<String>(data);
     }
     map['applied_at'] = Variable<DateTime>(appliedAt);
     if (!nullToAbsent || appliedBy != null) {
@@ -1483,10 +1476,7 @@ class AnimalSimpleEvent extends DataClass
       idTenant: Value(idTenant),
       animalNumber: Value(animalNumber),
       type: Value(type),
-      dataJson:
-          dataJson == null && nullToAbsent
-              ? const Value.absent()
-              : Value(dataJson),
+      data: data == null && nullToAbsent ? const Value.absent() : Value(data),
       appliedAt: Value(appliedAt),
       appliedBy:
           appliedBy == null && nullToAbsent
@@ -1511,7 +1501,7 @@ class AnimalSimpleEvent extends DataClass
       idTenant: serializer.fromJson<String>(json['idTenant']),
       animalNumber: serializer.fromJson<String>(json['animalNumber']),
       type: serializer.fromJson<String>(json['type']),
-      dataJson: serializer.fromJson<String?>(json['dataJson']),
+      data: serializer.fromJson<String?>(json['data']),
       appliedAt: serializer.fromJson<DateTime>(json['appliedAt']),
       appliedBy: serializer.fromJson<String?>(json['appliedBy']),
       recordedInMassiveEvent: serializer.fromJson<String?>(
@@ -1529,7 +1519,7 @@ class AnimalSimpleEvent extends DataClass
       'idTenant': serializer.toJson<String>(idTenant),
       'animalNumber': serializer.toJson<String>(animalNumber),
       'type': serializer.toJson<String>(type),
-      'dataJson': serializer.toJson<String?>(dataJson),
+      'data': serializer.toJson<String?>(data),
       'appliedAt': serializer.toJson<DateTime>(appliedAt),
       'appliedBy': serializer.toJson<String?>(appliedBy),
       'recordedInMassiveEvent': serializer.toJson<String?>(
@@ -1545,7 +1535,7 @@ class AnimalSimpleEvent extends DataClass
     String? idTenant,
     String? animalNumber,
     String? type,
-    Value<String?> dataJson = const Value.absent(),
+    Value<String?> data = const Value.absent(),
     DateTime? appliedAt,
     Value<String?> appliedBy = const Value.absent(),
     Value<String?> recordedInMassiveEvent = const Value.absent(),
@@ -1556,7 +1546,7 @@ class AnimalSimpleEvent extends DataClass
     idTenant: idTenant ?? this.idTenant,
     animalNumber: animalNumber ?? this.animalNumber,
     type: type ?? this.type,
-    dataJson: dataJson.present ? dataJson.value : this.dataJson,
+    data: data.present ? data.value : this.data,
     appliedAt: appliedAt ?? this.appliedAt,
     appliedBy: appliedBy.present ? appliedBy.value : this.appliedBy,
     recordedInMassiveEvent:
@@ -1575,7 +1565,7 @@ class AnimalSimpleEvent extends DataClass
               ? data.animalNumber.value
               : this.animalNumber,
       type: data.type.present ? data.type.value : this.type,
-      dataJson: data.dataJson.present ? data.dataJson.value : this.dataJson,
+      data: data.data.present ? data.data.value : this.data,
       appliedAt: data.appliedAt.present ? data.appliedAt.value : this.appliedAt,
       appliedBy: data.appliedBy.present ? data.appliedBy.value : this.appliedBy,
       recordedInMassiveEvent:
@@ -1594,7 +1584,7 @@ class AnimalSimpleEvent extends DataClass
           ..write('idTenant: $idTenant, ')
           ..write('animalNumber: $animalNumber, ')
           ..write('type: $type, ')
-          ..write('dataJson: $dataJson, ')
+          ..write('data: $data, ')
           ..write('appliedAt: $appliedAt, ')
           ..write('appliedBy: $appliedBy, ')
           ..write('recordedInMassiveEvent: $recordedInMassiveEvent, ')
@@ -1610,7 +1600,7 @@ class AnimalSimpleEvent extends DataClass
     idTenant,
     animalNumber,
     type,
-    dataJson,
+    data,
     appliedAt,
     appliedBy,
     recordedInMassiveEvent,
@@ -1625,7 +1615,7 @@ class AnimalSimpleEvent extends DataClass
           other.idTenant == this.idTenant &&
           other.animalNumber == this.animalNumber &&
           other.type == this.type &&
-          other.dataJson == this.dataJson &&
+          other.data == this.data &&
           other.appliedAt == this.appliedAt &&
           other.appliedBy == this.appliedBy &&
           other.recordedInMassiveEvent == this.recordedInMassiveEvent &&
@@ -1639,7 +1629,7 @@ class AnimalSimpleEventLocalCompanion
   final Value<String> idTenant;
   final Value<String> animalNumber;
   final Value<String> type;
-  final Value<String?> dataJson;
+  final Value<String?> data;
   final Value<DateTime> appliedAt;
   final Value<String?> appliedBy;
   final Value<String?> recordedInMassiveEvent;
@@ -1651,7 +1641,7 @@ class AnimalSimpleEventLocalCompanion
     this.idTenant = const Value.absent(),
     this.animalNumber = const Value.absent(),
     this.type = const Value.absent(),
-    this.dataJson = const Value.absent(),
+    this.data = const Value.absent(),
     this.appliedAt = const Value.absent(),
     this.appliedBy = const Value.absent(),
     this.recordedInMassiveEvent = const Value.absent(),
@@ -1664,7 +1654,7 @@ class AnimalSimpleEventLocalCompanion
     required String idTenant,
     required String animalNumber,
     required String type,
-    this.dataJson = const Value.absent(),
+    this.data = const Value.absent(),
     required DateTime appliedAt,
     this.appliedBy = const Value.absent(),
     this.recordedInMassiveEvent = const Value.absent(),
@@ -1681,7 +1671,7 @@ class AnimalSimpleEventLocalCompanion
     Expression<String>? idTenant,
     Expression<String>? animalNumber,
     Expression<String>? type,
-    Expression<String>? dataJson,
+    Expression<String>? data,
     Expression<DateTime>? appliedAt,
     Expression<String>? appliedBy,
     Expression<String>? recordedInMassiveEvent,
@@ -1694,7 +1684,7 @@ class AnimalSimpleEventLocalCompanion
       if (idTenant != null) 'id_tenant': idTenant,
       if (animalNumber != null) 'animal_number': animalNumber,
       if (type != null) 'type': type,
-      if (dataJson != null) 'data_json': dataJson,
+      if (data != null) 'data': data,
       if (appliedAt != null) 'applied_at': appliedAt,
       if (appliedBy != null) 'applied_by': appliedBy,
       if (recordedInMassiveEvent != null)
@@ -1710,7 +1700,7 @@ class AnimalSimpleEventLocalCompanion
     Value<String>? idTenant,
     Value<String>? animalNumber,
     Value<String>? type,
-    Value<String?>? dataJson,
+    Value<String?>? data,
     Value<DateTime>? appliedAt,
     Value<String?>? appliedBy,
     Value<String?>? recordedInMassiveEvent,
@@ -1723,7 +1713,7 @@ class AnimalSimpleEventLocalCompanion
       idTenant: idTenant ?? this.idTenant,
       animalNumber: animalNumber ?? this.animalNumber,
       type: type ?? this.type,
-      dataJson: dataJson ?? this.dataJson,
+      data: data ?? this.data,
       appliedAt: appliedAt ?? this.appliedAt,
       appliedBy: appliedBy ?? this.appliedBy,
       recordedInMassiveEvent:
@@ -1749,8 +1739,8 @@ class AnimalSimpleEventLocalCompanion
     if (type.present) {
       map['type'] = Variable<String>(type.value);
     }
-    if (dataJson.present) {
-      map['data_json'] = Variable<String>(dataJson.value);
+    if (data.present) {
+      map['data'] = Variable<String>(data.value);
     }
     if (appliedAt.present) {
       map['applied_at'] = Variable<DateTime>(appliedAt.value);
@@ -1782,7 +1772,7 @@ class AnimalSimpleEventLocalCompanion
           ..write('idTenant: $idTenant, ')
           ..write('animalNumber: $animalNumber, ')
           ..write('type: $type, ')
-          ..write('dataJson: $dataJson, ')
+          ..write('data: $data, ')
           ..write('appliedAt: $appliedAt, ')
           ..write('appliedBy: $appliedBy, ')
           ..write('recordedInMassiveEvent: $recordedInMassiveEvent, ')
@@ -2617,7 +2607,7 @@ typedef $$SimpleEventLocalTableCreateCompanionBuilder =
       required String idTenant,
       required String idMassiveEvent,
       required String type,
-      Value<String?> dataJson,
+      Value<String?> data,
       Value<bool> isSynced,
       Value<DateTime?> createdAt,
       Value<int> rowid,
@@ -2629,7 +2619,7 @@ typedef $$SimpleEventLocalTableUpdateCompanionBuilder =
       Value<String> idTenant,
       Value<String> idMassiveEvent,
       Value<String> type,
-      Value<String?> dataJson,
+      Value<String?> data,
       Value<bool> isSynced,
       Value<DateTime?> createdAt,
       Value<int> rowid,
@@ -2669,8 +2659,8 @@ class $$SimpleEventLocalTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get dataJson => $composableBuilder(
-    column: $table.dataJson,
+  ColumnFilters<String> get data => $composableBuilder(
+    column: $table.data,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -2719,8 +2709,8 @@ class $$SimpleEventLocalTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get dataJson => $composableBuilder(
-    column: $table.dataJson,
+  ColumnOrderings<String> get data => $composableBuilder(
+    column: $table.data,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -2761,8 +2751,8 @@ class $$SimpleEventLocalTableAnnotationComposer
   GeneratedColumn<String> get type =>
       $composableBuilder(column: $table.type, builder: (column) => column);
 
-  GeneratedColumn<String> get dataJson =>
-      $composableBuilder(column: $table.dataJson, builder: (column) => column);
+  GeneratedColumn<String> get data =>
+      $composableBuilder(column: $table.data, builder: (column) => column);
 
   GeneratedColumn<bool> get isSynced =>
       $composableBuilder(column: $table.isSynced, builder: (column) => column);
@@ -2816,7 +2806,7 @@ class $$SimpleEventLocalTableTableManager
                 Value<String> idTenant = const Value.absent(),
                 Value<String> idMassiveEvent = const Value.absent(),
                 Value<String> type = const Value.absent(),
-                Value<String?> dataJson = const Value.absent(),
+                Value<String?> data = const Value.absent(),
                 Value<bool> isSynced = const Value.absent(),
                 Value<DateTime?> createdAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -2826,7 +2816,7 @@ class $$SimpleEventLocalTableTableManager
                 idTenant: idTenant,
                 idMassiveEvent: idMassiveEvent,
                 type: type,
-                dataJson: dataJson,
+                data: data,
                 isSynced: isSynced,
                 createdAt: createdAt,
                 rowid: rowid,
@@ -2838,7 +2828,7 @@ class $$SimpleEventLocalTableTableManager
                 required String idTenant,
                 required String idMassiveEvent,
                 required String type,
-                Value<String?> dataJson = const Value.absent(),
+                Value<String?> data = const Value.absent(),
                 Value<bool> isSynced = const Value.absent(),
                 Value<DateTime?> createdAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -2848,7 +2838,7 @@ class $$SimpleEventLocalTableTableManager
                 idTenant: idTenant,
                 idMassiveEvent: idMassiveEvent,
                 type: type,
-                dataJson: dataJson,
+                data: data,
                 isSynced: isSynced,
                 createdAt: createdAt,
                 rowid: rowid,
@@ -2891,7 +2881,7 @@ typedef $$AnimalSimpleEventLocalTableCreateCompanionBuilder =
       required String idTenant,
       required String animalNumber,
       required String type,
-      Value<String?> dataJson,
+      Value<String?> data,
       required DateTime appliedAt,
       Value<String?> appliedBy,
       Value<String?> recordedInMassiveEvent,
@@ -2905,7 +2895,7 @@ typedef $$AnimalSimpleEventLocalTableUpdateCompanionBuilder =
       Value<String> idTenant,
       Value<String> animalNumber,
       Value<String> type,
-      Value<String?> dataJson,
+      Value<String?> data,
       Value<DateTime> appliedAt,
       Value<String?> appliedBy,
       Value<String?> recordedInMassiveEvent,
@@ -2943,8 +2933,8 @@ class $$AnimalSimpleEventLocalTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get dataJson => $composableBuilder(
-    column: $table.dataJson,
+  ColumnFilters<String> get data => $composableBuilder(
+    column: $table.data,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -3003,8 +2993,8 @@ class $$AnimalSimpleEventLocalTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get dataJson => $composableBuilder(
-    column: $table.dataJson,
+  ColumnOrderings<String> get data => $composableBuilder(
+    column: $table.data,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -3057,8 +3047,8 @@ class $$AnimalSimpleEventLocalTableAnnotationComposer
   GeneratedColumn<String> get type =>
       $composableBuilder(column: $table.type, builder: (column) => column);
 
-  GeneratedColumn<String> get dataJson =>
-      $composableBuilder(column: $table.dataJson, builder: (column) => column);
+  GeneratedColumn<String> get data =>
+      $composableBuilder(column: $table.data, builder: (column) => column);
 
   GeneratedColumn<DateTime> get appliedAt =>
       $composableBuilder(column: $table.appliedAt, builder: (column) => column);
@@ -3128,7 +3118,7 @@ class $$AnimalSimpleEventLocalTableTableManager
                 Value<String> idTenant = const Value.absent(),
                 Value<String> animalNumber = const Value.absent(),
                 Value<String> type = const Value.absent(),
-                Value<String?> dataJson = const Value.absent(),
+                Value<String?> data = const Value.absent(),
                 Value<DateTime> appliedAt = const Value.absent(),
                 Value<String?> appliedBy = const Value.absent(),
                 Value<String?> recordedInMassiveEvent = const Value.absent(),
@@ -3140,7 +3130,7 @@ class $$AnimalSimpleEventLocalTableTableManager
                 idTenant: idTenant,
                 animalNumber: animalNumber,
                 type: type,
-                dataJson: dataJson,
+                data: data,
                 appliedAt: appliedAt,
                 appliedBy: appliedBy,
                 recordedInMassiveEvent: recordedInMassiveEvent,
@@ -3154,7 +3144,7 @@ class $$AnimalSimpleEventLocalTableTableManager
                 required String idTenant,
                 required String animalNumber,
                 required String type,
-                Value<String?> dataJson = const Value.absent(),
+                Value<String?> data = const Value.absent(),
                 required DateTime appliedAt,
                 Value<String?> appliedBy = const Value.absent(),
                 Value<String?> recordedInMassiveEvent = const Value.absent(),
@@ -3166,7 +3156,7 @@ class $$AnimalSimpleEventLocalTableTableManager
                 idTenant: idTenant,
                 animalNumber: animalNumber,
                 type: type,
-                dataJson: dataJson,
+                data: data,
                 appliedAt: appliedAt,
                 appliedBy: appliedBy,
                 recordedInMassiveEvent: recordedInMassiveEvent,

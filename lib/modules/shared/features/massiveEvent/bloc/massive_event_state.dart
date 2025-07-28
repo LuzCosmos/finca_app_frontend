@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import '../models/simple_event_config.dart';
+import '../models/simple_event_model.dart';
 
 abstract class MassiveEventState extends Equatable {
   const MassiveEventState();
@@ -14,7 +14,7 @@ class MassiveEventLoading extends MassiveEventState {}
 
 class MassiveEventSuccess extends MassiveEventState {
   final String messageKey;
-  final List<SimpleEventConfig> configs;
+  final List<SimpleEventModel> configs;
 
   const MassiveEventSuccess({required this.messageKey, required this.configs});
 

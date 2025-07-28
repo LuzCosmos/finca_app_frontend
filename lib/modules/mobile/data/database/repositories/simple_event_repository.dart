@@ -20,8 +20,8 @@ class SimpleEventRepository {
   }
 
   /// Obtener todos los simple events asociados a un massive event
-  Future<List<SimpleEvent>> getByMassiveEventId(String massiveEventId) {
-    return _dao.getByMassiveEventId(massiveEventId);
+  Future<List<SimpleEvent>> getByidMassiveEvent(String idMassiveEvent) {
+    return _dao.getByidMassiveEvent(idMassiveEvent);
   }
 
   /// Eliminar un simple event específico

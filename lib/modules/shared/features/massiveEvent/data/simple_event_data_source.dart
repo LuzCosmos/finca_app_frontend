@@ -1,10 +1,10 @@
-import '../models/simple_event_config.dart';
+import '../models/simple_event_model.dart';
 
 abstract class ISimpleEventDataSource {
   /// Guarda un simple event y retorna el id generado o null
   Future<void> saveSimpleEvent({
-    required SimpleEventConfig config,
-    required String massiveEventId,
+    required SimpleEventModel simpleEvent,
+    required String idMassiveEvent,
     required String idTenant,
   });
 }

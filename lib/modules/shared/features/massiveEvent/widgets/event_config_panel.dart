@@ -1,27 +1,37 @@
+import 'package:finca_app_frontend/core/services/api_exception.dart';
+import 'package:finca_app_frontend/core/services/platform_sevice.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_config.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/bloc/massive_event_bloc.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/bloc/massive_event_event.dart';
 import 'event_detail_form.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_type.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/services/massive_event_api_service.dart';
 import 'dart:convert';
 
 class EventConfigPanel extends StatefulWidget {
-  const EventConfigPanel({super.key});
+  final String? idMassiveEvent;
+  final ValueChanged<String> onMassiveEventCreated;
+
+  const EventConfigPanel({
+    super.key,
+    required this.idMassiveEvent,
+    required this.onMassiveEventCreated,
+  });
 
   @override
   State<EventConfigPanel> createState() => _EventConfigPanelState();
 }
 
 class _EventConfigPanelState extends State<EventConfigPanel> {
-  final List<SimpleEventConfig> _allDetails = [];
+  final List<SimpleEventModel> _allDetails = [];
 
-  List<SimpleEventConfig> get activeDetails =>
+  List<SimpleEventModel> get activeDetails =>
       _allDetails.where((e) => e.isActive).toList();
 
-  List<SimpleEventConfig> get historyDetails => _allDetails;
+  List<SimpleEventModel> get historyDetails => _allDetails;
 
   void _openAddEventDialog() async {
     final result = await showDialog<Map<String, String>>(
@@ -31,24 +41,45 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
     if (result != null) {
       final type = result['type'] ?? '';
       final name = result['name'];
-
       if (_canAddDetail(type, name)) {
-        final newConfig = SimpleEventConfig.create(
+        String? currentMassiveId = widget.idMassiveEvent;
+        final newConfig = SimpleEventModel.create(
           name: name ?? '',
           type: EventType.values.firstWhere((e) => e.name == type),
-          dataJson: result['dataJson'] ?? '',
+          data: result['data'] ?? '',
+          idMassiveEvent: currentMassiveId,
         );
 
-        // 👉 Añadimos al estado local para la UI
-        setState(() {
+        if (PlatformService().isMobile()) {
           _allDetails.add(newConfig);
-        });
+        }
+        if (PlatformService().isWeb()) {
+          setState(() {
+            _allDetails.add(newConfig);
+          });
+        }
+        if (currentMassiveId == null) {
+          try {
+            final newMassiveId =
+                await MassiveEventApiService.createMassiveEvent(
+                  eventDate: DateTime.now(),
+                  simpleEvents: [newConfig],
+                );
+            widget.onMassiveEventCreated(newMassiveId);
+            currentMassiveId = newMassiveId;
+          } on ApiException catch (e) {
+          } catch (e) {}
+        } else {
+          await MassiveEventApiService.createSimpleEvent(
+            massiveEventServerId: currentMassiveId,
+            simpleEvent: newConfig,
+          );
+        }
 
-        // 👉 Enviamos al Bloc para guardar en backend o sqlite
         context.read<MassiveEventBloc>().add(
-          AddSimpleEventConfig(
+          AddSimpleEvent(
             config: newConfig,
-            massiveEventId: 'TODO-massive-event-id', // id local si es mobile
+            idMassiveEvent: 'TODO-massive-event-id', // id local si es mobile
             idTenant: 'TODO-id-tenant',
           ),
         );
@@ -56,7 +87,7 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
     }
   }
 
-  void _deactivateDetail(SimpleEventConfig detail) {
+  void _deactivateDetail(SimpleEventModel detail) {
     setState(() {
       final idx = _allDetails.indexWhere((e) => e.id == detail.id);
       if (idx != -1) {
@@ -65,7 +96,7 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
     });
   }
 
-  void _reactivateDetail(SimpleEventConfig detail) {
+  void _reactivateDetail(SimpleEventModel detail) {
     setState(() {
       final idx = _allDetails.indexWhere((e) => e.id == detail.id);
       if (idx != -1) {
@@ -74,13 +105,13 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
     });
 
     final l10n = AppLocalizations.of(context)!;
-    _showInfo(l10n.reactivatedInfo(detail.name));
+    _showInfo(l10n.reactivatedInfo(detail.type.asText(context)));
 
     // 👉 también podrías reenviar al Bloc si quieres que se re-sincronice:
     // context.read<MassiveEventBloc>().add(
     //   AddSimpleEventConfig(
     //     config: detail.copyWith(isActive: true),
-    //     massiveEventId: 'TODO-massive-event-id',
+    //     idMassiveEvent: 'TODO-massive-event-id',
     //     idTenant: 'TODO-id-tenant',
     //   ),
     // );
@@ -109,7 +140,8 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
       final idx = _allDetails.indexWhere(
         (d) =>
             d.type == EventType.brand &&
-            d.name.toLowerCase() == name.toLowerCase(),
+            jsonDecode(d.data!)['brandName'].toLowerCase() ==
+                name.toLowerCase(),
       );
       if (idx != -1) {
         final existing = _allDetails[idx];
@@ -183,11 +215,11 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
                             ),
                             title: Text(
                               detail.type == EventType.medication
-                                  ? detail.dataJson != null
+                                  ? detail.data != null
                                       ? detail.type.asText(context) +
                                           ': ' +
                                           jsonDecode(
-                                            detail.dataJson!,
+                                            detail.data!,
                                           )['medicationName']
                                       : detail.type.asText(context)
                                   : detail.type.asText(context),
@@ -195,11 +227,9 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
                             ),
                             subtitle:
                                 detail.type == EventType.medication &&
-                                        detail.dataJson != null
+                                        detail.data != null
                                     ? Text(
-                                      _buildMedicationSubtitle(
-                                        detail.dataJson!,
-                                      ),
+                                      _buildMedicationSubtitle(detail.data!),
                                       style: const TextStyle(fontSize: 10),
                                     )
                                     : null,
@@ -251,10 +281,8 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
                           title: Text(
                             style: const TextStyle(fontSize: 11),
                             detail.type == EventType.medication
-                                ? detail.dataJson != null
-                                    ? jsonDecode(
-                                      detail.dataJson!,
-                                    )['medicationName']
+                                ? detail.data != null
+                                    ? jsonDecode(detail.data!)['medicationName']
                                     : ''
                                 : detail.type.asText(context),
                           ),

@@ -42,7 +42,8 @@ class _LoginFormState extends State<LoginForm> {
       await SessionService.saveSession(
         token: result['token'],
         permissions: result['permissions'],
-        idTenant: result['idTenant'],
+        idTenant: result['user']['tenant_id'],
+        idUser: result['user']['id'],
       );
       widget.onLoginSuccess(result);
     } catch (e) {

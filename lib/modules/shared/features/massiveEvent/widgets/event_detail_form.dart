@@ -129,7 +129,7 @@ class _EventDetailFormState extends State<EventDetailForm> {
             final Map<String, String> data = {'type': selectedType};
             if (selectedType == EventType.medication.name) {
               data['name'] = _nameController.text;
-              data['dataJson'] = jsonEncode({
+              data['data'] = jsonEncode({
                 'medicationName': _nameController.text,
                 'route': _routeController.text,
                 'dosage': _dosageController.text,
@@ -137,7 +137,7 @@ class _EventDetailFormState extends State<EventDetailForm> {
               });
             } else if (selectedType == EventType.brand.name) {
               data['name'] = selectedBrand ?? '';
-              data['dataJson'] = jsonEncode({
+              data['data'] = jsonEncode({
                 'idBrand': selectedBrand ?? '',
                 'brandName': selectedBrand ?? '',
               });
