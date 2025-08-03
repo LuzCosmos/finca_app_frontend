@@ -112,6 +112,12 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
           case 'forbidden':
             _globalErrorMessage = l10n.purchase_saveError;
             break;
+          case 'serverConnectionError':
+            _globalErrorMessage = l10n.error_server;
+            break;
+          case 'savingObjectError':
+            _globalErrorMessage = l10n.purchase_saveError;
+            break;
           case 'serverError':
             _globalErrorMessage = l10n.error_server;
             break;

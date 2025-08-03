@@ -1,23 +1,23 @@
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:flutter/widgets.dart';
 
-enum EventType { weight, castration, tracker, eartag, medication, brand }
+enum SimpleEventType { weight, castration, tracker, eartag, medication, brand }
 
-extension EventTypeL10n on EventType {
+extension EventTypeL10n on SimpleEventType {
   String asText(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     switch (this) {
-      case EventType.weight:
+      case SimpleEventType.weight:
         return l10n.eventTypeWeight;
-      case EventType.castration:
+      case SimpleEventType.castration:
         return l10n.eventTypeCastration;
-      case EventType.tracker:
+      case SimpleEventType.tracker:
         return l10n.eventTypeTracker;
-      case EventType.eartag:
+      case SimpleEventType.eartag:
         return l10n.eventTypeEartag;
-      case EventType.medication:
+      case SimpleEventType.medication:
         return l10n.eventTypeMedication;
-      case EventType.brand:
+      case SimpleEventType.brand:
         return l10n.eventTypeBrand;
     }
   }

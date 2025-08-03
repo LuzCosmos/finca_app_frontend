@@ -4,19 +4,16 @@ import 'package:uuid/uuid.dart';
 import 'package:drift/drift.dart';
 import 'package:finca_app_frontend/core/data/database/app_database_mobile.dart';
 import 'package:finca_app_frontend/core/data/database/repositories/animal_simple_event_repository.dart';
+import 'package:finca_app_frontend/core/services/session_service.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class AnimalSimpleEventService {
   final AnimalSimpleEventRepository repo;
-  final String baseUrl;
-  final Future<String> Function() getToken;
+  final String baseUrl = dotenv.env['API_BASE_URL'] ?? '';
+  final Future<String?> Function() getToken = SessionService.getToken;
   final Future<bool> Function() hasNetwork;
 
-  AnimalSimpleEventService({
-    required this.repo,
-    required this.baseUrl,
-    required this.getToken,
-    required this.hasNetwork,
-  });
+  AnimalSimpleEventService({required this.repo, required this.hasNetwork});
 
   Future<void> createAnimalSimpleEvent({
     required String idTenant,
@@ -39,11 +36,11 @@ class AnimalSimpleEventService {
       isSynced: const Value(false),
     );
 
-    // 1️⃣ guardar siempre local
+    // guardar siempre local
     await repo.create(entity);
 
-    // 2️⃣ intentar enviar si hay red
-    if (await hasNetwork()) {
+    // intentar enviar si hay red
+    /*if (await hasNetwork()) {
       final token = await getToken();
       final res = await http.post(
         Uri.parse('$baseUrl/simple-events/sync'),
@@ -68,6 +65,6 @@ class AnimalSimpleEventService {
       if (res.statusCode == 200) {
         await repo.markSynced(entity.id.value);
       }
-    }
+    }*/
   }
 }

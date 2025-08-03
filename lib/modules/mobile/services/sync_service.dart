@@ -14,7 +14,7 @@ class SyncResult {
 }
 
 /// Servicio encargado de sincronizar datos locales con el backend.
-/// ⚡ Orden secuencial:
+/// Orden secuencial:
 /// 1. Brands → 2. MassiveEvents (incluyendo sus SimpleEvents) → 3. SimpleEvents (restantes) → 4. AnimalSimpleEvents
 class SyncService {
   final AnimalSimpleEventRepository animalSimpleEventRepository;
@@ -140,7 +140,6 @@ class SyncService {
                       },
                     )
                     .toList();
-
             return {
               "id": m.id,
               "idTenant": m.idTenant,

@@ -25,7 +25,7 @@ class User {
   final String firstName;
   final String lastName;
   final String email;
-  final String idTentant;
+  final String idTenant;
   final List<Role> roles;
 
   User({
@@ -34,7 +34,7 @@ class User {
     required this.firstName,
     required this.lastName,
     required this.email,
-    required this.idTentant,
+    required this.idTenant,
     required this.roles,
   });
 
@@ -44,7 +44,7 @@ class User {
     firstName: json['first_name'],
     lastName: json['last_name'],
     email: json['email'],
-    idTentant: json['tenant_id'],
+    idTenant: json['tenant_id'],
     roles: (json['roles'] as List).map((r) => Role.fromJson(r)).toList(),
   );
 }

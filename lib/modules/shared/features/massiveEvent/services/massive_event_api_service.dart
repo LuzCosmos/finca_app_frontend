@@ -5,31 +5,31 @@ import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/s
 import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/massive_event_model.dart';
 import '../../../../../core/services/api_exception.dart';
+import 'package:finca_app_frontend/core/utils/logger.dart';
+import 'dart:io';
 
 class MassiveEventApiService {
   // Obtén baseUrl directo de dotenv (asegúrate de tener cargado dotenv antes de usar)
   static get _baseUrl => dotenv.env['API_BASE_URL'] ?? '';
 
-  /// 👉 Crear un MassiveEvent en backend
-  static Future<String> createMassiveEvent({
-    required DateTime eventDate,
-    required List<SimpleEventModel> simpleEvents,
+  static Future<MassiveEventModel> createMassiveEvent({
+    required MassiveEventModel massiveEvent,
+    required String idTenant,
   }) async {
-    //final idTenant = await SessionService.getIdTenant();
     final token = await SessionService.getToken();
     if (token == null || token.isEmpty) {
       throw Exception('⚠️ No se encontró token de sesión');
     }
-
     final payload = {
-      //"idTenant": idTenant,
-      "eventDate": eventDate.toIso8601String(),
-      "simpleEvents": simpleEvents.map((e) => e.toJsonOnlineApi()).toList(),
-      //"status": "open",
-      //"createdBy": createdBy,
+      "eventDate": massiveEvent.eventDate.toIso8601String(),
+      "simpleEvents":
+          massiveEvent.simpleEvents
+              .map((e) => e.toJsonOnlineCreateApi())
+              .toList(),
     };
+    var response;
     try {
-      final response = await http.post(
+      response = await http.post(
         Uri.parse('$_baseUrl/massive-events'),
         headers: {
           'Authorization': 'Bearer $token',
@@ -37,14 +37,24 @@ class MassiveEventApiService {
         },
         body: jsonEncode(payload),
       );
-
+    } catch (e) {
+      if (e is SocketException || e is http.ClientException) {
+        throw ApiException(
+          'serverConnectionError',
+          'Error al crear MassiveEvent: $e',
+        );
+      }
+      throw ApiException(
+        'savingObjectError',
+        'Error al crear MassiveEvent: $e',
+      );
+    }
+    if (response != null) {
       if (response.statusCode == 201 || response.statusCode == 200) {
         try {
           final data = jsonDecode(response.body);
-          final massiveEvent = MassiveEventModel.fromJson(data);
-          //final serverId = data['id'] as String;
-          //return serverId;
-          return jsonEncode(massiveEvent.toJson());
+          final massiveEventSaved = MassiveEventModel.fromJson(data);
+          return massiveEventSaved;
         } catch (e) {
           throw Exception(
             '⚠️ Respuesta JSON inválida al crear MassiveEvent: $e',
@@ -60,21 +70,20 @@ class MassiveEventApiService {
         throw ApiException('serverError', 'Internal server error');
       } else {
         throw ApiException(
-          'unknownError',
-          '❌ Error al crear MassiveEvent: ${response.statusCode} ${response.body}',
+          'savingObjectError',
+          'Error al crear MassiveEvent: ${response.statusCode} ${response.body}',
         );
       }
-    } catch (e) {
-      throw Exception(
-        '🚨 Error al conectar con el servidor (MassiveEvent): $e',
+    } else {
+      throw ApiException(
+        'savingObjectError',
+        'Create MassiveEvent: Response is null.',
       );
     }
   }
 
-  /// 👉 Crear un SimpleEvent asociado a un MassiveEvent
-  static Future<String> createSimpleEvent({
+  static Future<SimpleEventModel> createSimpleEvent({
     required String massiveEventServerId,
-    //required String idTenant,
     required SimpleEventModel simpleEvent,
   }) async {
     final token = await SessionService.getToken();
@@ -86,27 +95,66 @@ class MassiveEventApiService {
       try {
         decodedJson = jsonDecode(simpleEvent.data!);
       } catch (e) {
+        logger.d("CSE Paso 0.2 ");
+        logger.d(e);
+        logger.d(simpleEvent.data);
         throw Exception('⚠️ data inválido para SimpleEvent: $e');
       }
     }
     final payload = {
-      "idMassiveEvent": massiveEventServerId,
-      "type": simpleEvent.type,
+      "idMassiveEvent": simpleEvent.idMassiveEvent,
+      "type": simpleEvent.type.name,
       "data": decodedJson,
     };
-    final response = await http.post(
-      Uri.parse('$_baseUrl/simple-events'),
-      headers: {
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode(payload),
-    );
+    var response;
+    try {
+      response = await http.post(
+        Uri.parse('$_baseUrl/simple-events'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(payload),
+      );
+    } catch (e) {
+      if (e is SocketException || e is http.ClientException) {
+        throw ApiException(
+          'serverConnectionError',
+          'Error al crear MassiveEvent: $e',
+        );
+      }
+      logger.d("CSE Paso 1.3 ");
+      logger.d(e);
+      logger.d(response);
+      throw ApiException(
+        'savingObjectError',
+        'Error al crear MassiveEvent: $e',
+      );
+    }
     if (response.statusCode == 201 || response.statusCode == 200) {
-      return response.body;
+      try {
+        logger.d("CSE Paso 2.1 ");
+        logger.d(response.body);
+        final data = jsonDecode(response.body);
+        final simpleEventSaved = SimpleEventModel.fromJson(data);
+        return simpleEventSaved;
+      } catch (e) {
+        logger.d("CSE Paso 2.2 ");
+        logger.d(e);
+        throw Exception('⚠️ Respuesta JSON inválida al crear SimpleEvent: $e');
+      }
+    } else if (response.statusCode == 400) {
+      throw ApiException('invalidData', 'Invalid data');
+    } else if (response.statusCode == 401) {
+      throw ApiException('unauthorized', 'Unauthorized');
+    } else if (response.statusCode == 403) {
+      throw ApiException('forbidden', 'Forbidden');
+    } else if (response.statusCode == 500) {
+      throw ApiException('serverError', 'Internal server error');
     } else {
-      throw Exception(
-        '❌ Error al crear SimpleEvent: ${response.statusCode} ${response.body}',
+      throw ApiException(
+        'unknownError',
+        'Error al crear SimpleEvent: ${response.statusCode} ${response.body}',
       );
     }
   }

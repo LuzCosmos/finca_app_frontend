@@ -152,17 +152,29 @@ abstract class AppLocalizations {
   /// **'Internal server error. Please try again later.'**
   String get error_server;
 
-  /// No description provided for @error_generic.
+  /// No description provided for @error_savingObject.
   ///
   /// In en, this message translates to:
-  /// **'Could not save object.'**
-  String get error_generic;
+  /// **'An unexpected error occurred while saving'**
+  String get error_savingObject;
 
   /// Shown when the user's session has expired or they are unauthorized, requiring a new login.
   ///
   /// In en, this message translates to:
   /// **'Your session has expired and you need to log in again.'**
   String get error_unauthorized;
+
+  /// Message shown when the app cannot communicate with the server.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to connect to the server. Please check your internet connection or try again later.'**
+  String get error_serverConnection;
+
+  /// No description provided for @error_generic.
+  ///
+  /// In en, this message translates to:
+  /// **'An unexpected error has occurred.'**
+  String get error_generic;
 
   /// No description provided for @login_username.
   ///

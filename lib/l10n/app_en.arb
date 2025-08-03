@@ -13,11 +13,16 @@
   "error_invalidData": "Invalid data in the form.",
   "error_forbidden": "You do not have permission to perform this action.",
   "error_server": "Internal server error. Please try again later.",
-  "error_generic": "Could not save object.",
+  "error_savingObject": "An unexpected error occurred while saving",
   "error_unauthorized": "Your session has expired and you need to log in again.",
   "@error_unauthorized": {
     "description": "Shown when the user's session has expired or they are unauthorized, requiring a new login."
   },
+  "error_serverConnection": "Unable to connect to the server. Please check your internet connection or try again later.",
+  "@error_serverConnection": {
+    "description": "Message shown when the app cannot communicate with the server."
+  },
+  "error_generic": "An unexpected error has occurred.",
 
   "login_username": "Username",
   "login_usernameRequired": "Please enter your username",

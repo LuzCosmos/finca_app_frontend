@@ -49,7 +49,6 @@ class SessionService {
 
   static Future<bool> hasPermission(String module, String resource) async {
     final permissions = await getPermissions();
-    logger.d(permissions);
     if (permissions[module] == null) return false;
     final moduleData = permissions[module];
     return moduleData is Map && moduleData.containsKey(resource);

@@ -36,11 +36,18 @@ class AppLocalizationsEs extends AppLocalizations {
   String get error_server => 'Error interno del servidor. Intenta más tarde.';
 
   @override
-  String get error_generic => 'No se pudo guardar objeto.';
+  String get error_savingObject => 'Ocurrió un error inesperado al guardar';
 
   @override
   String get error_unauthorized =>
       'Tu sesión ha expirado y necesitas iniciar sesión nuevamente.';
+
+  @override
+  String get error_serverConnection =>
+      'No se pudo conectar con el servidor. Verifica tu conexión a internet o intenta más tarde.';
+
+  @override
+  String get error_generic => 'Ha ocurrido un error inesperado.';
 
   @override
   String get login_username => 'Usuario';

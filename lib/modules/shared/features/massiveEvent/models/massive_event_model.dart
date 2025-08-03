@@ -1,19 +1,24 @@
 import 'package:uuid/uuid.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_model.dart';
+import 'package:intl/intl.dart';
 
 class MassiveEventModel {
-  final String id; // UUID
-  String? idTenant;
+  final String id;
   final DateTime eventDate;
   final List<SimpleEventModel> simpleEvents;
+  String? idTenant;
   String status = 'open';
+  DateTime createdAt;
+  DateTime updatedAt;
 
   MassiveEventModel({
     required this.id,
-    this.idTenant,
     required this.eventDate,
     required this.simpleEvents,
+    this.idTenant,
     this.status = 'open',
+    required this.createdAt,
+    required this.updatedAt,
   });
 
   factory MassiveEventModel.create({
@@ -24,11 +29,13 @@ class MassiveEventModel {
     String status = 'open',
   }) {
     return MassiveEventModel(
-      id: const Uuid().v4(),
+      id: id ?? const Uuid().v4(),
       idTenant: idTenant,
       eventDate: eventDate,
       simpleEvents: simpleEvents,
       status: status,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
     );
   }
 
@@ -40,26 +47,30 @@ class MassiveEventModel {
       eventDate: eventDate,
       simpleEvents: simpleEvents,
       status: status,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
     );
   }
 
   Map<String, dynamic> toJson() {
+    final formattedDate = DateFormat('yyyy-MM-dd').format(eventDate);
     return {
       'id': id,
       'idTenant': idTenant,
-      'eventDate': eventDate.toIso8601String(),
+      'eventDate': formattedDate,
       'simpleEvents': simpleEvents.map((e) => e.toJson()).toList(),
       'status': status,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
     };
   }
 
-  Map<String, dynamic> toJsonOnlineApi() {
+  Map<String, dynamic> toJsonOnlineCreateApi() {
+    final formattedDate = DateFormat('yyyy-MM-dd').format(eventDate);
     return {
-      'id': id,
-      'idTenant': idTenant,
-      'eventDate': eventDate.toIso8601String(),
-      'simpleEvents': simpleEvents.map((e) => e.toJsonOnlineApi()).toList(),
-      'status': status,
+      'eventDate': formattedDate,
+      'simpleEvents':
+          simpleEvents.map((e) => e.toJsonOnlineCreateApi()).toList(),
     };
   }
 
@@ -70,9 +81,11 @@ class MassiveEventModel {
       eventDate: DateTime.parse(json['eventDate'] as String),
       simpleEvents:
           (json['simpleEvents'] as List)
-              .map((e) => SimpleEventModel.fromJson(e))
+              .map((e) => SimpleEventModel.fromJson(e, isActive: true))
               .toList(),
       status: json['status'] as String,
+      createdAt: DateTime.parse(json['createdAt'] as String),
+      updatedAt: DateTime.parse(json['updatedAt'] as String),
     );
   }
 }

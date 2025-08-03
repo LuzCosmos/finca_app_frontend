@@ -37,11 +37,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get error_server => 'Internal server error. Please try again later.';
 
   @override
-  String get error_generic => 'Could not save object.';
+  String get error_savingObject => 'An unexpected error occurred while saving';
 
   @override
   String get error_unauthorized =>
       'Your session has expired and you need to log in again.';
+
+  @override
+  String get error_serverConnection =>
+      'Unable to connect to the server. Please check your internet connection or try again later.';
+
+  @override
+  String get error_generic => 'An unexpected error has occurred.';
 
   @override
   String get login_username => 'Username';

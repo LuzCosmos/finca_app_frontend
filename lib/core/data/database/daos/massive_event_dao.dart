@@ -1,10 +1,10 @@
 import 'package:drift/drift.dart';
 import '../app_database_mobile.dart';
 import '../tables/massive_event_local.dart';
-
+import '../tables/simple_event_local.dart';
 part 'massive_event_dao.g.dart';
 
-@DriftAccessor(tables: [MassiveEventLocal])
+@DriftAccessor(tables: [MassiveEventLocal, SimpleEventLocal])
 class MassiveEventDao extends DatabaseAccessor<AppDatabase>
     with _$MassiveEventDaoMixin {
   MassiveEventDao(AppDatabase db) : super(db);

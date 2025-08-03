@@ -11,11 +11,17 @@
   "error_invalidData": "Datos inválidos en el formulario.",
   "error_forbidden": "No tienes permiso para realizar esta acción.",
   "error_server": "Error interno del servidor. Intenta más tarde.",
-  "error_generic": "No se pudo guardar objeto.",
+  "error_savingObject": "Ocurrió un error inesperado al guardar",
+
   "error_unauthorized": "Tu sesión ha expirado y necesitas iniciar sesión nuevamente.",
   "@error_unauthorized": {
     "description": "Se muestra cuando la sesión del usuario ha expirado o no está autorizado, requiriendo un nuevo inicio de sesión."
   },
+  "error_serverConnection": "No se pudo conectar con el servidor. Verifica tu conexión a internet o intenta más tarde.",
+  "@error_serverConnection": {
+    "description": "Mensaje mostrado cuando la app no puede comunicarse con el servidor."
+  },
+  "error_generic": "Ha ocurrido un error inesperado.",
 
   "login_username": "Usuario",
   "login_usernameRequired": "Ingrese su usuario",

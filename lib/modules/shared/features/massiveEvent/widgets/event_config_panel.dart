@@ -1,15 +1,15 @@
-import 'package:finca_app_frontend/core/services/api_exception.dart';
-import 'package:finca_app_frontend/core/services/platform_sevice.dart';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_model.dart';
-import 'package:finca_app_frontend/modules/shared/features/massiveEvent/bloc/massive_event_bloc.dart';
-import 'package:finca_app_frontend/modules/shared/features/massiveEvent/bloc/massive_event_event.dart';
-import 'event_detail_form.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
+import 'package:finca_app_frontend/core/services/api_exception.dart';
+import 'package:finca_app_frontend/core/services/platform_sevice.dart';
+import 'package:finca_app_frontend/core/services/session_service.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/bloc/massive_event_bloc.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/massive_event_model.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_type.dart';
-import 'package:finca_app_frontend/modules/shared/features/massiveEvent/services/massive_event_api_service.dart';
-import 'dart:convert';
+import 'event_detail_form.dart';
 
 class EventConfigPanel extends StatefulWidget {
   final String? idMassiveEvent;
@@ -17,7 +17,7 @@ class EventConfigPanel extends StatefulWidget {
 
   const EventConfigPanel({
     super.key,
-    required this.idMassiveEvent,
+    this.idMassiveEvent,
     required this.onMassiveEventCreated,
   });
 
@@ -27,6 +27,14 @@ class EventConfigPanel extends StatefulWidget {
 
 class _EventConfigPanelState extends State<EventConfigPanel> {
   final List<SimpleEventModel> _allDetails = [];
+  String? idTenant;
+  late String? _currentMassiveEventId;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentMassiveEventId = widget.idMassiveEvent;
+  }
 
   List<SimpleEventModel> get activeDetails =>
       _allDetails.where((e) => e.isActive).toList();
@@ -34,6 +42,9 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
   List<SimpleEventModel> get historyDetails => _allDetails;
 
   void _openAddEventDialog() async {
+    if (idTenant == null || idTenant!.isEmpty) {
+      idTenant = await SessionService.getIdTenant();
+    }
     final result = await showDialog<Map<String, String>>(
       context: context,
       builder: (context) => const EventDetailForm(),
@@ -42,47 +53,68 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
       final type = result['type'] ?? '';
       final name = result['name'];
       if (_canAddDetail(type, name)) {
-        String? currentMassiveId = widget.idMassiveEvent;
-        final newConfig = SimpleEventModel.create(
+        var newSimpleEvent = SimpleEventModel.create(
           name: name ?? '',
-          type: EventType.values.firstWhere((e) => e.name == type),
-          data: result['data'] ?? '',
-          idMassiveEvent: currentMassiveId,
+          type: SimpleEventType.values.firstWhere((e) => e.name == type),
+          data: result['data'] ?? null,
+          idMassiveEvent: _currentMassiveEventId,
         );
-
-        if (PlatformService().isMobile()) {
-          _allDetails.add(newConfig);
+        final bloc = context.read<MassiveEventBloc>();
+        final dataSource = bloc.dataSource;
+        try {
+          if (_currentMassiveEventId == null) {
+            var masEv = MassiveEventModel.create(
+              eventDate: DateTime.now(),
+              simpleEvents: [newSimpleEvent],
+              idTenant: idTenant,
+            );
+            final newMassiveEvent = await dataSource.saveMassiveEvent(
+              massiveEvent: masEv,
+              idTenant: idTenant!,
+            );
+            setState(() {
+              _currentMassiveEventId = newMassiveEvent.id;
+            });
+            newSimpleEvent = newMassiveEvent.simpleEvents.first;
+            setState(() {
+              _currentMassiveEventId = newMassiveEvent.id;
+            });
+            widget.onMassiveEventCreated(newMassiveEvent.id);
+          } else {
+            newSimpleEvent = await dataSource.saveSimpleEvent(
+              simpleEvent: newSimpleEvent,
+              idTenant: idTenant!,
+            );
+          }
+          if (PlatformService().isWeb()) {
+            setState(() {
+              _allDetails.add(newSimpleEvent);
+            });
+          }
+        } on ApiException catch (e) {
+          if (mounted) {
+            String? error = ApiExceptionCode.values
+                .firstWhere((el) => el.name == e.code)
+                .asText(context);
+            if (e.code == ApiExceptionCode.serverConnectionError.name &&
+                PlatformService().isMobile()) {
+              error = null;
+            }
+            if (error != null) {
+              _showError(error);
+            }
+          }
+        } catch (e) {
+          if (mounted) {
+            _showError("Error sin identificar: " + e.toString());
+          }
+        } finally {
+          if (PlatformService().isMobile()) {
+            setState(() {
+              _allDetails.add(newSimpleEvent);
+            });
+          }
         }
-        if (PlatformService().isWeb()) {
-          setState(() {
-            _allDetails.add(newConfig);
-          });
-        }
-        if (currentMassiveId == null) {
-          try {
-            final newMassiveId =
-                await MassiveEventApiService.createMassiveEvent(
-                  eventDate: DateTime.now(),
-                  simpleEvents: [newConfig],
-                );
-            widget.onMassiveEventCreated(newMassiveId);
-            currentMassiveId = newMassiveId;
-          } on ApiException catch (e) {
-          } catch (e) {}
-        } else {
-          await MassiveEventApiService.createSimpleEvent(
-            massiveEventServerId: currentMassiveId,
-            simpleEvent: newConfig,
-          );
-        }
-
-        context.read<MassiveEventBloc>().add(
-          AddSimpleEvent(
-            config: newConfig,
-            idMassiveEvent: 'TODO-massive-event-id', // id local si es mobile
-            idTenant: 'TODO-id-tenant',
-          ),
-        );
       }
     }
   }
@@ -106,25 +138,17 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
 
     final l10n = AppLocalizations.of(context)!;
     _showInfo(l10n.reactivatedInfo(detail.type.asText(context)));
-
-    // 👉 también podrías reenviar al Bloc si quieres que se re-sincronice:
-    // context.read<MassiveEventBloc>().add(
-    //   AddSimpleEventConfig(
-    //     config: detail.copyWith(isActive: true),
-    //     idMassiveEvent: 'TODO-massive-event-id',
-    //     idTenant: 'TODO-id-tenant',
-    //   ),
-    // );
   }
 
   bool _canAddDetail(String type, String? name) {
     final l10n = AppLocalizations.of(context)!;
-    if (type == EventType.weight.name ||
-        type == EventType.tracker.name ||
-        type == EventType.eartag.name ||
-        type == EventType.castration.name) {
+    if (type == SimpleEventType.weight.name ||
+        type == SimpleEventType.tracker.name ||
+        type == SimpleEventType.eartag.name ||
+        type == SimpleEventType.castration.name) {
       final idx = _allDetails.indexWhere(
-        (d) => d.type == EventType.values.firstWhere((e) => e.name == type),
+        (d) =>
+            d.type == SimpleEventType.values.firstWhere((e) => e.name == type),
       );
       if (idx != -1) {
         final existing = _allDetails[idx];
@@ -137,11 +161,10 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
         }
       }
     }
-
-    if (type == EventType.brand.name && name != null && name.isNotEmpty) {
+    if (type == SimpleEventType.brand.name && name != null && name.isNotEmpty) {
       final idx = _allDetails.indexWhere(
         (d) =>
-            d.type == EventType.brand &&
+            d.type == SimpleEventType.brand &&
             jsonDecode(d.data!)['brandName'].toLowerCase() ==
                 name.toLowerCase(),
       );
@@ -156,7 +179,6 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
         }
       }
     }
-
     return true;
   }
 
@@ -216,7 +238,7 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
                               horizontal: 8,
                             ),
                             title: Text(
-                              detail.type == EventType.medication
+                              detail.type == SimpleEventType.medication
                                   ? detail.data != null
                                       ? detail.type.asText(context) +
                                           ': ' +
@@ -228,7 +250,7 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
                               style: const TextStyle(fontSize: 11),
                             ),
                             subtitle:
-                                detail.type == EventType.medication &&
+                                detail.type == SimpleEventType.medication &&
                                         detail.data != null
                                     ? Text(
                                       _buildMedicationSubtitle(detail.data!),
@@ -282,7 +304,7 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
                           ),
                           title: Text(
                             style: const TextStyle(fontSize: 11),
-                            detail.type == EventType.medication
+                            detail.type == SimpleEventType.medication
                                 ? detail.data != null
                                     ? jsonDecode(detail.data!)['medicationName']
                                     : ''

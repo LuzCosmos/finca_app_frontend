@@ -11,8 +11,8 @@ class EventDetailForm extends StatefulWidget {
 }
 
 class _EventDetailFormState extends State<EventDetailForm> {
-  String selectedType = 'weight';
-
+  String selectedType = SimpleEventType.weight.name;
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _routeController = TextEditingController();
   final TextEditingController _dosageController = TextEditingController();
@@ -28,95 +28,121 @@ class _EventDetailFormState extends State<EventDetailForm> {
     return AlertDialog(
       title: Text(l10n.addEventDetail),
       content: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            DropdownButtonFormField<String>(
-              value: selectedType,
-              onChanged:
-                  (value) => setState(() => selectedType = value ?? 'weight'),
-              items: [
-                DropdownMenuItem(
-                  value: EventType.weight.name,
-                  child: Text(EventType.weight.asText(context)),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              DropdownButtonFormField<String>(
+                value: selectedType,
+                onChanged:
+                    (value) => setState(
+                      () => selectedType = value ?? SimpleEventType.weight.name,
+                    ),
+                items: [
+                  DropdownMenuItem(
+                    value: SimpleEventType.weight.name,
+                    child: Text(SimpleEventType.weight.asText(context)),
+                  ),
+                  DropdownMenuItem(
+                    value: SimpleEventType.castration.name,
+                    child: Text(SimpleEventType.castration.asText(context)),
+                  ),
+                  DropdownMenuItem(
+                    value: SimpleEventType.tracker.name,
+                    child: Text(SimpleEventType.tracker.asText(context)),
+                  ),
+                  DropdownMenuItem(
+                    value: SimpleEventType.eartag.name,
+                    child: Text(SimpleEventType.eartag.asText(context)),
+                  ),
+                  DropdownMenuItem(
+                    value: SimpleEventType.medication.name,
+                    child: Text(SimpleEventType.medication.asText(context)),
+                  ),
+                  DropdownMenuItem(
+                    value: SimpleEventType.brand.name,
+                    child: Text(SimpleEventType.brand.asText(context)),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+
+              // Campos específicos
+              if (selectedType == SimpleEventType.medication.name) ...[
+                const SizedBox(height: 8),
+                TextFormField(
+                  controller: _nameController,
+                  decoration: InputDecoration(labelText: l10n.medicationName),
+                  validator:
+                      (value) =>
+                          value == null || value.trim().isEmpty
+                              ? l10n.fieldRequired
+                              : null,
                 ),
-                DropdownMenuItem(
-                  value: EventType.castration.name,
-                  child: Text(EventType.castration.asText(context)),
+                const SizedBox(height: 8),
+                TextFormField(
+                  controller: _dosageController,
+                  decoration: InputDecoration(labelText: l10n.medicationDosage),
+                  keyboardType: TextInputType.number,
+                  validator:
+                      (value) =>
+                          value == null || value.trim().isEmpty
+                              ? l10n.fieldRequired
+                              : null,
                 ),
-                DropdownMenuItem(
-                  value: EventType.tracker.name,
-                  child: Text(EventType.tracker.asText(context)),
+                TextFormField(
+                  controller: _routeController,
+                  decoration: InputDecoration(labelText: l10n.medicationRoute),
+                  validator:
+                      (value) =>
+                          value == null || value.trim().isEmpty
+                              ? l10n.fieldRequired
+                              : null,
                 ),
-                DropdownMenuItem(
-                  value: EventType.eartag.name,
-                  child: Text(EventType.eartag.asText(context)),
-                ),
-                DropdownMenuItem(
-                  value: EventType.medication.name,
-                  child: Text(EventType.medication.asText(context)),
-                ),
-                DropdownMenuItem(
-                  value: EventType.brand.name,
-                  child: Text(EventType.brand.asText(context)),
+                const SizedBox(height: 8),
+                TextFormField(
+                  controller: _lotController,
+                  decoration: InputDecoration(labelText: l10n.medicationLot),
+                  validator:
+                      (value) =>
+                          value == null || value.trim().isEmpty
+                              ? l10n.fieldRequired
+                              : null,
                 ),
               ],
-            ),
-            const SizedBox(height: 16),
-
-            // Campos específicos
-            if (selectedType == 'medication') ...[
-              const SizedBox(height: 8),
-              TextField(
-                controller: _nameController,
-                decoration: InputDecoration(labelText: l10n.medicationName),
-              ),
-              const SizedBox(height: 8),
-              TextField(
-                controller: _dosageController,
-                decoration: InputDecoration(labelText: l10n.medicationDosage),
-                keyboardType: TextInputType.number,
-              ),
-              TextField(
-                controller: _routeController,
-                decoration: InputDecoration(labelText: l10n.medicationRoute),
-              ),
-              const SizedBox(height: 8),
-              TextField(
-                controller: _lotController,
-                decoration: InputDecoration(labelText: l10n.medicationLot),
-              ),
+              if (selectedType == SimpleEventType.brand.name) ...[
+                DropdownButtonFormField<String>(
+                  value: selectedBrand,
+                  onChanged: (value) => setState(() => selectedBrand = value),
+                  hint: Text(l10n.selectBrand),
+                  items:
+                      existingBrands
+                          .map(
+                            (b) => DropdownMenuItem(value: b, child: Text(b)),
+                          )
+                          .toList(),
+                ),
+                const SizedBox(height: 8),
+                OutlinedButton.icon(
+                  onPressed: () async {
+                    final result = await showDialog<Map<String, String>>(
+                      context: context,
+                      builder: (context) => _CreateBrandDialog(),
+                    );
+                    if (result != null) {
+                      setState(() {
+                        existingBrands.add(result['name']!);
+                        selectedBrand = result['name'];
+                      });
+                    }
+                  },
+                  icon: const Icon(Icons.add),
+                  label: Text(l10n.createNewBrand),
+                ),
+              ],
             ],
-
-            if (selectedType == EventType.brand.name) ...[
-              DropdownButtonFormField<String>(
-                value: selectedBrand,
-                onChanged: (value) => setState(() => selectedBrand = value),
-                hint: Text(l10n.selectBrand),
-                items:
-                    existingBrands
-                        .map((b) => DropdownMenuItem(value: b, child: Text(b)))
-                        .toList(),
-              ),
-              const SizedBox(height: 8),
-              OutlinedButton.icon(
-                onPressed: () async {
-                  final result = await showDialog<Map<String, String>>(
-                    context: context,
-                    builder: (context) => _CreateBrandDialog(),
-                  );
-                  if (result != null) {
-                    setState(() {
-                      existingBrands.add(result['name']!);
-                      selectedBrand = result['name'];
-                    });
-                  }
-                },
-                icon: const Icon(Icons.add),
-                label: Text(l10n.createNewBrand),
-              ),
-            ],
-          ],
+          ),
         ),
       ),
       actions: [
@@ -126,8 +152,12 @@ class _EventDetailFormState extends State<EventDetailForm> {
         ),
         ElevatedButton(
           onPressed: () {
+            if (selectedType == SimpleEventType.medication.name) {
+              final isValid = _formKey.currentState?.validate() ?? false;
+              if (!isValid) return;
+            }
             final Map<String, String> data = {'type': selectedType};
-            if (selectedType == EventType.medication.name) {
+            if (selectedType == SimpleEventType.medication.name) {
               data['name'] = _nameController.text;
               data['data'] = jsonEncode({
                 'medicationName': _nameController.text,
@@ -135,7 +165,7 @@ class _EventDetailFormState extends State<EventDetailForm> {
                 'dosage': _dosageController.text,
                 'lot': _lotController.text,
               });
-            } else if (selectedType == EventType.brand.name) {
+            } else if (selectedType == SimpleEventType.brand.name) {
               data['name'] = selectedBrand ?? '';
               data['data'] = jsonEncode({
                 'idBrand': selectedBrand ?? '',

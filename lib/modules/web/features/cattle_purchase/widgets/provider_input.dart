@@ -67,6 +67,12 @@ class _ProviderInputState extends State<ProviderInput> {
           case 'unknownError':
             error = l10n.provider_creationError;
             break;
+          case 'serverConnectionError':
+            error = l10n.error_server;
+            break;
+          case 'savingObjectError':
+            error = l10n.provider_creationError;
+            break;
           default:
             error = l10n.provider_creationError;
         }

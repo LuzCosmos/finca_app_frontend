@@ -4,6 +4,7 @@ import '/core/services/auth_service.dart';
 import '/core/services/auth_exception.dart';
 import '/core/services/session_service.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
+import 'package:finca_app_frontend/core/models/user_model.dart';
 
 class LoginForm extends StatefulWidget {
   final void Function(Map<String, dynamic>) onLoginSuccess;
@@ -39,11 +40,12 @@ class _LoginFormState extends State<LoginForm> {
         password: password,
         companyUsername: companyUsername,
       );
+      final User user = result['user'];
       await SessionService.saveSession(
         token: result['token'],
         permissions: result['permissions'],
-        idTenant: result['user']['tenant_id'],
-        idUser: result['user']['id'],
+        idTenant: user.idTenant,
+        idUser: user.id,
       );
       widget.onLoginSuccess(result);
     } catch (e) {

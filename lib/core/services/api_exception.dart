@@ -6,11 +6,13 @@ enum ApiExceptionCode {
   unauthorized,
   forbidden,
   serverError,
+  savingObjectError,
   unknownError,
+  serverConnectionError,
 }
 
 extension ApiExceptionCodeL10n on ApiExceptionCode {
-  String asText(BuildContext context) {
+  String asText(BuildContext context, {String? objectName}) {
     final l10n = AppLocalizations.of(context)!;
     switch (this) {
       case ApiExceptionCode.invalidData:
@@ -22,7 +24,12 @@ extension ApiExceptionCodeL10n on ApiExceptionCode {
       case ApiExceptionCode.serverError:
         return l10n.error_server;
       case ApiExceptionCode.unknownError:
-        return l10n.login_unexpectedError;
+        return l10n.error_generic;
+      case ApiExceptionCode.serverConnectionError:
+        return l10n.error_serverConnection;
+      case ApiExceptionCode.savingObjectError:
+        return l10n.error_savingObject +
+            (objectName != null ? " $objectName" : "");
     }
   }
 }

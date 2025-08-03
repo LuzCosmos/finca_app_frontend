@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import '../../../../../core/services/session_service.dart';
 import '../models/provider.dart';
@@ -12,17 +13,27 @@ class ProviderService {
   Future<List<ProviderModel>> searchByNit(String query) async {
     final token = await SessionService.getToken();
     final url = Uri.parse('$baseUrl/search/by-nit?query=$query');
-    final response = await http.get(
-      url,
-      headers: {
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
-      },
-    );
-    logger.d('url: $url');
-    logger.d('token: $token');
-    logger.d('response: ${response.statusCode}');
-    logger.d('response: ${response.body}');
+    var response;
+    try {
+      response = await http.get(
+        url,
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+    } catch (e) {
+      if (e is SocketException || e is http.ClientException) {
+        throw ApiException(
+          'serverConnectionError',
+          'Error al crear MassiveEvent: $e',
+        );
+      }
+      throw ApiException(
+        'savingObjectError',
+        'Error al crear MassiveEvent: $e',
+      );
+    }
     if (response.statusCode == 200) {
       final List list = jsonDecode(response.body);
       final List<ProviderModel> providers =
@@ -45,14 +56,28 @@ class ProviderService {
   }) async {
     final token = await SessionService.getToken();
     final url = Uri.parse(baseUrl);
-    final response = await http.post(
-      url,
-      headers: {
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode({'name': name, 'nit': nit}),
-    );
+    var response;
+    try {
+      response = await http.post(
+        url,
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({'name': name, 'nit': nit}),
+      );
+    } catch (e) {
+      if (e is SocketException || e is http.ClientException) {
+        throw ApiException(
+          'serverConnectionError',
+          'Error al crear MassiveEvent: $e',
+        );
+      }
+      throw ApiException(
+        'savingObjectError',
+        'Error al crear MassiveEvent: $e',
+      );
+    }
     if (response.statusCode == 201) {
       return ProviderModel.fromJson(jsonDecode(response.body));
     } else if (response.statusCode == 409) {
