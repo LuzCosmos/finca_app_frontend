@@ -45,7 +45,7 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
     if (idTenant == null || idTenant!.isEmpty) {
       idTenant = await SessionService.getIdTenant();
     }
-    final result = await showDialog<Map<String, String>>(
+    final result = await showDialog<Map<String, dynamic>>(
       context: context,
       builder: (context) => const EventDetailForm(),
     );
@@ -106,7 +106,7 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
           }
         } catch (e) {
           if (mounted) {
-            _showError("Error sin identificar: " + e.toString());
+            _showError(AppLocalizations.of(context)!.error_generic);
           }
         } finally {
           if (PlatformService().isMobile()) {
@@ -162,12 +162,13 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
       }
     }
     if (type == SimpleEventType.brand.name && name != null && name.isNotEmpty) {
-      final idx = _allDetails.indexWhere(
-        (d) =>
-            d.type == SimpleEventType.brand &&
-            jsonDecode(d.data!)['brandName'].toLowerCase() ==
-                name.toLowerCase(),
-      );
+      final idx = _allDetails.indexWhere((d) {
+        if (d.type != SimpleEventType.brand) return false;
+        final dynamic rawData = jsonDecode(d.data!);
+        final Map<String, dynamic> decoded =
+            rawData is String ? jsonDecode(rawData) : rawData;
+        return decoded['brandName'].toLowerCase() == name.toLowerCase();
+      });
       if (idx != -1) {
         final existing = _allDetails[idx];
         if (!existing.isActive) {

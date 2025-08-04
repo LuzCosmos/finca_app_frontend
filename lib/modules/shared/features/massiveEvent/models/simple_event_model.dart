@@ -71,15 +71,17 @@ class SimpleEventModel {
       if (data == null) {
         return {'type': type.name};
       } else {
-        return {'type': type.name, 'data': data};
+        var decodedData = jsonDecode(data!);
+        return {'type': type.name, 'data': decodedData};
       }
     } else {
       if (data == null) {
         return {'type': type.name, 'idMassiveEvent': idMassiveEvent};
       } else {
+        var decodedData = jsonDecode(data!);
         return {
           'type': type.name,
-          'data': data,
+          'data': decodedData,
           'idMassiveEvent': idMassiveEvent,
         };
       }

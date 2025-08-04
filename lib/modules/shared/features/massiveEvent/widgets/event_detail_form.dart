@@ -1,7 +1,10 @@
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
+import 'package:finca_app_frontend/modules/shared/features/brands/models/brand_model.dart';
+import 'package:finca_app_frontend/modules/shared/features/brands/services/brand_api_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_type.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
+import 'package:finca_app_frontend/core/utils/logger.dart';
 
 class EventDetailForm extends StatefulWidget {
   const EventDetailForm({super.key});
@@ -17,9 +20,26 @@ class _EventDetailFormState extends State<EventDetailForm> {
   final TextEditingController _routeController = TextEditingController();
   final TextEditingController _dosageController = TextEditingController();
   final TextEditingController _lotController = TextEditingController();
-  String? selectedBrand;
+  BrandModel? selectedBrandObject;
 
-  final List<String> existingBrands = ['Las Garzas', 'Brand X', 'Brand Y'];
+  List<BrandModel> availableBrands = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadBrands();
+  }
+
+  Future<void> _loadBrands() async {
+    try {
+      final brands = await BrandApiService.loadBrands();
+      setState(() {
+        availableBrands = brands;
+      });
+    } catch (e) {
+      // Manejo de error
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -113,16 +133,45 @@ class _EventDetailFormState extends State<EventDetailForm> {
               ],
               if (selectedType == SimpleEventType.brand.name) ...[
                 DropdownButtonFormField<String>(
-                  value: selectedBrand,
-                  onChanged: (value) => setState(() => selectedBrand = value),
+                  value: selectedBrandObject?.name,
+                  onChanged:
+                      (value) => setState(() {
+                        selectedBrandObject = availableBrands.firstWhere(
+                          (b) => b.name == value,
+                        );
+                      }),
                   hint: Text(l10n.selectBrand),
                   items:
-                      existingBrands
+                      availableBrands
                           .map(
-                            (b) => DropdownMenuItem(value: b, child: Text(b)),
+                            (b) => DropdownMenuItem<String>(
+                              value: b.name,
+                              child: Text(b.name),
+                            ),
                           )
                           .toList(),
+                  validator:
+                      (value) =>
+                          value == null || value.trim().isEmpty
+                              ? l10n.fieldRequired
+                              : null,
                 ),
+                if (selectedBrandObject != null) ...[
+                  const SizedBox(height: 8),
+                  Container(
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(border: Border.all()),
+                    child: Center(
+                      child: Image.memory(
+                        base64Decode(
+                          selectedBrandObject!.imageBase64.split(',').last,
+                        ),
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+                ],
                 const SizedBox(height: 8),
                 OutlinedButton.icon(
                   onPressed: () async {
@@ -131,9 +180,16 @@ class _EventDetailFormState extends State<EventDetailForm> {
                       builder: (context) => _CreateBrandDialog(),
                     );
                     if (result != null) {
+                      final newBrand = BrandModel(
+                        id: result['id']!,
+                        idTenant: result['idTenant']!,
+                        name: result['name']!,
+                        imageMimeType: result['imageMimeType']!,
+                        imageBase64: result['image']!,
+                      );
                       setState(() {
-                        existingBrands.add(result['name']!);
-                        selectedBrand = result['name'];
+                        availableBrands.add(newBrand);
+                        selectedBrandObject = availableBrands.last;
                       });
                     }
                   },
@@ -152,11 +208,14 @@ class _EventDetailFormState extends State<EventDetailForm> {
         ),
         ElevatedButton(
           onPressed: () {
-            if (selectedType == SimpleEventType.medication.name) {
+            final requiresValidation =
+                selectedType == SimpleEventType.medication.name ||
+                selectedType == SimpleEventType.brand.name;
+            if (requiresValidation) {
               final isValid = _formKey.currentState?.validate() ?? false;
               if (!isValid) return;
             }
-            final Map<String, String> data = {'type': selectedType};
+            final Map<String, dynamic> data = {'type': selectedType};
             if (selectedType == SimpleEventType.medication.name) {
               data['name'] = _nameController.text;
               data['data'] = jsonEncode({
@@ -166,11 +225,12 @@ class _EventDetailFormState extends State<EventDetailForm> {
                 'lot': _lotController.text,
               });
             } else if (selectedType == SimpleEventType.brand.name) {
-              data['name'] = selectedBrand ?? '';
+              data['name'] = selectedBrandObject?.name ?? '';
               data['data'] = jsonEncode({
-                'idBrand': selectedBrand ?? '',
-                'brandName': selectedBrand ?? '',
+                'idBrand': selectedBrandObject?.id ?? '',
+                'brandName': selectedBrandObject?.name ?? '',
               });
+              logger.d(data);
             } else {
               data['name'] = selectedType;
             }
