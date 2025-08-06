@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../widgets/finca_scaffold.dart';
+import 'package:finca_app_frontend/modules/shared/widgets/finca_scaffold.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/shared/features/home/widgets/home_option_with_permission.dart';
 import 'package:flutter/cupertino.dart';

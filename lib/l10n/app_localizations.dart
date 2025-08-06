@@ -5,8 +5,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
-import 'app_localizations_en.dart';
-import 'app_localizations_es.dart';
+import 'package:finca_app_frontend/l10n/app_localizations_en.dart';
+import 'package:finca_app_frontend/l10n/app_localizations_es.dart';
 
 // ignore_for_file: type=lint
 
@@ -571,6 +571,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tracker'**
   String get trackerLabel;
+
+  /// No description provided for @eartagLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Eartag'**
+  String get eartagLabel;
 
   /// No description provided for @applyButton.
   ///

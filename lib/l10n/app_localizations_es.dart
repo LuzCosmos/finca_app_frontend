@@ -1,6 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-import 'app_localizations.dart';
+import 'package:finca_app_frontend/l10n/app_localizations.dart';
 
 // ignore_for_file: type=lint
 
@@ -116,7 +116,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get cattlePurchase => 'Compra de Ganado';
 
   @override
-  String get cp_error_noLots => 'At least one lot is required';
+  String get cp_error_noLots => 'Debe agregar al menos un lote';
 
   @override
   String get cp_error_providerRequired =>
@@ -217,10 +217,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get lot_avgWeightInvalid => 'El peso promedio debe ser mayor a 0.';
 
   @override
-  String get lot_pricePerKgRequired => 'Please enter the price per kilo';
+  String get lot_pricePerKgRequired => 'Por favor ingrese el precio por kilo';
 
   @override
-  String get lot_pricePerKgInvalid => 'Enter a valid price per kilo.';
+  String get lot_pricePerKgInvalid => 'Ingrese un precio por kilo válido';
 
   @override
   String get lot_cattleCountRequired =>
@@ -247,7 +247,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get lots_summaryTotalTitle => 'Total';
 
   @override
-  String get addAnimalTitle => 'Agregar Animal';
+  String get addAnimalTitle => 'Res';
 
   @override
   String get animalNumberLabel => 'Número de Animal';
@@ -256,7 +256,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get weightLabel => 'Peso (kg)';
 
   @override
-  String get trackerLabel => 'Identificador';
+  String get trackerLabel => 'Tracker';
+
+  @override
+  String get eartagLabel => 'Arete de oido';
 
   @override
   String get applyButton => 'Aplicar';
@@ -287,12 +290,12 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String onlyOneType(Object type) {
-    return 'Solo puede haber un evento de tipo $type en este Massive Event.';
+    return 'Solo puede haber un evento de tipo $type en este Evento Masivo.';
   }
 
   @override
   String brandAlreadyExists(Object brand) {
-    return 'Ya existe la marca \"$brand\" en este Massive Event.';
+    return 'Ya existe la marca \"$brand\" en este Evento Masivo.';
   }
 
   @override

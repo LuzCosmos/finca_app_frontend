@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '/core/services/session_service.dart';
+import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/core/services/platform_sevice.dart';
-import 'home_option_card.dart';
+import 'package:finca_app_frontend/modules/shared/features/home/widgets/home_option_card.dart';
 
 class HomeOptionWithPermission extends StatelessWidget {
   final String module;

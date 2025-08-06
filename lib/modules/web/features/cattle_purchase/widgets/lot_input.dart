@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
-import '../models/lot.dart';
+import 'package:finca_app_frontend/modules/web/features/cattle_purchase/models/lot.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:finca_app_frontend/core/utils/regex_patterns.dart';

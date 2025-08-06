@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../core/services/session_service.dart';
+import 'package:finca_app_frontend/core/services/session_service.dart';
 
 class LoadingPage extends StatefulWidget {
   const LoadingPage({super.key});

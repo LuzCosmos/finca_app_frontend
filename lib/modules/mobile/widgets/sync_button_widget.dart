@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../bloc/sync_bloc.dart';
-import '../bloc/sync_event.dart';
-import '../bloc/sync_state.dart';
+import 'package:finca_app_frontend/modules/mobile/bloc/sync_bloc.dart';
+import 'package:finca_app_frontend/modules/mobile/bloc/sync_event.dart';
+import 'package:finca_app_frontend/modules/mobile/bloc/sync_state.dart';
 
 class SyncButtonWidget extends StatelessWidget {
   final String idTenant;

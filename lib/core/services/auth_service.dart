@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../models/user_model.dart';
+import 'package:finca_app_frontend/core/models/user_model.dart';
 import 'auth_exception.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 

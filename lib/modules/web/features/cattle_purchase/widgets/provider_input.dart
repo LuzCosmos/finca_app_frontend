@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
-import '../services/provider_service.dart';
-import '../models/provider.dart';
-import '../../../../../core/services/api_exception.dart';
+import 'package:finca_app_frontend/modules/web/features/cattle_purchase/services/provider_service.dart';
+import 'package:finca_app_frontend/modules/web/features/cattle_purchase/models/provider.dart';
+import 'package:finca_app_frontend/core/services/api_exception.dart';
 
 class ProviderInput extends StatefulWidget {
   final void Function(ProviderModel) onProviderSelected;

@@ -110,6 +110,7 @@
   "animalNumberLabel": "Animal Number",
   "weightLabel": "Weight (kg)",
   "trackerLabel": "Tracker",
+  "eartagLabel": "Eartag",
   "applyButton": "Apply",
 
   "eventConfigTitle": "Event Configuration",

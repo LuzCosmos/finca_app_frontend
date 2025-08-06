@@ -253,188 +253,227 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
             icon: const Icon(Icons.add),
             label: Text(l10n.addEventDetail),
           ),
-          const SizedBox(height: 12),
-          Text(
-            l10n.activeDetails,
-            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-          ),
           const SizedBox(height: 8),
           Expanded(
-            child:
-                activeDetails.isEmpty
-                    ? Center(child: Text(l10n.noActiveDetails))
-                    : ListView.builder(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 0,
-                        horizontal: 2,
+            child: Column(
+              children: [
+                // 70% - activeDetails
+                Expanded(
+                  flex: 6,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.activeDetails,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                      itemCount: activeDetails.length,
-                      itemBuilder: (context, index) {
-                        final detail = activeDetails[index];
-                        final titleText =
-                            detail.type == SimpleEventType.medication
-                                ? detail.data != null
-                                    ? '${detail.type.asText(context)}: ${jsonDecode(detail.data!)['medicationName']}'
-                                    : detail.type.asText(context)
-                                : detail.type == SimpleEventType.brand
-                                ? detail.data != null
-                                    ? '${detail.type.asText(context)}: ${jsonDecode(detail.data!)['brandName']}'
-                                    : detail.type.asText(context)
-                                : detail.type.asText(context);
+                      const SizedBox(height: 4),
+                      Expanded(
+                        child:
+                            activeDetails.isEmpty
+                                ? Center(child: Text(l10n.noActiveDetails))
+                                : ListView.builder(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 0,
+                                    horizontal: 2,
+                                  ),
+                                  itemCount: activeDetails.length,
+                                  itemBuilder: (context, index) {
+                                    final detail = activeDetails[index];
+                                    final titleText = _buildTitle(
+                                      detail,
+                                      context,
+                                    );
+                                    final subtitleText = _buildSubtitle(detail);
 
-                        final subtitleText =
-                            detail.type == SimpleEventType.medication &&
-                                    detail.data != null
-                                ? _buildMedicationSubtitle(detail.data!)
-                                : null;
-                        return Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(2),
-                          ),
-                          margin: const EdgeInsets.symmetric(vertical: 1),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 2,
-                              horizontal: 6,
-                            ),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        titleText,
-                                        style: const TextStyle(fontSize: 11),
+                                    return Card(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(2),
                                       ),
-                                      if (subtitleText != null)
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                            top: 2,
-                                          ),
-                                          child: Text(
-                                            subtitleText,
-                                            style: const TextStyle(
-                                              fontSize: 10,
-                                            ),
-                                          ),
+                                      margin: const EdgeInsets.symmetric(
+                                        vertical: 1,
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 2,
+                                          horizontal: 6,
                                         ),
-                                    ],
-                                  ),
-                                ),
-                                IconButton(
-                                  iconSize: 15,
-                                  icon: const Icon(
-                                    Icons.remove_circle_outline,
-                                    color: Colors.red,
-                                  ),
-                                  onPressed: () => _deactivateDetail(detail),
-                                  tooltip: l10n.deactivateTooltip,
-                                  padding: EdgeInsets.symmetric(),
-                                  constraints: const BoxConstraints(),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-          ),
-          const Divider(height: 32),
-          Text(
-            l10n.historyTitle,
-            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 8),
-          SizedBox(
-            height: 160,
-            child:
-                deactiveDetails.isEmpty
-                    ? Center(child: Text(l10n.noHistory))
-                    : ListView.builder(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 0,
-                        horizontal: 2,
-                      ),
-                      itemCount: deactiveDetails.length,
-                      itemBuilder: (context, index) {
-                        final detail = deactiveDetails[index];
-                        final isMedication =
-                            detail.type == SimpleEventType.medication;
-                        final isBrand = detail.type == SimpleEventType.brand;
-                        final data =
-                            detail.data != null
-                                ? jsonDecode(detail.data!)
-                                : null;
-
-                        final titleText =
-                            isMedication
-                                ? '${detail.type.asText(context)}: ${data?['medicationName'] ?? ''}'
-                                : isBrand
-                                ? '${detail.type.asText(context)}: ${data?['brandName'] ?? ''}'
-                                : detail.type.asText(context);
-
-                        return Card(
-                          margin: const EdgeInsets.symmetric(vertical: 1),
-                          elevation: 1,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(2),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 2,
-                              horizontal: 6,
-                            ),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Icon(
-                                  detail.isActive
-                                      ? Icons.check_circle
-                                      : Icons.history,
-                                  size: 15,
-                                  color:
-                                      detail.isActive
-                                          ? Colors.green
-                                          : Colors.grey,
-                                ),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        titleText,
-                                        style: const TextStyle(fontSize: 11),
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    titleText,
+                                                    style: const TextStyle(
+                                                      fontSize: 11,
+                                                    ),
+                                                  ),
+                                                  if (subtitleText != null)
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                            top: 2,
+                                                          ),
+                                                      child: Text(
+                                                        subtitleText,
+                                                        style: const TextStyle(
+                                                          fontSize: 10,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                ],
+                                              ),
+                                            ),
+                                            IconButton(
+                                              iconSize: 15,
+                                              icon: const Icon(
+                                                Icons.remove_circle_outline,
+                                                color: Colors.red,
+                                              ),
+                                              onPressed:
+                                                  () =>
+                                                      _deactivateDetail(detail),
+                                              tooltip: l10n.deactivateTooltip,
+                                              padding: EdgeInsets.zero,
+                                              constraints:
+                                                  const BoxConstraints(),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ],
-                                  ),
+                                    );
+                                  },
                                 ),
-                                if (!detail.isActive)
-                                  IconButton(
-                                    iconSize: 15,
-                                    icon: const Icon(
-                                      Icons.add_circle_outline,
-                                      color: Colors.blue,
-                                    ),
-                                    onPressed: () => _reactivateDetail(detail),
-                                    tooltip: l10n.reactivateTooltip,
-                                    padding: EdgeInsets.symmetric(),
-                                    constraints: const BoxConstraints(),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const Divider(height: 16),
+                // 30% - deactiveDetails (history)
+                Expanded(
+                  flex: 4,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.historyTitle,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Expanded(
+                        child:
+                            deactiveDetails.isEmpty
+                                ? Center(child: Text(l10n.noHistory))
+                                : ListView.builder(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 0,
+                                    horizontal: 2,
                                   ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
+                                  itemCount: deactiveDetails.length,
+                                  itemBuilder: (context, index) {
+                                    final detail = deactiveDetails[index];
+                                    final titleText = _buildTitle(
+                                      detail,
+                                      context,
+                                    );
+                                    return Card(
+                                      margin: const EdgeInsets.symmetric(
+                                        vertical: 1,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(2),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 2,
+                                          horizontal: 6,
+                                        ),
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Icon(
+                                              detail.isActive
+                                                  ? Icons.check_circle
+                                                  : Icons.history,
+                                              size: 15,
+                                              color:
+                                                  detail.isActive
+                                                      ? Colors.green
+                                                      : Colors.grey,
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Expanded(
+                                              child: Text(
+                                                titleText,
+                                                style: const TextStyle(
+                                                  fontSize: 11,
+                                                ),
+                                              ),
+                                            ),
+                                            if (!detail.isActive)
+                                              IconButton(
+                                                iconSize: 15,
+                                                icon: const Icon(
+                                                  Icons.add_circle_outline,
+                                                  color: Colors.blue,
+                                                ),
+                                                onPressed:
+                                                    () => _reactivateDetail(
+                                                      detail,
+                                                    ),
+                                                tooltip: l10n.reactivateTooltip,
+                                                padding: EdgeInsets.zero,
+                                                constraints:
+                                                    const BoxConstraints(),
+                                              ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
     );
+  }
+
+  String _buildTitle(SimpleEventModel detail, BuildContext context) {
+    final data = detail.data != null ? jsonDecode(detail.data!) : {};
+    switch (detail.type) {
+      case SimpleEventType.medication:
+        return '${detail.type.asText(context)}: ${data['medicationName'] ?? ''}';
+      case SimpleEventType.brand:
+        return '${detail.type.asText(context)}: ${data['brandName'] ?? ''}';
+      default:
+        return detail.type.asText(context);
+    }
+  }
+
+  String? _buildSubtitle(SimpleEventModel detail) {
+    if (detail.type != SimpleEventType.medication || detail.data == null) {
+      return null;
+    }
+    return _buildMedicationSubtitle(detail.data!);
   }
 
   String _buildMedicationSubtitle(String dataJson) {

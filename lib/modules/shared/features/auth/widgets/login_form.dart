@@ -1,8 +1,8 @@
 import 'package:finca_app_frontend/modules/shared/widgets/message_banner.dart';
 import 'package:flutter/material.dart';
-import '/core/services/auth_service.dart';
-import '/core/services/auth_exception.dart';
-import '/core/services/session_service.dart';
+import 'package:finca_app_frontend/core/services/auth_service.dart';
+import 'package:finca_app_frontend/core/services/auth_exception.dart';
+import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/core/models/user_model.dart';
 

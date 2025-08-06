@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'sync_event.dart';
 import 'sync_state.dart';
-import '../services/sync_service.dart';
+import 'package:finca_app_frontend/modules/mobile/services/sync_service.dart';
 
 class SyncBloc extends Bloc<SyncEvent, SyncState> {
   final SyncService syncService;

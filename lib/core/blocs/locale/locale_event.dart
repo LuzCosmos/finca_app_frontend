@@ -1,4 +1,4 @@
-part of 'locale_bloc.dart';
+part of 'package:finca_app_frontend/core/blocs/locale/locale_bloc.dart';
 
 sealed class LocaleEvent extends Equatable {
   const LocaleEvent();

@@ -46,7 +46,7 @@
   "purchase_saveSuccess": "Compra guardada exitosamente.",
   "purchase_saveError": "Falló el guardado de compra.",
   "cattlePurchase": "Compra de Ganado",
-  "cp_errors_noLots": "Debe agregar al menos un lote",
+  "cp_error_noLots": "Debe agregar al menos un lote",
   "cp_error_providerRequired": "Por favor seleccione o cree un proveedor.",
 
   "provider": "Proveedor",  
@@ -80,8 +80,8 @@
   "lot_duplicateLotNumber": "Dos o más lotes tienen el mismo número de lote.",
   "lot_avgWeightRequired": "Por favor ingrese el peso promedio(Kg).",
   "lot_avgWeightInvalid": "El peso promedio debe ser mayor a 0.",
-  "lot_pricePerKiloRequired": "Por favor ingrese el precio por kilo",
-  "lot_pricePerKiloInvalid": "Ingrese un precio por kilo válido",
+  "lot_pricePerKgRequired": "Por favor ingrese el precio por kilo",
+  "lot_pricePerKgInvalid": "Ingrese un precio por kilo válido",
   "lot_cattleCountRequired": "Por favor ingrese la cantidad de reses en el lote.",
   "lot_cattleCountInvalid": "La cantidad de reses en el lote debe ser mayor a 0.",
   "lot_totalWeightRequired": "Por favor ingrese el peso total.",
@@ -96,10 +96,11 @@
     "description": "Etiqueta usada en la fila de resumen de lotes para totales"
   },
 
-  "addAnimalTitle": "Agregar Animal",
+  "addAnimalTitle": "Res",
   "animalNumberLabel": "Número de Animal",
   "weightLabel": "Peso (kg)",
-  "trackerLabel": "Identificador",
+  "trackerLabel": "Tracker",
+  "eartagLabel": "Arete de oido",
   "applyButton": "Aplicar",
 
   "eventConfigTitle": "Configuración de Eventos",

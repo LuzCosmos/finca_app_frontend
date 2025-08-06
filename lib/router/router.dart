@@ -1,9 +1,9 @@
 import 'package:go_router/go_router.dart';
-import '../modules/shared/features/auth/page/login_page.dart';
-import '../modules/shared/features/home/page/home_page.dart';
-import '../modules/shared/features/loading/loading_page.dart';
-import '../modules/web/features/cattle_purchase/views/purchase_form_page.dart';
-import '../modules/shared/features/massiveEvent/page/massive_event_page.dart';
+import 'package:finca_app_frontend/modules/shared/features/auth/page/login_page.dart';
+import 'package:finca_app_frontend/modules/shared/features/home/page/home_page.dart';
+import 'package:finca_app_frontend/modules/shared/features/loading/loading_page.dart';
+import 'package:finca_app_frontend/modules/web/features/cattle_purchase/views/purchase_form_page.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/page/massive_event_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/bloc/massive_event_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

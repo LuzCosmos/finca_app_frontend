@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
-import '../models/lot.dart';
-import 'lot_input.dart';
+import 'package:finca_app_frontend/modules/web/features/cattle_purchase/models/lot.dart';
+import 'package:finca_app_frontend/modules/web/features/cattle_purchase/widgets/lot_input.dart';
 import 'package:intl/intl.dart';
 
 class LotsSection extends StatefulWidget {

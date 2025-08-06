@@ -1,6 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-import 'app_localizations.dart';
+import 'package:finca_app_frontend/l10n/app_localizations.dart';
 
 // ignore_for_file: type=lint
 
@@ -256,6 +256,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get trackerLabel => 'Tracker';
+
+  @override
+  String get eartagLabel => 'Eartag';
 
   @override
   String get applyButton => 'Apply';

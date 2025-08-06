@@ -4,7 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_model.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/massive_event_model.dart';
-import '../../../../../core/services/api_exception.dart';
+import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'package:finca_app_frontend/core/utils/logger.dart';
 import 'dart:io';
 

@@ -7,9 +7,9 @@ import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/s
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/shared/widgets/message_banner.dart';
 
-import '../widgets/event_config_panel.dart';
-import '../widgets/animal_entry_form.dart';
-import '../widgets/processed_animals_table.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/widgets/event_config_panel.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/widgets/animal_entry_form.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/widgets/processed_animals_table.dart';
 
 class MassiveEventPage extends StatefulWidget {
   const MassiveEventPage({super.key});
@@ -112,6 +112,7 @@ class _MassiveEventPageState extends State<MassiveEventPage> {
     );
     final animalEntryForm = AnimalEntryForm(
       key: const ValueKey('animalEntryForm'),
+      activeEvents: activeSimpleEvents,
     );
     final processedAnimalsTable = ProcessedAnimalsTable(
       key: const ValueKey('processedAnimalsTable'),

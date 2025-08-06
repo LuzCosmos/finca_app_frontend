@@ -1,8 +1,8 @@
 import 'package:drift/drift.dart';
-import '../app_database_mobile.dart';
-import '../tables/simple_event_local.dart';
+import 'package:finca_app_frontend/core/data/database/app_database_mobile.dart';
+import 'package:finca_app_frontend/core/data/database/tables/simple_event_local.dart';
 
-part 'simple_event_dao.g.dart';
+part 'package:finca_app_frontend/core/data/database/daos/simple_event_dao.g.dart';
 
 @DriftAccessor(tables: [SimpleEventLocal])
 class SimpleEventDao extends DatabaseAccessor<AppDatabase>

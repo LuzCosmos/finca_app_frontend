@@ -6,16 +6,16 @@ import 'package:drift/native.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
-import 'tables/massive_event_local.dart';
-import 'tables/simple_event_local.dart';
-import 'tables/brand_local.dart';
-import 'tables/animal_simple_event_local.dart';
-import 'daos/simple_event_dao.dart';
-import 'daos/massive_event_dao.dart';
-import 'daos/brand_dao.dart';
-import 'daos/animal_simple_event_dao.dart';
+import 'package:finca_app_frontend/core/data/database/tables/massive_event_local.dart';
+import 'package:finca_app_frontend/core/data/database/tables/simple_event_local.dart';
+import 'package:finca_app_frontend/core/data/database/tables/brand_local.dart';
+import 'package:finca_app_frontend/core/data/database/tables/animal_simple_event_local.dart';
+import 'package:finca_app_frontend/core/data/database/daos/simple_event_dao.dart';
+import 'package:finca_app_frontend/core/data/database/daos/massive_event_dao.dart';
+import 'package:finca_app_frontend/core/data/database/daos/brand_dao.dart';
+import 'package:finca_app_frontend/core/data/database/daos/animal_simple_event_dao.dart';
 
-part 'app_database_mobile.g.dart';
+part 'package:finca_app_frontend/core/data/database/app_database_mobile.g.dart';
 
 LazyDatabase _openConnection() {
   return LazyDatabase(() async {

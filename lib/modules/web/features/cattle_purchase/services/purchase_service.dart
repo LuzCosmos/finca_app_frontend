@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import '../../../../../core/services/session_service.dart';
-import '../../../../../core/services/api_exception.dart';
+import 'package:finca_app_frontend/core/services/session_service.dart';
+import 'package:finca_app_frontend/core/services/api_exception.dart';
 
 class PurchaseService {
   final String baseUrl = '${dotenv.env['API_BASE_URL']}/purchases';

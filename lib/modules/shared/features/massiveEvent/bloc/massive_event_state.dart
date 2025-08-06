@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:finca_app_frontend/modules/shared/features/brands/models/brand_model.dart';
-import '../models/simple_event_model.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_model.dart';
 
 abstract class MassiveEventState extends Equatable {
   const MassiveEventState();

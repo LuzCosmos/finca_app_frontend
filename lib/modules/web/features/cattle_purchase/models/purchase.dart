@@ -1,5 +1,5 @@
-import './lot.dart';
-import './provider.dart';
+import 'package:finca_app_frontend/modules/web/features/cattle_purchase/models/lot.dart';
+import 'package:finca_app_frontend/modules/web/features/cattle_purchase/models/provider.dart';
 
 class PurchaseModel {
   final DateTime purchaseDate;

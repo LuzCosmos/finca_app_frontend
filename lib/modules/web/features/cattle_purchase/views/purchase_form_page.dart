@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
-import '../../../../shared/widgets/finca_scaffold.dart';
-import '../widgets/provider_input.dart';
-import '../widgets/lots_section.dart';
-import '../models/provider.dart';
-import '../models/lot.dart';
-import '../../../../shared/widgets/message_banner.dart';
-import '../services/purchase_service.dart';
-import '../../../../../core/services/api_exception.dart';
+import 'package:finca_app_frontend/core/services/api_exception.dart';
+import 'package:finca_app_frontend/modules/shared/widgets/message_banner.dart';
+import 'package:finca_app_frontend/modules/shared/widgets/finca_scaffold.dart';
+import 'package:finca_app_frontend/modules/web/features/cattle_purchase/widgets/provider_input.dart';
+import 'package:finca_app_frontend/modules/web/features/cattle_purchase/widgets/lots_section.dart';
+import 'package:finca_app_frontend/modules/web/features/cattle_purchase/models/provider.dart';
+import 'package:finca_app_frontend/modules/web/features/cattle_purchase/models/lot.dart';
+import 'package:finca_app_frontend/modules/web/features/cattle_purchase/services/purchase_service.dart';
 import 'package:go_router/go_router.dart';
 
 class PurchaseFormPage extends StatefulWidget {
