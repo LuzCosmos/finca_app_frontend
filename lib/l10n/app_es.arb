@@ -10,6 +10,7 @@
   "fixErrors": "Por favor corrige los errores resaltados en rojo.",
   "error_invalidData": "Datos inválidos en el formulario.",
   "error_forbidden": "No tienes permiso para realizar esta acción.",
+  "error_conflict":"Duplicidad en base de datos",
   "error_server": "Error interno del servidor. Intenta más tarde.",
   "error_savingObject": "Ocurrió un error inesperado al guardar",
 
@@ -109,8 +110,8 @@
   "historyTitle": "Historial:",
   "noHistory": "Sin historial todavía",
   "reactivateTooltip": "Reactivar",
-  "onlyOneType": "Solo puede haber un evento de tipo {type} en este Massive Event.",
-  "brandAlreadyExists": "Ya existe la marca \"{brand}\" en este Massive Event.",
+  "onlyOneType": "Solo puede haber un evento de tipo {type} en este Evento Masivo.",
+  "brandAlreadyExists": "Ya existe la marca \"{brand}\" en este Evento Masivo.",
   "reactivatedInfo": "Se reactivó \"{name}\".",
 
   "eventTypeWeight": "Peso",
@@ -131,6 +132,7 @@
   "createNewBrandTitle": "Crear Nueva Brand",
   "brandName": "Nombre",
   "selectImage": "Seleccionar imagen",
+  "imageRequired": "La imagen es obligatoria",
   "create": "Crear",
 
   "noAnimals": "Aún no se han agregado animales",
@@ -148,5 +150,8 @@
 
   "simpleEventAdded": "Detalle agregado correctamente",
   "simpleEventError": "Ocurrió un error al agregar el detalle"
+
+
+  
 
 }

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:finca_app_frontend/core/utils/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SessionService {

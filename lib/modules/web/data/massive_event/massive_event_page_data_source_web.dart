@@ -1,9 +1,11 @@
-import 'package:finca_app_frontend/modules/shared/features/massiveEvent/data/simple_event_data_source.dart';
+import 'package:finca_app_frontend/modules/shared/features/brands/models/brand_model.dart';
+import 'package:finca_app_frontend/modules/shared/features/brands/services/brand_api_service.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/data/massive_event_page_data_source.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/massive_event_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/services/massive_event_api_service.dart';
 
-class SimpleEventDataSourceWeb implements ISimpleEventDataSource {
+class MassiveEventPageDataSourceWeb implements IMassiveEventPageDataSource {
   @override
   Future<SimpleEventModel> saveSimpleEvent({
     required SimpleEventModel simpleEvent,
@@ -26,5 +28,17 @@ class SimpleEventDataSourceWeb implements ISimpleEventDataSource {
       idTenant: idTenant,
     );
     return created; // respuesta del backend
+  }
+
+  @override
+  Future<BrandModel> saveBrand({required BrandModel brand}) async {
+    final created = BrandApiService.createBrand(brand: brand);
+    return created;
+  }
+
+  @override
+  Future<List<BrandModel>> getAllBrands() {
+    final brands = BrandApiService.getAllBrands();
+    return brands;
   }
 }

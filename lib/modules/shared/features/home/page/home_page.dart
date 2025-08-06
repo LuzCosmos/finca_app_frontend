@@ -3,8 +3,6 @@ import '../../../widgets/finca_scaffold.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/shared/features/home/widgets/home_option_with_permission.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:finca_app_frontend/modules/shared/navigation/app_navigator.dart';
-import 'package:finca_app_frontend/modules/shared/features/massiveEvent/massive_event_module.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -36,9 +34,8 @@ class HomePage extends StatelessWidget {
                 resource: "massive_events",
                 title: l10n.home_massiveEvent,
                 icon: CupertinoIcons.list_bullet,
-                route: "/massive-events",
+                route: "/massive-event",
                 forWebOnly: false,
-                onTapOverride: () => openPage(context, buildMassiveEventPage()),
               ),
             ],
           ),

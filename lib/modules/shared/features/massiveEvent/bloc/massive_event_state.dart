@@ -1,9 +1,9 @@
 import 'package:equatable/equatable.dart';
+import 'package:finca_app_frontend/modules/shared/features/brands/models/brand_model.dart';
 import '../models/simple_event_model.dart';
 
 abstract class MassiveEventState extends Equatable {
   const MassiveEventState();
-
   @override
   List<Object?> get props => [];
 }
@@ -30,4 +30,10 @@ class MassiveEventError extends MassiveEventState {
 
   @override
   List<Object?> get props => [messageKey, debugInfo];
+}
+
+class BrandCreatedSuccess extends MassiveEventState {
+  final BrandModel brand;
+
+  BrandCreatedSuccess({required this.brand});
 }

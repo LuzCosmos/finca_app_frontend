@@ -122,10 +122,11 @@ class _ProviderInputState extends State<ProviderInput> {
                         _cachedSuggestions = results;
                         if (!completer.isCompleted) completer.complete(results);
                       } on ApiException catch (e) {
-                        if (e.code == 'unauthorized') {
-                          if (mounted) {
-                            widget.onError?.call(l10n.error_unauthorized);
-                          }
+                        String error = ApiExceptionCode.values
+                            .firstWhere((el) => el.name == e.code)
+                            .asText(context);
+                        if (mounted) {
+                          widget.onError?.call(error);
                         }
                       } catch (_) {
                         if (!completer.isCompleted) completer.complete([]);

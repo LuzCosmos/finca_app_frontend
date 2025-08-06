@@ -21,9 +21,10 @@ class MassiveEventPage extends StatefulWidget {
 class _MassiveEventPageState extends State<MassiveEventPage> {
   String? idMassiveEvent;
   DateTime _selectedDate = DateTime.now();
-  List<SimpleEventModel> events = [];
+  List<SimpleEventModel> simpleEvents = [];
   String? _globalErrorMessage;
   String? _globalSuccessMessage;
+  String? _globalInfoMessage;
 
   void setidMassiveEvent(String id) {
     setState(() {
@@ -33,9 +34,12 @@ class _MassiveEventPageState extends State<MassiveEventPage> {
 
   void setEvents(List<SimpleEventModel> events) {
     setState(() {
-      this.events = events;
+      simpleEvents = events;
     });
   }
+
+  List<SimpleEventModel> get activeSimpleEvents =>
+      simpleEvents.where((e) => e.isActive).toList();
 
   void _selectDate() async {
     _globalErrorMessage = null;
@@ -52,10 +56,66 @@ class _MassiveEventPageState extends State<MassiveEventPage> {
     }
   }
 
+  void setGlobalError(String? msg) {
+    setState(() {
+      _globalErrorMessage = msg;
+      _globalSuccessMessage = null;
+      _globalInfoMessage = null;
+    });
+  }
+
+  void setGlobalSuccess(String? msg) {
+    setState(() {
+      _globalSuccessMessage = msg;
+      _globalErrorMessage = null;
+      _globalInfoMessage = null;
+    });
+    Future.delayed(Duration(seconds: 5), () {
+      if (mounted) {
+        setState(() {
+          _globalSuccessMessage = null;
+        });
+      }
+    });
+  }
+
+  void setGlobalInfo(String? msg) {
+    setState(() {
+      _globalInfoMessage = msg;
+      _globalSuccessMessage = null;
+      _globalErrorMessage = null;
+    });
+    Future.delayed(Duration(seconds: 5), () {
+      if (mounted) {
+        setState(() {
+          _globalInfoMessage = null;
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final isWide = MediaQuery.of(context).size.width > 800;
+    final eventConfigPanel = EventConfigPanel(
+      key: const ValueKey('eventConfigPanel'),
+      isWide: isWide,
+      idMassiveEvent: idMassiveEvent,
+      onMassiveEventCreated: (newId) {
+        setidMassiveEvent(newId);
+      },
+      showError: setGlobalError,
+      showSuccess: setGlobalSuccess,
+      showInfo: setGlobalInfo,
+      onEventsChanged: setEvents,
+    );
+    final animalEntryForm = AnimalEntryForm(
+      key: const ValueKey('animalEntryForm'),
+    );
+    final processedAnimalsTable = ProcessedAnimalsTable(
+      key: const ValueKey('processedAnimalsTable'),
+    );
 
     return BlocListener<MassiveEventBloc, MassiveEventState>(
       listener: (context, state) {
@@ -64,72 +124,58 @@ class _MassiveEventPageState extends State<MassiveEventPage> {
               state.messageKey == 'simpleEventAdded'
                   ? l10n.simpleEventAdded
                   : state.messageKey;
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(msg)));
+          setGlobalSuccess(msg);
         }
         if (state is MassiveEventError) {
           String msg =
               state.messageKey == 'simpleEventError'
                   ? l10n.simpleEventError
                   : state.messageKey;
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(msg)));
+          setGlobalError(msg);
         }
-        if (_globalErrorMessage != null)
-          MessageBanner.error(_globalErrorMessage!);
-        if (_globalSuccessMessage != null)
-          MessageBanner.success(_globalSuccessMessage!);
       },
-
       child: FincaScaffold(
         title: l10n.home_massiveEvent,
-        body:
-            isWide
-                ? Row(
-                  children: [
-                    if (_globalErrorMessage != null)
-                      MessageBanner.error(_globalErrorMessage!),
-                    if (_globalSuccessMessage != null)
-                      MessageBanner.success(_globalSuccessMessage!),
-
-                    Expanded(
-                      flex: 2,
-                      child: EventConfigPanel(
-                        idMassiveEvent: idMassiveEvent,
-                        onMassiveEventCreated: (newId) {
-                          setidMassiveEvent(newId);
-                        },
-                      ),
-                    ),
-                    const VerticalDivider(width: 1),
-                    Expanded(
-                      flex: 3,
-                      child: Column(
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (_globalErrorMessage != null)
+              MessageBanner.error(_globalErrorMessage!),
+            if (_globalSuccessMessage != null)
+              MessageBanner.success(_globalSuccessMessage!),
+            if (_globalInfoMessage != null)
+              MessageBanner.info(_globalInfoMessage!),
+            Expanded(
+              child:
+                  isWide
+                      ? Row(
                         children: [
-                          AnimalEntryForm(),
+                          Expanded(flex: 1, child: eventConfigPanel),
+                          const VerticalDivider(width: 1),
+                          Expanded(
+                            flex: 3,
+                            child: Column(
+                              children: [
+                                animalEntryForm,
+                                const SizedBox(height: 16),
+                                Expanded(child: processedAnimalsTable),
+                              ],
+                            ),
+                          ),
+                        ],
+                      )
+                      : Column(
+                        children: [
+                          eventConfigPanel,
+                          const Divider(height: 1),
+                          animalEntryForm,
                           const SizedBox(height: 16),
-                          Expanded(child: ProcessedAnimalsTable()),
+                          Expanded(child: processedAnimalsTable),
                         ],
                       ),
-                    ),
-                  ],
-                )
-                : Column(
-                  children: [
-                    EventConfigPanel(
-                      idMassiveEvent: idMassiveEvent,
-                      onMassiveEventCreated: (newId) {
-                        setidMassiveEvent(newId);
-                      },
-                    ),
-                    const Divider(height: 1),
-                    AnimalEntryForm(),
-                    const SizedBox(height: 16),
-                    Expanded(child: ProcessedAnimalsTable()),
-                  ],
-                ),
+            ),
+          ],
+        ),
       ),
     );
   }

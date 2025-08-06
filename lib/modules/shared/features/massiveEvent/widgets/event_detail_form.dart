@@ -1,10 +1,16 @@
+import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/shared/features/brands/models/brand_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/brands/services/brand_api_service.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/bloc/massive_event_bloc.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_type.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:finca_app_frontend/core/utils/logger.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:mime/mime.dart';
+import 'dart:typed_data';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EventDetailForm extends StatefulWidget {
   const EventDetailForm({super.key});
@@ -21,7 +27,6 @@ class _EventDetailFormState extends State<EventDetailForm> {
   final TextEditingController _dosageController = TextEditingController();
   final TextEditingController _lotController = TextEditingController();
   BrandModel? selectedBrandObject;
-
   List<BrandModel> availableBrands = [];
 
   @override
@@ -32,7 +37,7 @@ class _EventDetailFormState extends State<EventDetailForm> {
 
   Future<void> _loadBrands() async {
     try {
-      final brands = await BrandApiService.loadBrands();
+      final brands = await BrandApiService.getAllBrands();
       setState(() {
         availableBrands = brands;
       });
@@ -59,7 +64,27 @@ class _EventDetailFormState extends State<EventDetailForm> {
                     (value) => setState(
                       () => selectedType = value ?? SimpleEventType.weight.name,
                     ),
-                items: [
+                items:
+                    (() {
+                      final items =
+                          SimpleEventType.values
+                              .map(
+                                (type) =>
+                                    MapEntry(type.name, type.asText(context)),
+                              )
+                              .toList()
+                            ..sort((a, b) => a.value.compareTo(b.value));
+
+                      return items
+                          .map(
+                            (entry) => DropdownMenuItem<String>(
+                              value: entry.key,
+                              child: Text(entry.value),
+                            ),
+                          )
+                          .toList();
+                    })(),
+                /*[
                   DropdownMenuItem(
                     value: SimpleEventType.weight.name,
                     child: Text(SimpleEventType.weight.asText(context)),
@@ -84,7 +109,7 @@ class _EventDetailFormState extends State<EventDetailForm> {
                     value: SimpleEventType.brand.name,
                     child: Text(SimpleEventType.brand.asText(context)),
                   ),
-                ],
+                ]*/
               ),
               const SizedBox(height: 16),
 
@@ -132,29 +157,21 @@ class _EventDetailFormState extends State<EventDetailForm> {
                 ),
               ],
               if (selectedType == SimpleEventType.brand.name) ...[
-                DropdownButtonFormField<String>(
-                  value: selectedBrandObject?.name,
+                DropdownButtonFormField<BrandModel>(
+                  value: selectedBrandObject,
                   onChanged:
-                      (value) => setState(() {
-                        selectedBrandObject = availableBrands.firstWhere(
-                          (b) => b.name == value,
-                        );
-                      }),
-                  hint: Text(l10n.selectBrand),
+                      (value) => setState(() => selectedBrandObject = value),
                   items:
                       availableBrands
                           .map(
-                            (b) => DropdownMenuItem<String>(
-                              value: b.name,
+                            (b) => DropdownMenuItem<BrandModel>(
+                              value: b,
                               child: Text(b.name),
                             ),
                           )
                           .toList(),
                   validator:
-                      (value) =>
-                          value == null || value.trim().isEmpty
-                              ? l10n.fieldRequired
-                              : null,
+                      (value) => value == null ? l10n.fieldRequired : null,
                 ),
                 if (selectedBrandObject != null) ...[
                   const SizedBox(height: 8),
@@ -165,7 +182,7 @@ class _EventDetailFormState extends State<EventDetailForm> {
                     child: Center(
                       child: Image.memory(
                         base64Decode(
-                          selectedBrandObject!.imageBase64.split(',').last,
+                          selectedBrandObject!.imageBase64!.split(',').last,
                         ),
                         fit: BoxFit.contain,
                       ),
@@ -175,21 +192,19 @@ class _EventDetailFormState extends State<EventDetailForm> {
                 const SizedBox(height: 8),
                 OutlinedButton.icon(
                   onPressed: () async {
-                    final result = await showDialog<Map<String, String>>(
+                    final massiveBloc = context.read<MassiveEventBloc>();
+                    final newBrand = await showDialog<BrandModel>(
                       context: context,
-                      builder: (context) => _CreateBrandDialog(),
+                      builder:
+                          (dialogContext) => BlocProvider.value(
+                            value: massiveBloc,
+                            child: _CreateBrandDialog(),
+                          ),
                     );
-                    if (result != null) {
-                      final newBrand = BrandModel(
-                        id: result['id']!,
-                        idTenant: result['idTenant']!,
-                        name: result['name']!,
-                        imageMimeType: result['imageMimeType']!,
-                        imageBase64: result['image']!,
-                      );
+                    if (newBrand != null) {
                       setState(() {
                         availableBrands.add(newBrand);
-                        selectedBrandObject = availableBrands.last;
+                        selectedBrandObject = newBrand;
                       });
                     }
                   },
@@ -225,12 +240,11 @@ class _EventDetailFormState extends State<EventDetailForm> {
                 'lot': _lotController.text,
               });
             } else if (selectedType == SimpleEventType.brand.name) {
-              data['name'] = selectedBrandObject?.name ?? '';
+              data['name'] = '$selectedType: ${selectedBrandObject!.name}';
               data['data'] = jsonEncode({
-                'idBrand': selectedBrandObject?.id ?? '',
-                'brandName': selectedBrandObject?.name ?? '',
+                'idBrand': selectedBrandObject!.id,
+                'brandName': selectedBrandObject!.name,
               });
-              logger.d(data);
             } else {
               data['name'] = selectedType;
             }
@@ -249,8 +263,76 @@ class _CreateBrandDialog extends StatefulWidget {
 }
 
 class _CreateBrandDialogState extends State<_CreateBrandDialog> {
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController _brandNameController = TextEditingController();
-  String? selectedImage;
+  bool _showImageError = false;
+  String? error;
+
+  Uint8List? _pickedImageBytes;
+  String? _pickedMimeType;
+  String? _pickedImageBase64;
+
+  Future<void> _pickImageFile() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['png', 'jpg', 'jpeg'],
+      withData: true,
+    );
+    if (result != null && result.files.single.bytes != null) {
+      final file = result.files.single;
+      setState(() {
+        _pickedImageBytes = file.bytes!;
+        _pickedMimeType = lookupMimeType(file.name);
+        _pickedImageBase64 =
+            'data:$_pickedMimeType;base64,${base64Encode(_pickedImageBytes!)}';
+      });
+    }
+  }
+
+  void _onCreatePressed() {
+    final l10n = AppLocalizations.of(context)!;
+    final isValid = _formKey.currentState?.validate() ?? false;
+    if (!isValid) return;
+
+    if (_pickedImageBase64 == null) {
+      setState(() {
+        error = l10n.imageRequired;
+        _showImageError = true;
+      });
+      return;
+    } else {
+      setState(() {
+        error = '';
+        _showImageError = false;
+      });
+    }
+    final brand = BrandModel.create(
+      name: _brandNameController.text.trim(),
+      imageBytes: _pickedImageBytes,
+      imageMimeType: _pickedMimeType!,
+      imageBase64: _pickedImageBase64!,
+    );
+    Future.microtask(() async {
+      try {
+        final bloc = context.read<MassiveEventBloc>();
+        final newBrand = await bloc.dataSource.saveBrand(brand: brand);
+        Navigator.pop(context, newBrand);
+      } on ApiException catch (e) {
+        setState(() {
+          error = ApiExceptionCode.values
+              .firstWhere((el) => el.name == e.code)
+              .asText(context);
+          ;
+          _showImageError = true;
+        });
+      } catch (e) {
+        setState(() {
+          error = ApiExceptionCode.unknownError.asText(context);
+          _showImageError = true;
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -258,38 +340,56 @@ class _CreateBrandDialogState extends State<_CreateBrandDialog> {
 
     return AlertDialog(
       title: Text(l10n.createNewBrandTitle),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextField(
-            controller: _brandNameController,
-            decoration: InputDecoration(labelText: l10n.brandName),
-          ),
-          const SizedBox(height: 8),
-          OutlinedButton(
-            onPressed: () {
-              setState(() {
-                selectedImage = 'path/to/image.png';
-              });
-            },
-            child: Text(l10n.selectImage),
-          ),
-        ],
+      content: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextFormField(
+              controller: _brandNameController,
+              decoration: InputDecoration(labelText: l10n.brandName),
+              validator:
+                  (value) =>
+                      value == null || value.trim().isEmpty
+                          ? l10n.fieldRequired
+                          : null,
+            ),
+            const SizedBox(height: 8),
+            OutlinedButton(
+              onPressed: _pickImageFile,
+              child: Text(l10n.selectImage),
+            ),
+            if (_showImageError) ...[
+              const SizedBox(height: 4),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  error!,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.error,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+            ],
+            if (_pickedImageBytes != null) ...[
+              const SizedBox(height: 8),
+              Container(
+                width: 100,
+                height: 100,
+                decoration: BoxDecoration(border: Border.all()),
+                child: Image.memory(_pickedImageBytes!, fit: BoxFit.contain),
+              ),
+            ],
+          ],
+        ),
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
           child: Text(l10n.cancel),
         ),
-        ElevatedButton(
-          onPressed: () {
-            Navigator.pop(context, {
-              'name': _brandNameController.text,
-              'image': selectedImage ?? '',
-            });
-          },
-          child: Text(l10n.create),
-        ),
+        ElevatedButton(onPressed: _onCreatePressed, child: Text(l10n.create)),
       ],
     );
   }

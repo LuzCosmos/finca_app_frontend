@@ -146,6 +146,12 @@ abstract class AppLocalizations {
   /// **'You do not have permission to perform this action.'**
   String get error_forbidden;
 
+  /// No description provided for @error_conflict.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate entry in database'**
+  String get error_conflict;
+
   /// No description provided for @error_server.
   ///
   /// In en, this message translates to:
@@ -739,6 +745,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select image'**
   String get selectImage;
+
+  /// No description provided for @imageRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Image is required'**
+  String get imageRequired;
 
   /// No description provided for @create.
   ///

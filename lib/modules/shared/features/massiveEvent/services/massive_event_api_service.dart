@@ -95,9 +95,6 @@ class MassiveEventApiService {
       try {
         decodedJson = jsonDecode(simpleEvent.data!);
       } catch (e) {
-        logger.d("CSE Paso 0.2 ");
-        logger.d(e);
-        logger.d(simpleEvent.data);
         throw Exception('⚠️ data inválido para SimpleEvent: $e');
       }
     }
@@ -123,9 +120,6 @@ class MassiveEventApiService {
           'Error al crear MassiveEvent: $e',
         );
       }
-      logger.d("CSE Paso 1.3 ");
-      logger.d(e);
-      logger.d(response);
       throw ApiException(
         'savingObjectError',
         'Error al crear MassiveEvent: $e',
@@ -133,14 +127,10 @@ class MassiveEventApiService {
     }
     if (response.statusCode == 201 || response.statusCode == 200) {
       try {
-        logger.d("CSE Paso 2.1 ");
-        logger.d(response.body);
         final data = jsonDecode(response.body);
         final simpleEventSaved = SimpleEventModel.fromJson(data);
         return simpleEventSaved;
       } catch (e) {
-        logger.d("CSE Paso 2.2 ");
-        logger.d(e);
         throw Exception('⚠️ Respuesta JSON inválida al crear SimpleEvent: $e');
       }
     } else if (response.statusCode == 400) {

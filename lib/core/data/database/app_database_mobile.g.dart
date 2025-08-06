@@ -1819,16 +1819,38 @@ class $BrandLocalTable extends BrandLocal
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _imageUrlMeta = const VerificationMeta(
-    'imageUrl',
+  static const VerificationMeta _imageBytesMeta = const VerificationMeta(
+    'imageBytes',
   );
   @override
-  late final GeneratedColumn<String> imageUrl = GeneratedColumn<String>(
-    'image_url',
+  late final GeneratedColumn<Uint8List> imageBytes = GeneratedColumn<Uint8List>(
+    'image_bytes',
     aliasedName,
-    true,
+    false,
+    type: DriftSqlType.blob,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _imageMimeTypeMeta = const VerificationMeta(
+    'imageMimeType',
+  );
+  @override
+  late final GeneratedColumn<String> imageMimeType = GeneratedColumn<String>(
+    'image_mime_type',
+    aliasedName,
+    false,
     type: DriftSqlType.string,
-    requiredDuringInsert: false,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _imageFileNameMeta = const VerificationMeta(
+    'imageFileName',
+  );
+  @override
+  late final GeneratedColumn<String> imageFileName = GeneratedColumn<String>(
+    'image_file_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
   );
   static const VerificationMeta _isSyncedMeta = const VerificationMeta(
     'isSynced',
@@ -1872,7 +1894,9 @@ class $BrandLocalTable extends BrandLocal
     id,
     idTenant,
     name,
-    imageUrl,
+    imageBytes,
+    imageMimeType,
+    imageFileName,
     isSynced,
     createdAt,
     updatedAt,
@@ -1910,11 +1934,35 @@ class $BrandLocalTable extends BrandLocal
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
-    if (data.containsKey('image_url')) {
+    if (data.containsKey('image_bytes')) {
       context.handle(
-        _imageUrlMeta,
-        imageUrl.isAcceptableOrUnknown(data['image_url']!, _imageUrlMeta),
+        _imageBytesMeta,
+        imageBytes.isAcceptableOrUnknown(data['image_bytes']!, _imageBytesMeta),
       );
+    } else if (isInserting) {
+      context.missing(_imageBytesMeta);
+    }
+    if (data.containsKey('image_mime_type')) {
+      context.handle(
+        _imageMimeTypeMeta,
+        imageMimeType.isAcceptableOrUnknown(
+          data['image_mime_type']!,
+          _imageMimeTypeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_imageMimeTypeMeta);
+    }
+    if (data.containsKey('image_file_name')) {
+      context.handle(
+        _imageFileNameMeta,
+        imageFileName.isAcceptableOrUnknown(
+          data['image_file_name']!,
+          _imageFileNameMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_imageFileNameMeta);
     }
     if (data.containsKey('is_synced')) {
       context.handle(
@@ -1958,10 +2006,21 @@ class $BrandLocalTable extends BrandLocal
             DriftSqlType.string,
             data['${effectivePrefix}name'],
           )!,
-      imageUrl: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}image_url'],
-      ),
+      imageBytes:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.blob,
+            data['${effectivePrefix}image_bytes'],
+          )!,
+      imageMimeType:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}image_mime_type'],
+          )!,
+      imageFileName:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}image_file_name'],
+          )!,
       isSynced:
           attachedDatabase.typeMapping.read(
             DriftSqlType.bool,
@@ -1988,7 +2047,9 @@ class Brand extends DataClass implements Insertable<Brand> {
   final String id;
   final String idTenant;
   final String name;
-  final String? imageUrl;
+  final Uint8List imageBytes;
+  final String imageMimeType;
+  final String imageFileName;
   final bool isSynced;
   final DateTime? createdAt;
   final DateTime? updatedAt;
@@ -1996,7 +2057,9 @@ class Brand extends DataClass implements Insertable<Brand> {
     required this.id,
     required this.idTenant,
     required this.name,
-    this.imageUrl,
+    required this.imageBytes,
+    required this.imageMimeType,
+    required this.imageFileName,
     required this.isSynced,
     this.createdAt,
     this.updatedAt,
@@ -2007,9 +2070,9 @@ class Brand extends DataClass implements Insertable<Brand> {
     map['id'] = Variable<String>(id);
     map['id_tenant'] = Variable<String>(idTenant);
     map['name'] = Variable<String>(name);
-    if (!nullToAbsent || imageUrl != null) {
-      map['image_url'] = Variable<String>(imageUrl);
-    }
+    map['image_bytes'] = Variable<Uint8List>(imageBytes);
+    map['image_mime_type'] = Variable<String>(imageMimeType);
+    map['image_file_name'] = Variable<String>(imageFileName);
     map['is_synced'] = Variable<bool>(isSynced);
     if (!nullToAbsent || createdAt != null) {
       map['created_at'] = Variable<DateTime>(createdAt);
@@ -2025,10 +2088,9 @@ class Brand extends DataClass implements Insertable<Brand> {
       id: Value(id),
       idTenant: Value(idTenant),
       name: Value(name),
-      imageUrl:
-          imageUrl == null && nullToAbsent
-              ? const Value.absent()
-              : Value(imageUrl),
+      imageBytes: Value(imageBytes),
+      imageMimeType: Value(imageMimeType),
+      imageFileName: Value(imageFileName),
       isSynced: Value(isSynced),
       createdAt:
           createdAt == null && nullToAbsent
@@ -2050,7 +2112,9 @@ class Brand extends DataClass implements Insertable<Brand> {
       id: serializer.fromJson<String>(json['id']),
       idTenant: serializer.fromJson<String>(json['idTenant']),
       name: serializer.fromJson<String>(json['name']),
-      imageUrl: serializer.fromJson<String?>(json['imageUrl']),
+      imageBytes: serializer.fromJson<Uint8List>(json['imageBytes']),
+      imageMimeType: serializer.fromJson<String>(json['imageMimeType']),
+      imageFileName: serializer.fromJson<String>(json['imageFileName']),
       isSynced: serializer.fromJson<bool>(json['isSynced']),
       createdAt: serializer.fromJson<DateTime?>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
@@ -2063,7 +2127,9 @@ class Brand extends DataClass implements Insertable<Brand> {
       'id': serializer.toJson<String>(id),
       'idTenant': serializer.toJson<String>(idTenant),
       'name': serializer.toJson<String>(name),
-      'imageUrl': serializer.toJson<String?>(imageUrl),
+      'imageBytes': serializer.toJson<Uint8List>(imageBytes),
+      'imageMimeType': serializer.toJson<String>(imageMimeType),
+      'imageFileName': serializer.toJson<String>(imageFileName),
       'isSynced': serializer.toJson<bool>(isSynced),
       'createdAt': serializer.toJson<DateTime?>(createdAt),
       'updatedAt': serializer.toJson<DateTime?>(updatedAt),
@@ -2074,7 +2140,9 @@ class Brand extends DataClass implements Insertable<Brand> {
     String? id,
     String? idTenant,
     String? name,
-    Value<String?> imageUrl = const Value.absent(),
+    Uint8List? imageBytes,
+    String? imageMimeType,
+    String? imageFileName,
     bool? isSynced,
     Value<DateTime?> createdAt = const Value.absent(),
     Value<DateTime?> updatedAt = const Value.absent(),
@@ -2082,7 +2150,9 @@ class Brand extends DataClass implements Insertable<Brand> {
     id: id ?? this.id,
     idTenant: idTenant ?? this.idTenant,
     name: name ?? this.name,
-    imageUrl: imageUrl.present ? imageUrl.value : this.imageUrl,
+    imageBytes: imageBytes ?? this.imageBytes,
+    imageMimeType: imageMimeType ?? this.imageMimeType,
+    imageFileName: imageFileName ?? this.imageFileName,
     isSynced: isSynced ?? this.isSynced,
     createdAt: createdAt.present ? createdAt.value : this.createdAt,
     updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
@@ -2092,7 +2162,16 @@ class Brand extends DataClass implements Insertable<Brand> {
       id: data.id.present ? data.id.value : this.id,
       idTenant: data.idTenant.present ? data.idTenant.value : this.idTenant,
       name: data.name.present ? data.name.value : this.name,
-      imageUrl: data.imageUrl.present ? data.imageUrl.value : this.imageUrl,
+      imageBytes:
+          data.imageBytes.present ? data.imageBytes.value : this.imageBytes,
+      imageMimeType:
+          data.imageMimeType.present
+              ? data.imageMimeType.value
+              : this.imageMimeType,
+      imageFileName:
+          data.imageFileName.present
+              ? data.imageFileName.value
+              : this.imageFileName,
       isSynced: data.isSynced.present ? data.isSynced.value : this.isSynced,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
@@ -2105,7 +2184,9 @@ class Brand extends DataClass implements Insertable<Brand> {
           ..write('id: $id, ')
           ..write('idTenant: $idTenant, ')
           ..write('name: $name, ')
-          ..write('imageUrl: $imageUrl, ')
+          ..write('imageBytes: $imageBytes, ')
+          ..write('imageMimeType: $imageMimeType, ')
+          ..write('imageFileName: $imageFileName, ')
           ..write('isSynced: $isSynced, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
@@ -2114,8 +2195,17 @@ class Brand extends DataClass implements Insertable<Brand> {
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, idTenant, name, imageUrl, isSynced, createdAt, updatedAt);
+  int get hashCode => Object.hash(
+    id,
+    idTenant,
+    name,
+    $driftBlobEquality.hash(imageBytes),
+    imageMimeType,
+    imageFileName,
+    isSynced,
+    createdAt,
+    updatedAt,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2123,7 +2213,9 @@ class Brand extends DataClass implements Insertable<Brand> {
           other.id == this.id &&
           other.idTenant == this.idTenant &&
           other.name == this.name &&
-          other.imageUrl == this.imageUrl &&
+          $driftBlobEquality.equals(other.imageBytes, this.imageBytes) &&
+          other.imageMimeType == this.imageMimeType &&
+          other.imageFileName == this.imageFileName &&
           other.isSynced == this.isSynced &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
@@ -2133,7 +2225,9 @@ class BrandLocalCompanion extends UpdateCompanion<Brand> {
   final Value<String> id;
   final Value<String> idTenant;
   final Value<String> name;
-  final Value<String?> imageUrl;
+  final Value<Uint8List> imageBytes;
+  final Value<String> imageMimeType;
+  final Value<String> imageFileName;
   final Value<bool> isSynced;
   final Value<DateTime?> createdAt;
   final Value<DateTime?> updatedAt;
@@ -2142,7 +2236,9 @@ class BrandLocalCompanion extends UpdateCompanion<Brand> {
     this.id = const Value.absent(),
     this.idTenant = const Value.absent(),
     this.name = const Value.absent(),
-    this.imageUrl = const Value.absent(),
+    this.imageBytes = const Value.absent(),
+    this.imageMimeType = const Value.absent(),
+    this.imageFileName = const Value.absent(),
     this.isSynced = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -2152,19 +2248,26 @@ class BrandLocalCompanion extends UpdateCompanion<Brand> {
     required String id,
     required String idTenant,
     required String name,
-    this.imageUrl = const Value.absent(),
+    required Uint8List imageBytes,
+    required String imageMimeType,
+    required String imageFileName,
     this.isSynced = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        idTenant = Value(idTenant),
-       name = Value(name);
+       name = Value(name),
+       imageBytes = Value(imageBytes),
+       imageMimeType = Value(imageMimeType),
+       imageFileName = Value(imageFileName);
   static Insertable<Brand> custom({
     Expression<String>? id,
     Expression<String>? idTenant,
     Expression<String>? name,
-    Expression<String>? imageUrl,
+    Expression<Uint8List>? imageBytes,
+    Expression<String>? imageMimeType,
+    Expression<String>? imageFileName,
     Expression<bool>? isSynced,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
@@ -2174,7 +2277,9 @@ class BrandLocalCompanion extends UpdateCompanion<Brand> {
       if (id != null) 'id': id,
       if (idTenant != null) 'id_tenant': idTenant,
       if (name != null) 'name': name,
-      if (imageUrl != null) 'image_url': imageUrl,
+      if (imageBytes != null) 'image_bytes': imageBytes,
+      if (imageMimeType != null) 'image_mime_type': imageMimeType,
+      if (imageFileName != null) 'image_file_name': imageFileName,
       if (isSynced != null) 'is_synced': isSynced,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
@@ -2186,7 +2291,9 @@ class BrandLocalCompanion extends UpdateCompanion<Brand> {
     Value<String>? id,
     Value<String>? idTenant,
     Value<String>? name,
-    Value<String?>? imageUrl,
+    Value<Uint8List>? imageBytes,
+    Value<String>? imageMimeType,
+    Value<String>? imageFileName,
     Value<bool>? isSynced,
     Value<DateTime?>? createdAt,
     Value<DateTime?>? updatedAt,
@@ -2196,7 +2303,9 @@ class BrandLocalCompanion extends UpdateCompanion<Brand> {
       id: id ?? this.id,
       idTenant: idTenant ?? this.idTenant,
       name: name ?? this.name,
-      imageUrl: imageUrl ?? this.imageUrl,
+      imageBytes: imageBytes ?? this.imageBytes,
+      imageMimeType: imageMimeType ?? this.imageMimeType,
+      imageFileName: imageFileName ?? this.imageFileName,
       isSynced: isSynced ?? this.isSynced,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -2216,8 +2325,14 @@ class BrandLocalCompanion extends UpdateCompanion<Brand> {
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
-    if (imageUrl.present) {
-      map['image_url'] = Variable<String>(imageUrl.value);
+    if (imageBytes.present) {
+      map['image_bytes'] = Variable<Uint8List>(imageBytes.value);
+    }
+    if (imageMimeType.present) {
+      map['image_mime_type'] = Variable<String>(imageMimeType.value);
+    }
+    if (imageFileName.present) {
+      map['image_file_name'] = Variable<String>(imageFileName.value);
     }
     if (isSynced.present) {
       map['is_synced'] = Variable<bool>(isSynced.value);
@@ -2240,7 +2355,9 @@ class BrandLocalCompanion extends UpdateCompanion<Brand> {
           ..write('id: $id, ')
           ..write('idTenant: $idTenant, ')
           ..write('name: $name, ')
-          ..write('imageUrl: $imageUrl, ')
+          ..write('imageBytes: $imageBytes, ')
+          ..write('imageMimeType: $imageMimeType, ')
+          ..write('imageFileName: $imageFileName, ')
           ..write('isSynced: $isSynced, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
@@ -3205,7 +3322,9 @@ typedef $$BrandLocalTableCreateCompanionBuilder =
       required String id,
       required String idTenant,
       required String name,
-      Value<String?> imageUrl,
+      required Uint8List imageBytes,
+      required String imageMimeType,
+      required String imageFileName,
       Value<bool> isSynced,
       Value<DateTime?> createdAt,
       Value<DateTime?> updatedAt,
@@ -3216,7 +3335,9 @@ typedef $$BrandLocalTableUpdateCompanionBuilder =
       Value<String> id,
       Value<String> idTenant,
       Value<String> name,
-      Value<String?> imageUrl,
+      Value<Uint8List> imageBytes,
+      Value<String> imageMimeType,
+      Value<String> imageFileName,
       Value<bool> isSynced,
       Value<DateTime?> createdAt,
       Value<DateTime?> updatedAt,
@@ -3247,8 +3368,18 @@ class $$BrandLocalTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get imageUrl => $composableBuilder(
-    column: $table.imageUrl,
+  ColumnFilters<Uint8List> get imageBytes => $composableBuilder(
+    column: $table.imageBytes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get imageMimeType => $composableBuilder(
+    column: $table.imageMimeType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get imageFileName => $composableBuilder(
+    column: $table.imageFileName,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -3292,8 +3423,18 @@ class $$BrandLocalTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get imageUrl => $composableBuilder(
-    column: $table.imageUrl,
+  ColumnOrderings<Uint8List> get imageBytes => $composableBuilder(
+    column: $table.imageBytes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get imageMimeType => $composableBuilder(
+    column: $table.imageMimeType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get imageFileName => $composableBuilder(
+    column: $table.imageFileName,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -3331,8 +3472,20 @@ class $$BrandLocalTableAnnotationComposer
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
-  GeneratedColumn<String> get imageUrl =>
-      $composableBuilder(column: $table.imageUrl, builder: (column) => column);
+  GeneratedColumn<Uint8List> get imageBytes => $composableBuilder(
+    column: $table.imageBytes,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get imageMimeType => $composableBuilder(
+    column: $table.imageMimeType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get imageFileName => $composableBuilder(
+    column: $table.imageFileName,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<bool> get isSynced =>
       $composableBuilder(column: $table.isSynced, builder: (column) => column);
@@ -3375,7 +3528,9 @@ class $$BrandLocalTableTableManager
                 Value<String> id = const Value.absent(),
                 Value<String> idTenant = const Value.absent(),
                 Value<String> name = const Value.absent(),
-                Value<String?> imageUrl = const Value.absent(),
+                Value<Uint8List> imageBytes = const Value.absent(),
+                Value<String> imageMimeType = const Value.absent(),
+                Value<String> imageFileName = const Value.absent(),
                 Value<bool> isSynced = const Value.absent(),
                 Value<DateTime?> createdAt = const Value.absent(),
                 Value<DateTime?> updatedAt = const Value.absent(),
@@ -3384,7 +3539,9 @@ class $$BrandLocalTableTableManager
                 id: id,
                 idTenant: idTenant,
                 name: name,
-                imageUrl: imageUrl,
+                imageBytes: imageBytes,
+                imageMimeType: imageMimeType,
+                imageFileName: imageFileName,
                 isSynced: isSynced,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
@@ -3395,7 +3552,9 @@ class $$BrandLocalTableTableManager
                 required String id,
                 required String idTenant,
                 required String name,
-                Value<String?> imageUrl = const Value.absent(),
+                required Uint8List imageBytes,
+                required String imageMimeType,
+                required String imageFileName,
                 Value<bool> isSynced = const Value.absent(),
                 Value<DateTime?> createdAt = const Value.absent(),
                 Value<DateTime?> updatedAt = const Value.absent(),
@@ -3404,7 +3563,9 @@ class $$BrandLocalTableTableManager
                 id: id,
                 idTenant: idTenant,
                 name: name,
-                imageUrl: imageUrl,
+                imageBytes: imageBytes,
+                imageMimeType: imageMimeType,
+                imageFileName: imageFileName,
                 isSynced: isSynced,
                 createdAt: createdAt,
                 updatedAt: updatedAt,

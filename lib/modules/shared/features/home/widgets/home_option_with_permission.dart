@@ -11,7 +11,6 @@ class HomeOptionWithPermission extends StatelessWidget {
   final String title;
   final IconData icon;
   final String route;
-  final VoidCallback? onTapOverride; // NUEVO
 
   const HomeOptionWithPermission({
     super.key,
@@ -21,7 +20,6 @@ class HomeOptionWithPermission extends StatelessWidget {
     required this.icon,
     required this.route,
     this.forWebOnly = true,
-    this.onTapOverride, // NUEVO
   });
 
   @override
@@ -39,9 +37,7 @@ class HomeOptionWithPermission extends StatelessWidget {
         return HomeOptionCard(
           title: title,
           icon: icon,
-          onTap:
-              onTapOverride ??
-              () => context.go(route), // usa override si existe
+          onTap: () => context.go(route),
         );
       },
     );

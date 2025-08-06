@@ -5,6 +5,7 @@ enum ApiExceptionCode {
   invalidData,
   unauthorized,
   forbidden,
+  conflictError,
   serverError,
   savingObjectError,
   unknownError,
@@ -21,6 +22,8 @@ extension ApiExceptionCodeL10n on ApiExceptionCode {
         return l10n.error_unauthorized;
       case ApiExceptionCode.forbidden:
         return l10n.error_forbidden;
+      case ApiExceptionCode.conflictError:
+        return l10n.error_conflict;
       case ApiExceptionCode.serverError:
         return l10n.error_server;
       case ApiExceptionCode.unknownError:

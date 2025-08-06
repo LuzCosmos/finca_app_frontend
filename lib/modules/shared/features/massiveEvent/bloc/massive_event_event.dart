@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
+import 'package:finca_app_frontend/modules/shared/features/brands/models/brand_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/massive_event_model.dart';
+import 'package:finca_app_frontend/modules/shared/features/brands/models/brand_model.dart';
 
 abstract class MassiveEventEvent extends Equatable {
   const MassiveEventEvent();
@@ -30,4 +32,14 @@ class AddMassiveEventWithConfig extends MassiveEventEvent {
 
   @override
   List<Object?> get props => [massiveEvent, idTenant];
+}
+
+class AddBrand extends MassiveEventEvent {
+  final BrandModel brand;
+  final String idTenant;
+
+  const AddBrand({required this.brand, required this.idTenant});
+
+  @override
+  List<Object?> get props => [brand, idTenant];
 }

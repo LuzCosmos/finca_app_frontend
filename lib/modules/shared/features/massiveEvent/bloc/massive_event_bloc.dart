@@ -1,16 +1,18 @@
+import 'package:finca_app_frontend/modules/shared/features/brands/models/brand_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/massive_event_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_model.dart';
-import '../data/simple_event_data_source.dart';
+import '../data/massive_event_page_data_source.dart';
 import 'massive_event_event.dart';
 import 'massive_event_state.dart';
 
 class MassiveEventBloc extends Bloc<MassiveEventEvent, MassiveEventState> {
-  final ISimpleEventDataSource dataSource;
+  final IMassiveEventPageDataSource dataSource;
 
   MassiveEventBloc({required this.dataSource}) : super(MassiveEventInitial()) {
     on<AddSimpleEvent>(_onAddSimpleEventConfig);
     on<AddMassiveEventWithConfig>(_onSaveMassiveEventWithConfig);
+    on<AddBrand>(_onAddBrand);
   }
 
   Future<SimpleEventModel> _onAddSimpleEventConfig(
@@ -67,6 +69,24 @@ class MassiveEventBloc extends Bloc<MassiveEventEvent, MassiveEventState> {
         ),
       );
       throw Exception(e);
+    }
+  }
+
+  Future<void> _onAddBrand(
+    AddBrand event,
+    Emitter<MassiveEventState> emit,
+  ) async {
+    emit(MassiveEventLoading());
+    try {
+      final result = await dataSource.saveBrand(brand: event.brand);
+      emit(BrandCreatedSuccess(brand: result));
+    } catch (e) {
+      emit(
+        MassiveEventError(
+          messageKey: 'brandSaveError',
+          debugInfo: e.toString(),
+        ),
+      );
     }
   }
 }

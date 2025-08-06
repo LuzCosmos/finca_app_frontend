@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import '../../../../../core/services/session_service.dart';
+import 'package:finca_app_frontend/core/services/session_service.dart';
 import '../models/provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import '../../../../../core/services/api_exception.dart';
-import '../../../../../core/utils/logger.dart';
+import 'package:finca_app_frontend/core/services/api_exception.dart';
+import 'package:finca_app_frontend/core/utils/logger.dart';
 
 class ProviderService {
   final String baseUrl = '${dotenv.env['API_BASE_URL']}/providers';
@@ -83,10 +83,12 @@ class ProviderService {
     } else if (response.statusCode == 409) {
       throw ApiException('providerCreationDuplicateNit', 'Nit already exists');
     } else if (response.statusCode == 500) {
-      throw ApiException('serverError', 'Internal server error');
+      throw ApiException(
+        ApiExceptionCode.serverError.name,
+        'Internal server error',
+      );
     } else {
-      logger.e('Unknown error: ${response.body}');
-      throw ApiException('unknownError', 'Unknown error');
+      throw ApiException(ApiExceptionCode.unknownError.name, 'Unknown error');
     }
   }
 }

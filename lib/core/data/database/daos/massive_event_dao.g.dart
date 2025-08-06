@@ -6,4 +6,6 @@ part of 'massive_event_dao.dart';
 mixin _$MassiveEventDaoMixin on DatabaseAccessor<AppDatabase> {
   $MassiveEventLocalTable get massiveEventLocal =>
       attachedDatabase.massiveEventLocal;
+  $SimpleEventLocalTable get simpleEventLocal =>
+      attachedDatabase.simpleEventLocal;
 }

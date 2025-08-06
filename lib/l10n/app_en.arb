@@ -12,6 +12,7 @@
 
   "error_invalidData": "Invalid data in the form.",
   "error_forbidden": "You do not have permission to perform this action.",
+  "error_conflict":"Duplicate entry in database",
   "error_server": "Internal server error. Please try again later.",
   "error_savingObject": "An unexpected error occurred while saving",
   "error_unauthorized": "Your session has expired and you need to log in again.",
@@ -140,6 +141,7 @@
   "createNewBrandTitle": "Create New Brand",
   "brandName": "Name",
   "selectImage": "Select image",
+  "imageRequired": "Image is required",
   "create": "Create",
 
   "noAnimals": "No animals added yet",

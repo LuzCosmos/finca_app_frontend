@@ -1,17 +1,18 @@
-import 'package:finca_app_frontend/modules/shared/features/massiveEvent/data/simple_event_data_source.dart';
+import 'package:finca_app_frontend/modules/shared/features/brands/models/brand_model.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/data/massive_event_page_data_source.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/massive_event_model.dart';
 import 'package:finca_app_frontend/core/data/database/repositories/simple_event_repository.dart';
 import 'package:finca_app_frontend/core/data/database/repositories/massive_event_repository.dart';
 import 'package:finca_app_frontend/core/data/mappers/simple_event_model_mapper.dart';
-import 'package:finca_app_frontend/core/data/database/services/massive_event_service.dart';
 import 'package:finca_app_frontend/core/services/network_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/services/massive_event_api_service.dart';
 
-class SimpleEventDataSourceMobile implements ISimpleEventDataSource {
+class MassiveEventPageDataSourceMobile implements IMassiveEventPageDataSource {
   final SimpleEventRepository repo;
   final MassiveEventRepository _massiveEventRepository;
-  SimpleEventDataSourceMobile(this.repo, this._massiveEventRepository);
+
+  MassiveEventPageDataSourceMobile(this.repo, this._massiveEventRepository);
 
   @override
   Future<SimpleEventModel> saveSimpleEvent({
@@ -20,6 +21,7 @@ class SimpleEventDataSourceMobile implements ISimpleEventDataSource {
   }) async {
     var simpleEventEnriched = simpleEvent.copyWith();
     var isSynced = false;
+    //TODO:Revisar que aunque haya un idMssiveEvent pude ser que sea porque se guardo en el repo local pero no en el del backend
     try {
       final hasNetwork = await NetworkService().hasNetwork();
       if (hasNetwork) {
@@ -77,5 +79,17 @@ class SimpleEventDataSourceMobile implements ISimpleEventDataSource {
       await _massiveEventRepository.insert(enriched, isSynced: false);
       return enriched;
     }
+  }
+
+  @override
+  Future<BrandModel> saveBrand({required BrandModel brand}) async {
+    // TODO: implement getAllBrands
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<BrandModel>> getAllBrands() {
+    // TODO: implement getAllBrands
+    throw UnimplementedError();
   }
 }

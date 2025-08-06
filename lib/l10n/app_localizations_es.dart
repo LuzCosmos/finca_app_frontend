@@ -33,6 +33,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get error_forbidden => 'No tienes permiso para realizar esta acción.';
 
   @override
+  String get error_conflict => 'Duplicidad en base de datos';
+
+  @override
   String get error_server => 'Error interno del servidor. Intenta más tarde.';
 
   @override
@@ -347,6 +350,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get selectImage => 'Seleccionar imagen';
+
+  @override
+  String get imageRequired => 'La imagen es obligatoria';
 
   @override
   String get create => 'Crear';
