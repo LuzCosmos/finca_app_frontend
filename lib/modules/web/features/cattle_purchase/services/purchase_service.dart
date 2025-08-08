@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
+import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 
 class PurchaseService {
   final String baseUrl = '${dotenv.env['API_BASE_URL']}/purchases';
@@ -45,16 +46,8 @@ class PurchaseService {
     }
     if (response.statusCode == 201) {
       return;
-    } else if (response.statusCode == 400) {
-      throw ApiException('invalidData', 'Invalid data');
-    } else if (response.statusCode == 401) {
-      throw ApiException('unauthorized', 'Unauthorized');
-    } else if (response.statusCode == 403) {
-      throw ApiException('forbidden', 'Forbidden');
-    } else if (response.statusCode == 500) {
-      throw ApiException('serverError', 'Internal server error');
     } else {
-      throw ApiException('unknownError', 'Unknown error');
+      BasicApiService.manageNotSuccessResponseCode(response);
     }
   }
 }

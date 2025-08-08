@@ -6,6 +6,7 @@ import 'package:finca_app_frontend/modules/web/features/cattle_purchase/models/p
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'package:finca_app_frontend/core/utils/logger.dart';
+import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 
 class ProviderService {
   final String baseUrl = '${dotenv.env['API_BASE_URL']}/providers';
@@ -40,13 +41,7 @@ class ProviderService {
           list.map((item) => ProviderModel.fromJson(item)).toList();
       return providers;
     } else {
-      if (response.statusCode == 401) {
-        throw ApiException('unauthorized', 'Unauthorized');
-      } else if (response.statusCode == 403) {
-        throw ApiException('forbidden', 'Forbidden');
-      } else {
-        throw ApiException('unknownError', 'Unknown error');
-      }
+      BasicApiService.manageNotSuccessResponseCode(response);
     }
   }
 
@@ -82,13 +77,8 @@ class ProviderService {
       return ProviderModel.fromJson(jsonDecode(response.body));
     } else if (response.statusCode == 409) {
       throw ApiException('providerCreationDuplicateNit', 'Nit already exists');
-    } else if (response.statusCode == 500) {
-      throw ApiException(
-        ApiExceptionCode.serverError.name,
-        'Internal server error',
-      );
     } else {
-      throw ApiException(ApiExceptionCode.unknownError.name, 'Unknown error');
+      BasicApiService.manageNotSuccessResponseCode(response);
     }
   }
 }

@@ -1,6 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-import 'package:finca_app_frontend/l10n/app_localizations.dart';
+import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
 
@@ -13,6 +13,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fieldRequired => 'This field is mandatory';
+
+  @override
+  String get invalidValue => 'Invalid value.';
 
   @override
   String get delete => 'Delete';
@@ -41,6 +44,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get error_savingObject => 'An unexpected error occurred while saving';
+
+  @override
+  String error_notFound(Object object) {
+    return '$object not found';
+  }
 
   @override
   String get error_unauthorized =>
@@ -379,4 +387,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get simpleEventError => 'An error occurred while adding detail';
+
+  @override
+  String simpleEventApplied(Object cattleNumber) {
+    return 'Active events applied to number $cattleNumber';
+  }
+
+  @override
+  String get applyAtLeastOneSimpleEvent => 'Apply at least one event.';
+
+  @override
+  String get eventsApplicationNotice =>
+      'All events have been applied. If any event appears unapplied, please make sure the required information is filled in.';
 }

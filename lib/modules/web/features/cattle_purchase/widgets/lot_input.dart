@@ -4,6 +4,7 @@ import 'package:finca_app_frontend/modules/web/features/cattle_purchase/models/l
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:finca_app_frontend/core/utils/regex_patterns.dart';
+import 'package:finca_app_frontend/modules/shared/validator/validator.dart';
 
 class LotInput extends StatefulWidget {
   final void Function(LotModel) onChanged;
@@ -180,7 +181,7 @@ class LotInputState extends State<LotInput> {
           _lotNumberController,
           '',
           width: 60,
-          validator: _validateNotEmpty(
+          validator: Validator.validateNotEmpty(
             l10n.lot_numberRequired,
             RegexPatterns.positiveIntegerNoZero,
           ),
@@ -191,7 +192,7 @@ class LotInputState extends State<LotInput> {
           _ageController,
           '',
           width: 60,
-          validator: _validateNotEmpty(
+          validator: Validator.validateNotEmpty(
             l10n.fieldRequired,
             RegexPatterns.cattleAge,
           ),
@@ -201,14 +202,14 @@ class LotInputState extends State<LotInput> {
           _genderController,
           '',
           width: 70,
-          validator: _validateNotEmpty(l10n.fieldRequired, null),
+          validator: Validator.validateNotEmpty(l10n.fieldRequired, null),
         ),
         _buildCell(
           _cattleCountController,
           '',
           width: 40,
           isNumeric: true,
-          validator: _validateNumericMandatory(
+          validator: Validator.validateNumericMandatory(
             l10n.lot_cattleCountRequired,
             l10n.lot_cattleCountInvalid,
             RegexPatterns.positiveIntegerNoZero,
@@ -221,7 +222,7 @@ class LotInputState extends State<LotInput> {
           '',
           width: 60,
           isNumeric: true,
-          validator: _validateNumericMandatory(
+          validator: Validator.validateNumericMandatory(
             l10n.lot_totalWeightRequired,
             l10n.lot_totalWeightInvalid,
             RegexPatterns.positiveDecimalTwoDigitsNoZero,
@@ -233,7 +234,7 @@ class LotInputState extends State<LotInput> {
           '',
           width: 70,
           isNumeric: true,
-          validator: _validateNumericMandatory(
+          validator: Validator.validateNumericMandatory(
             l10n.lot_pricePerKgRequired,
             l10n.lot_pricePerKgInvalid,
             RegexPatterns.positiveDecimalTwoDigitsNoZero,
@@ -246,7 +247,7 @@ class LotInputState extends State<LotInput> {
           '', //l10n.lot_pricePerHead, // agrega esta key a tu .arb
           width: 90,
           isNumeric: true,
-          validator: _validateNumericMandatory(
+          validator: Validator.validateNumericMandatory(
             l10n.lot_pricePerHeadRequired,
             l10n.lot_pricePerHeadInvalid,
             RegexPatterns.positiveDecimalTwoDigitsNoZero,
@@ -269,35 +270,6 @@ class LotInputState extends State<LotInput> {
         ),
       ],
     );
-  }
-
-  FormFieldValidator<String> _validateNotEmpty(
-    String errorMessage,
-    RegExp? customRegex,
-  ) {
-    return (String? value) {
-      if (value == null || value.isEmpty) return errorMessage;
-      if (customRegex != null) {
-        if (!customRegex.hasMatch(value)) return errorMessage;
-      }
-      return null;
-    };
-  }
-
-  FormFieldValidator<String> _validateNumericMandatory(
-    String requiredMessage,
-    String invalidMessage,
-    RegExp? customRegex,
-  ) {
-    return (String? value) {
-      if (value == null || value.isEmpty) return requiredMessage;
-      final parsed = double.tryParse(value);
-      if (parsed == null || parsed <= 0) return invalidMessage;
-      if (customRegex != null) {
-        if (!customRegex.hasMatch(value)) return invalidMessage;
-      }
-      return null;
-    };
   }
 
   Widget _buildCell(

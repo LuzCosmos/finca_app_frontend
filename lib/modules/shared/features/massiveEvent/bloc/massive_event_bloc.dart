@@ -1,3 +1,4 @@
+import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/brands/models/brand_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/massive_event_model.dart';
@@ -5,6 +6,7 @@ import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/s
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/data/massive_event_page_data_source.dart';
 import 'massive_event_event.dart';
 import 'massive_event_state.dart';
+import 'package:finca_app_frontend/core/utils/logger.dart';
 
 class MassiveEventBloc extends Bloc<MassiveEventEvent, MassiveEventState> {
   final IMassiveEventPageDataSource dataSource;
@@ -13,6 +15,7 @@ class MassiveEventBloc extends Bloc<MassiveEventEvent, MassiveEventState> {
     on<AddSimpleEvent>(_onAddSimpleEventConfig);
     on<AddMassiveEventWithConfig>(_onSaveMassiveEventWithConfig);
     on<AddBrand>(_onAddBrand);
+    on<AddAnimalSimpleEvents>(_onSaveAnimalSimpleEvents);
   }
 
   Future<SimpleEventModel> _onAddSimpleEventConfig(
@@ -23,7 +26,6 @@ class MassiveEventBloc extends Bloc<MassiveEventEvent, MassiveEventState> {
     try {
       final result = await dataSource.saveSimpleEvent(
         simpleEvent: event.simpleEvent,
-        idTenant: event.idTenant,
       );
       emit(
         MassiveEventSuccess(
@@ -52,7 +54,6 @@ class MassiveEventBloc extends Bloc<MassiveEventEvent, MassiveEventState> {
       final massiveEvent = event.massiveEvent.copyWith();
       final result = await dataSource.saveMassiveEvent(
         massiveEvent: massiveEvent,
-        idTenant: event.idTenant,
       );
       emit(
         MassiveEventSuccess(
@@ -84,6 +85,27 @@ class MassiveEventBloc extends Bloc<MassiveEventEvent, MassiveEventState> {
       emit(
         MassiveEventError(
           messageKey: 'brandSaveError',
+          debugInfo: e.toString(),
+        ),
+      );
+    }
+  }
+
+  Future<void> _onSaveAnimalSimpleEvents(
+    AddAnimalSimpleEvents event,
+    Emitter<MassiveEventState> emit,
+  ) async {
+    emit(MassiveEventLoading());
+    try {
+      final result = await dataSource.saveAnimalSimpleEvents(
+        animalSimpleEvents: event.animalSimpleEvents,
+        cattleNumber: event.cattleNumber,
+      );
+      emit(AnimalSimpleEventsAdded(animalSimpleEvents: result));
+    } catch (e) {
+      emit(
+        MassiveEventError(
+          messageKey: 'animalSimpleEventError',
           debugInfo: e.toString(),
         ),
       );

@@ -1,16 +1,20 @@
+import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/brands/models/brand_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/brands/services/brand_api_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/data/massive_event_page_data_source.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/animal_simple_event_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/massive_event_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/services/massive_event_api_service.dart';
+import 'package:finca_app_frontend/core/utils/logger.dart';
 
 class MassiveEventPageDataSourceWeb implements IMassiveEventPageDataSource {
   @override
   Future<SimpleEventModel> saveSimpleEvent({
     required SimpleEventModel simpleEvent,
-    required String idTenant,
   }) async {
+    final idTenant = await SessionService.getIdTenant();
+    simpleEvent.idTenant = idTenant;
     final simpleEventSaved = await MassiveEventApiService.createSimpleEvent(
       simpleEvent: simpleEvent,
       massiveEventServerId: '',
@@ -21,11 +25,11 @@ class MassiveEventPageDataSourceWeb implements IMassiveEventPageDataSource {
   @override
   Future<MassiveEventModel> saveMassiveEvent({
     required MassiveEventModel massiveEvent,
-    required String idTenant,
   }) async {
+    final idTenant = await SessionService.getIdTenant();
     final created = await MassiveEventApiService.createMassiveEvent(
       massiveEvent: massiveEvent,
-      idTenant: idTenant,
+      idTenant: idTenant!,
     );
     return created; // respuesta del backend
   }
@@ -40,5 +44,31 @@ class MassiveEventPageDataSourceWeb implements IMassiveEventPageDataSource {
   Future<List<BrandModel>> getAllBrands() {
     final brands = BrandApiService.getAllBrands();
     return brands;
+  }
+
+  @override
+  Future<List<AnimalSimpleEventModel>> getAnimalSimpleEvents({
+    required String idMassiveEvent,
+  }) {
+    // TODO: implement getAnimalSimpleEvents
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<AnimalSimpleEventModel>> saveAnimalSimpleEvents({
+    required List<AnimalSimpleEventModel> animalSimpleEvents,
+    required String cattleNumber,
+  }) async {
+    logger.d('logger 1.1');
+    final appliedBy = await SessionService.getIdUser();
+    for (var animalSimpleEvent in animalSimpleEvents) {
+      animalSimpleEvent.appliedBy = appliedBy;
+    }
+    final animalSimpleEventsSaved =
+        await MassiveEventApiService.saveAnimalSimpleEvents(
+          animalSimpleEvents: animalSimpleEvents,
+          cattleNumber: cattleNumber,
+        );
+    return animalSimpleEventsSaved;
   }
 }

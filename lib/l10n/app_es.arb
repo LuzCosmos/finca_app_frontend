@@ -2,6 +2,7 @@
   "appTitle": "Finca App",
 
   "fieldRequired":"Este campo es obligatorio",
+  "invalidValue":"Valor inválido",
   "delete": "Eliminar",
   "fixErrors": "Por favor corrige los errores resaltados en rojo.",
   "numberFormat":"#,##0.##",
@@ -13,6 +14,7 @@
   "error_conflict":"Duplicidad en base de datos",
   "error_server": "Error interno del servidor. Intenta más tarde.",
   "error_savingObject": "Ocurrió un error inesperado al guardar",
+  "error_notFound": "{object} no encontrado",
 
   "error_unauthorized": "Tu sesión ha expirado y necesitas iniciar sesión nuevamente.",
   "@error_unauthorized": {
@@ -150,7 +152,10 @@
   "eventTypeBrand": "Marcado",
 
   "simpleEventAdded": "Detalle agregado correctamente",
-  "simpleEventError": "Ocurrió un error al agregar el detalle"
+  "simpleEventError": "Ocurrió un error al agregar el detalle",
+  "simpleEventApplied": "Los eventos activos fueron aplicados a la res número {cattleNumber}",
+  "applyAtLeastOneSimpleEvent": "Se debe de Aplicar al menos un evento.",
+  "eventsApplicationNotice": "Todos los eventos han sido aplicados. Si alguno aparece sin aplicar, asegúrate de haber ingresado toda la información obligatoria."
 
 
   

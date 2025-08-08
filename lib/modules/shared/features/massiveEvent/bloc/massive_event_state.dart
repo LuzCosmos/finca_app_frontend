@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:finca_app_frontend/modules/shared/features/brands/models/brand_model.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/animal_simple_event_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_model.dart';
 
 abstract class MassiveEventState extends Equatable {
@@ -36,4 +37,13 @@ class BrandCreatedSuccess extends MassiveEventState {
   final BrandModel brand;
 
   BrandCreatedSuccess({required this.brand});
+}
+
+class AnimalSimpleEventsAdded extends MassiveEventState {
+  final List<AnimalSimpleEventModel> animalSimpleEvents;
+
+  const AnimalSimpleEventsAdded({required this.animalSimpleEvents});
+
+  @override
+  List<Object?> get props => [animalSimpleEvents];
 }

@@ -1,12 +1,14 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/animal_simple_event_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_model.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/massive_event_model.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'package:finca_app_frontend/core/utils/logger.dart';
 import 'dart:io';
+import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 
 class MassiveEventApiService {
   // Obtén baseUrl directo de dotenv (asegúrate de tener cargado dotenv antes de usar)
@@ -60,19 +62,8 @@ class MassiveEventApiService {
             '⚠️ Respuesta JSON inválida al crear MassiveEvent: $e',
           );
         }
-      } else if (response.statusCode == 400) {
-        throw ApiException('invalidData', 'Invalid data');
-      } else if (response.statusCode == 401) {
-        throw ApiException('unauthorized', 'Unauthorized');
-      } else if (response.statusCode == 403) {
-        throw ApiException('forbidden', 'Forbidden');
-      } else if (response.statusCode == 500) {
-        throw ApiException('serverError', 'Internal server error');
       } else {
-        throw ApiException(
-          'savingObjectError',
-          'Error al crear MassiveEvent: ${response.statusCode} ${response.body}',
-        );
+        BasicApiService.manageNotSuccessResponseCode(response);
       }
     } else {
       throw ApiException(
@@ -133,19 +124,65 @@ class MassiveEventApiService {
       } catch (e) {
         throw Exception('⚠️ Respuesta JSON inválida al crear SimpleEvent: $e');
       }
-    } else if (response.statusCode == 400) {
-      throw ApiException('invalidData', 'Invalid data');
-    } else if (response.statusCode == 401) {
-      throw ApiException('unauthorized', 'Unauthorized');
-    } else if (response.statusCode == 403) {
-      throw ApiException('forbidden', 'Forbidden');
-    } else if (response.statusCode == 500) {
-      throw ApiException('serverError', 'Internal server error');
     } else {
-      throw ApiException(
-        'unknownError',
-        'Error al crear SimpleEvent: ${response.statusCode} ${response.body}',
-      );
+      BasicApiService.manageNotSuccessResponseCode(response);
+    }
+  }
+
+  static Future<List<AnimalSimpleEventModel>> getAnimalSimpleEvents({
+    required String idMassiveEvent,
+  }) async {
+    // TODO: implement getAnimalSimpleEvents
+    throw UnimplementedError();
+  }
+
+  static Future<List<AnimalSimpleEventModel>> saveAnimalSimpleEvents({
+    required List<AnimalSimpleEventModel> animalSimpleEvents,
+    required String cattleNumber,
+  }) async {
+    final token = await SessionService.getToken();
+    if (token == null || token.isEmpty) {
+      throw Exception('⚠️ No se encontró token de sesión');
+    }
+    logger.d('animalSimpleEvents: $animalSimpleEvents');
+    final payload = {
+      'applied': {
+        "idMassiveEvent": animalSimpleEvents.first.idMassiveEvent,
+        "events":
+            animalSimpleEvents
+                .map((e) => e.toJsonOnlineCreateApiForSingleAnimal())
+                .toList(),
+      },
+    };
+    logger.d('payload: $payload');
+    final response = await http.post(
+      Uri.parse('$_baseUrl/cattle/apply-events/$cattleNumber'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(payload),
+    );
+    logger.d('response: ${response.body}');
+    logger.d('response status code: ${response.statusCode}');
+
+    if (response.statusCode == 201 || response.statusCode == 200) {
+      try {
+        final List<dynamic> dataResponse = jsonDecode(response.body);
+        final List<AnimalSimpleEventModel> animalSimpleEventsSaved =
+            dataResponse
+                .map<AnimalSimpleEventModel>(
+                  (e) => AnimalSimpleEventModel.fromJson(e),
+                )
+                .toList();
+        return animalSimpleEventsSaved;
+      } catch (e) {
+        throw Exception(
+          '⚠️ Respuesta JSON inválida al crear AnimalSimpleEvent: $e',
+        );
+      }
+    } else {
+      BasicApiService.manageNotSuccessResponseCode(response);
     }
   }
 }

@@ -2,7 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:finca_app_frontend/core/data/database//app_database_mobile.dart';
 import 'package:finca_app_frontend/core/data/database//tables/massive_event_local.dart';
 import 'package:finca_app_frontend/core/data/database//tables/simple_event_local.dart';
-part 'package:finca_app_frontend/core/data/database/daos/massive_event_dao.g.dart';
+part 'massive_event_dao.g.dart';
 
 @DriftAccessor(tables: [MassiveEventLocal, SimpleEventLocal])
 class MassiveEventDao extends DatabaseAccessor<AppDatabase>

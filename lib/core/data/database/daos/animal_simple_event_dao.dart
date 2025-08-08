@@ -2,7 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:finca_app_frontend/core/data/database/app_database_mobile.dart';
 import 'package:finca_app_frontend/core/data/database/tables/animal_simple_event_local.dart';
 
-part 'package:finca_app_frontend/core/data/database/daos/animal_simple_event_dao.g.dart';
+part 'animal_simple_event_dao.g.dart';
 
 @DriftAccessor(tables: [AnimalSimpleEventLocal])
 class AnimalSimpleEventDao extends DatabaseAccessor<AppDatabase>

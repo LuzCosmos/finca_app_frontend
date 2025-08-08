@@ -7,6 +7,8 @@ class AnimalSimpleEventLocal extends Table {
   TextColumn get animalNumber => text()(); // animal number
   TextColumn get type => text()(); // event type
   TextColumn get data => text().nullable()();
+  TextColumn get idMassiveEvent => text().nullable()();
+  TextColumn get idSimpleEvent => text().nullable()();
   DateTimeColumn get appliedAt => dateTime()();
   TextColumn get appliedBy => text().nullable()();
   TextColumn get recordedInMassiveEvent => text().nullable()();

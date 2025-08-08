@@ -1196,6 +1196,28 @@ class $AnimalSimpleEventLocalTable extends AnimalSimpleEventLocal
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _idMassiveEventMeta = const VerificationMeta(
+    'idMassiveEvent',
+  );
+  @override
+  late final GeneratedColumn<String> idMassiveEvent = GeneratedColumn<String>(
+    'id_massive_event',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _idSimpleEventMeta = const VerificationMeta(
+    'idSimpleEvent',
+  );
+  @override
+  late final GeneratedColumn<String> idSimpleEvent = GeneratedColumn<String>(
+    'id_simple_event',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _appliedAtMeta = const VerificationMeta(
     'appliedAt',
   );
@@ -1266,6 +1288,8 @@ class $AnimalSimpleEventLocalTable extends AnimalSimpleEventLocal
     animalNumber,
     type,
     data,
+    idMassiveEvent,
+    idSimpleEvent,
     appliedAt,
     appliedBy,
     recordedInMassiveEvent,
@@ -1320,6 +1344,24 @@ class $AnimalSimpleEventLocalTable extends AnimalSimpleEventLocal
       context.handle(
         _dataMeta,
         this.data.isAcceptableOrUnknown(data['data']!, _dataMeta),
+      );
+    }
+    if (data.containsKey('id_massive_event')) {
+      context.handle(
+        _idMassiveEventMeta,
+        idMassiveEvent.isAcceptableOrUnknown(
+          data['id_massive_event']!,
+          _idMassiveEventMeta,
+        ),
+      );
+    }
+    if (data.containsKey('id_simple_event')) {
+      context.handle(
+        _idSimpleEventMeta,
+        idSimpleEvent.isAcceptableOrUnknown(
+          data['id_simple_event']!,
+          _idSimpleEventMeta,
+        ),
       );
     }
     if (data.containsKey('applied_at')) {
@@ -1390,6 +1432,14 @@ class $AnimalSimpleEventLocalTable extends AnimalSimpleEventLocal
         DriftSqlType.string,
         data['${effectivePrefix}data'],
       ),
+      idMassiveEvent: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id_massive_event'],
+      ),
+      idSimpleEvent: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id_simple_event'],
+      ),
       appliedAt:
           attachedDatabase.typeMapping.read(
             DriftSqlType.dateTime,
@@ -1429,6 +1479,8 @@ class AnimalSimpleEvent extends DataClass
   final String animalNumber;
   final String type;
   final String? data;
+  final String? idMassiveEvent;
+  final String? idSimpleEvent;
   final DateTime appliedAt;
   final String? appliedBy;
   final String? recordedInMassiveEvent;
@@ -1440,6 +1492,8 @@ class AnimalSimpleEvent extends DataClass
     required this.animalNumber,
     required this.type,
     this.data,
+    this.idMassiveEvent,
+    this.idSimpleEvent,
     required this.appliedAt,
     this.appliedBy,
     this.recordedInMassiveEvent,
@@ -1455,6 +1509,12 @@ class AnimalSimpleEvent extends DataClass
     map['type'] = Variable<String>(type);
     if (!nullToAbsent || data != null) {
       map['data'] = Variable<String>(data);
+    }
+    if (!nullToAbsent || idMassiveEvent != null) {
+      map['id_massive_event'] = Variable<String>(idMassiveEvent);
+    }
+    if (!nullToAbsent || idSimpleEvent != null) {
+      map['id_simple_event'] = Variable<String>(idSimpleEvent);
     }
     map['applied_at'] = Variable<DateTime>(appliedAt);
     if (!nullToAbsent || appliedBy != null) {
@@ -1477,6 +1537,14 @@ class AnimalSimpleEvent extends DataClass
       animalNumber: Value(animalNumber),
       type: Value(type),
       data: data == null && nullToAbsent ? const Value.absent() : Value(data),
+      idMassiveEvent:
+          idMassiveEvent == null && nullToAbsent
+              ? const Value.absent()
+              : Value(idMassiveEvent),
+      idSimpleEvent:
+          idSimpleEvent == null && nullToAbsent
+              ? const Value.absent()
+              : Value(idSimpleEvent),
       appliedAt: Value(appliedAt),
       appliedBy:
           appliedBy == null && nullToAbsent
@@ -1502,6 +1570,8 @@ class AnimalSimpleEvent extends DataClass
       animalNumber: serializer.fromJson<String>(json['animalNumber']),
       type: serializer.fromJson<String>(json['type']),
       data: serializer.fromJson<String?>(json['data']),
+      idMassiveEvent: serializer.fromJson<String?>(json['idMassiveEvent']),
+      idSimpleEvent: serializer.fromJson<String?>(json['idSimpleEvent']),
       appliedAt: serializer.fromJson<DateTime>(json['appliedAt']),
       appliedBy: serializer.fromJson<String?>(json['appliedBy']),
       recordedInMassiveEvent: serializer.fromJson<String?>(
@@ -1520,6 +1590,8 @@ class AnimalSimpleEvent extends DataClass
       'animalNumber': serializer.toJson<String>(animalNumber),
       'type': serializer.toJson<String>(type),
       'data': serializer.toJson<String?>(data),
+      'idMassiveEvent': serializer.toJson<String?>(idMassiveEvent),
+      'idSimpleEvent': serializer.toJson<String?>(idSimpleEvent),
       'appliedAt': serializer.toJson<DateTime>(appliedAt),
       'appliedBy': serializer.toJson<String?>(appliedBy),
       'recordedInMassiveEvent': serializer.toJson<String?>(
@@ -1536,6 +1608,8 @@ class AnimalSimpleEvent extends DataClass
     String? animalNumber,
     String? type,
     Value<String?> data = const Value.absent(),
+    Value<String?> idMassiveEvent = const Value.absent(),
+    Value<String?> idSimpleEvent = const Value.absent(),
     DateTime? appliedAt,
     Value<String?> appliedBy = const Value.absent(),
     Value<String?> recordedInMassiveEvent = const Value.absent(),
@@ -1547,6 +1621,10 @@ class AnimalSimpleEvent extends DataClass
     animalNumber: animalNumber ?? this.animalNumber,
     type: type ?? this.type,
     data: data.present ? data.value : this.data,
+    idMassiveEvent:
+        idMassiveEvent.present ? idMassiveEvent.value : this.idMassiveEvent,
+    idSimpleEvent:
+        idSimpleEvent.present ? idSimpleEvent.value : this.idSimpleEvent,
     appliedAt: appliedAt ?? this.appliedAt,
     appliedBy: appliedBy.present ? appliedBy.value : this.appliedBy,
     recordedInMassiveEvent:
@@ -1566,6 +1644,14 @@ class AnimalSimpleEvent extends DataClass
               : this.animalNumber,
       type: data.type.present ? data.type.value : this.type,
       data: data.data.present ? data.data.value : this.data,
+      idMassiveEvent:
+          data.idMassiveEvent.present
+              ? data.idMassiveEvent.value
+              : this.idMassiveEvent,
+      idSimpleEvent:
+          data.idSimpleEvent.present
+              ? data.idSimpleEvent.value
+              : this.idSimpleEvent,
       appliedAt: data.appliedAt.present ? data.appliedAt.value : this.appliedAt,
       appliedBy: data.appliedBy.present ? data.appliedBy.value : this.appliedBy,
       recordedInMassiveEvent:
@@ -1585,6 +1671,8 @@ class AnimalSimpleEvent extends DataClass
           ..write('animalNumber: $animalNumber, ')
           ..write('type: $type, ')
           ..write('data: $data, ')
+          ..write('idMassiveEvent: $idMassiveEvent, ')
+          ..write('idSimpleEvent: $idSimpleEvent, ')
           ..write('appliedAt: $appliedAt, ')
           ..write('appliedBy: $appliedBy, ')
           ..write('recordedInMassiveEvent: $recordedInMassiveEvent, ')
@@ -1601,6 +1689,8 @@ class AnimalSimpleEvent extends DataClass
     animalNumber,
     type,
     data,
+    idMassiveEvent,
+    idSimpleEvent,
     appliedAt,
     appliedBy,
     recordedInMassiveEvent,
@@ -1616,6 +1706,8 @@ class AnimalSimpleEvent extends DataClass
           other.animalNumber == this.animalNumber &&
           other.type == this.type &&
           other.data == this.data &&
+          other.idMassiveEvent == this.idMassiveEvent &&
+          other.idSimpleEvent == this.idSimpleEvent &&
           other.appliedAt == this.appliedAt &&
           other.appliedBy == this.appliedBy &&
           other.recordedInMassiveEvent == this.recordedInMassiveEvent &&
@@ -1630,6 +1722,8 @@ class AnimalSimpleEventLocalCompanion
   final Value<String> animalNumber;
   final Value<String> type;
   final Value<String?> data;
+  final Value<String?> idMassiveEvent;
+  final Value<String?> idSimpleEvent;
   final Value<DateTime> appliedAt;
   final Value<String?> appliedBy;
   final Value<String?> recordedInMassiveEvent;
@@ -1642,6 +1736,8 @@ class AnimalSimpleEventLocalCompanion
     this.animalNumber = const Value.absent(),
     this.type = const Value.absent(),
     this.data = const Value.absent(),
+    this.idMassiveEvent = const Value.absent(),
+    this.idSimpleEvent = const Value.absent(),
     this.appliedAt = const Value.absent(),
     this.appliedBy = const Value.absent(),
     this.recordedInMassiveEvent = const Value.absent(),
@@ -1655,6 +1751,8 @@ class AnimalSimpleEventLocalCompanion
     required String animalNumber,
     required String type,
     this.data = const Value.absent(),
+    this.idMassiveEvent = const Value.absent(),
+    this.idSimpleEvent = const Value.absent(),
     required DateTime appliedAt,
     this.appliedBy = const Value.absent(),
     this.recordedInMassiveEvent = const Value.absent(),
@@ -1672,6 +1770,8 @@ class AnimalSimpleEventLocalCompanion
     Expression<String>? animalNumber,
     Expression<String>? type,
     Expression<String>? data,
+    Expression<String>? idMassiveEvent,
+    Expression<String>? idSimpleEvent,
     Expression<DateTime>? appliedAt,
     Expression<String>? appliedBy,
     Expression<String>? recordedInMassiveEvent,
@@ -1685,6 +1785,8 @@ class AnimalSimpleEventLocalCompanion
       if (animalNumber != null) 'animal_number': animalNumber,
       if (type != null) 'type': type,
       if (data != null) 'data': data,
+      if (idMassiveEvent != null) 'id_massive_event': idMassiveEvent,
+      if (idSimpleEvent != null) 'id_simple_event': idSimpleEvent,
       if (appliedAt != null) 'applied_at': appliedAt,
       if (appliedBy != null) 'applied_by': appliedBy,
       if (recordedInMassiveEvent != null)
@@ -1701,6 +1803,8 @@ class AnimalSimpleEventLocalCompanion
     Value<String>? animalNumber,
     Value<String>? type,
     Value<String?>? data,
+    Value<String?>? idMassiveEvent,
+    Value<String?>? idSimpleEvent,
     Value<DateTime>? appliedAt,
     Value<String?>? appliedBy,
     Value<String?>? recordedInMassiveEvent,
@@ -1714,6 +1818,8 @@ class AnimalSimpleEventLocalCompanion
       animalNumber: animalNumber ?? this.animalNumber,
       type: type ?? this.type,
       data: data ?? this.data,
+      idMassiveEvent: idMassiveEvent ?? this.idMassiveEvent,
+      idSimpleEvent: idSimpleEvent ?? this.idSimpleEvent,
       appliedAt: appliedAt ?? this.appliedAt,
       appliedBy: appliedBy ?? this.appliedBy,
       recordedInMassiveEvent:
@@ -1741,6 +1847,12 @@ class AnimalSimpleEventLocalCompanion
     }
     if (data.present) {
       map['data'] = Variable<String>(data.value);
+    }
+    if (idMassiveEvent.present) {
+      map['id_massive_event'] = Variable<String>(idMassiveEvent.value);
+    }
+    if (idSimpleEvent.present) {
+      map['id_simple_event'] = Variable<String>(idSimpleEvent.value);
     }
     if (appliedAt.present) {
       map['applied_at'] = Variable<DateTime>(appliedAt.value);
@@ -1773,6 +1885,8 @@ class AnimalSimpleEventLocalCompanion
           ..write('animalNumber: $animalNumber, ')
           ..write('type: $type, ')
           ..write('data: $data, ')
+          ..write('idMassiveEvent: $idMassiveEvent, ')
+          ..write('idSimpleEvent: $idSimpleEvent, ')
           ..write('appliedAt: $appliedAt, ')
           ..write('appliedBy: $appliedBy, ')
           ..write('recordedInMassiveEvent: $recordedInMassiveEvent, ')
@@ -2999,6 +3113,8 @@ typedef $$AnimalSimpleEventLocalTableCreateCompanionBuilder =
       required String animalNumber,
       required String type,
       Value<String?> data,
+      Value<String?> idMassiveEvent,
+      Value<String?> idSimpleEvent,
       required DateTime appliedAt,
       Value<String?> appliedBy,
       Value<String?> recordedInMassiveEvent,
@@ -3013,6 +3129,8 @@ typedef $$AnimalSimpleEventLocalTableUpdateCompanionBuilder =
       Value<String> animalNumber,
       Value<String> type,
       Value<String?> data,
+      Value<String?> idMassiveEvent,
+      Value<String?> idSimpleEvent,
       Value<DateTime> appliedAt,
       Value<String?> appliedBy,
       Value<String?> recordedInMassiveEvent,
@@ -3052,6 +3170,16 @@ class $$AnimalSimpleEventLocalTableFilterComposer
 
   ColumnFilters<String> get data => $composableBuilder(
     column: $table.data,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get idMassiveEvent => $composableBuilder(
+    column: $table.idMassiveEvent,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get idSimpleEvent => $composableBuilder(
+    column: $table.idSimpleEvent,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -3115,6 +3243,16 @@ class $$AnimalSimpleEventLocalTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get idMassiveEvent => $composableBuilder(
+    column: $table.idMassiveEvent,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get idSimpleEvent => $composableBuilder(
+    column: $table.idSimpleEvent,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get appliedAt => $composableBuilder(
     column: $table.appliedAt,
     builder: (column) => ColumnOrderings(column),
@@ -3166,6 +3304,16 @@ class $$AnimalSimpleEventLocalTableAnnotationComposer
 
   GeneratedColumn<String> get data =>
       $composableBuilder(column: $table.data, builder: (column) => column);
+
+  GeneratedColumn<String> get idMassiveEvent => $composableBuilder(
+    column: $table.idMassiveEvent,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get idSimpleEvent => $composableBuilder(
+    column: $table.idSimpleEvent,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<DateTime> get appliedAt =>
       $composableBuilder(column: $table.appliedAt, builder: (column) => column);
@@ -3236,6 +3384,8 @@ class $$AnimalSimpleEventLocalTableTableManager
                 Value<String> animalNumber = const Value.absent(),
                 Value<String> type = const Value.absent(),
                 Value<String?> data = const Value.absent(),
+                Value<String?> idMassiveEvent = const Value.absent(),
+                Value<String?> idSimpleEvent = const Value.absent(),
                 Value<DateTime> appliedAt = const Value.absent(),
                 Value<String?> appliedBy = const Value.absent(),
                 Value<String?> recordedInMassiveEvent = const Value.absent(),
@@ -3248,6 +3398,8 @@ class $$AnimalSimpleEventLocalTableTableManager
                 animalNumber: animalNumber,
                 type: type,
                 data: data,
+                idMassiveEvent: idMassiveEvent,
+                idSimpleEvent: idSimpleEvent,
                 appliedAt: appliedAt,
                 appliedBy: appliedBy,
                 recordedInMassiveEvent: recordedInMassiveEvent,
@@ -3262,6 +3414,8 @@ class $$AnimalSimpleEventLocalTableTableManager
                 required String animalNumber,
                 required String type,
                 Value<String?> data = const Value.absent(),
+                Value<String?> idMassiveEvent = const Value.absent(),
+                Value<String?> idSimpleEvent = const Value.absent(),
                 required DateTime appliedAt,
                 Value<String?> appliedBy = const Value.absent(),
                 Value<String?> recordedInMassiveEvent = const Value.absent(),
@@ -3274,6 +3428,8 @@ class $$AnimalSimpleEventLocalTableTableManager
                 animalNumber: animalNumber,
                 type: type,
                 data: data,
+                idMassiveEvent: idMassiveEvent,
+                idSimpleEvent: idSimpleEvent,
                 appliedAt: appliedAt,
                 appliedBy: appliedBy,
                 recordedInMassiveEvent: recordedInMassiveEvent,

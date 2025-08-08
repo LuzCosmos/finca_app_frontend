@@ -5,8 +5,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
-import 'package:finca_app_frontend/l10n/app_localizations_en.dart';
-import 'package:finca_app_frontend/l10n/app_localizations_es.dart';
+import 'app_localizations_en.dart';
+import 'app_localizations_es.dart';
 
 // ignore_for_file: type=lint
 
@@ -110,6 +110,12 @@ abstract class AppLocalizations {
   /// **'This field is mandatory'**
   String get fieldRequired;
 
+  /// No description provided for @invalidValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid value.'**
+  String get invalidValue;
+
   /// No description provided for @delete.
   ///
   /// In en, this message translates to:
@@ -163,6 +169,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'An unexpected error occurred while saving'**
   String get error_savingObject;
+
+  /// No description provided for @error_notFound.
+  ///
+  /// In en, this message translates to:
+  /// **'{object} not found'**
+  String error_notFound(Object object);
 
   /// Shown when the user's session has expired or they are unauthorized, requiring a new login.
   ///
@@ -805,6 +817,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'An error occurred while adding detail'**
   String get simpleEventError;
+
+  /// No description provided for @simpleEventApplied.
+  ///
+  /// In en, this message translates to:
+  /// **'Active events applied to number {cattleNumber}'**
+  String simpleEventApplied(Object cattleNumber);
+
+  /// No description provided for @applyAtLeastOneSimpleEvent.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply at least one event.'**
+  String get applyAtLeastOneSimpleEvent;
+
+  /// No description provided for @eventsApplicationNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'All events have been applied. If any event appears unapplied, please make sure the required information is filled in.'**
+  String get eventsApplicationNotice;
 }
 
 class _AppLocalizationsDelegate

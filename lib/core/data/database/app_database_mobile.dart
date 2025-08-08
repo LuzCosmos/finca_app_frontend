@@ -15,7 +15,7 @@ import 'package:finca_app_frontend/core/data/database/daos/massive_event_dao.dar
 import 'package:finca_app_frontend/core/data/database/daos/brand_dao.dart';
 import 'package:finca_app_frontend/core/data/database/daos/animal_simple_event_dao.dart';
 
-part 'package:finca_app_frontend/core/data/database/app_database_mobile.g.dart';
+part 'app_database_mobile.g.dart';
 
 LazyDatabase _openConnection() {
   return LazyDatabase(() async {

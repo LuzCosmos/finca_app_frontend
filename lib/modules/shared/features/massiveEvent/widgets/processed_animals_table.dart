@@ -1,8 +1,13 @@
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/animal_simple_event_table_row_model.dart';
 
 class ProcessedAnimalsTable extends StatelessWidget {
-  const ProcessedAnimalsTable({super.key});
+  final Map<String, AnimalSimpleEventTableRowModel> animalEventsAppliedMap;
+  const ProcessedAnimalsTable({
+    super.key,
+    required this.animalEventsAppliedMap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,34 +20,99 @@ class ProcessedAnimalsTable extends StatelessWidget {
     ];
 
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(5),
       child:
           animals.isEmpty
               ? Center(child: Text(l10n.noAnimals))
               : SingleChildScrollView(
                 child: DataTable(
+                  columnSpacing: 12.0,
+                  dataRowMinHeight: 20,
+                  dataRowMaxHeight: 60,
                   columns: [
-                    DataColumn(label: Text(l10n.tableAnimal)),
-                    DataColumn(label: Text(l10n.tableWeight)),
-                    DataColumn(label: Text(l10n.tableTracker)),
-                    DataColumn(label: Text(l10n.tableStatus)),
+                    DataColumn(
+                      label: Text(
+                        l10n.tableAnimal,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        l10n.tableWeight,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        l10n.tableTracker,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        l10n.tableStatus,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
                   ],
                   rows:
                       animals.map((a) {
                         return DataRow(
                           cells: [
-                            DataCell(Text(a['number'] as String)),
-                            DataCell(Text(a['weight'] as String)),
-                            DataCell(Text(a['tracker'] as String)),
                             DataCell(
-                              Icon(
-                                a['synced'] as bool
-                                    ? Icons.check_circle
-                                    : Icons.sync_problem,
-                                color:
-                                    a['synced'] as bool
-                                        ? Colors.green
-                                        : Colors.orange,
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 3,
+                                  horizontal: 8,
+                                ),
+                                child: Text(a['number'] as String),
+                              ),
+                            ),
+                            DataCell(
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 3,
+                                  horizontal: 8,
+                                ),
+                                child: Text(a['weight'] as String),
+                              ),
+                            ),
+                            DataCell(
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 3,
+                                  horizontal: 8,
+                                ),
+                                child: Text(a['tracker'] as String),
+                              ),
+                            ),
+                            DataCell(
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 3,
+                                  horizontal: 8,
+                                ),
+                                child: Icon(
+                                  a['synced'] as bool
+                                      ? Icons.check_circle
+                                      : Icons.sync_problem,
+                                  color:
+                                      a['synced'] as bool
+                                          ? Colors.green
+                                          : Colors.orange,
+                                ),
                               ),
                             ),
                           ],

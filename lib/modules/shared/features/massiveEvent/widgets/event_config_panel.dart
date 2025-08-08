@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'package:finca_app_frontend/modules/shared/features/brands/models/brand_model.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:finca_app_frontend/core/utils/logger.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
@@ -12,8 +14,9 @@ import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/s
 import 'event_detail_form.dart';
 
 class EventConfigPanel extends StatefulWidget {
-  final String? idMassiveEvent;
   final bool isWide;
+  final String? idMassiveEvent;
+  final List<SimpleEventModel> simpleEvents;
   final ValueChanged<String> onMassiveEventCreated;
   final ValueChanged<String?> showError;
   final ValueChanged<String?> showSuccess;
@@ -22,8 +25,9 @@ class EventConfigPanel extends StatefulWidget {
 
   const EventConfigPanel({
     super.key,
-    this.idMassiveEvent,
     required this.isWide,
+    this.idMassiveEvent,
+    required this.simpleEvents,
     required this.onMassiveEventCreated,
     required this.showError,
     required this.showSuccess,
@@ -36,15 +40,11 @@ class EventConfigPanel extends StatefulWidget {
 }
 
 class _EventConfigPanelState extends State<EventConfigPanel> {
-  final List<SimpleEventModel> _allDetails = [];
-  String? idTenant;
-  late String? _currentMassiveEventId;
   final List<BrandModel> _brands = [];
 
   @override
   void initState() {
     super.initState();
-    _currentMassiveEventId = widget.idMassiveEvent;
     Future.microtask(() async {
       try {
         final brands =
@@ -67,7 +67,7 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
   }
 
   List<SimpleEventModel> get activeDetails {
-    final list = _allDetails.where((e) => e.isActive).toList();
+    final list = widget.simpleEvents.where((e) => e.isActive).toList();
     list.sort(
       (a, b) => a.type
           .asText(context)
@@ -78,7 +78,7 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
   }
 
   List<SimpleEventModel> get deactiveDetails {
-    final list = _allDetails.where((e) => (!e.isActive)).toList();
+    final list = widget.simpleEvents.where((e) => (!e.isActive)).toList();
     list.sort(
       (a, b) => a.type
           .asText(context)
@@ -88,20 +88,18 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
     return list;
   }
 
-  List<SimpleEventModel> get historyDetails => _allDetails;
-
   void _openAddEventDialog() async {
-    if (idTenant == null || idTenant!.isEmpty) {
-      idTenant = await SessionService.getIdTenant();
-    }
     if (mounted) {
+      widget.showError(null);
       final massiveBloc = context.read<MassiveEventBloc>();
+      final activeEventTypes = activeDetails.map((e) => e.type).toList();
+
       final result = await showDialog<Map<String, dynamic>>(
         context: context,
         builder:
             (outerContext) => BlocProvider.value(
               value: massiveBloc,
-              child: const EventDetailForm(),
+              child: EventDetailForm(activeEventTypes: activeEventTypes),
             ),
       );
       if (result != null) {
@@ -112,38 +110,27 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
             name: name ?? '',
             type: SimpleEventType.values.firstWhere((e) => e.name == type),
             data: result['data'],
-            idMassiveEvent: _currentMassiveEventId,
+            idMassiveEvent: widget.idMassiveEvent,
           );
           try {
             final dataSource = context.read<MassiveEventBloc>().dataSource;
-            if (_currentMassiveEventId == null) {
+            if (widget.idMassiveEvent == null) {
               var masEv = MassiveEventModel.create(
                 eventDate: DateTime.now(),
                 simpleEvents: [newSimpleEvent],
-                idTenant: idTenant,
               );
               final newMassiveEvent = await dataSource.saveMassiveEvent(
                 massiveEvent: masEv,
-                idTenant: idTenant!,
               );
-              setState(() {
-                _currentMassiveEventId = newMassiveEvent.id;
-              });
               newSimpleEvent = newMassiveEvent.simpleEvents.first;
-              setState(() {
-                _currentMassiveEventId = newMassiveEvent.id;
-              });
               widget.onMassiveEventCreated(newMassiveEvent.id);
             } else {
               newSimpleEvent = await dataSource.saveSimpleEvent(
                 simpleEvent: newSimpleEvent,
-                idTenant: idTenant!,
               );
             }
-            setState(() {
-              _allDetails.add(newSimpleEvent);
-            });
-            widget.onEventsChanged(_allDetails);
+            final allDetails = [...widget.simpleEvents, newSimpleEvent];
+            widget.onEventsChanged(allDetails);
           } on ApiException catch (e) {
             if (mounted) {
               String? error = ApiExceptionCode.values
@@ -164,23 +151,22 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
   }
 
   void _deactivateDetail(SimpleEventModel detail) {
-    setState(() {
-      final idx = _allDetails.indexWhere((e) => e.id == detail.id);
-      if (idx != -1) {
-        _allDetails[idx] = _allDetails[idx].copyWith(isActive: false);
-      }
-    });
-    widget.onEventsChanged(_allDetails);
+    final allDetails = widget.simpleEvents;
+    final idx = allDetails.indexWhere((e) => e.id == detail.id);
+    if (idx != -1) {
+      allDetails[idx] = allDetails[idx].copyWith(isActive: false);
+    }
+
+    widget.onEventsChanged(allDetails);
   }
 
   void _reactivateDetail(SimpleEventModel detail) {
-    setState(() {
-      final idx = _allDetails.indexWhere((e) => e.id == detail.id);
-      if (idx != -1) {
-        _allDetails[idx] = _allDetails[idx].copyWith(isActive: true);
-      }
-    });
-    widget.onEventsChanged(_allDetails);
+    final allDetails = widget.simpleEvents;
+    final idx = allDetails.indexWhere((e) => e.id == detail.id);
+    if (idx != -1) {
+      allDetails[idx] = allDetails[idx].copyWith(isActive: true);
+    }
+    widget.onEventsChanged(allDetails);
     final l10n = AppLocalizations.of(context)!;
     widget.showInfo(l10n.reactivatedInfo(detail.type.asText(context)));
   }
@@ -191,12 +177,12 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
         type == SimpleEventType.tracker.name ||
         type == SimpleEventType.eartag.name ||
         type == SimpleEventType.castration.name) {
-      final idx = _allDetails.indexWhere(
+      final idx = widget.simpleEvents.indexWhere(
         (d) =>
             d.type == SimpleEventType.values.firstWhere((e) => e.name == type),
       );
       if (idx != -1) {
-        final existing = _allDetails[idx];
+        final existing = widget.simpleEvents[idx];
         if (!existing.isActive) {
           _reactivateDetail(existing);
           return false;
@@ -213,7 +199,7 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
       }
     }
     if (type == SimpleEventType.brand.name && name != null && name.isNotEmpty) {
-      final idx = _allDetails.indexWhere((d) {
+      final idx = widget.simpleEvents.indexWhere((d) {
         if (d.type != SimpleEventType.brand) return false;
         final dynamic rawData = jsonDecode(d.data!);
         final Map<String, dynamic> decoded =
@@ -221,7 +207,7 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
         return decoded['brandName'].toLowerCase() == name.toLowerCase();
       });
       if (idx != -1) {
-        final existing = _allDetails[idx];
+        final existing = widget.simpleEvents[idx];
         if (!existing.isActive) {
           _reactivateDetail(existing);
           return false;
@@ -238,6 +224,7 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Container(
+      height: widget.isWide ? null : 360,
       color: Colors.grey.shade100,
       padding: const EdgeInsets.all(8),
       child: Column(
@@ -245,7 +232,7 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
         children: [
           Text(
             l10n.eventConfigTitle,
-            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 4),
           ElevatedButton.icon(
@@ -266,7 +253,7 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
                       Text(
                         l10n.activeDetails,
                         style: const TextStyle(
-                          fontSize: 12,
+                          fontSize: 13,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -313,7 +300,7 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
                                                   Text(
                                                     titleText,
                                                     style: const TextStyle(
-                                                      fontSize: 11,
+                                                      fontSize: 12,
                                                     ),
                                                   ),
                                                   if (subtitleText != null)
@@ -357,10 +344,10 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
                   ),
                 ),
 
-                const Divider(height: 16),
+                const Divider(height: 8),
                 // 30% - deactiveDetails (history)
                 Expanded(
-                  flex: 4,
+                  flex: widget.isWide ? 4 : (deactiveDetails.isEmpty ? 1 : 3),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -368,7 +355,7 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
                         l10n.historyTitle,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 12,
+                          fontSize: 13,
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -419,7 +406,7 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
                                               child: Text(
                                                 titleText,
                                                 style: const TextStyle(
-                                                  fontSize: 11,
+                                                  fontSize: 12,
                                                 ),
                                               ),
                                             ),
@@ -472,20 +459,18 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
   String? _buildSubtitle(SimpleEventModel detail) {
     if (detail.type != SimpleEventType.medication || detail.data == null) {
       return null;
+    } else if (detail.type == SimpleEventType.medication) {
+      final l10n = AppLocalizations.of(context)!;
+      final data = jsonDecode(detail.data!);
+      final route = data['route'] ?? '';
+      final dosage = data['dosage'] ?? '';
+      final lot = data['lot'] ?? '';
+      return [
+        '${l10n.medicationDosage}: $dosage',
+        '${l10n.medicationRoute}: $route',
+        '${l10n.medicationLot}: $lot',
+      ].where((part) => part.toString().trim().isNotEmpty).join('; ');
     }
-    return _buildMedicationSubtitle(detail.data!);
-  }
-
-  String _buildMedicationSubtitle(String dataJson) {
-    final l10n = AppLocalizations.of(context)!;
-    final data = jsonDecode(dataJson);
-    final route = data['route'] ?? '';
-    final dosage = data['dosage'] ?? '';
-    final lot = data['lot'] ?? '';
-    return [
-      '${l10n.medicationDosage}: $dosage',
-      '${l10n.medicationRoute}: $route',
-      '${l10n.medicationLot}: $lot',
-    ].where((part) => part.toString().trim().isNotEmpty).join('; ');
+    return null;
   }
 }
