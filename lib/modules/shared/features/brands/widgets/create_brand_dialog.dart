@@ -22,10 +22,25 @@ class _CreateBrandDialogState extends State<CreateBrandDialog> {
   final TextEditingController _brandNameController = TextEditingController();
   bool _showImageError = false;
   String? error;
-
   Uint8List? _pickedImageBytes;
   String? _pickedMimeType;
   String? _pickedImageBase64;
+
+  @override
+  void dispose() {
+    _brandNameController.dispose();
+    _pickedImageBytes = null;
+    _pickedMimeType = null;
+    _pickedImageBase64 = null;
+    _formKey.currentState?.reset();
+    _formKey.currentState?.dispose();
+    error = null;
+    _showImageError = false;
+    _pickedImageBytes = null;
+    _pickedMimeType = null;
+    _pickedImageBase64 = null;
+    super.dispose();
+  }
 
   Future<void> _pickImageFile() async {
     final result = await FilePicker.platform.pickFiles(
@@ -110,9 +125,10 @@ class _CreateBrandDialogState extends State<CreateBrandDialog> {
                           : null,
             ),
             const SizedBox(height: 8),
-            OutlinedButton(
+            OutlinedButton.icon(
               onPressed: _pickImageFile,
-              child: Text(l10n.selectImage),
+              icon: const Icon(Icons.add_photo_alternate_rounded),
+              label: Text(l10n.selectImage),
             ),
             if (_showImageError) ...[
               const SizedBox(height: 4),

@@ -1,13 +1,16 @@
+import 'package:intl/intl.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
+import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'package:finca_app_frontend/modules/shared/widgets/finca_scaffold.dart';
 import 'package:finca_app_frontend/modules/shared/widgets/message_banner.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/bloc/massive_event_bloc.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/bloc/massive_event_state.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/animal_simple_event_table_row_model.dart';
-import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/animal_simple_event_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_model.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/services/massive_event_api_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/widgets/event_config_panel.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/widgets/animal_entry_form.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/widgets/processed_animals_table.dart';
@@ -32,6 +35,18 @@ class _MassiveEventPageState extends State<MassiveEventPage> {
     setState(() {
       idMassiveEvent = id;
     });
+  }
+
+  @override
+  void dispose() {
+    idMassiveEvent = null;
+    _selectedDate = DateTime.now();
+    simpleEvents.clear();
+    animalEventsAppliedMap.clear();
+    _globalErrorMessage = null;
+    _globalSuccessMessage = null;
+    _globalInfoMessage = null;
+    super.dispose();
   }
 
   void setEvents(List<SimpleEventModel> events) {
@@ -89,6 +104,50 @@ class _MassiveEventPageState extends State<MassiveEventPage> {
     });
   }
 
+  void _closeMassiveEvent() async {
+    final l10n = AppLocalizations.of(context)!;
+    setGlobalError(null);
+    try {
+      if (idMassiveEvent == null) {
+        return;
+      }
+      if (animalEventsAppliedMap.isEmpty) {
+        setGlobalError(l10n.error_noSimpleEventsApplied);
+        return;
+      }
+      await MassiveEventApiService.closeMassiveEvent(
+        idMassiveEvent: idMassiveEvent!,
+      );
+      setState(() {
+        _globalSuccessMessage = l10n.event_finishSuccess;
+      });
+      Future.delayed(const Duration(seconds: 2), () {
+        if (mounted) {
+          setState(() {
+            _globalSuccessMessage = null;
+          });
+          context.go('/home');
+        }
+      });
+    } on ApiException catch (e) {
+      if (mounted) {
+        String? error = ApiExceptionCode.values
+            .firstWhere((el) => el.name == e.code)
+            .asText(context);
+        if (e.code == ApiExceptionCode.unprocessableEntity.name) {
+          if (e.message.contains('closed')) {
+            error = l10n.error_massiveEventAlreadyClosed;
+          } else {
+            error = l10n.error_noSimpleEventsApplied;
+          }
+        }
+        setGlobalError(error);
+      }
+    } catch (e) {
+      setGlobalError(l10n.error_generic);
+    }
+  }
+
   void setGlobalInfo(String? msg) {
     setState(() {
       _globalInfoMessage = msg;
@@ -111,6 +170,7 @@ class _MassiveEventPageState extends State<MassiveEventPage> {
     final eventConfigPanel = EventConfigPanel(
       key: const ValueKey('eventConfigPanel'),
       isWide: isWide,
+      eventDate: _selectedDate,
       simpleEvents: simpleEvents,
       idMassiveEvent: idMassiveEvent,
       onMassiveEventCreated: (newId) {
@@ -136,6 +196,8 @@ class _MassiveEventPageState extends State<MassiveEventPage> {
     final processedAnimalsTable = ProcessedAnimalsTable(
       key: const ValueKey('processedAnimalsTable'),
       animalEventsAppliedMap: animalEventsAppliedMap,
+      simpleEventTypes: simpleEvents.map((e) => e.type).toList(),
+      isWide: isWide,
     );
 
     return BlocListener<MassiveEventBloc, MassiveEventState>(
@@ -166,6 +228,46 @@ class _MassiveEventPageState extends State<MassiveEventPage> {
               MessageBanner.success(_globalSuccessMessage!),
             if (_globalInfoMessage != null)
               MessageBanner.info(_globalInfoMessage!),
+
+            Container(
+              margin: const EdgeInsets.symmetric(
+                horizontal: 5.0,
+                vertical: 3.0,
+              ),
+              child: Row(
+                children: [
+                  // Parte izquierda (textos y botón de fecha)
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Text(l10n.eventDate),
+                        const SizedBox(width: 8),
+                        TextButton.icon(
+                          icon: const Icon(Icons.calendar_today),
+                          label: Text(
+                            DateFormat('yyyy-MM-dd').format(_selectedDate),
+                          ),
+                          onPressed:
+                              idMassiveEvent == null ? _selectDate : null,
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // Parte derecha (botón de finalizar)
+                  if (idMassiveEvent != null)
+                    ElevatedButton.icon(
+                      onPressed:
+                          (idMassiveEvent == null ||
+                                  animalEventsAppliedMap.isEmpty)
+                              ? null
+                              : _closeMassiveEvent,
+                      icon: const Icon(Icons.task_rounded),
+                      label: Text(l10n.eventFinish),
+                    ),
+                ],
+              ),
+            ),
             Expanded(
               child:
                   isWide

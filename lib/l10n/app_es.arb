@@ -1,30 +1,59 @@
 {
   "appTitle": "Finca App",
+  "@appTitle": {"description": "Título de la aplicación que se muestra en la barra"},
 
   "fieldRequired":"Este campo es obligatorio",
   "invalidValue":"Valor inválido",
   "delete": "Eliminar",
-  "fixErrors": "Por favor corrige los errores resaltados en rojo.",
+  "yes": "Si",
+  "no": "No",
   "numberFormat":"#,##0.##",
   "numberFormat_country":"en_US",
 
   "fixErrors": "Por favor corrige los errores resaltados en rojo.",
-  "error_invalidData": "Datos inválidos en el formulario.",
-  "error_forbidden": "No tienes permiso para realizar esta acción.",
-  "error_conflict":"Duplicidad en base de datos",
-  "error_server": "Error interno del servidor. Intenta más tarde.",
-  "error_savingObject": "Ocurrió un error inesperado al guardar",
-  "error_notFound": "{object} no encontrado",
+  "error_savingObject": "Ocurrió un error inesperado al guardar.",
 
-  "error_unauthorized": "Tu sesión ha expirado y necesitas iniciar sesión nuevamente.",
-  "@error_unauthorized": {
-    "description": "Se muestra cuando la sesión del usuario ha expirado o no está autorizado, requiriendo un nuevo inicio de sesión."
+  "error_badRequest": "La solicitud no es válida. Revisa los datos e inténtalo de nuevo.",
+  "@error_badRequest": { "description": "Mensaje genérico para errores HTTP 400." },
+
+  "error_unauthorized": "Tu sesión ha expirado o no tienes acceso. Inicia sesión nuevamente.",
+  "@error_unauthorized": { "description": "Se muestra cuando el usuario debe iniciar sesión (HTTP 401)." },
+
+  "error_forbidden": "No tienes permiso para realizar esta acción.",
+  "@error_forbidden": { "description": "Fallo de autorización (HTTP 403)." },
+
+  "error_notFound": "No se encontró {object}.",
+  "@error_notFound": { "description": "Recurso no encontrado (HTTP 404). {object} es un sustantivo como 'Animal', 'Dispositivo', etc." },
+
+  "error_methodNotAllowed": "Esta acción no está permitida en este momento.",
+  "@error_methodNotAllowed": { "description": "HTTP 405." },
+
+  "error_conflict": "El registro ya existe.",
+  "@error_conflict": { "description": "Conflicto/duplicado (HTTP 409)." },
+
+  "error_preconditionFailed": "No se cumplen las condiciones para realizar esta acción.",
+  "@error_preconditionFailed": { "description": "HTTP 412." },
+
+  "error_unprocessableEntity": "Algunos datos no son válidos. Por favor corrígelos e inténtalo de nuevo.",
+  "@error_unprocessableEntity": { "description": "Errores de negocio/validación (HTTP 422)." },
+
+  "error_locked": "El recurso está bloqueado por otra operación en curso. Intenta nuevamente más tarde.",
+  "@error_locked": {
+    "description": "Se muestra cuando el usuario intenta realizar una acción pero el recurso está bloqueado, normalmente por otro proceso en ejecución."
   },
-  "error_serverConnection": "No se pudo conectar con el servidor. Verifica tu conexión a internet o intenta más tarde.",
-  "@error_serverConnection": {
-    "description": "Mensaje mostrado cuando la app no puede comunicarse con el servidor."
-  },
+
+  "error_tooManyRequests": "Has hecho demasiadas solicitudes. Intenta de nuevo más tarde.",
+  "@error_tooManyRequests": { "description": "Límite de peticiones (HTTP 429)." },
+
+  "error_serverConnection": "No se pudo conectar con el servidor. Verifica tu conexión a internet o inténtalo más tarde.",
+  "@error_serverConnection": { "description": "Problemas de red/conectividad." },
+
+  "error_server": "Error interno del servidor. Intenta más tarde.",
+  "@error_server": { "description": "HTTP 5xx genérico." },
+
   "error_generic": "Ha ocurrido un error inesperado.",
+  "@error_generic": { "description": "Fallback para errores desconocidos." },
+  
 
   "login_username": "Usuario",
   "login_usernameRequired": "Ingrese su usuario",
@@ -106,12 +135,14 @@
   "applyButton": "Aplicar",
 
   "eventConfigTitle": "Configuración de Eventos",
+  "eventDate":"Fecha de Evento",
+  "eventFinish":"Terminar",
   "addEventDetail": "Agregar Evento",
   "activeDetails": "Eventos activos:",
   "noActiveDetails": "Sin detalles activos",
   "deactivateTooltip": "Desactivar",
-  "historyTitle": "Historial:",
-  "noHistory": "Sin historial todavía",
+  "inactiveTitle": "Inactivos:",
+  "noInactive": "Sin eventos inactivos.",
   "reactivateTooltip": "Reactivar",
   "onlyOneType": "Solo puede haber un evento de tipo {type} en este Evento Masivo.",
   "brandAlreadyExists": "Ya existe la marca \"{brand}\" en este Evento Masivo.",
@@ -142,7 +173,11 @@
   "tableAnimal": "Animal",
   "tableWeight": "Peso",
   "tableTracker": "Identificador",
-  "tableStatus": "Estado",
+  "tableEartag": "Arete",
+  "tableBrand": "Marca",
+  "tableMedication": "Medicación",
+  "tableCastration": "Castrado",
+  "tableSynced": "Sincronizado",
 
   "eventTypeWeight": "Peso",
   "eventTypeCastration": "Castración",
@@ -155,8 +190,19 @@
   "simpleEventError": "Ocurrió un error al agregar el detalle",
   "simpleEventApplied": "Los eventos activos fueron aplicados a la res número {cattleNumber}",
   "applyAtLeastOneSimpleEvent": "Se debe de Aplicar al menos un evento.",
-  "eventsApplicationNotice": "Todos los eventos han sido aplicados. Si alguno aparece sin aplicar, asegúrate de haber ingresado toda la información obligatoria."
-
+  "eventsApplicationNotice": "Todos los eventos han sido aplicados. Si alguno aparece sin aplicar, asegúrate de haber ingresado toda la información obligatoria.",
+  "error_noSimpleEventsApplied": "No se puede cerrar el evento masivo porque no se ha aplicado ningún evento simple a ningún animal.",
+  "@error_noSimpleEventsApplied": {
+    "description": "Se muestra al intentar cerrar un evento masivo, pero ninguno de sus eventos simples se aplicó a un animal."
+  },
+  "error_massiveEventAlreadyClosed": "Este evento masivo ya está cerrado y no puede modificarse.",
+  "@error_massiveEventAlreadyClosed": {
+    "description": "Se muestra cuando el usuario intenta cerrar o modificar un evento masivo que ya fue cerrado."
+  },
+  "event_finishSuccess": "El evento masivo se finalizó correctamente.",
+  "@event_finishSuccess": {
+    "description": "Se muestra cuando un evento masivo ha sido finalizado exitosamente."
+  }
 
   
 

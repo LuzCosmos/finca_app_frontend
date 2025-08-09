@@ -1,33 +1,59 @@
 {
   "appTitle": "Finca App",
-  "@appTitle": {
-    "description": "Application Title shown in the bar"
-  },
+  "@appTitle": {"description": "Application Title shown in the bar"},
 
   "fieldRequired":"This field is mandatory",
   "invalidValue":"Invalid value.",
   "delete": "Delete",
-  "fixErrors": "Please fix the errors highlighted in red.",
+  "yes": "Yes",
+  "no": "No",
   "numberFormat":"#,##0.##",
   "numberFormat_country":"en_US",
 
-  "error_invalidData": "Invalid data in the form.",
+  "fixErrors": "Please fix the errors highlighted in red.",
+  "error_savingObject": "An unexpected error occurred while saving.",
+
+  "error_badRequest": "The request is invalid. Please check the data and try again.",
+  "@error_badRequest": { "description": "Generic message for HTTP 400 errors." },
+
+  "error_unauthorized": "Your session has expired or you do not have access. Please log in again.",
+  "@error_unauthorized": { "description": "Shown when the user must log in again (HTTP 401)." },
+
   "error_forbidden": "You do not have permission to perform this action.",
-  "error_conflict":"Duplicate entry in database",
-  "error_server": "Internal server error. Please try again later.",
-  "error_savingObject": "An unexpected error occurred while saving",
-  "error_notFound": "{object} not found",
+  "@error_forbidden": { "description": "Authorization failed (HTTP 403)." },
 
+  "error_notFound": "{object} not found.",
+  "@error_notFound": { "description": "Shown when a resource is not found (HTTP 404). {object} is a noun like 'Animal', 'Device', etc." },
 
-  "error_unauthorized": "Your session has expired and you need to log in again.",
-  "@error_unauthorized": {
-    "description": "Shown when the user's session has expired or they are unauthorized, requiring a new login."
+  "error_methodNotAllowed": "This action is not allowed at the moment.",
+  "@error_methodNotAllowed": { "description": "HTTP 405." },
+
+  "error_conflict": "This item already exists.",
+  "@error_conflict": { "description": "Conflict/duplicate (HTTP 409)." },
+
+  "error_preconditionFailed": "The conditions to perform this action are not met.",
+  "@error_preconditionFailed": { "description": "HTTP 412." },
+
+  "error_unprocessableEntity": "Some data is invalid. Please correct it and try again.",
+  "@error_unprocessableEntity": { "description": "Business/validation errors (HTTP 422)." },
+
+  "error_locked": "The resource is currently locked by another operation. Please try again later.",
+  "@error_locked": {
+    "description": "Shown when the user tries to perform an action but the resource is locked, usually due to another ongoing process. (HTTP 423)"
   },
+
+  "error_tooManyRequests": "You have made too many requests. Please try again later.",
+  "@error_tooManyRequests": { "description": "HTTP 429 rate limiting." },
+
   "error_serverConnection": "Unable to connect to the server. Please check your internet connection or try again later.",
-  "@error_serverConnection": {
-    "description": "Message shown when the app cannot communicate with the server."
-  },
+  "@error_serverConnection": { "description": "Network/connectivity issues." },
+
+  "error_server": "Internal server error. Please try again later.",
+  "@error_server": { "description": "HTTP 5xx generic." },
+
   "error_generic": "An unexpected error has occurred.",
+  "@error_generic": { "description": "Fallback for unknown errors." },
+
 
   "login_username": "Username",
   "login_usernameRequired": "Please enter your username",
@@ -118,12 +144,14 @@
   "applyButton": "Apply",
 
   "eventConfigTitle": "Event Configuration",
+  "eventDate":"Event Date",
+  "eventFinish":"Finish",
   "addEventDetail": "Add Event",
   "activeDetails": "Active Events:",
   "noActiveDetails": "No active Events",
   "deactivateTooltip": "Deactivate",
-  "historyTitle": "History:",
-  "noHistory": "No history yet",
+  "inactiveTitle": "Inactive:",
+  "noInactive": "No inactive Events",
   "reactivateTooltip": "Reactivate",
   "onlyOneType": "Only one event of type {type} is allowed in this Massive Event.",
   "brandAlreadyExists": "The brand \"{brand}\" already exists in this Massive Event.",
@@ -153,7 +181,11 @@
   "tableAnimal": "Animal",
   "tableWeight": "Weight",
   "tableTracker": "Tracker",
-  "tableStatus": "Status",
+  "tableEartag": "Eartag",
+  "tableBrand": "Brand",
+  "tableMedication": "Medication",
+  "tableCastration": "Castrated",
+  "tableSynced": "Synced",
 
   "eventTypeWeight": "Weight",
   "eventTypeCastration": "Castration",
@@ -166,6 +198,18 @@
   "simpleEventError": "An error occurred while adding detail",
   "simpleEventApplied": "Active events applied to number {cattleNumber}",
   "applyAtLeastOneSimpleEvent": "Apply at least one event.",
-  "eventsApplicationNotice": "All events have been applied. If any event appears unapplied, please make sure the required information is filled in."
+  "eventsApplicationNotice": "All events have been applied. If any event appears unapplied, please make sure the required information is filled in.",
+  "error_noSimpleEventsApplied": "The massive event cannot be closed because no simple events have been applied to any animal.",
+  "@error_noSimpleEventsApplied": {
+    "description": "Shown when attempting to close a massive event but none of its simple events were applied to any animal."
+  },
+  "error_massiveEventAlreadyClosed": "This massive event is already closed and cannot be modified.",
+  "@error_massiveEventAlreadyClosed": {
+    "description": "Shown when the user tries to close or modify a massive event that has already been closed."
+  },
+  "event_finishSuccess": "The massive event was successfully finished.",
+  "@event_finishSuccess": {
+    "description": "Shown when a massive event has been finished successfully."
+  }
 
 }

@@ -3,7 +3,7 @@ import 'package:finca_app_frontend/modules/shared/features/auth/page/login_page.
 import 'package:finca_app_frontend/modules/shared/features/home/page/home_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/loading/loading_page.dart';
 import 'package:finca_app_frontend/modules/web/features/cattle_purchase/pages/purchase_form_page.dart';
-import 'package:finca_app_frontend/modules/shared/features/massiveEvent/page/massive_event_page.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/pages/massive_event_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/bloc/massive_event_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

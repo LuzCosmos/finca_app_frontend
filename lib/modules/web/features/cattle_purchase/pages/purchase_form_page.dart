@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
@@ -64,7 +65,6 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
       _showError(l10n.lot_duplicateLotNumber);
       return;
     }
-
     final lotsJson =
         _lots.map((lot) {
           return {
@@ -78,13 +78,11 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
             "sex": lot.gender,
           };
         }).toList();
-
     try {
       setState(() {
         _globalErrorMessage = null;
         _globalSuccessMessage = null;
       });
-
       final service = PurchaseService();
       await service.createPurchase(
         idProvider: _selectedProvider!.id,
@@ -104,26 +102,21 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
         }
       });
     } on ApiException catch (e) {
+      String errorMessage;
+      final ApiExceptionCode codeEnum = ApiExceptionCode.values.firstWhere(
+        (c) => c.name == e.code,
+        orElse: () => ApiExceptionCode.unknownError,
+      );
+      switch (codeEnum) {
+        case ApiExceptionCode.serverConnectionError ||
+            ApiExceptionCode.serverError:
+          errorMessage = l10n.error_server;
+          break;
+        default:
+          errorMessage = l10n.purchase_saveError;
+      }
       setState(() {
-        switch (e.code) {
-          case 'invalidData':
-            _globalErrorMessage = l10n.purchase_saveError;
-            break;
-          case 'forbidden':
-            _globalErrorMessage = l10n.purchase_saveError;
-            break;
-          case 'serverConnectionError':
-            _globalErrorMessage = l10n.error_server;
-            break;
-          case 'savingObjectError':
-            _globalErrorMessage = l10n.purchase_saveError;
-            break;
-          case 'serverError':
-            _globalErrorMessage = l10n.error_server;
-            break;
-          default:
-            _globalErrorMessage = l10n.purchase_saveError;
-        }
+        _globalErrorMessage = errorMessage;
       });
     } catch (e) {
       setState(() {
@@ -210,9 +203,7 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
                   Text('${l10n.purchase_date}: '),
                   TextButton.icon(
                     icon: const Icon(Icons.calendar_today),
-                    label: Text(
-                      '${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}',
-                    ),
+                    label: Text(DateFormat('yyyy-MM-dd').format(_selectedDate)),
                     onPressed: _selectDate,
                   ),
                 ],

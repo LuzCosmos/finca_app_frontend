@@ -30,6 +30,19 @@ class _EventDetailFormState extends State<EventDetailForm> {
   bool _initialized = false;
 
   @override
+  void dispose() {
+    _nameController.dispose();
+    _routeController.dispose();
+    _dosageController.dispose();
+    _lotController.dispose();
+    availableBrands.clear();
+    selectedBrandObject = null;
+    _formKey.currentState?.reset();
+    _formKey.currentState?.dispose();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     super.initState();
   }
@@ -53,7 +66,8 @@ class _EventDetailFormState extends State<EventDetailForm> {
 
   Future<void> _loadBrands() async {
     try {
-      final brands = await BrandApiService.getAllBrands();
+      final brands =
+          await context.read<MassiveEventBloc>().dataSource.getAllBrands();
       setState(() {
         availableBrands = brands;
       });

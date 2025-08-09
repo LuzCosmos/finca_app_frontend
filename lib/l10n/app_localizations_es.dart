@@ -21,7 +21,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get delete => 'Eliminar';
 
   @override
-  String get fixErrors => 'Por favor corrige los errores resaltados en rojo.';
+  String get yes => 'Si';
+
+  @override
+  String get no => 'No';
 
   @override
   String get numberFormat => '#,##0.##';
@@ -30,32 +33,56 @@ class AppLocalizationsEs extends AppLocalizations {
   String get numberFormat_country => 'en_US';
 
   @override
-  String get error_invalidData => 'Datos inválidos en el formulario.';
+  String get fixErrors => 'Por favor corrige los errores resaltados en rojo.';
+
+  @override
+  String get error_savingObject => 'Ocurrió un error inesperado al guardar.';
+
+  @override
+  String get error_badRequest =>
+      'La solicitud no es válida. Revisa los datos e inténtalo de nuevo.';
+
+  @override
+  String get error_unauthorized =>
+      'Tu sesión ha expirado o no tienes acceso. Inicia sesión nuevamente.';
 
   @override
   String get error_forbidden => 'No tienes permiso para realizar esta acción.';
 
   @override
-  String get error_conflict => 'Duplicidad en base de datos';
-
-  @override
-  String get error_server => 'Error interno del servidor. Intenta más tarde.';
-
-  @override
-  String get error_savingObject => 'Ocurrió un error inesperado al guardar';
-
-  @override
   String error_notFound(Object object) {
-    return '$object no encontrado';
+    return 'No se encontró $object.';
   }
 
   @override
-  String get error_unauthorized =>
-      'Tu sesión ha expirado y necesitas iniciar sesión nuevamente.';
+  String get error_methodNotAllowed =>
+      'Esta acción no está permitida en este momento.';
+
+  @override
+  String get error_conflict => 'El registro ya existe.';
+
+  @override
+  String get error_preconditionFailed =>
+      'No se cumplen las condiciones para realizar esta acción.';
+
+  @override
+  String get error_unprocessableEntity =>
+      'Algunos datos no son válidos. Por favor corrígelos e inténtalo de nuevo.';
+
+  @override
+  String get error_locked =>
+      'El recurso está bloqueado por otra operación en curso. Intenta nuevamente más tarde.';
+
+  @override
+  String get error_tooManyRequests =>
+      'Has hecho demasiadas solicitudes. Intenta de nuevo más tarde.';
 
   @override
   String get error_serverConnection =>
-      'No se pudo conectar con el servidor. Verifica tu conexión a internet o intenta más tarde.';
+      'No se pudo conectar con el servidor. Verifica tu conexión a internet o inténtalo más tarde.';
+
+  @override
+  String get error_server => 'Error interno del servidor. Intenta más tarde.';
 
   @override
   String get error_generic => 'Ha ocurrido un error inesperado.';
@@ -276,6 +303,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get eventConfigTitle => 'Configuración de Eventos';
 
   @override
+  String get eventDate => 'Fecha de Evento';
+
+  @override
+  String get eventFinish => 'Terminar';
+
+  @override
   String get addEventDetail => 'Agregar Evento';
 
   @override
@@ -288,10 +321,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get deactivateTooltip => 'Desactivar';
 
   @override
-  String get historyTitle => 'Historial:';
+  String get inactiveTitle => 'Inactivos:';
 
   @override
-  String get noHistory => 'Sin historial todavía';
+  String get noInactive => 'Sin eventos inactivos.';
 
   @override
   String get reactivateTooltip => 'Reactivar';
@@ -381,7 +414,19 @@ class AppLocalizationsEs extends AppLocalizations {
   String get tableTracker => 'Identificador';
 
   @override
-  String get tableStatus => 'Estado';
+  String get tableEartag => 'Arete';
+
+  @override
+  String get tableBrand => 'Marca';
+
+  @override
+  String get tableMedication => 'Medicación';
+
+  @override
+  String get tableCastration => 'Castrado';
+
+  @override
+  String get tableSynced => 'Sincronizado';
 
   @override
   String get simpleEventAdded => 'Detalle agregado correctamente';
@@ -401,4 +446,16 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get eventsApplicationNotice =>
       'Todos los eventos han sido aplicados. Si alguno aparece sin aplicar, asegúrate de haber ingresado toda la información obligatoria.';
+
+  @override
+  String get error_noSimpleEventsApplied =>
+      'No se puede cerrar el evento masivo porque no se ha aplicado ningún evento simple a ningún animal.';
+
+  @override
+  String get error_massiveEventAlreadyClosed =>
+      'Este evento masivo ya está cerrado y no puede modificarse.';
+
+  @override
+  String get event_finishSuccess =>
+      'El evento masivo se finalizó correctamente.';
 }

@@ -25,4 +25,6 @@ abstract class IMassiveEventPageDataSource {
     required List<AnimalSimpleEventModel> animalSimpleEvents,
     required String cattleNumber,
   });
+
+  Future<void> closeMassiveEvent({required String idMassiveEvent});
 }

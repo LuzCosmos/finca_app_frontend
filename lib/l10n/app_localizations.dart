@@ -122,11 +122,17 @@ abstract class AppLocalizations {
   /// **'Delete'**
   String get delete;
 
-  /// No description provided for @fixErrors.
+  /// No description provided for @yes.
   ///
   /// In en, this message translates to:
-  /// **'Please fix the errors highlighted in red.'**
-  String get fixErrors;
+  /// **'Yes'**
+  String get yes;
+
+  /// No description provided for @no.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get no;
 
   /// No description provided for @numberFormat.
   ///
@@ -140,55 +146,91 @@ abstract class AppLocalizations {
   /// **'en_US'**
   String get numberFormat_country;
 
-  /// No description provided for @error_invalidData.
+  /// No description provided for @fixErrors.
   ///
   /// In en, this message translates to:
-  /// **'Invalid data in the form.'**
-  String get error_invalidData;
+  /// **'Please fix the errors highlighted in red.'**
+  String get fixErrors;
 
-  /// No description provided for @error_forbidden.
+  /// No description provided for @error_savingObject.
+  ///
+  /// In en, this message translates to:
+  /// **'An unexpected error occurred while saving.'**
+  String get error_savingObject;
+
+  /// Generic message for HTTP 400 errors.
+  ///
+  /// In en, this message translates to:
+  /// **'The request is invalid. Please check the data and try again.'**
+  String get error_badRequest;
+
+  /// Shown when the user must log in again (HTTP 401).
+  ///
+  /// In en, this message translates to:
+  /// **'Your session has expired or you do not have access. Please log in again.'**
+  String get error_unauthorized;
+
+  /// Authorization failed (HTTP 403).
   ///
   /// In en, this message translates to:
   /// **'You do not have permission to perform this action.'**
   String get error_forbidden;
 
-  /// No description provided for @error_conflict.
+  /// Shown when a resource is not found (HTTP 404). {object} is a noun like 'Animal', 'Device', etc.
   ///
   /// In en, this message translates to:
-  /// **'Duplicate entry in database'**
-  String get error_conflict;
-
-  /// No description provided for @error_server.
-  ///
-  /// In en, this message translates to:
-  /// **'Internal server error. Please try again later.'**
-  String get error_server;
-
-  /// No description provided for @error_savingObject.
-  ///
-  /// In en, this message translates to:
-  /// **'An unexpected error occurred while saving'**
-  String get error_savingObject;
-
-  /// No description provided for @error_notFound.
-  ///
-  /// In en, this message translates to:
-  /// **'{object} not found'**
+  /// **'{object} not found.'**
   String error_notFound(Object object);
 
-  /// Shown when the user's session has expired or they are unauthorized, requiring a new login.
+  /// HTTP 405.
   ///
   /// In en, this message translates to:
-  /// **'Your session has expired and you need to log in again.'**
-  String get error_unauthorized;
+  /// **'This action is not allowed at the moment.'**
+  String get error_methodNotAllowed;
 
-  /// Message shown when the app cannot communicate with the server.
+  /// Conflict/duplicate (HTTP 409).
+  ///
+  /// In en, this message translates to:
+  /// **'This item already exists.'**
+  String get error_conflict;
+
+  /// HTTP 412.
+  ///
+  /// In en, this message translates to:
+  /// **'The conditions to perform this action are not met.'**
+  String get error_preconditionFailed;
+
+  /// Business/validation errors (HTTP 422).
+  ///
+  /// In en, this message translates to:
+  /// **'Some data is invalid. Please correct it and try again.'**
+  String get error_unprocessableEntity;
+
+  /// Shown when the user tries to perform an action but the resource is locked, usually due to another ongoing process. (HTTP 423)
+  ///
+  /// In en, this message translates to:
+  /// **'The resource is currently locked by another operation. Please try again later.'**
+  String get error_locked;
+
+  /// HTTP 429 rate limiting.
+  ///
+  /// In en, this message translates to:
+  /// **'You have made too many requests. Please try again later.'**
+  String get error_tooManyRequests;
+
+  /// Network/connectivity issues.
   ///
   /// In en, this message translates to:
   /// **'Unable to connect to the server. Please check your internet connection or try again later.'**
   String get error_serverConnection;
 
-  /// No description provided for @error_generic.
+  /// HTTP 5xx generic.
+  ///
+  /// In en, this message translates to:
+  /// **'Internal server error. Please try again later.'**
+  String get error_server;
+
+  /// Fallback for unknown errors.
   ///
   /// In en, this message translates to:
   /// **'An unexpected error has occurred.'**
@@ -602,6 +644,18 @@ abstract class AppLocalizations {
   /// **'Event Configuration'**
   String get eventConfigTitle;
 
+  /// No description provided for @eventDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Event Date'**
+  String get eventDate;
+
+  /// No description provided for @eventFinish.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish'**
+  String get eventFinish;
+
   /// No description provided for @addEventDetail.
   ///
   /// In en, this message translates to:
@@ -626,17 +680,17 @@ abstract class AppLocalizations {
   /// **'Deactivate'**
   String get deactivateTooltip;
 
-  /// No description provided for @historyTitle.
+  /// No description provided for @inactiveTitle.
   ///
   /// In en, this message translates to:
-  /// **'History:'**
-  String get historyTitle;
+  /// **'Inactive:'**
+  String get inactiveTitle;
 
-  /// No description provided for @noHistory.
+  /// No description provided for @noInactive.
   ///
   /// In en, this message translates to:
-  /// **'No history yet'**
-  String get noHistory;
+  /// **'No inactive Events'**
+  String get noInactive;
 
   /// No description provided for @reactivateTooltip.
   ///
@@ -800,11 +854,35 @@ abstract class AppLocalizations {
   /// **'Tracker'**
   String get tableTracker;
 
-  /// No description provided for @tableStatus.
+  /// No description provided for @tableEartag.
   ///
   /// In en, this message translates to:
-  /// **'Status'**
-  String get tableStatus;
+  /// **'Eartag'**
+  String get tableEartag;
+
+  /// No description provided for @tableBrand.
+  ///
+  /// In en, this message translates to:
+  /// **'Brand'**
+  String get tableBrand;
+
+  /// No description provided for @tableMedication.
+  ///
+  /// In en, this message translates to:
+  /// **'Medication'**
+  String get tableMedication;
+
+  /// No description provided for @tableCastration.
+  ///
+  /// In en, this message translates to:
+  /// **'Castrated'**
+  String get tableCastration;
+
+  /// No description provided for @tableSynced.
+  ///
+  /// In en, this message translates to:
+  /// **'Synced'**
+  String get tableSynced;
 
   /// No description provided for @simpleEventAdded.
   ///
@@ -835,6 +913,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'All events have been applied. If any event appears unapplied, please make sure the required information is filled in.'**
   String get eventsApplicationNotice;
+
+  /// Shown when attempting to close a massive event but none of its simple events were applied to any animal.
+  ///
+  /// In en, this message translates to:
+  /// **'The massive event cannot be closed because no simple events have been applied to any animal.'**
+  String get error_noSimpleEventsApplied;
+
+  /// Shown when the user tries to close or modify a massive event that has already been closed.
+  ///
+  /// In en, this message translates to:
+  /// **'This massive event is already closed and cannot be modified.'**
+  String get error_massiveEventAlreadyClosed;
+
+  /// Shown when a massive event has been finished successfully.
+  ///
+  /// In en, this message translates to:
+  /// **'The massive event was successfully finished.'**
+  String get event_finishSuccess;
 }
 
 class _AppLocalizationsDelegate

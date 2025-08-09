@@ -2,7 +2,7 @@ import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:flutter/widgets.dart';
 
 enum ApiExceptionCode {
-  invalidData,
+  badRequest,
   unauthorized,
   forbidden,
   conflictError,
@@ -11,14 +11,16 @@ enum ApiExceptionCode {
   unknownError,
   serverConnectionError,
   notFound,
+  unprocessableEntity,
+  locked,
 }
 
 extension ApiExceptionCodeL10n on ApiExceptionCode {
   String asText(BuildContext context, {String? objectName}) {
     final l10n = AppLocalizations.of(context)!;
     switch (this) {
-      case ApiExceptionCode.invalidData:
-        return l10n.error_invalidData;
+      case ApiExceptionCode.badRequest:
+        return l10n.error_badRequest;
       case ApiExceptionCode.unauthorized:
         return l10n.error_unauthorized;
       case ApiExceptionCode.forbidden:
@@ -36,12 +38,16 @@ extension ApiExceptionCodeL10n on ApiExceptionCode {
             (objectName != null ? " $objectName" : "");
       case ApiExceptionCode.notFound:
         return l10n.error_notFound(objectName ?? "");
+      case ApiExceptionCode.unprocessableEntity:
+        return l10n.error_unprocessableEntity;
+      case ApiExceptionCode.locked:
+        return l10n.error_locked;
     }
   }
 }
 
 class ApiException implements Exception {
-  final String code; // ejemplo: 'forbidden', 'invalidData'
+  final String code; // ejemplo: 'forbidden', 'badRequest'
   final String message; // mensaje opcional, puede venir del backend
 
   ApiException(this.code, [this.message = '']);

@@ -10,6 +10,18 @@ import 'package:finca_app_frontend/core/utils/logger.dart';
 
 class MassiveEventPageDataSourceWeb implements IMassiveEventPageDataSource {
   @override
+  Future<MassiveEventModel> saveMassiveEvent({
+    required MassiveEventModel massiveEvent,
+  }) async {
+    final idTenant = await SessionService.getIdTenant();
+    final created = await MassiveEventApiService.createMassiveEvent(
+      massiveEvent: massiveEvent,
+      idTenant: idTenant!,
+    );
+    return created;
+  }
+
+  @override
   Future<SimpleEventModel> saveSimpleEvent({
     required SimpleEventModel simpleEvent,
   }) async {
@@ -20,18 +32,6 @@ class MassiveEventPageDataSourceWeb implements IMassiveEventPageDataSource {
       massiveEventServerId: '',
     );
     return simpleEventSaved;
-  }
-
-  @override
-  Future<MassiveEventModel> saveMassiveEvent({
-    required MassiveEventModel massiveEvent,
-  }) async {
-    final idTenant = await SessionService.getIdTenant();
-    final created = await MassiveEventApiService.createMassiveEvent(
-      massiveEvent: massiveEvent,
-      idTenant: idTenant!,
-    );
-    return created; // respuesta del backend
   }
 
   @override
@@ -59,7 +59,6 @@ class MassiveEventPageDataSourceWeb implements IMassiveEventPageDataSource {
     required List<AnimalSimpleEventModel> animalSimpleEvents,
     required String cattleNumber,
   }) async {
-    logger.d('logger 1.1');
     final appliedBy = await SessionService.getIdUser();
     for (var animalSimpleEvent in animalSimpleEvents) {
       animalSimpleEvent.appliedBy = appliedBy;
@@ -70,5 +69,11 @@ class MassiveEventPageDataSourceWeb implements IMassiveEventPageDataSource {
           cattleNumber: cattleNumber,
         );
     return animalSimpleEventsSaved;
+  }
+
+  @override
+  Future<void> closeMassiveEvent({required String idMassiveEvent}) {
+    // TODO: implement closeMassiveEvent
+    throw UnimplementedError();
   }
 }

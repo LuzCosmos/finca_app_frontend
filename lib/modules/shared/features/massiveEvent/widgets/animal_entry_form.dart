@@ -18,9 +18,9 @@ class AnimalEntryForm extends StatefulWidget {
   final List<SimpleEventModel> activeEvents;
   final Map<String, AnimalSimpleEventTableRowModel> animalEventsAppliedMap;
   final Function(Map<String, AnimalSimpleEventTableRowModel>) onApply;
-  final Function(String) showError;
-  final Function(String) showSuccess;
-  final Function(String) showInfo;
+  final Function(String?) showError;
+  final Function(String?) showSuccess;
+  final Function(String?) showInfo;
 
   const AnimalEntryForm({
     super.key,
@@ -62,7 +62,20 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
     }
   }
 
+  @override
+  void dispose() {
+    _animalNumberController.dispose();
+    _weightController.dispose();
+    _trackerController.dispose();
+    _eartagController.dispose();
+    _formKey.currentState?.reset();
+    _formKey.currentState?.dispose();
+    _activeTypes.clear();
+    super.dispose();
+  }
+
   void _applyAnimalSimpleEvent() async {
+    widget.showError(null);
     if (mounted) {
       final l10n = AppLocalizations.of(context)!;
       if (widget.idMassiveEvent == null) {
@@ -73,7 +86,7 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
         return;
       }
       if (!_formKey.currentState!.validate()) return;
-      final animalNumber = _animalNumberController.text;
+      final animalNumber = _animalNumberController.text.trim();
       var toApplyRow = AnimalSimpleEventTableRowModel(
         animalNumber: animalNumber,
         castrated: false,
@@ -92,27 +105,30 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
         var data = event.data != null ? jsonDecode(event.data!) : null;
         switch (event.type) {
           case SimpleEventType.weight:
-            if (_weightController.text.isEmpty && toApplyRow.weight == null) {
-              return;
+            if (_weightController.text.trim().isEmpty) {
+              if (toApplyRow.weight == null) {
+                return;
+              }
+              continue;
             }
-            toApplyRow.weight = double.parse(_weightController.text);
+            toApplyRow.weight = double.parse(_weightController.text.trim());
             data = {'weight': _weightController.text};
             break;
           case SimpleEventType.tracker:
-            if (_trackerController.text.isNotEmpty) {
-              final tracker = _trackerController.text;
+            if (_trackerController.text.trim().isNotEmpty) {
+              final tracker = _trackerController.text.trim();
               if (toApplyRow.tracker == tracker) {
                 continue;
               }
               toApplyRow.tracker = tracker;
-              data = {'tracker_deveui': _trackerController.text};
+              data = {'tracker_deveui': tracker};
             } else {
               continue;
             }
             break;
           case SimpleEventType.eartag:
-            if (_eartagController.text.isNotEmpty) {
-              final eartag = _eartagController.text;
+            if (_eartagController.text.trim().isNotEmpty) {
+              final eartag = _eartagController.text.trim();
               if (toApplyRow.earTag == eartag) {
                 continue;
               }
@@ -129,15 +145,22 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
             toApplyRow.castrated = true;
             break;
           case SimpleEventType.brand:
-            if (data != null && data['brandName'] != null) {
-              final brandName = data['brandName'];
-              if (toApplyRow.brandNames.contains(brandName)) {
+            if (data != null && data['idBrand'] != null) {
+              final idBrand = data['idBrand'];
+              if (toApplyRow.idBrandsApplied.contains(idBrand)) {
                 continue;
               }
-              toApplyRow.brandNames.add(brandName);
+              final brandName = data['brandName'];
+              if (brandName != null) {
+                toApplyRow.brandNames.add(brandName);
+              }
+              toApplyRow.idBrandsApplied.add(idBrand);
             }
             break;
           case SimpleEventType.medication:
+            if (toApplyRow.idSimpleEventsApplied.contains(event.id)) {
+              continue;
+            }
             if (data != null && data['medicationName'] != null) {
               final medicationName = data['medicationName'];
               if (toApplyRow.medicalTreatments.contains(medicationName)) {
@@ -166,6 +189,7 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                 animalSimpleEvents: appliedEvents,
                 cattleNumber: animalNumber,
               );
+          toApplyRow.updateWith(listOfAnimalSimpleEvents, true);
           _animalNumberController.clear();
           _weightController.clear();
           _trackerController.clear();
@@ -179,13 +203,23 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
             String? error = ApiExceptionCode.values
                 .firstWhere((el) => el.name == e.code)
                 .asText(context, objectName: animalNumber);
-            if (error != null) {
+            if (e.code == ApiExceptionCode.notFound.name) {
+              if (e.message.contains('Device')) {
+                error = l10n.error_notFound(
+                  'Traker ${toApplyRow.tracker ?? ''}',
+                );
+              }
+              if (e.message.contains('Eartag')) {
+                error = l10n.error_notFound(
+                  'Eartag ${toApplyRow.earTag ?? ''}',
+                );
+              }
+            }
+            if (error.isNotEmpty) {
               widget.showError(error);
             }
           }
-          logger.e('ApiException: Error saving animal simple events: $e');
         } catch (e) {
-          logger.e('Error saving animal simple events: $e');
           widget.showError(l10n.error_generic);
         }
       } else {

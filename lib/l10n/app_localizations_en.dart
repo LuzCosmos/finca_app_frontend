@@ -21,7 +21,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get delete => 'Delete';
 
   @override
-  String get fixErrors => 'Please fix the errors highlighted in red.';
+  String get yes => 'Yes';
+
+  @override
+  String get no => 'No';
 
   @override
   String get numberFormat => '#,##0.##';
@@ -30,33 +33,57 @@ class AppLocalizationsEn extends AppLocalizations {
   String get numberFormat_country => 'en_US';
 
   @override
-  String get error_invalidData => 'Invalid data in the form.';
+  String get fixErrors => 'Please fix the errors highlighted in red.';
+
+  @override
+  String get error_savingObject => 'An unexpected error occurred while saving.';
+
+  @override
+  String get error_badRequest =>
+      'The request is invalid. Please check the data and try again.';
+
+  @override
+  String get error_unauthorized =>
+      'Your session has expired or you do not have access. Please log in again.';
 
   @override
   String get error_forbidden =>
       'You do not have permission to perform this action.';
 
   @override
-  String get error_conflict => 'Duplicate entry in database';
-
-  @override
-  String get error_server => 'Internal server error. Please try again later.';
-
-  @override
-  String get error_savingObject => 'An unexpected error occurred while saving';
-
-  @override
   String error_notFound(Object object) {
-    return '$object not found';
+    return '$object not found.';
   }
 
   @override
-  String get error_unauthorized =>
-      'Your session has expired and you need to log in again.';
+  String get error_methodNotAllowed =>
+      'This action is not allowed at the moment.';
+
+  @override
+  String get error_conflict => 'This item already exists.';
+
+  @override
+  String get error_preconditionFailed =>
+      'The conditions to perform this action are not met.';
+
+  @override
+  String get error_unprocessableEntity =>
+      'Some data is invalid. Please correct it and try again.';
+
+  @override
+  String get error_locked =>
+      'The resource is currently locked by another operation. Please try again later.';
+
+  @override
+  String get error_tooManyRequests =>
+      'You have made too many requests. Please try again later.';
 
   @override
   String get error_serverConnection =>
       'Unable to connect to the server. Please check your internet connection or try again later.';
+
+  @override
+  String get error_server => 'Internal server error. Please try again later.';
 
   @override
   String get error_generic => 'An unexpected error has occurred.';
@@ -275,6 +302,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get eventConfigTitle => 'Event Configuration';
 
   @override
+  String get eventDate => 'Event Date';
+
+  @override
+  String get eventFinish => 'Finish';
+
+  @override
   String get addEventDetail => 'Add Event';
 
   @override
@@ -287,10 +320,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deactivateTooltip => 'Deactivate';
 
   @override
-  String get historyTitle => 'History:';
+  String get inactiveTitle => 'Inactive:';
 
   @override
-  String get noHistory => 'No history yet';
+  String get noInactive => 'No inactive Events';
 
   @override
   String get reactivateTooltip => 'Reactivate';
@@ -380,7 +413,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tableTracker => 'Tracker';
 
   @override
-  String get tableStatus => 'Status';
+  String get tableEartag => 'Eartag';
+
+  @override
+  String get tableBrand => 'Brand';
+
+  @override
+  String get tableMedication => 'Medication';
+
+  @override
+  String get tableCastration => 'Castrated';
+
+  @override
+  String get tableSynced => 'Synced';
 
   @override
   String get simpleEventAdded => 'Detail successfully added';
@@ -399,4 +444,16 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get eventsApplicationNotice =>
       'All events have been applied. If any event appears unapplied, please make sure the required information is filled in.';
+
+  @override
+  String get error_noSimpleEventsApplied =>
+      'The massive event cannot be closed because no simple events have been applied to any animal.';
+
+  @override
+  String get error_massiveEventAlreadyClosed =>
+      'This massive event is already closed and cannot be modified.';
+
+  @override
+  String get event_finishSuccess =>
+      'The massive event was successfully finished.';
 }

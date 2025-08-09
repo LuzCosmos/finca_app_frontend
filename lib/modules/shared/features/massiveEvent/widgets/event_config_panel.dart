@@ -1,12 +1,9 @@
 import 'dart:convert';
-import 'package:finca_app_frontend/modules/shared/features/brands/models/brand_model.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:finca_app_frontend/core/utils/logger.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
-import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/bloc/massive_event_bloc.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/massive_event_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_model.dart';
@@ -15,6 +12,7 @@ import 'event_detail_form.dart';
 
 class EventConfigPanel extends StatefulWidget {
   final bool isWide;
+  final DateTime? eventDate;
   final String? idMassiveEvent;
   final List<SimpleEventModel> simpleEvents;
   final ValueChanged<String> onMassiveEventCreated;
@@ -26,6 +24,7 @@ class EventConfigPanel extends StatefulWidget {
   const EventConfigPanel({
     super.key,
     required this.isWide,
+    required this.eventDate,
     this.idMassiveEvent,
     required this.simpleEvents,
     required this.onMassiveEventCreated,
@@ -40,30 +39,14 @@ class EventConfigPanel extends StatefulWidget {
 }
 
 class _EventConfigPanelState extends State<EventConfigPanel> {
-  final List<BrandModel> _brands = [];
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   void initState() {
     super.initState();
-    Future.microtask(() async {
-      try {
-        final brands =
-            await context.read<MassiveEventBloc>().dataSource.getAllBrands();
-        setState(() {
-          for (var brand in brands) {
-            _brands.add(brand);
-          }
-        });
-      } on ApiException catch (e) {
-        String? error = ApiExceptionCode.values
-            .firstWhere((el) => el.name == e.code)
-            .asText(context);
-        widget.showError(error);
-      } catch (e) {
-        final l10n = AppLocalizations.of(context)!;
-        widget.showError(l10n.error_generic);
-      }
-    });
   }
 
   List<SimpleEventModel> get activeDetails {
@@ -77,7 +60,7 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
     return list;
   }
 
-  List<SimpleEventModel> get deactiveDetails {
+  List<SimpleEventModel> get inactiveDetails {
     final list = widget.simpleEvents.where((e) => (!e.isActive)).toList();
     list.sort(
       (a, b) => a.type
@@ -116,7 +99,7 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
             final dataSource = context.read<MassiveEventBloc>().dataSource;
             if (widget.idMassiveEvent == null) {
               var masEv = MassiveEventModel.create(
-                eventDate: DateTime.now(),
+                eventDate: widget.eventDate!,
                 simpleEvents: [newSimpleEvent],
               );
               final newMassiveEvent = await dataSource.saveMassiveEvent(
@@ -345,14 +328,14 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
                 ),
 
                 const Divider(height: 8),
-                // 30% - deactiveDetails (history)
+                // 30% - inactiveDetails
                 Expanded(
-                  flex: widget.isWide ? 4 : (deactiveDetails.isEmpty ? 1 : 3),
+                  flex: widget.isWide ? 4 : (inactiveDetails.isEmpty ? 1 : 3),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        l10n.historyTitle,
+                        l10n.inactiveTitle,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 13,
@@ -361,16 +344,16 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
                       const SizedBox(height: 4),
                       Expanded(
                         child:
-                            deactiveDetails.isEmpty
-                                ? Center(child: Text(l10n.noHistory))
+                            inactiveDetails.isEmpty
+                                ? Center(child: Text(l10n.noInactive))
                                 : ListView.builder(
                                   padding: const EdgeInsets.symmetric(
                                     vertical: 0,
                                     horizontal: 2,
                                   ),
-                                  itemCount: deactiveDetails.length,
+                                  itemCount: inactiveDetails.length,
                                   itemBuilder: (context, index) {
-                                    final detail = deactiveDetails[index];
+                                    final detail = inactiveDetails[index];
                                     final titleText = _buildTitle(
                                       detail,
                                       context,

@@ -144,7 +144,6 @@ class MassiveEventApiService {
     if (token == null || token.isEmpty) {
       throw Exception('⚠️ No se encontró token de sesión');
     }
-    logger.d('animalSimpleEvents: $animalSimpleEvents');
     final payload = {
       'applied': {
         "idMassiveEvent": animalSimpleEvents.first.idMassiveEvent,
@@ -154,7 +153,6 @@ class MassiveEventApiService {
                 .toList(),
       },
     };
-    logger.d('payload: $payload');
     final response = await http.post(
       Uri.parse('$_baseUrl/cattle/apply-events/$cattleNumber'),
       headers: {
@@ -163,9 +161,6 @@ class MassiveEventApiService {
       },
       body: jsonEncode(payload),
     );
-    logger.d('response: ${response.body}');
-    logger.d('response status code: ${response.statusCode}');
-
     if (response.statusCode == 201 || response.statusCode == 200) {
       try {
         final List<dynamic> dataResponse = jsonDecode(response.body);
@@ -182,6 +177,22 @@ class MassiveEventApiService {
         );
       }
     } else {
+      BasicApiService.manageNotSuccessResponseCode(response);
+    }
+  }
+
+  static Future<void> closeMassiveEvent({
+    required String idMassiveEvent,
+  }) async {
+    final token = await BasicApiService.getToken();
+    final response = await http.put(
+      Uri.parse('$_baseUrl/massive-events/close/$idMassiveEvent'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+    if (response.statusCode != 204) {
       BasicApiService.manageNotSuccessResponseCode(response);
     }
   }
