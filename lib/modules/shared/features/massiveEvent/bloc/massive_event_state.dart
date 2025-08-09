@@ -47,3 +47,12 @@ class AnimalSimpleEventsAdded extends MassiveEventState {
   @override
   List<Object?> get props => [animalSimpleEvents];
 }
+
+class MassiveEventClosed extends MassiveEventState {
+  final String idMassiveEvent;
+
+  const MassiveEventClosed({required this.idMassiveEvent});
+
+  @override
+  List<Object?> get props => [idMassiveEvent];
+}

@@ -115,7 +115,7 @@ class _MassiveEventPageState extends State<MassiveEventPage> {
         setGlobalError(l10n.error_noSimpleEventsApplied);
         return;
       }
-      await MassiveEventApiService.closeMassiveEvent(
+      context.read<MassiveEventBloc>().dataSource.closeMassiveEvent(
         idMassiveEvent: idMassiveEvent!,
       );
       setState(() {

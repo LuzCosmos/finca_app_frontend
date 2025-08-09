@@ -16,6 +16,7 @@ class MassiveEventBloc extends Bloc<MassiveEventEvent, MassiveEventState> {
     on<AddMassiveEventWithConfig>(_onSaveMassiveEventWithConfig);
     on<AddBrand>(_onAddBrand);
     on<AddAnimalSimpleEvents>(_onSaveAnimalSimpleEvents);
+    on<CloseMassiveEvent>(_onCloseMassiveEvent);
   }
 
   Future<SimpleEventModel> _onAddSimpleEventConfig(
@@ -106,6 +107,24 @@ class MassiveEventBloc extends Bloc<MassiveEventEvent, MassiveEventState> {
       emit(
         MassiveEventError(
           messageKey: 'animalSimpleEventError',
+          debugInfo: e.toString(),
+        ),
+      );
+    }
+  }
+
+  Future<void> _onCloseMassiveEvent(
+    CloseMassiveEvent event,
+    Emitter<MassiveEventState> emit,
+  ) async {
+    emit(MassiveEventLoading());
+    try {
+      await dataSource.closeMassiveEvent(idMassiveEvent: event.idMassiveEvent);
+      emit(MassiveEventClosed(idMassiveEvent: event.idMassiveEvent));
+    } catch (e) {
+      emit(
+        MassiveEventError(
+          messageKey: 'massiveEventCloseError',
           debugInfo: e.toString(),
         ),
       );

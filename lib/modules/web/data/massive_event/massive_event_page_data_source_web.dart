@@ -72,8 +72,9 @@ class MassiveEventPageDataSourceWeb implements IMassiveEventPageDataSource {
   }
 
   @override
-  Future<void> closeMassiveEvent({required String idMassiveEvent}) {
-    // TODO: implement closeMassiveEvent
-    throw UnimplementedError();
+  Future<void> closeMassiveEvent({required String idMassiveEvent}) async {
+    await MassiveEventApiService.closeMassiveEvent(
+      idMassiveEvent: idMassiveEvent,
+    );
   }
 }
