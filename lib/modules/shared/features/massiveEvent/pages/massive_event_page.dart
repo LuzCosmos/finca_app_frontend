@@ -287,25 +287,16 @@ class _MassiveEventPageState extends State<MassiveEventPage> {
                           ),
                         ],
                       )
-                      : SingleChildScrollView(
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints(
-                            minHeight: MediaQuery.of(context).size.height,
-                          ),
-                          child: IntrinsicHeight(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                eventConfigPanel,
-                                const Divider(height: 1),
-                                animalEntryForm,
-                                const SizedBox(height: 16),
-                                // Puedes poner aquí el processedAnimalsTable sin Expanded
-                                processedAnimalsTable,
-                              ],
-                            ),
-                          ),
-                        ),
+                      : ListView(
+                        padding: EdgeInsets.zero,
+                        children: [
+                          // 👇 ahora el panel SÍ está dentro del mismo scroll
+                          eventConfigPanel,
+                          const Divider(height: 1),
+                          animalEntryForm,
+                          const SizedBox(height: 16),
+                          processedAnimalsTable, // sin Expanded aquí
+                        ],
                       ),
             ),
           ],

@@ -215,6 +215,9 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                 );
               }
             }
+            if (e.code == ApiExceptionCode.conflictError.name) {
+              error = l10n.error_conflict;
+            }
             if (error.isNotEmpty) {
               widget.showError(error);
             }

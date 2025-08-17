@@ -30,7 +30,7 @@ class HomePage extends StatelessWidget {
                 route: "/cattle-purchase",
               ),
               HomeOptionWithPermission(
-                module: "FARM",
+                module: "MASSIVE_EVENTS",
                 resource: "massive_events",
                 title: l10n.home_massiveEvent,
                 icon: CupertinoIcons.list_bullet,
