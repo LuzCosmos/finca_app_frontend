@@ -37,6 +37,13 @@ class HomePage extends StatelessWidget {
                 route: "/massive-event",
                 forWebOnly: false,
               ),
+              HomeOptionWithPermission(
+                module: "COMMERCE",
+                resource: "sales",
+                title: l10n.home_sale,
+                icon: Icons.monetization_on,
+                route: "/sales",
+              ),
             ],
           ),
         ),
