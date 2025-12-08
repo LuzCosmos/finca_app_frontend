@@ -570,4 +570,268 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get refresh => 'Refresh';
+
+  @override
+  String get sales_title => 'Sales';
+
+  @override
+  String get sales_addSale => 'Add Sale';
+
+  @override
+  String get sales_searchPlaceholder => 'Search sales...';
+
+  @override
+  String get sales_dateRange => 'Date Range';
+
+  @override
+  String get sales_clearFilters => 'Clear Filters';
+
+  @override
+  String get sales_rowsPerPage => 'Rows per page:';
+
+  @override
+  String get sales_refresh => 'Refresh';
+
+  @override
+  String get sales_noData => 'No sales data available';
+
+  @override
+  String get sales_noDataFiltered => 'No sales found with the current filters';
+
+  @override
+  String get sales_tryAdjustFilters => 'Try adjusting your filters';
+
+  @override
+  String get sales_createFirstSale => 'Create your first sale to get started';
+
+  @override
+  String get sales_date => 'Date';
+
+  @override
+  String get sales_buyer => 'Buyer';
+
+  @override
+  String get sales_items => 'Items';
+
+  @override
+  String get sales_weight => 'Weight (kg)';
+
+  @override
+  String get sales_amount => 'Amount';
+
+  @override
+  String get sales_actions => 'Actions';
+
+  @override
+  String get sales_viewDetails => 'View Details';
+
+  @override
+  String get sales_edit => 'Edit';
+
+  @override
+  String get sales_page => 'Page';
+
+  @override
+  String get sales_of => 'of';
+
+  @override
+  String get sales_showing => 'Showing';
+
+  @override
+  String get sales_editSale => 'Edit Sale';
+
+  @override
+  String get sales_saleDetails => 'Sale Details';
+
+  @override
+  String get sales_transactionDate => 'Transaction Date';
+
+  @override
+  String get sales_totalAmount => 'Total Amount';
+
+  @override
+  String get sales_totalWeight => 'Total Weight';
+
+  @override
+  String get sales_animals => 'Animals';
+
+  @override
+  String get sales_notes => 'Notes';
+
+  @override
+  String get sales_cattleList => 'Cattle List';
+
+  @override
+  String get sales_noDetails => 'No details available.';
+
+  @override
+  String get sales_cattleId => 'Cattle ID';
+
+  @override
+  String get sales_price => 'Price';
+
+  @override
+  String get sales_close => 'Close';
+
+  @override
+  String get sales_cancel => 'Cancel';
+
+  @override
+  String get sales_save => 'Save';
+
+  @override
+  String get sales_errorLoading => 'Error loading sales';
+
+  @override
+  String get sales_retry => 'Retry';
+
+  @override
+  String get sales_previousPage => 'Previous Page';
+
+  @override
+  String get sales_nextPage => 'Next Page';
+
+  @override
+  String get provider_selectOrCreate => 'Select or create provider';
+
+  @override
+  String get provider_searchByName => 'Search by name...';
+
+  @override
+  String get provider_createNew => 'Create New Provider';
+
+  @override
+  String get provider_providerName => 'Provider Name';
+
+  @override
+  String get provider_address => 'Address';
+
+  @override
+  String get provider_contactPersonName => 'Contact Person Name';
+
+  @override
+  String get provider_phone1 => 'Phone 1';
+
+  @override
+  String get provider_phone2 => 'Phone 2 (Optional)';
+
+  @override
+  String get provider_email => 'Email';
+
+  @override
+  String get provider_buyer => 'Buyer';
+
+  @override
+  String get provider_transporter => 'Transporter';
+
+  @override
+  String get provider_providerType => 'Provider Type';
+
+  @override
+  String get provider_creating => 'Creating...';
+
+  @override
+  String get provider_createdSuccess => 'Provider created successfully';
+
+  @override
+  String get provider_createError => 'Error creating provider';
+
+  @override
+  String get cattle_validation_validating => 'Validating cattle...';
+
+  @override
+  String get cattle_validation_invalid => 'Invalid cattle number';
+
+  @override
+  String get cattle_validation_notFound => 'Cattle not found for this tenant';
+
+  @override
+  String get cattle_validation_notActive => 'Cattle is not ACTIVE';
+
+  @override
+  String get cattle_validation_sold => 'This cattle has already been sold';
+
+  @override
+  String get cattle_validation_dead => 'This cattle is marked as dead';
+
+  @override
+  String get cattle_validation_lost => 'This cattle is marked as lost';
+
+  @override
+  String get cattle_number => 'Cattle Number';
+
+  @override
+  String get cattle_weight => 'Weight (kg)';
+
+  @override
+  String get cattle_addButton => 'Add';
+
+  @override
+  String get cattle_weightUnderMin => 'Weight Below Minimum';
+
+  @override
+  String cattle_weightUnderMinMessage(Object measured, Object min) {
+    return 'The measured weight ($measured kg) is below the minimum weight ($min kg). This cattle will receive the minimum weight for pricing.';
+  }
+
+  @override
+  String get cattle_approveQuestion =>
+      'Do you want to approve or reject this cattle?';
+
+  @override
+  String get cattle_approve => 'Approve';
+
+  @override
+  String get cattle_reject => 'Reject';
+
+  @override
+  String get cattle_approved_title => 'Approved Cattle';
+
+  @override
+  String get cattle_rejected_title => 'Rejected Cattle';
+
+  @override
+  String cattle_approved_count(Object count) {
+    return 'Approved ($count)';
+  }
+
+  @override
+  String cattle_rejected_count(Object count) {
+    return 'Rejected ($count)';
+  }
+
+  @override
+  String get cattle_noApproved => 'No approved cattle yet';
+
+  @override
+  String get cattle_noRejected => 'No rejected cattle';
+
+  @override
+  String get cattle_remove => 'Remove';
+
+  @override
+  String get cattle_rejectionReason => 'Underweight';
+
+  @override
+  String get sale_confirm_title => 'Confirm Sale Creation';
+
+  @override
+  String sale_confirm_message(Object count) {
+    return 'The following $count approved cattle will be marked as SOLD:';
+  }
+
+  @override
+  String get sale_confirm_warning => 'This action cannot be undone. Continue?';
+
+  @override
+  String get sale_confirm_proceed => 'Confirm & Create Sale';
+
+  @override
+  String get sale_creating => 'Creating sale...';
+
+  @override
+  String get sale_created => 'Sale created successfully';
+
+  @override
+  String get sale_createError => 'Error creating sale';
 }

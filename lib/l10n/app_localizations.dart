@@ -1141,6 +1141,516 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Refresh'**
   String get refresh;
+
+  /// No description provided for @sales_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Sales'**
+  String get sales_title;
+
+  /// No description provided for @sales_addSale.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Sale'**
+  String get sales_addSale;
+
+  /// No description provided for @sales_searchPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Search sales...'**
+  String get sales_searchPlaceholder;
+
+  /// No description provided for @sales_dateRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Date Range'**
+  String get sales_dateRange;
+
+  /// No description provided for @sales_clearFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Filters'**
+  String get sales_clearFilters;
+
+  /// No description provided for @sales_rowsPerPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Rows per page:'**
+  String get sales_rowsPerPage;
+
+  /// No description provided for @sales_refresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get sales_refresh;
+
+  /// No description provided for @sales_noData.
+  ///
+  /// In en, this message translates to:
+  /// **'No sales data available'**
+  String get sales_noData;
+
+  /// No description provided for @sales_noDataFiltered.
+  ///
+  /// In en, this message translates to:
+  /// **'No sales found with the current filters'**
+  String get sales_noDataFiltered;
+
+  /// No description provided for @sales_tryAdjustFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Try adjusting your filters'**
+  String get sales_tryAdjustFilters;
+
+  /// No description provided for @sales_createFirstSale.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your first sale to get started'**
+  String get sales_createFirstSale;
+
+  /// No description provided for @sales_date.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get sales_date;
+
+  /// No description provided for @sales_buyer.
+  ///
+  /// In en, this message translates to:
+  /// **'Buyer'**
+  String get sales_buyer;
+
+  /// No description provided for @sales_items.
+  ///
+  /// In en, this message translates to:
+  /// **'Items'**
+  String get sales_items;
+
+  /// No description provided for @sales_weight.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight (kg)'**
+  String get sales_weight;
+
+  /// No description provided for @sales_amount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get sales_amount;
+
+  /// No description provided for @sales_actions.
+  ///
+  /// In en, this message translates to:
+  /// **'Actions'**
+  String get sales_actions;
+
+  /// No description provided for @sales_viewDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'View Details'**
+  String get sales_viewDetails;
+
+  /// No description provided for @sales_edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get sales_edit;
+
+  /// No description provided for @sales_page.
+  ///
+  /// In en, this message translates to:
+  /// **'Page'**
+  String get sales_page;
+
+  /// No description provided for @sales_of.
+  ///
+  /// In en, this message translates to:
+  /// **'of'**
+  String get sales_of;
+
+  /// No description provided for @sales_showing.
+  ///
+  /// In en, this message translates to:
+  /// **'Showing'**
+  String get sales_showing;
+
+  /// No description provided for @sales_editSale.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Sale'**
+  String get sales_editSale;
+
+  /// No description provided for @sales_saleDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Sale Details'**
+  String get sales_saleDetails;
+
+  /// No description provided for @sales_transactionDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction Date'**
+  String get sales_transactionDate;
+
+  /// No description provided for @sales_totalAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Amount'**
+  String get sales_totalAmount;
+
+  /// No description provided for @sales_totalWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Weight'**
+  String get sales_totalWeight;
+
+  /// No description provided for @sales_animals.
+  ///
+  /// In en, this message translates to:
+  /// **'Animals'**
+  String get sales_animals;
+
+  /// No description provided for @sales_notes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get sales_notes;
+
+  /// No description provided for @sales_cattleList.
+  ///
+  /// In en, this message translates to:
+  /// **'Cattle List'**
+  String get sales_cattleList;
+
+  /// No description provided for @sales_noDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'No details available.'**
+  String get sales_noDetails;
+
+  /// No description provided for @sales_cattleId.
+  ///
+  /// In en, this message translates to:
+  /// **'Cattle ID'**
+  String get sales_cattleId;
+
+  /// No description provided for @sales_price.
+  ///
+  /// In en, this message translates to:
+  /// **'Price'**
+  String get sales_price;
+
+  /// No description provided for @sales_close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get sales_close;
+
+  /// No description provided for @sales_cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get sales_cancel;
+
+  /// No description provided for @sales_save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get sales_save;
+
+  /// No description provided for @sales_errorLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading sales'**
+  String get sales_errorLoading;
+
+  /// No description provided for @sales_retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get sales_retry;
+
+  /// No description provided for @sales_previousPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous Page'**
+  String get sales_previousPage;
+
+  /// No description provided for @sales_nextPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Next Page'**
+  String get sales_nextPage;
+
+  /// No description provided for @provider_selectOrCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Select or create provider'**
+  String get provider_selectOrCreate;
+
+  /// No description provided for @provider_searchByName.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name...'**
+  String get provider_searchByName;
+
+  /// No description provided for @provider_createNew.
+  ///
+  /// In en, this message translates to:
+  /// **'Create New Provider'**
+  String get provider_createNew;
+
+  /// No description provided for @provider_providerName.
+  ///
+  /// In en, this message translates to:
+  /// **'Provider Name'**
+  String get provider_providerName;
+
+  /// No description provided for @provider_address.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get provider_address;
+
+  /// No description provided for @provider_contactPersonName.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Person Name'**
+  String get provider_contactPersonName;
+
+  /// No description provided for @provider_phone1.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone 1'**
+  String get provider_phone1;
+
+  /// No description provided for @provider_phone2.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone 2 (Optional)'**
+  String get provider_phone2;
+
+  /// No description provided for @provider_email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get provider_email;
+
+  /// No description provided for @provider_buyer.
+  ///
+  /// In en, this message translates to:
+  /// **'Buyer'**
+  String get provider_buyer;
+
+  /// No description provided for @provider_transporter.
+  ///
+  /// In en, this message translates to:
+  /// **'Transporter'**
+  String get provider_transporter;
+
+  /// No description provided for @provider_providerType.
+  ///
+  /// In en, this message translates to:
+  /// **'Provider Type'**
+  String get provider_providerType;
+
+  /// No description provided for @provider_creating.
+  ///
+  /// In en, this message translates to:
+  /// **'Creating...'**
+  String get provider_creating;
+
+  /// No description provided for @provider_createdSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Provider created successfully'**
+  String get provider_createdSuccess;
+
+  /// No description provided for @provider_createError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error creating provider'**
+  String get provider_createError;
+
+  /// No description provided for @cattle_validation_validating.
+  ///
+  /// In en, this message translates to:
+  /// **'Validating cattle...'**
+  String get cattle_validation_validating;
+
+  /// No description provided for @cattle_validation_invalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid cattle number'**
+  String get cattle_validation_invalid;
+
+  /// No description provided for @cattle_validation_notFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Cattle not found for this tenant'**
+  String get cattle_validation_notFound;
+
+  /// No description provided for @cattle_validation_notActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Cattle is not ACTIVE'**
+  String get cattle_validation_notActive;
+
+  /// No description provided for @cattle_validation_sold.
+  ///
+  /// In en, this message translates to:
+  /// **'This cattle has already been sold'**
+  String get cattle_validation_sold;
+
+  /// No description provided for @cattle_validation_dead.
+  ///
+  /// In en, this message translates to:
+  /// **'This cattle is marked as dead'**
+  String get cattle_validation_dead;
+
+  /// No description provided for @cattle_validation_lost.
+  ///
+  /// In en, this message translates to:
+  /// **'This cattle is marked as lost'**
+  String get cattle_validation_lost;
+
+  /// No description provided for @cattle_number.
+  ///
+  /// In en, this message translates to:
+  /// **'Cattle Number'**
+  String get cattle_number;
+
+  /// No description provided for @cattle_weight.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight (kg)'**
+  String get cattle_weight;
+
+  /// No description provided for @cattle_addButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get cattle_addButton;
+
+  /// No description provided for @cattle_weightUnderMin.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight Below Minimum'**
+  String get cattle_weightUnderMin;
+
+  /// No description provided for @cattle_weightUnderMinMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The measured weight ({measured} kg) is below the minimum weight ({min} kg). This cattle will receive the minimum weight for pricing.'**
+  String cattle_weightUnderMinMessage(Object measured, Object min);
+
+  /// No description provided for @cattle_approveQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to approve or reject this cattle?'**
+  String get cattle_approveQuestion;
+
+  /// No description provided for @cattle_approve.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve'**
+  String get cattle_approve;
+
+  /// No description provided for @cattle_reject.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject'**
+  String get cattle_reject;
+
+  /// No description provided for @cattle_approved_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved Cattle'**
+  String get cattle_approved_title;
+
+  /// No description provided for @cattle_rejected_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected Cattle'**
+  String get cattle_rejected_title;
+
+  /// No description provided for @cattle_approved_count.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved ({count})'**
+  String cattle_approved_count(Object count);
+
+  /// No description provided for @cattle_rejected_count.
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected ({count})'**
+  String cattle_rejected_count(Object count);
+
+  /// No description provided for @cattle_noApproved.
+  ///
+  /// In en, this message translates to:
+  /// **'No approved cattle yet'**
+  String get cattle_noApproved;
+
+  /// No description provided for @cattle_noRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'No rejected cattle'**
+  String get cattle_noRejected;
+
+  /// No description provided for @cattle_remove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get cattle_remove;
+
+  /// No description provided for @cattle_rejectionReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Underweight'**
+  String get cattle_rejectionReason;
+
+  /// No description provided for @sale_confirm_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Sale Creation'**
+  String get sale_confirm_title;
+
+  /// No description provided for @sale_confirm_message.
+  ///
+  /// In en, this message translates to:
+  /// **'The following {count} approved cattle will be marked as SOLD:'**
+  String sale_confirm_message(Object count);
+
+  /// No description provided for @sale_confirm_warning.
+  ///
+  /// In en, this message translates to:
+  /// **'This action cannot be undone. Continue?'**
+  String get sale_confirm_warning;
+
+  /// No description provided for @sale_confirm_proceed.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm & Create Sale'**
+  String get sale_confirm_proceed;
+
+  /// No description provided for @sale_creating.
+  ///
+  /// In en, this message translates to:
+  /// **'Creating sale...'**
+  String get sale_creating;
+
+  /// No description provided for @sale_created.
+  ///
+  /// In en, this message translates to:
+  /// **'Sale created successfully'**
+  String get sale_created;
+
+  /// No description provided for @sale_createError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error creating sale'**
+  String get sale_createError;
 }
 
 class _AppLocalizationsDelegate

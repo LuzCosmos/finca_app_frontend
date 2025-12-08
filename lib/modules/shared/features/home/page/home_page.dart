@@ -45,6 +45,13 @@ class HomePage extends StatelessWidget {
                 route: "/purchases/pending",
                 forWebOnly: true,
               ),
+              HomeOptionWithPermission(
+                module: "COMMERCE",
+                resource: "sales",
+                title: l10n.home_sale,
+                icon: Icons.monetization_on,
+                route: "/sales",
+              ),
             ],
           ),
         ),

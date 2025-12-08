@@ -572,4 +572,270 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get refresh => 'Actualizar';
+
+  @override
+  String get sales_title => 'Ventas';
+
+  @override
+  String get sales_addSale => 'Agregar Venta';
+
+  @override
+  String get sales_searchPlaceholder => 'Buscar ventas...';
+
+  @override
+  String get sales_dateRange => 'Rango de Fechas';
+
+  @override
+  String get sales_clearFilters => 'Limpiar Filtros';
+
+  @override
+  String get sales_rowsPerPage => 'Filas por página:';
+
+  @override
+  String get sales_refresh => 'Actualizar';
+
+  @override
+  String get sales_noData => 'No hay datos de ventas disponibles';
+
+  @override
+  String get sales_noDataFiltered =>
+      'No se encontraron ventas con los filtros actuales';
+
+  @override
+  String get sales_tryAdjustFilters => 'Intenta ajustar tus filtros';
+
+  @override
+  String get sales_createFirstSale => 'Crea tu primera venta para comenzar';
+
+  @override
+  String get sales_date => 'Fecha';
+
+  @override
+  String get sales_buyer => 'Comprador';
+
+  @override
+  String get sales_items => 'Artículos';
+
+  @override
+  String get sales_weight => 'Peso (kg)';
+
+  @override
+  String get sales_amount => 'Monto';
+
+  @override
+  String get sales_actions => 'Acciones';
+
+  @override
+  String get sales_viewDetails => 'Ver Detalles';
+
+  @override
+  String get sales_edit => 'Editar';
+
+  @override
+  String get sales_page => 'Página';
+
+  @override
+  String get sales_of => 'de';
+
+  @override
+  String get sales_showing => 'Mostrando';
+
+  @override
+  String get sales_editSale => 'Editar Venta';
+
+  @override
+  String get sales_saleDetails => 'Detalles de Venta';
+
+  @override
+  String get sales_transactionDate => 'Fecha de Transacción';
+
+  @override
+  String get sales_totalAmount => 'Monto Total';
+
+  @override
+  String get sales_totalWeight => 'Peso Total';
+
+  @override
+  String get sales_animals => 'Animales';
+
+  @override
+  String get sales_notes => 'Notas';
+
+  @override
+  String get sales_cattleList => 'Lista de Ganado';
+
+  @override
+  String get sales_noDetails => 'No hay detalles disponibles.';
+
+  @override
+  String get sales_cattleId => 'ID de Ganado';
+
+  @override
+  String get sales_price => 'Precio';
+
+  @override
+  String get sales_close => 'Cerrar';
+
+  @override
+  String get sales_cancel => 'Cancelar';
+
+  @override
+  String get sales_save => 'Guardar';
+
+  @override
+  String get sales_errorLoading => 'Error al cargar ventas';
+
+  @override
+  String get sales_retry => 'Reintentar';
+
+  @override
+  String get sales_previousPage => 'Página Anterior';
+
+  @override
+  String get sales_nextPage => 'Página Siguiente';
+
+  @override
+  String get provider_selectOrCreate => 'Seleccionar o crear proveedor';
+
+  @override
+  String get provider_searchByName => 'Buscar por nombre...';
+
+  @override
+  String get provider_createNew => 'Crear Nuevo Proveedor';
+
+  @override
+  String get provider_providerName => 'Nombre del Proveedor';
+
+  @override
+  String get provider_address => 'Dirección';
+
+  @override
+  String get provider_contactPersonName => 'Nombre de Contacto';
+
+  @override
+  String get provider_phone1 => 'Teléfono 1';
+
+  @override
+  String get provider_phone2 => 'Teléfono 2 (Opcional)';
+
+  @override
+  String get provider_email => 'Correo Electrónico';
+
+  @override
+  String get provider_buyer => 'Comprador';
+
+  @override
+  String get provider_transporter => 'Transportista';
+
+  @override
+  String get provider_providerType => 'Tipo de Proveedor';
+
+  @override
+  String get provider_creating => 'Creando...';
+
+  @override
+  String get provider_createdSuccess => 'Proveedor creado exitosamente';
+
+  @override
+  String get provider_createError => 'Error al crear proveedor';
+
+  @override
+  String get cattle_validation_validating => 'Validando ganado...';
+
+  @override
+  String get cattle_validation_invalid => 'Número de ganado inválido';
+
+  @override
+  String get cattle_validation_notFound =>
+      'Ganado no encontrado para este inquilino';
+
+  @override
+  String get cattle_validation_notActive => 'El ganado no está ACTIVO';
+
+  @override
+  String get cattle_validation_sold => 'Este ganado ya ha sido vendido';
+
+  @override
+  String get cattle_validation_dead => 'Este ganado está marcado como muerto';
+
+  @override
+  String get cattle_validation_lost => 'Este ganado está marcado como perdido';
+
+  @override
+  String get cattle_number => 'Número de Ganado';
+
+  @override
+  String get cattle_weight => 'Peso (kg)';
+
+  @override
+  String get cattle_addButton => 'Agregar';
+
+  @override
+  String get cattle_weightUnderMin => 'Peso Debajo del Mínimo';
+
+  @override
+  String cattle_weightUnderMinMessage(Object measured, Object min) {
+    return 'El peso medido ($measured kg) está por debajo del peso mínimo ($min kg). Este ganado recibirá el peso mínimo para el cálculo de precio.';
+  }
+
+  @override
+  String get cattle_approveQuestion => '¿Desea aprobar o rechazar este ganado?';
+
+  @override
+  String get cattle_approve => 'Aprobar';
+
+  @override
+  String get cattle_reject => 'Rechazar';
+
+  @override
+  String get cattle_approved_title => 'Ganado Aprobado';
+
+  @override
+  String get cattle_rejected_title => 'Ganado Rechazado';
+
+  @override
+  String cattle_approved_count(Object count) {
+    return 'Aprobados ($count)';
+  }
+
+  @override
+  String cattle_rejected_count(Object count) {
+    return 'Rechazados ($count)';
+  }
+
+  @override
+  String get cattle_noApproved => 'No hay ganado aprobado aún';
+
+  @override
+  String get cattle_noRejected => 'No hay ganado rechazado';
+
+  @override
+  String get cattle_remove => 'Eliminar';
+
+  @override
+  String get cattle_rejectionReason => 'Peso insuficiente';
+
+  @override
+  String get sale_confirm_title => 'Confirmar Creación de Venta';
+
+  @override
+  String sale_confirm_message(Object count) {
+    return 'Los siguientes $count ganados aprobados serán marcados como VENDIDOS:';
+  }
+
+  @override
+  String get sale_confirm_warning =>
+      'Esta acción no se puede deshacer. ¿Continuar?';
+
+  @override
+  String get sale_confirm_proceed => 'Confirmar y Crear Venta';
+
+  @override
+  String get sale_creating => 'Creando venta...';
+
+  @override
+  String get sale_created => 'Venta creada exitosamente';
+
+  @override
+  String get sale_createError => 'Error al crear venta';
 }

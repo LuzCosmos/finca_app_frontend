@@ -15,6 +15,13 @@ import 'package:finca_app_frontend/core/data/database/daos/massive_event_dao.dar
 import 'package:finca_app_frontend/core/data/database/daos/brand_dao.dart';
 import 'package:finca_app_frontend/core/data/database/daos/animal_simple_event_dao.dart';
 
+import 'package:finca_app_frontend/core/data/database/tables/cattle_local.dart';
+import 'package:finca_app_frontend/core/data/database/tables/provider_local.dart';
+import 'package:finca_app_frontend/core/data/database/tables/sale_local.dart';
+import 'package:finca_app_frontend/core/data/database/daos/cattle_dao.dart';
+import 'package:finca_app_frontend/core/data/database/daos/provider_dao.dart';
+import 'package:finca_app_frontend/core/data/database/daos/sale_dao.dart';
+
 part 'app_database_mobile.g.dart';
 
 LazyDatabase _openConnection() {
@@ -31,12 +38,24 @@ LazyDatabase _openConnection() {
     SimpleEventLocal,
     AnimalSimpleEventLocal,
     BrandLocal,
+    CattleLocal,
+    ProviderLocal,
+    SaleLocal,
+    SaleDetailLocal,
   ],
-  daos: [SimpleEventDao, MassiveEventDao, BrandDao, AnimalSimpleEventDao],
+  daos: [
+    SimpleEventDao, 
+    MassiveEventDao, 
+    BrandDao, 
+    AnimalSimpleEventDao,
+    CattleDao,
+    ProviderDao,
+    SaleDao
+  ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 3; // Increment schema version to trigger migration logic if handled (Drift usually needs migration strategy but auto-create works for dev)
 }
