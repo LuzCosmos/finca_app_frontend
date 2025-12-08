@@ -931,6 +931,246 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The massive event was successfully finished.'**
   String get event_finishSuccess;
+
+  /// No description provided for @sales_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Sales'**
+  String get sales_title;
+
+  /// No description provided for @sales_addSale.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Sale'**
+  String get sales_addSale;
+
+  /// No description provided for @sales_searchPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Search sales...'**
+  String get sales_searchPlaceholder;
+
+  /// No description provided for @sales_dateRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Date Range'**
+  String get sales_dateRange;
+
+  /// No description provided for @sales_clearFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Filters'**
+  String get sales_clearFilters;
+
+  /// No description provided for @sales_rowsPerPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Rows per page:'**
+  String get sales_rowsPerPage;
+
+  /// No description provided for @sales_refresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get sales_refresh;
+
+  /// No description provided for @sales_noData.
+  ///
+  /// In en, this message translates to:
+  /// **'No sales data available'**
+  String get sales_noData;
+
+  /// No description provided for @sales_noDataFiltered.
+  ///
+  /// In en, this message translates to:
+  /// **'No sales found with the current filters'**
+  String get sales_noDataFiltered;
+
+  /// No description provided for @sales_tryAdjustFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Try adjusting your filters'**
+  String get sales_tryAdjustFilters;
+
+  /// No description provided for @sales_createFirstSale.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your first sale to get started'**
+  String get sales_createFirstSale;
+
+  /// No description provided for @sales_date.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get sales_date;
+
+  /// No description provided for @sales_buyer.
+  ///
+  /// In en, this message translates to:
+  /// **'Buyer'**
+  String get sales_buyer;
+
+  /// No description provided for @sales_items.
+  ///
+  /// In en, this message translates to:
+  /// **'Items'**
+  String get sales_items;
+
+  /// No description provided for @sales_weight.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight (kg)'**
+  String get sales_weight;
+
+  /// No description provided for @sales_amount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get sales_amount;
+
+  /// No description provided for @sales_actions.
+  ///
+  /// In en, this message translates to:
+  /// **'Actions'**
+  String get sales_actions;
+
+  /// No description provided for @sales_viewDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'View Details'**
+  String get sales_viewDetails;
+
+  /// No description provided for @sales_edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get sales_edit;
+
+  /// No description provided for @sales_page.
+  ///
+  /// In en, this message translates to:
+  /// **'Page'**
+  String get sales_page;
+
+  /// No description provided for @sales_of.
+  ///
+  /// In en, this message translates to:
+  /// **'of'**
+  String get sales_of;
+
+  /// No description provided for @sales_showing.
+  ///
+  /// In en, this message translates to:
+  /// **'Showing'**
+  String get sales_showing;
+
+  /// No description provided for @sales_editSale.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Sale'**
+  String get sales_editSale;
+
+  /// No description provided for @sales_saleDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Sale Details'**
+  String get sales_saleDetails;
+
+  /// No description provided for @sales_transactionDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction Date'**
+  String get sales_transactionDate;
+
+  /// No description provided for @sales_totalAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Amount'**
+  String get sales_totalAmount;
+
+  /// No description provided for @sales_totalWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Weight'**
+  String get sales_totalWeight;
+
+  /// No description provided for @sales_animals.
+  ///
+  /// In en, this message translates to:
+  /// **'Animals'**
+  String get sales_animals;
+
+  /// No description provided for @sales_notes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get sales_notes;
+
+  /// No description provided for @sales_cattleList.
+  ///
+  /// In en, this message translates to:
+  /// **'Cattle List'**
+  String get sales_cattleList;
+
+  /// No description provided for @sales_noDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'No details available.'**
+  String get sales_noDetails;
+
+  /// No description provided for @sales_cattleId.
+  ///
+  /// In en, this message translates to:
+  /// **'Cattle ID'**
+  String get sales_cattleId;
+
+  /// No description provided for @sales_price.
+  ///
+  /// In en, this message translates to:
+  /// **'Price'**
+  String get sales_price;
+
+  /// No description provided for @sales_close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get sales_close;
+
+  /// No description provided for @sales_cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get sales_cancel;
+
+  /// No description provided for @sales_save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get sales_save;
+
+  /// No description provided for @sales_errorLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading sales'**
+  String get sales_errorLoading;
+
+  /// No description provided for @sales_retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get sales_retry;
+
+  /// No description provided for @sales_previousPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous Page'**
+  String get sales_previousPage;
+
+  /// No description provided for @sales_nextPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Next Page'**
+  String get sales_nextPage;
 }
 
 class _AppLocalizationsDelegate

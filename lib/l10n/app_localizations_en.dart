@@ -456,4 +456,124 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get event_finishSuccess =>
       'The massive event was successfully finished.';
+
+  @override
+  String get sales_title => 'Sales';
+
+  @override
+  String get sales_addSale => 'Add Sale';
+
+  @override
+  String get sales_searchPlaceholder => 'Search sales...';
+
+  @override
+  String get sales_dateRange => 'Date Range';
+
+  @override
+  String get sales_clearFilters => 'Clear Filters';
+
+  @override
+  String get sales_rowsPerPage => 'Rows per page:';
+
+  @override
+  String get sales_refresh => 'Refresh';
+
+  @override
+  String get sales_noData => 'No sales data available';
+
+  @override
+  String get sales_noDataFiltered => 'No sales found with the current filters';
+
+  @override
+  String get sales_tryAdjustFilters => 'Try adjusting your filters';
+
+  @override
+  String get sales_createFirstSale => 'Create your first sale to get started';
+
+  @override
+  String get sales_date => 'Date';
+
+  @override
+  String get sales_buyer => 'Buyer';
+
+  @override
+  String get sales_items => 'Items';
+
+  @override
+  String get sales_weight => 'Weight (kg)';
+
+  @override
+  String get sales_amount => 'Amount';
+
+  @override
+  String get sales_actions => 'Actions';
+
+  @override
+  String get sales_viewDetails => 'View Details';
+
+  @override
+  String get sales_edit => 'Edit';
+
+  @override
+  String get sales_page => 'Page';
+
+  @override
+  String get sales_of => 'of';
+
+  @override
+  String get sales_showing => 'Showing';
+
+  @override
+  String get sales_editSale => 'Edit Sale';
+
+  @override
+  String get sales_saleDetails => 'Sale Details';
+
+  @override
+  String get sales_transactionDate => 'Transaction Date';
+
+  @override
+  String get sales_totalAmount => 'Total Amount';
+
+  @override
+  String get sales_totalWeight => 'Total Weight';
+
+  @override
+  String get sales_animals => 'Animals';
+
+  @override
+  String get sales_notes => 'Notes';
+
+  @override
+  String get sales_cattleList => 'Cattle List';
+
+  @override
+  String get sales_noDetails => 'No details available.';
+
+  @override
+  String get sales_cattleId => 'Cattle ID';
+
+  @override
+  String get sales_price => 'Price';
+
+  @override
+  String get sales_close => 'Close';
+
+  @override
+  String get sales_cancel => 'Cancel';
+
+  @override
+  String get sales_save => 'Save';
+
+  @override
+  String get sales_errorLoading => 'Error loading sales';
+
+  @override
+  String get sales_retry => 'Retry';
+
+  @override
+  String get sales_previousPage => 'Previous Page';
+
+  @override
+  String get sales_nextPage => 'Next Page';
 }

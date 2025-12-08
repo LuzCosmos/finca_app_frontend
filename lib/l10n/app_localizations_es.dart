@@ -458,4 +458,125 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get event_finishSuccess =>
       'El evento masivo se finalizó correctamente.';
+
+  @override
+  String get sales_title => 'Ventas';
+
+  @override
+  String get sales_addSale => 'Agregar Venta';
+
+  @override
+  String get sales_searchPlaceholder => 'Buscar ventas...';
+
+  @override
+  String get sales_dateRange => 'Rango de Fechas';
+
+  @override
+  String get sales_clearFilters => 'Limpiar Filtros';
+
+  @override
+  String get sales_rowsPerPage => 'Filas por página:';
+
+  @override
+  String get sales_refresh => 'Actualizar';
+
+  @override
+  String get sales_noData => 'No hay datos de ventas disponibles';
+
+  @override
+  String get sales_noDataFiltered =>
+      'No se encontraron ventas con los filtros actuales';
+
+  @override
+  String get sales_tryAdjustFilters => 'Intenta ajustar tus filtros';
+
+  @override
+  String get sales_createFirstSale => 'Crea tu primera venta para comenzar';
+
+  @override
+  String get sales_date => 'Fecha';
+
+  @override
+  String get sales_buyer => 'Comprador';
+
+  @override
+  String get sales_items => 'Artículos';
+
+  @override
+  String get sales_weight => 'Peso (kg)';
+
+  @override
+  String get sales_amount => 'Monto';
+
+  @override
+  String get sales_actions => 'Acciones';
+
+  @override
+  String get sales_viewDetails => 'Ver Detalles';
+
+  @override
+  String get sales_edit => 'Editar';
+
+  @override
+  String get sales_page => 'Página';
+
+  @override
+  String get sales_of => 'de';
+
+  @override
+  String get sales_showing => 'Mostrando';
+
+  @override
+  String get sales_editSale => 'Editar Venta';
+
+  @override
+  String get sales_saleDetails => 'Detalles de Venta';
+
+  @override
+  String get sales_transactionDate => 'Fecha de Transacción';
+
+  @override
+  String get sales_totalAmount => 'Monto Total';
+
+  @override
+  String get sales_totalWeight => 'Peso Total';
+
+  @override
+  String get sales_animals => 'Animales';
+
+  @override
+  String get sales_notes => 'Notas';
+
+  @override
+  String get sales_cattleList => 'Lista de Ganado';
+
+  @override
+  String get sales_noDetails => 'No hay detalles disponibles.';
+
+  @override
+  String get sales_cattleId => 'ID de Ganado';
+
+  @override
+  String get sales_price => 'Precio';
+
+  @override
+  String get sales_close => 'Cerrar';
+
+  @override
+  String get sales_cancel => 'Cancelar';
+
+  @override
+  String get sales_save => 'Guardar';
+
+  @override
+  String get sales_errorLoading => 'Error al cargar ventas';
+
+  @override
+  String get sales_retry => 'Reintentar';
+
+  @override
+  String get sales_previousPage => 'Página Anterior';
+
+  @override
+  String get sales_nextPage => 'Página Siguiente';
 }

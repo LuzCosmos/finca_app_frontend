@@ -31,34 +31,57 @@ class _SaleDashboardView extends StatefulWidget {
 }
 
 class _SaleDashboardViewState extends State<_SaleDashboardView> {
-  final TextEditingController _searchController = TextEditingController();
+  DateTime? _startDate;
+  DateTime? _endDate;
 
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
-  }
-
-  void _onSearchChanged(String value) {
-    // Debounce behavior could be added here
+  void _applyDateFilter() {
+    if (_startDate == null || _endDate == null) return;
+    
     final bloc = context.read<SalesWebBloc>();
     final currentQuery = bloc.state.query;
-    // If value is empty, clear buyerId/filter. 
-    // Wait, backend API supports filtering by 'buyerId' (UUID).
-    // Searching by name needs backend support using 'buyerName' or similar. 
-    // The current backend implementation filters by `buyerId`.
-    // If user types a name, we can't filter easily unless backend supports text search on relations or we fetch providers and match locally.
-    // For now, let's assume filtering by exact ID or if backend supports it.
-    // Given previous steps, I implemented `buyerId` filter. 
-    // The user requirement says "filter and search".
-    // I will simplisticly search by status or allow text search if I update backend?
-    // I'll stick to what I have: Status filter and Date Range. 
-    // I'll leave buyer search as a TODO or strict ID input for now to avoid scope creep, 
-    // or maybe fetch providers and show dropdown.
-    // Detailed search: Let's simpler: Date Range and Status filter.
+    
+    bloc.add(LoadSalesWeb(
+      query: SalesQuery(
+        skip: 0,
+        take: currentQuery.take,
+        orderBy: currentQuery.orderBy,
+        order: currentQuery.order,
+        startDate: _startDate!.toIso8601String(),
+        endDate: _endDate!.toIso8601String(),
+      ),
+    ));
   }
 
-  void _showEditDialog(BuildContext context, SaleModel sale) {
+  void _clearFilters() {
+    setState(() {
+      _startDate = null;
+      _endDate = null;
+    });
+    
+    final bloc = context.read<SalesWebBloc>();
+    bloc.add(LoadSalesWeb(query: SalesQuery(take: bloc.state.query.take)));
+  }
+
+  Future<void> _selectDateRange(BuildContext context) async {
+    final DateTimeRange? picked = await showDateRangePicker(
+      context: context,
+      firstDate: DateTime(2020),
+      lastDate: DateTime.now(),
+      initialDateRange: _startDate != null && _endDate != null
+          ? DateTimeRange(start: _startDate!, end: _endDate!)
+          : null,
+    );
+
+    if (picked != null) {
+      setState(() {
+        _startDate = picked.start;
+        _endDate = picked.end;
+      });
+      _applyDateFilter();
+    }
+  }
+
+  void _showEditDialog(BuildContext context, SaleModel sale, AppLocalizations? l10n) {
     final noteController = TextEditingController(text: sale.notes);
     final formKey = GlobalKey<FormState>();
 
@@ -66,17 +89,17 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('Edit Sale'),
+          title: Text(l10n?.sales_editSale ?? 'Edit Sale'),
           content: Form(
             key: formKey,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('Transaction Date: ${DateFormat('yyyy-MM-dd').format(sale.transactionDate)}'),
+                Text('${l10n?.sales_transactionDate ?? 'Transaction Date'}: ${DateFormat('yyyy-MM-dd').format(sale.transactionDate)}'),
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: noteController,
-                  decoration: const InputDecoration(labelText: 'Notes'),
+                  decoration: InputDecoration(labelText: l10n?.sales_notes ?? 'Notes'),
                   maxLines: 3,
                 ),
               ],
@@ -85,7 +108,7 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(dialogContext),
-              child: const Text('Cancel'),
+              child: Text(l10n?.sales_cancel ?? 'Cancel'),
             ),
             ElevatedButton(
               onPressed: () {
@@ -99,7 +122,7 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
                   Navigator.pop(dialogContext);
                 }
               },
-              child: const Text('Save'),
+              child: Text(l10n?.sales_save ?? 'Save'),
             ),
           ],
         );
@@ -107,12 +130,12 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
     );
   }
 
-  void _showDetailsDialog(BuildContext context, SaleModel sale) {
+  void _showDetailsDialog(BuildContext context, SaleModel sale, AppLocalizations? l10n) {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Sale Details - ${DateFormat('yyyy-MM-dd').format(sale.transactionDate)}'),
+          title: Text('${l10n?.sales_saleDetails ?? 'Sale Details'} - ${DateFormat('yyyy-MM-dd').format(sale.transactionDate)}'),
           content: SizedBox(
             width: double.maxFinite,
             child: SingleChildScrollView(
@@ -120,28 +143,22 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('Buyer: ${_getBuyerName(sale)}', style: const TextStyle(fontWeight: FontWeight.bold)),
-                  Text('Total Amount: ${NumberFormat.currency(symbol: '\$').format(sale.totalAmount)}'),
-                  Text('Total Weight: ${sale.totalWeight} kg'),
-                  Text('Animals: ${sale.totalCount}'),
+                  Text('${l10n?.sales_buyer ?? 'Buyer'}: ${_getBuyerName(sale)}', style: const TextStyle(fontWeight: FontWeight.bold)),
+                  Text('${l10n?.sales_totalAmount ?? 'Total Amount'}: ${NumberFormat.currency(symbol: '\$').format(sale.totalAmount)}'),
+                  Text('${l10n?.sales_totalWeight ?? 'Total Weight'}: ${sale.totalWeight} kg'),
+                  Text('${l10n?.sales_animals ?? 'Animals'}: ${sale.totalCount}'),
                   if (sale.notes != null && sale.notes!.isNotEmpty) ...[
                     const SizedBox(height: 8),
-                    const Text('Notes:', style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text('${l10n?.sales_notes ?? 'Notes'}:', style: const TextStyle(fontWeight: FontWeight.bold)),
                     Text(sale.notes!),
                   ],
                   const SizedBox(height: 16),
-                  const Text('Cattle List:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  Text(l10n?.sales_cattleList ?? 'Cattle List', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                   const Divider(),
-                  if (sale.details.isEmpty) const Text('No details available.'),
+                  if (sale.details.isEmpty) Text(l10n?.sales_noDetails ?? 'No details available.'),
                   ...sale.details.map((detail) => ListTile(
-                    // Cattle info might be inside detail.cattle object if Relation populated.
-                    // SaleDetailModel usually just has IDs? 
-                    // Backend `findAll` populates `details.cattle`.
-                    // I need to check SaleDetailModel if it has `cattle` field or if I need to map it.
-                    // Assuming SaleDetailModel has basic info or I just show weights/prices.
-                    // Let's check SaleDetailModel later. For now assume basic info or ID.
-                    title: Text('Cattle ID: ${detail.cattleId}'), 
-                    subtitle: Text('Weight: ${detail.measuredWeight} kg | Price: ${NumberFormat.currency(symbol: '\$').format(detail.calculatedPrice)}'),
+                    title: Text('${l10n?.sales_cattleId ?? 'Cattle ID'}: ${detail.cattleId}'), 
+                    subtitle: Text('${l10n?.sales_weight ?? 'Weight'}: ${detail.measuredWeight} kg | ${l10n?.sales_price ?? 'Price'}: ${NumberFormat.currency(symbol: '\$').format(detail.calculatedPrice)}'),
                   )),
                 ],
               ),
@@ -150,7 +167,7 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Close'),
+              child: Text(l10n?.sales_close ?? 'Close'),
             ),
           ],
         );
@@ -160,7 +177,6 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
 
   @override
   Widget build(BuildContext context) {
-    // We reuse L10n if available or hardcode English since module was requested in English/Spanish
     final l10n = AppLocalizations.of(context);
     
     return BlocListener<SalesWebBloc, SalesWebState>(
@@ -174,22 +190,23 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
         }
       },
       child: FincaScaffold(
-        title: l10n?.home_sale ?? 'Sales',
+        title: l10n?.sales_title ?? 'Sales',
         body: BlocBuilder<SalesWebBloc, SalesWebState>(
           builder: (context, state) {
             if (state.status == SalesWebStatus.initial || (state.status == SalesWebStatus.loading && state.sales == null)) {
               return const Center(child: CircularProgressIndicator());
             }
             if (state.error != null && state.sales == null) {
-               // If unauthorized, we redirected. If other error retry?
                return Center(child: Column(
                  mainAxisAlignment: MainAxisAlignment.center,
                  children: [
-                   Text('Error loading sales: ${state.error}'),
+                   const Icon(Icons.error_outline, size: 64, color: Colors.red),
+                   const SizedBox(height: 16),
+                   Text('${l10n?.sales_errorLoading ?? 'Error loading sales'}: ${state.error}'),
                    const SizedBox(height: 16),
                    ElevatedButton(
                      onPressed: () => context.read<SalesWebBloc>().add(const LoadSalesWeb()),
-                     child: const Text('Retry'),
+                     child: Text(l10n?.sales_retry ?? 'Retry'),
                    )
                  ],
                ));
@@ -199,144 +216,132 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
             final total = state.sales?.total ?? 0;
             final query = state.query;
 
-
-
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Filters Row
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Wrap(
-                  spacing: 16,
-                  runSpacing: 8,
-                  crossAxisAlignment: WrapCrossAlignment.center,
+              // Top Bar: Filters and Add Button
+              Container(
+                padding: const EdgeInsets.all(16.0),
+                color: Theme.of(context).colorScheme.surfaceVariant,
+                child: Row(
                   children: [
+                    // Date Range Filter
+                    OutlinedButton.icon(
+                      onPressed: () => _selectDateRange(context),
+                      icon: const Icon(Icons.date_range),
+                      label: Text(
+                        _startDate != null && _endDate != null
+                            ? '${DateFormat('MMM d').format(_startDate!)} - ${DateFormat('MMM d').format(_endDate!)}'
+                            : l10n?.sales_dateRange ?? 'Date Range',
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    // Clear Filters
+                    if (_startDate != null || _endDate != null)
+                      IconButton(
+                        onPressed: _clearFilters,
+                        icon: const Icon(Icons.clear),
+                        tooltip: l10n?.sales_clearFilters ?? 'Clear Filters',
+                      ),
+                    const Spacer(),
+                    // Add Sale Button
+                    ElevatedButton.icon(
+                      onPressed: () => context.go('/sales/create'),
+                      icon: const Icon(Icons.add),
+                      label: Text(l10n?.sales_addSale ?? 'Add Sale'),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              
+              // Pagination Controls
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Row(
+                  children: [
+                    Text(l10n?.sales_rowsPerPage ?? 'Rows per page:', style: Theme.of(context).textTheme.bodyMedium),
+                    const SizedBox(width: 8),
                     DropdownButton<int>(
                       value: query.take,
-                      items: const [10, 50, 100].map((e) => DropdownMenuItem(value: e, child: Text('$e per page'))).toList(),
+                      items: const [10, 25, 50, 100]
+                          .map((e) => DropdownMenuItem(value: e, child: Text('$e')))
+                          .toList(),
                       onChanged: (val) {
                         if (val != null) {
-                           context.read<SalesWebBloc>().add(LoadSalesWeb(query: _updateQuery(query, take: val, skip: 0)));
+                          context.read<SalesWebBloc>().add(LoadSalesWeb(query: _updateQuery(query, take: val, skip: 0)));
                         }
                       },
                     ),
+                    const Spacer(),
                     IconButton(
                       icon: const Icon(Icons.refresh),
                       onPressed: () => context.read<SalesWebBloc>().add(const LoadSalesWeb()),
+                      tooltip: l10n?.sales_refresh ?? 'Refresh',
                     ),
-                   if (state.status == SalesWebStatus.loading)
+                    if (state.status == SalesWebStatus.loading)
                       const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)),
                   ],
                 ),
               ),
               
+              // Table Content - Centered and Expanded
               Expanded(
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    if (constraints.maxWidth < 600) {
-                      // Mobile View: List of Cards
-                      return ListView.separated(
-                        itemCount: sales.length,
-                        separatorBuilder: (_, __) => const Divider(),
-                        itemBuilder: (context, index) {
-                          final sale = sales[index];
-                          return ListTile(
-                            title: Text('${DateFormat('yyyy-MM-dd').format(sale.transactionDate)} - ${_getBuyerName(sale)}'),
-                            subtitle: Text('Items: ${sale.totalCount} | Amt: ${NumberFormat.currency(symbol: '\$').format(sale.totalAmount)}'),
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                IconButton(
-                                  icon: const Icon(Icons.remove_red_eye),
-                                  onPressed: () => _showDetailsDialog(context, sale),
-                                ),
-                                IconButton(
-                                  icon: const Icon(Icons.edit),
-                                  onPressed: () => _showEditDialog(context, sale),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      );
-                    } else {
-                      // Desktop View: Table
-                      return SingleChildScrollView(
-                        scrollDirection: Axis.vertical,
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: DataTable(
-                            sortColumnIndex: _getSortColumnIndex(query.orderBy),
-                            sortAscending: query.order == 'ASC',
-                            columns: [
-                              DataColumn(
-                                label: const Text('Date'), 
-                                onSort: (idx, asc) => _onSort(context, 'transactionDate', asc)
-                              ),
-                              const DataColumn(label: Text('Buyer')),
-                              const DataColumn(label: Text('Items'), numeric: true),
-                              DataColumn(
-                                label: const Text('Amount'),
-                                numeric: true,
-                                onSort: (idx, asc) => _onSort(context, 'totalAmount', asc)
-                              ),
-                              const DataColumn(label: Text('Actions')),
-                            ],
-                            rows: sales.map((sale) {
-                              return DataRow(cells: [
-                                DataCell(Text(DateFormat('yyyy-MM-dd').format(sale.transactionDate))),
-                                DataCell(Text(_getBuyerName(sale))),
-                                DataCell(Text(sale.totalCount.toString())),
-                                DataCell(Text(NumberFormat.currency(symbol: '\$').format(sale.totalAmount))),
-                                DataCell(
-                                  Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      IconButton(
-                                        icon: const Icon(Icons.remove_red_eye, size: 20),
-                                        onPressed: () => _showDetailsDialog(context, sale),
-                                      ),
-                                      IconButton(
-                                        icon: const Icon(Icons.edit, size: 20),
-                                        onPressed: () => _showEditDialog(context, sale),
-                                      ),
-                                    ],
-                                  )
-                                ),
-                              ]);
-                            }).toList(),
+                child: sales.isEmpty
+                    ? _buildEmptyState(context, l10n)
+                    : Center(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 1400),
+                          child: SingleChildScrollView(
+                            padding: const EdgeInsets.all(16),
+                            child: _buildSalesTable(context, sales, query, l10n),
                           ),
                         ),
-                      );
-                    }
-                  }
-                ),
+                      ),
               ),
               
               // Pagination Footer
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text('Page ${ (query.skip / query.take).floor() + 1 } of ${ (total / query.take).ceil() > 0 ? (total / query.take).ceil() : 1 } ($total items)'),
-                    const SizedBox(width: 16),
-                    IconButton(
-                      icon: const Icon(Icons.chevron_left),
-                      onPressed: query.skip > 0 
-                        ? () => context.read<SalesWebBloc>().add(LoadSalesWeb(query: _updateQuery(query, skip: query.skip - query.take)))
-                        : null,
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.chevron_right),
-                      onPressed: (query.skip + query.take) < total
-                        ? () => context.read<SalesWebBloc>().add(LoadSalesWeb(query: _updateQuery(query, skip: query.skip + query.take)))
-                        : null,
-                    ),
-                  ],
+              if (sales.isNotEmpty)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface,
+                    border: Border(top: BorderSide(color: Theme.of(context).dividerColor)),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '${l10n?.sales_showing ?? 'Showing'} ${query.skip + 1}-${query.skip + sales.length} ${l10n?.sales_of ?? 'of'} $total',
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                      Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.chevron_left),
+                            onPressed: query.skip > 0
+                                ? () => context.read<SalesWebBloc>().add(LoadSalesWeb(query: _updateQuery(query, skip: query.skip - query.take)))
+                                : null,
+                            tooltip: l10n?.sales_previousPage ?? 'Previous Page',
+                          ),
+                          Text(
+                            '${l10n?.sales_page ?? 'Page'} ${(query.skip / query.take).floor() + 1} ${l10n?.sales_of ?? 'of'} ${(total / query.take).ceil() > 0 ? (total / query.take).ceil() : 1}',
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.chevron_right),
+                            onPressed: (query.skip + query.take) < total
+                                ? () => context.read<SalesWebBloc>().add(LoadSalesWeb(query: _updateQuery(query, skip: query.skip + query.take)))
+                                : null,
+                            tooltip: l10n?.sales_nextPage ?? 'Next Page',
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
             ],
           );
         },
@@ -345,7 +350,87 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
     );
   }
 
+  Widget _buildEmptyState(BuildContext context, AppLocalizations? l10n) {
+    final hasFilters = _startDate != null || _endDate != null;
+    
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.inbox, size: 80, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.3)),
+          const SizedBox(height: 16),
+          Text(
+            hasFilters ? (l10n?.sales_noDataFiltered ?? 'No sales found with the current filters') : (l10n?.sales_noData ?? 'No sales data available'),
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            hasFilters ? (l10n?.sales_tryAdjustFilters ?? 'Try adjusting your filters') : (l10n?.sales_createFirstSale ?? 'Create your first sale to get started'),
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          const SizedBox(height: 24),
+          ElevatedButton.icon(
+            onPressed: hasFilters ? _clearFilters : () => context.go('/sales/create'),
+            icon: Icon(hasFilters ? Icons.clear : Icons.add),
+            label: Text(hasFilters ? (l10n?.sales_clearFilters ?? 'Clear Filters') : (l10n?.sales_addSale ?? 'Add Sale')),
+          ),
+        ],
+      ),
+    );
+  }
 
+  Widget _buildSalesTable(BuildContext context, List<SaleModel> sales, SalesQuery query, AppLocalizations? l10n) {
+    return Card(
+      child: DataTable(
+        sortColumnIndex: _getSortColumnIndex(query.orderBy),
+        sortAscending: query.order == 'ASC',
+        headingRowColor: MaterialStateProperty.all(
+          Theme.of(context).colorScheme.surfaceVariant,
+        ),
+        columns: [
+          DataColumn(
+            label: Text(l10n?.sales_date ?? 'Date'), 
+            onSort: (idx, asc) => _onSort(context, 'transactionDate', asc)
+          ),
+          DataColumn(label: Text(l10n?.sales_buyer ?? 'Buyer')),
+          DataColumn(label: Text(l10n?.sales_items ?? 'Items'), numeric: true),
+          DataColumn(label: Text(l10n?.sales_weight ?? 'Weight (kg)'), numeric: true),
+          DataColumn(
+            label: Text(l10n?.sales_amount ?? 'Amount'),
+            numeric: true,
+            onSort: (idx, asc) => _onSort(context, 'totalAmount', asc)
+          ),
+          DataColumn(label: Text(l10n?.sales_actions ?? 'Actions')),
+        ],
+        rows: sales.map((sale) {
+          return DataRow(cells: [
+            DataCell(Text(DateFormat('MMM d, yyyy').format(sale.transactionDate))),
+            DataCell(Text(_getBuyerName(sale))),
+            DataCell(Text(sale.totalCount.toString())),
+            DataCell(Text(sale.totalWeight.toStringAsFixed(2))),
+            DataCell(Text(NumberFormat.currency(symbol: '\$').format(sale.totalAmount))),
+            DataCell(
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.visibility, size: 20),
+                    onPressed: () => _showDetailsDialog(context, sale, l10n),
+                    tooltip: l10n?.sales_viewDetails ?? 'View Details',
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.edit, size: 20),
+                    onPressed: () => _showEditDialog(context, sale, l10n),
+                    tooltip: l10n?.sales_edit ?? 'Edit',
+                  ),
+                ],
+              )
+            ),
+          ]);
+        }).toList(),
+      ),
+    );
+  }
 
   SalesQuery _updateQuery(SalesQuery current, {int? skip, int? take, String? orderBy, String? order}) {
     return SalesQuery(
@@ -362,7 +447,7 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
 
   int? _getSortColumnIndex(String? orderBy) {
     if (orderBy == 'transactionDate') return 0;
-    if (orderBy == 'totalAmount') return 3;
+    if (orderBy == 'totalAmount') return 4;
     return null;
   }
 
