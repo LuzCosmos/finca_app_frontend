@@ -320,6 +320,12 @@ abstract class AppLocalizations {
   /// **'Sale'**
   String get home_sale;
 
+  /// No description provided for @home_reception.
+  ///
+  /// In en, this message translates to:
+  /// **'Reception'**
+  String get home_reception;
+
   /// No description provided for @purchase_date.
   ///
   /// In en, this message translates to:
@@ -367,6 +373,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please select or create a provider.'**
   String get cp_error_providerRequired;
+
+  /// No description provided for @purchase_totalWeightKg.
+  ///
+  /// In en, this message translates to:
+  /// **'Total weight (Kg)'**
+  String get purchase_totalWeightKg;
+
+  /// No description provided for @purchase_totalCattle.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Cattle'**
+  String get purchase_totalCattle;
+
+  /// No description provided for @noPurchasesFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase not found'**
+  String get noPurchasesFound;
 
   /// No description provided for @provider.
   ///
@@ -931,6 +955,192 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The massive event was successfully finished.'**
   String get event_finishSuccess;
+
+  /// No description provided for @purchaseReceptionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase Reception'**
+  String get purchaseReceptionTitle;
+
+  /// No description provided for @purchaseBatchesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase Lots'**
+  String get purchaseBatchesTitle;
+
+  /// No description provided for @withoutLot.
+  ///
+  /// In en, this message translates to:
+  /// **'No lot'**
+  String get withoutLot;
+
+  /// No description provided for @cattleOfSelection.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected cattle'**
+  String get cattleOfSelection;
+
+  /// No description provided for @simpleEventsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Simple events'**
+  String get simpleEventsTitle;
+
+  /// No description provided for @selectAnimalHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select an animal to view its events'**
+  String get selectAnimalHint;
+
+  /// No description provided for @appliedEvents.
+  ///
+  /// In en, this message translates to:
+  /// **'Applied'**
+  String get appliedEvents;
+
+  /// No description provided for @availableEvents.
+  ///
+  /// In en, this message translates to:
+  /// **'Available'**
+  String get availableEvents;
+
+  /// No description provided for @assignLot.
+  ///
+  /// In en, this message translates to:
+  /// **'Assign lot'**
+  String get assignLot;
+
+  /// No description provided for @receivedOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Cattle received'**
+  String get receivedOk;
+
+  /// No description provided for @cattleNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Number'**
+  String get cattleNumber;
+
+  /// No description provided for @weightKg.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight (kg)'**
+  String get weightKg;
+
+  /// No description provided for @color.
+  ///
+  /// In en, this message translates to:
+  /// **'Color'**
+  String get color;
+
+  /// No description provided for @characteristics.
+  ///
+  /// In en, this message translates to:
+  /// **'Characteristics'**
+  String get characteristics;
+
+  /// No description provided for @eartag.
+  ///
+  /// In en, this message translates to:
+  /// **'Eartag'**
+  String get eartag;
+
+  /// No description provided for @trackerId.
+  ///
+  /// In en, this message translates to:
+  /// **'Tracker'**
+  String get trackerId;
+
+  /// No description provided for @addCattle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add animal'**
+  String get addCattle;
+
+  /// No description provided for @cattleCountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0 {0 head} one {1 head} other {{count} head}}'**
+  String cattleCountLabel(num count);
+
+  /// No description provided for @from.
+  ///
+  /// In en, this message translates to:
+  /// **'From'**
+  String get from;
+
+  /// No description provided for @to.
+  ///
+  /// In en, this message translates to:
+  /// **'To'**
+  String get to;
+
+  /// No description provided for @all.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get all;
+
+  /// No description provided for @pending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get pending;
+
+  /// No description provided for @received.
+  ///
+  /// In en, this message translates to:
+  /// **'Received'**
+  String get received;
+
+  /// No description provided for @receiveAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive'**
+  String get receiveAction;
+
+  /// No description provided for @rowsPerPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Rows per page'**
+  String get rowsPerPage;
+
+  /// No description provided for @page.
+  ///
+  /// In en, this message translates to:
+  /// **'Page'**
+  String get page;
+
+  /// No description provided for @results.
+  ///
+  /// In en, this message translates to:
+  /// **'results'**
+  String get results;
+
+  /// No description provided for @previous.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous'**
+  String get previous;
+
+  /// No description provided for @next.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get next;
+
+  /// No description provided for @receivedCattle.
+  ///
+  /// In en, this message translates to:
+  /// **'Received qty'**
+  String get receivedCattle;
+
+  /// No description provided for @refresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get refresh;
 }
 
 class _AppLocalizationsDelegate

@@ -133,6 +133,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get home_sale => 'Venta';
 
   @override
+  String get home_reception => 'Recepción';
+
+  @override
   String get purchase_date => 'Fecha de Compra';
 
   @override
@@ -156,6 +159,15 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get cp_error_providerRequired =>
       'Por favor seleccione o cree un proveedor.';
+
+  @override
+  String get purchase_totalWeightKg => 'Peso total (Kg)';
+
+  @override
+  String get purchase_totalCattle => 'Reses totales';
+
+  @override
+  String get noPurchasesFound => 'Compra no encontrada';
 
   @override
   String get provider => 'Proveedor';
@@ -458,4 +470,106 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get event_finishSuccess =>
       'El evento masivo se finalizó correctamente.';
+
+  @override
+  String get purchaseReceptionTitle => 'Recepción de compra';
+
+  @override
+  String get purchaseBatchesTitle => 'Lotes de la compra';
+
+  @override
+  String get withoutLot => 'Sin lote';
+
+  @override
+  String get cattleOfSelection => 'Reses de la selección';
+
+  @override
+  String get simpleEventsTitle => 'Eventos simples';
+
+  @override
+  String get selectAnimalHint => 'Selecciona una res para ver sus eventos';
+
+  @override
+  String get appliedEvents => 'Aplicados';
+
+  @override
+  String get availableEvents => 'Disponibles';
+
+  @override
+  String get assignLot => 'Asignar lote';
+
+  @override
+  String get receivedOk => 'Res recibida';
+
+  @override
+  String get cattleNumber => 'Número';
+
+  @override
+  String get weightKg => 'Peso (kg)';
+
+  @override
+  String get color => 'Color';
+
+  @override
+  String get characteristics => 'Características';
+
+  @override
+  String get eartag => 'Arete';
+
+  @override
+  String get trackerId => 'Tracker';
+
+  @override
+  String get addCattle => 'Agregar res';
+
+  @override
+  String cattleCountLabel(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count reses',
+      one: '1 res',
+      zero: '0 reses',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get from => 'Desde';
+
+  @override
+  String get to => 'Hasta';
+
+  @override
+  String get all => 'Todas';
+
+  @override
+  String get pending => 'Pendientes';
+
+  @override
+  String get received => 'Recibidas';
+
+  @override
+  String get receiveAction => 'Recibir';
+
+  @override
+  String get rowsPerPage => 'Filas por página';
+
+  @override
+  String get page => 'Página';
+
+  @override
+  String get results => 'resultados';
+
+  @override
+  String get previous => 'Anterior';
+
+  @override
+  String get next => 'Siguiente';
+
+  @override
+  String get receivedCattle => 'Cant. recibida';
+
+  @override
+  String get refresh => 'Actualizar';
 }

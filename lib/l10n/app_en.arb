@@ -70,6 +70,7 @@
   "home_purchaseReception": "Purchase Reception",
   "home_massiveEvent": "Massive Event",
   "home_sale": "Sale",
+  "home_reception": "Reception",
 
   "purchase_date": "Purchase Date",
   "purchase_dateRequired": "You must select a purchase date.",
@@ -79,6 +80,9 @@
   "cattlePurchase": "Cattle Purchase",
   "cp_error_noLots": "At least one lot is required",
   "cp_error_providerRequired": "Please select or create a provider.",
+  "purchase_totalWeightKg": "Total weight (Kg)",
+  "purchase_totalCattle":"Total Cattle",
+  "noPurchasesFound":"Purchase not found",
 
   "provider": "Provider",
   "provider_nit": "NIT",
@@ -210,6 +214,62 @@
   "event_finishSuccess": "The massive event was successfully finished.",
   "@event_finishSuccess": {
     "description": "Shown when a massive event has been finished successfully."
-  }
+  },
+
+
+
+
+
+
+  "purchaseReceptionTitle": "Purchase Reception",
+  "purchaseBatchesTitle": "Purchase Lots",
+  "withoutLot": "No lot",
+  "lot": "Lot",
+  "cattleOfSelection": "Selected cattle",
+  "simpleEventsTitle": "Simple events",
+  "selectAnimalHint": "Select an animal to view its events",
+  "appliedEvents": "Applied",
+  "availableEvents": "Available",
+  "assignLot": "Assign lot",
+  "receivedOk": "Cattle received",
+  "cattleNumber": "Number",
+  "weightKg": "Weight (kg)",
+  "color": "Color",
+  "characteristics": "Characteristics",
+  "eartag": "Eartag",
+  "trackerId": "Tracker",
+  "addCattle": "Add animal",
+  "cattleCountLabel": "{count, plural, =0 {0 head} one {1 head} other {{count} head}}",
+
+
+
+
+
+
+
+  "create": "Create",
+  "from": "From",
+  "to": "To",
+  "all": "All",
+  "pending": "Pending",
+  "received": "Received",
+  "receiveAction": "Receive",
+  "rowsPerPage": "Rows per page",
+  "page": "Page",
+  "results": "results",
+  "previous": "Previous",
+  "next": "Next",
+  "receivedCattle": "Received qty",
+  "refresh": "Refresh",
+
+
+  "all": "All",
+  "pending": "Pending",
+  "received": "Received"
+
+
+
+
+
 
 }

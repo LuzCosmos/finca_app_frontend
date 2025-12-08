@@ -8,7 +8,7 @@ import 'package:finca_app_frontend/modules/web/features/cattle_purchase/widgets/
 import 'package:finca_app_frontend/modules/web/features/cattle_purchase/widgets/lots_section.dart';
 import 'package:finca_app_frontend/modules/web/features/cattle_purchase/models/provider.dart';
 import 'package:finca_app_frontend/modules/web/features/cattle_purchase/models/lot.dart';
-import 'package:finca_app_frontend/modules/web/features/cattle_purchase/services/purchase_service.dart';
+import 'package:finca_app_frontend/modules/web/features/cattle_purchase/services/purchases_api_service.dart';
 import 'package:go_router/go_router.dart';
 
 class PurchaseFormPage extends StatefulWidget {
@@ -83,7 +83,7 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
         _globalErrorMessage = null;
         _globalSuccessMessage = null;
       });
-      final service = PurchaseService();
+      final service = PurchasesApiService();
       await service.createPurchase(
         idProvider: _selectedProvider!.id,
         purchaseDate: _selectedDate,
@@ -98,7 +98,7 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
           setState(() {
             _globalSuccessMessage = null;
           });
-          context.go('/home');
+          context.go('/purchases');
         }
       });
     } on ApiException catch (e) {

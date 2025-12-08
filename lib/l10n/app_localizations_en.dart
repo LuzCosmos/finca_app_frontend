@@ -133,6 +133,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get home_sale => 'Sale';
 
   @override
+  String get home_reception => 'Reception';
+
+  @override
   String get purchase_date => 'Purchase Date';
 
   @override
@@ -155,6 +158,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cp_error_providerRequired => 'Please select or create a provider.';
+
+  @override
+  String get purchase_totalWeightKg => 'Total weight (Kg)';
+
+  @override
+  String get purchase_totalCattle => 'Total Cattle';
+
+  @override
+  String get noPurchasesFound => 'Purchase not found';
 
   @override
   String get provider => 'Provider';
@@ -456,4 +468,106 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get event_finishSuccess =>
       'The massive event was successfully finished.';
+
+  @override
+  String get purchaseReceptionTitle => 'Purchase Reception';
+
+  @override
+  String get purchaseBatchesTitle => 'Purchase Lots';
+
+  @override
+  String get withoutLot => 'No lot';
+
+  @override
+  String get cattleOfSelection => 'Selected cattle';
+
+  @override
+  String get simpleEventsTitle => 'Simple events';
+
+  @override
+  String get selectAnimalHint => 'Select an animal to view its events';
+
+  @override
+  String get appliedEvents => 'Applied';
+
+  @override
+  String get availableEvents => 'Available';
+
+  @override
+  String get assignLot => 'Assign lot';
+
+  @override
+  String get receivedOk => 'Cattle received';
+
+  @override
+  String get cattleNumber => 'Number';
+
+  @override
+  String get weightKg => 'Weight (kg)';
+
+  @override
+  String get color => 'Color';
+
+  @override
+  String get characteristics => 'Characteristics';
+
+  @override
+  String get eartag => 'Eartag';
+
+  @override
+  String get trackerId => 'Tracker';
+
+  @override
+  String get addCattle => 'Add animal';
+
+  @override
+  String cattleCountLabel(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count head',
+      one: '1 head',
+      zero: '0 head',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get from => 'From';
+
+  @override
+  String get to => 'To';
+
+  @override
+  String get all => 'All';
+
+  @override
+  String get pending => 'Pending';
+
+  @override
+  String get received => 'Received';
+
+  @override
+  String get receiveAction => 'Receive';
+
+  @override
+  String get rowsPerPage => 'Rows per page';
+
+  @override
+  String get page => 'Page';
+
+  @override
+  String get results => 'results';
+
+  @override
+  String get previous => 'Previous';
+
+  @override
+  String get next => 'Next';
+
+  @override
+  String get receivedCattle => 'Received qty';
+
+  @override
+  String get refresh => 'Refresh';
 }

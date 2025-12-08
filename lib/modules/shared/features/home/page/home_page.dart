@@ -27,7 +27,7 @@ class HomePage extends StatelessWidget {
                 resource: "purchases",
                 title: l10n.home_purchase,
                 icon: Icons.shopping_cart,
-                route: "/cattle-purchase",
+                route: "/purchases",
               ),
               HomeOptionWithPermission(
                 module: "MASSIVE_EVENTS",
@@ -36,6 +36,14 @@ class HomePage extends StatelessWidget {
                 icon: CupertinoIcons.list_bullet,
                 route: "/massive-event",
                 forWebOnly: false,
+              ),
+              HomeOptionWithPermission(
+                module: "RECEPTION",
+                resource: "receptions",
+                title: l10n.home_reception,
+                icon: Icons.shopping_cart_checkout,
+                route: "/purchases/pending",
+                forWebOnly: true,
               ),
             ],
           ),

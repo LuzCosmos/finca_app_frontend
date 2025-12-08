@@ -15,6 +15,8 @@ class FincaScaffold extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(title ?? 'Finca App'),
+        leading: Navigator.of(context).canPop() ? const BackButton() : null,
+        automaticallyImplyLeading: true,
         actions: <Widget>[
           BlocBuilder<LocaleBloc, LocaleState>(
             builder: (context, state) {
