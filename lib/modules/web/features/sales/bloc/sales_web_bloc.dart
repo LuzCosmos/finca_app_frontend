@@ -16,26 +16,41 @@ class LoadSalesWeb extends SalesWebEvent {
   const LoadSalesWeb({this.query});
 }
 
+class LoadProvidersEvent extends SalesWebEvent {
+  const LoadProvidersEvent();
+}
+
+class CreateSaleEvent extends SalesWebEvent {
+  final SaleModel sale;
+  const CreateSaleEvent({required this.sale});
+  @override
+  List<Object?> get props => [sale];
+}
+
 class UpdateSaleWeb extends SalesWebEvent {
   final String id;
   final Map<String, dynamic> updates;
   const UpdateSaleWeb({required this.id, required this.updates});
 }
 
+
+
 // State
-enum SalesWebStatus { initial, loading, success, failure }
+enum SalesWebStatus { initial, loading, success, failure, saleCreated }
 
 class SalesWebState extends Equatable {
   final SalesWebStatus status;
   final PaginatedSales? sales;
   final SalesQuery query;
   final String? error;
+  final List<Map<String, dynamic>>? providers;
 
   const SalesWebState({
     this.status = SalesWebStatus.initial,
     this.sales,
     this.query = const SalesQuery_Defaults(), 
     this.error,
+    this.providers,
   });
   // Note: Const default constructor for SalesQuery
   
@@ -44,17 +59,19 @@ class SalesWebState extends Equatable {
     PaginatedSales? sales,
     SalesQuery? query,
     String? error,
+    List<Map<String, dynamic>>? providers,
   }) {
     return SalesWebState(
       status: status ?? this.status,
       sales: sales ?? this.sales,
       query: query ?? this.query,
       error: error,
+      providers: providers ?? this.providers,
     );
   }
 
   @override
-  List<Object?> get props => [status, sales, query, error];
+  List<Object?> get props => [status, sales, query, error, providers];
 }
 
 class SalesQuery_Defaults extends SalesQuery {
@@ -68,6 +85,8 @@ class SalesWebBloc extends Bloc<SalesWebEvent, SalesWebState> {
 
   SalesWebBloc({required this.dataSource}) : super(const SalesWebState()) {
     on<LoadSalesWeb>(_onLoadSales);
+    on<LoadProvidersEvent>(_onLoadProviders);
+    on<CreateSaleEvent>(_onCreateSale);
     on<UpdateSaleWeb>(_onUpdateSale);
   }
 
@@ -83,6 +102,29 @@ class SalesWebBloc extends Bloc<SalesWebEvent, SalesWebState> {
       ));
     } catch (e) {
       emit(state.copyWith(status: SalesWebStatus.failure, error: e.toString()));
+    }
+  }
+
+  Future<void> _onLoadProviders(LoadProvidersEvent event, Emitter<SalesWebState> emit) async {
+    emit(state.copyWith(status: SalesWebStatus.loading));
+    try {
+      final providers = await dataSource.getProviders('');
+      emit(state.copyWith(
+        status: SalesWebStatus.success,
+        providers: providers.map((p) => p as Map<String, dynamic>).toList(),
+      ));
+    } catch (e) {
+      emit(state.copyWith(status: SalesWebStatus.failure, error: 'Failed to load providers: $e'));
+    }
+  }
+
+  Future<void> _onCreateSale(CreateSaleEvent event, Emitter<SalesWebState> emit) async {
+    emit(state.copyWith(status: SalesWebStatus.loading));
+    try {
+      await dataSource.saveSale(event.sale);
+      emit(state.copyWith(status: SalesWebStatus.saleCreated));
+    } catch (e) {
+      emit(state.copyWith(status: SalesWebStatus.failure, error: 'Failed to create sale: $e'));
     }
   }
 

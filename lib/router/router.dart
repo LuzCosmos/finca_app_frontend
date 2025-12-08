@@ -3,6 +3,7 @@ import 'package:finca_app_frontend/modules/shared/features/auth/page/login_page.
 import 'package:finca_app_frontend/modules/shared/features/home/page/home_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/loading/loading_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/pages/sale_dashboard_page_export.dart';
+import 'package:finca_app_frontend/modules/web/features/sales/pages/create_sale_page_web.dart';
 import 'package:finca_app_frontend/modules/web/features/cattle_purchase/pages/purchase_form_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/pages/massive_event_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/bloc/massive_event_bloc.dart';
@@ -27,6 +28,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/sales',
       builder: (context, state) => const SaleDashboardPage(),
+    ),
+    GoRoute(
+      path: '/sales/create',
+      builder: (context, state) => const CreateSalePage(),
     ),
     GoRoute(
       path: '/loading',
