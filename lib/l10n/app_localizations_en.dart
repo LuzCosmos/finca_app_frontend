@@ -621,4 +621,103 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get provider_createError => 'Error creating provider';
+
+  @override
+  String get cattle_validation_validating => 'Validating cattle...';
+
+  @override
+  String get cattle_validation_invalid => 'Invalid cattle number';
+
+  @override
+  String get cattle_validation_notFound => 'Cattle not found for this tenant';
+
+  @override
+  String get cattle_validation_notActive => 'Cattle is not ACTIVE';
+
+  @override
+  String get cattle_validation_sold => 'This cattle has already been sold';
+
+  @override
+  String get cattle_validation_dead => 'This cattle is marked as dead';
+
+  @override
+  String get cattle_validation_lost => 'This cattle is marked as lost';
+
+  @override
+  String get cattle_number => 'Cattle Number';
+
+  @override
+  String get cattle_weight => 'Weight (kg)';
+
+  @override
+  String get cattle_addButton => 'Add';
+
+  @override
+  String get cattle_weightUnderMin => 'Weight Below Minimum';
+
+  @override
+  String cattle_weightUnderMinMessage(Object measured, Object min) {
+    return 'The measured weight ($measured kg) is below the minimum weight ($min kg). This cattle will receive the minimum weight for pricing.';
+  }
+
+  @override
+  String get cattle_approveQuestion =>
+      'Do you want to approve or reject this cattle?';
+
+  @override
+  String get cattle_approve => 'Approve';
+
+  @override
+  String get cattle_reject => 'Reject';
+
+  @override
+  String get cattle_approved_title => 'Approved Cattle';
+
+  @override
+  String get cattle_rejected_title => 'Rejected Cattle';
+
+  @override
+  String cattle_approved_count(Object count) {
+    return 'Approved ($count)';
+  }
+
+  @override
+  String cattle_rejected_count(Object count) {
+    return 'Rejected ($count)';
+  }
+
+  @override
+  String get cattle_noApproved => 'No approved cattle yet';
+
+  @override
+  String get cattle_noRejected => 'No rejected cattle';
+
+  @override
+  String get cattle_remove => 'Remove';
+
+  @override
+  String get cattle_rejectionReason => 'Underweight';
+
+  @override
+  String get sale_confirm_title => 'Confirm Sale Creation';
+
+  @override
+  String sale_confirm_message(Object count) {
+    return 'The following $count approved cattle will be marked as SOLD:';
+  }
+
+  @override
+  String get sale_confirm_warning => 'This action cannot be undone. Continue?';
+
+  @override
+  String get sale_confirm_proceed => 'Confirm & Create Sale';
+
+  @override
+  String get sale_creating => 'Creating sale...';
+
+  @override
+  String get sale_created => 'Sale created successfully';
+
+  @override
+  String get sale_createError => 'Error creating sale';
 }

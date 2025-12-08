@@ -624,4 +624,104 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get provider_createError => 'Error al crear proveedor';
+
+  @override
+  String get cattle_validation_validating => 'Validando ganado...';
+
+  @override
+  String get cattle_validation_invalid => 'Número de ganado inválido';
+
+  @override
+  String get cattle_validation_notFound =>
+      'Ganado no encontrado para este inquilino';
+
+  @override
+  String get cattle_validation_notActive => 'El ganado no está ACTIVO';
+
+  @override
+  String get cattle_validation_sold => 'Este ganado ya ha sido vendido';
+
+  @override
+  String get cattle_validation_dead => 'Este ganado está marcado como muerto';
+
+  @override
+  String get cattle_validation_lost => 'Este ganado está marcado como perdido';
+
+  @override
+  String get cattle_number => 'Número de Ganado';
+
+  @override
+  String get cattle_weight => 'Peso (kg)';
+
+  @override
+  String get cattle_addButton => 'Agregar';
+
+  @override
+  String get cattle_weightUnderMin => 'Peso Debajo del Mínimo';
+
+  @override
+  String cattle_weightUnderMinMessage(Object measured, Object min) {
+    return 'El peso medido ($measured kg) está por debajo del peso mínimo ($min kg). Este ganado recibirá el peso mínimo para el cálculo de precio.';
+  }
+
+  @override
+  String get cattle_approveQuestion => '¿Desea aprobar o rechazar este ganado?';
+
+  @override
+  String get cattle_approve => 'Aprobar';
+
+  @override
+  String get cattle_reject => 'Rechazar';
+
+  @override
+  String get cattle_approved_title => 'Ganado Aprobado';
+
+  @override
+  String get cattle_rejected_title => 'Ganado Rechazado';
+
+  @override
+  String cattle_approved_count(Object count) {
+    return 'Aprobados ($count)';
+  }
+
+  @override
+  String cattle_rejected_count(Object count) {
+    return 'Rechazados ($count)';
+  }
+
+  @override
+  String get cattle_noApproved => 'No hay ganado aprobado aún';
+
+  @override
+  String get cattle_noRejected => 'No hay ganado rechazado';
+
+  @override
+  String get cattle_remove => 'Eliminar';
+
+  @override
+  String get cattle_rejectionReason => 'Peso insuficiente';
+
+  @override
+  String get sale_confirm_title => 'Confirmar Creación de Venta';
+
+  @override
+  String sale_confirm_message(Object count) {
+    return 'Los siguientes $count ganados aprobados serán marcados como VENDIDOS:';
+  }
+
+  @override
+  String get sale_confirm_warning =>
+      'Esta acción no se puede deshacer. ¿Continuar?';
+
+  @override
+  String get sale_confirm_proceed => 'Confirmar y Crear Venta';
+
+  @override
+  String get sale_creating => 'Creando venta...';
+
+  @override
+  String get sale_created => 'Venta creada exitosamente';
+
+  @override
+  String get sale_createError => 'Error al crear venta';
 }

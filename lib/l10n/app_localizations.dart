@@ -1261,6 +1261,186 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error creating provider'**
   String get provider_createError;
+
+  /// No description provided for @cattle_validation_validating.
+  ///
+  /// In en, this message translates to:
+  /// **'Validating cattle...'**
+  String get cattle_validation_validating;
+
+  /// No description provided for @cattle_validation_invalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid cattle number'**
+  String get cattle_validation_invalid;
+
+  /// No description provided for @cattle_validation_notFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Cattle not found for this tenant'**
+  String get cattle_validation_notFound;
+
+  /// No description provided for @cattle_validation_notActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Cattle is not ACTIVE'**
+  String get cattle_validation_notActive;
+
+  /// No description provided for @cattle_validation_sold.
+  ///
+  /// In en, this message translates to:
+  /// **'This cattle has already been sold'**
+  String get cattle_validation_sold;
+
+  /// No description provided for @cattle_validation_dead.
+  ///
+  /// In en, this message translates to:
+  /// **'This cattle is marked as dead'**
+  String get cattle_validation_dead;
+
+  /// No description provided for @cattle_validation_lost.
+  ///
+  /// In en, this message translates to:
+  /// **'This cattle is marked as lost'**
+  String get cattle_validation_lost;
+
+  /// No description provided for @cattle_number.
+  ///
+  /// In en, this message translates to:
+  /// **'Cattle Number'**
+  String get cattle_number;
+
+  /// No description provided for @cattle_weight.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight (kg)'**
+  String get cattle_weight;
+
+  /// No description provided for @cattle_addButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get cattle_addButton;
+
+  /// No description provided for @cattle_weightUnderMin.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight Below Minimum'**
+  String get cattle_weightUnderMin;
+
+  /// No description provided for @cattle_weightUnderMinMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The measured weight ({measured} kg) is below the minimum weight ({min} kg). This cattle will receive the minimum weight for pricing.'**
+  String cattle_weightUnderMinMessage(Object measured, Object min);
+
+  /// No description provided for @cattle_approveQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to approve or reject this cattle?'**
+  String get cattle_approveQuestion;
+
+  /// No description provided for @cattle_approve.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve'**
+  String get cattle_approve;
+
+  /// No description provided for @cattle_reject.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject'**
+  String get cattle_reject;
+
+  /// No description provided for @cattle_approved_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved Cattle'**
+  String get cattle_approved_title;
+
+  /// No description provided for @cattle_rejected_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected Cattle'**
+  String get cattle_rejected_title;
+
+  /// No description provided for @cattle_approved_count.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved ({count})'**
+  String cattle_approved_count(Object count);
+
+  /// No description provided for @cattle_rejected_count.
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected ({count})'**
+  String cattle_rejected_count(Object count);
+
+  /// No description provided for @cattle_noApproved.
+  ///
+  /// In en, this message translates to:
+  /// **'No approved cattle yet'**
+  String get cattle_noApproved;
+
+  /// No description provided for @cattle_noRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'No rejected cattle'**
+  String get cattle_noRejected;
+
+  /// No description provided for @cattle_remove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get cattle_remove;
+
+  /// No description provided for @cattle_rejectionReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Underweight'**
+  String get cattle_rejectionReason;
+
+  /// No description provided for @sale_confirm_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Sale Creation'**
+  String get sale_confirm_title;
+
+  /// No description provided for @sale_confirm_message.
+  ///
+  /// In en, this message translates to:
+  /// **'The following {count} approved cattle will be marked as SOLD:'**
+  String sale_confirm_message(Object count);
+
+  /// No description provided for @sale_confirm_warning.
+  ///
+  /// In en, this message translates to:
+  /// **'This action cannot be undone. Continue?'**
+  String get sale_confirm_warning;
+
+  /// No description provided for @sale_confirm_proceed.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm & Create Sale'**
+  String get sale_confirm_proceed;
+
+  /// No description provided for @sale_creating.
+  ///
+  /// In en, this message translates to:
+  /// **'Creating sale...'**
+  String get sale_creating;
+
+  /// No description provided for @sale_created.
+  ///
+  /// In en, this message translates to:
+  /// **'Sale created successfully'**
+  String get sale_created;
+
+  /// No description provided for @sale_createError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error creating sale'**
+  String get sale_createError;
 }
 
 class _AppLocalizationsDelegate

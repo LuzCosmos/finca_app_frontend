@@ -8,6 +8,7 @@ import 'package:finca_app_frontend/modules/web/data/sales/sales_data_source_web_
 import 'package:finca_app_frontend/modules/shared/widgets/finca_scaffold.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/models/sale_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/models/sale_detail_model.dart';
+import 'package:finca_app_frontend/modules/web/features/sales/widgets/provider_autocomplete_field.dart';
 import 'package:uuid/uuid.dart';
 
 class CreateSalePage extends StatelessWidget {
@@ -43,7 +44,9 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
   
   DateTime _transactionDate = DateTime.now();
   String? _selectedBuyerId;
+  String? _selectedBuyerName; // Added for provider name
   String? _selectedTransporterId;
+  String? _selectedTransporterName; // Added for provider name
   
   final List<SaleDetailModel> _cattleList = [];
 
@@ -279,38 +282,26 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
             ),
             const SizedBox(height: 16),
 
-            // Buyer Dropdown
-            DropdownButtonFormField<String>(
-              decoration: const InputDecoration(
-                labelText: 'Buyer *',
-                border: OutlineInputBorder(),
-              ),
-              value: _selectedBuyerId,
-              items: buyers.map<DropdownMenuItem<String>>((b) {
-                return DropdownMenuItem(
-                  value: b['id'],
-                  child: Text(b['name'] ?? 'Unknown'),
-                );
-              }).toList(),
-              onChanged: (val) => setState(() => _selectedBuyerId = val),
-              validator: (val) => val == null ? 'Buyer is required' : null,
+            // Buyer Autocomplete (replaces dropdown)
+            ProviderAutocompleteField(
+              label: 'Buyer *',
+              providerType: 'BUYER',
+              onChanged: (id, name) => setState(() {
+                _selectedBuyerId = id;
+                _selectedBuyerName = name;
+              }),
+              validator: (val) => _selectedBuyerId == null ? 'Buyer is required' : null,
             ),
             const SizedBox(height: 16),
 
-            // Transporter Dropdown
-            DropdownButtonFormField<String>(
-              decoration: const InputDecoration(
-                labelText: 'Transporter (Optional)',
-                border: OutlineInputBorder(),
-              ),
-              value: _selectedTransporterId,
-              items: transporters.map<DropdownMenuItem<String>>((t) {
-                return DropdownMenuItem(
-                  value: t['id'],
-                  child: Text(t['name'] ?? 'Unknown'),
-                );
-              }).toList(),
-              onChanged: (val) => setState(() => _selectedTransporterId = val),
+            // Transporter Autocomplete (replaces dropdown)
+            ProviderAutocompleteField(
+              label: 'Transporter (Optional)',
+              providerType: 'TRANSPORTER',
+              onChanged: (id, name) => setState(() {
+                _selectedTransporterId = id;
+                _selectedTransporterName = name;
+              }),
             ),
             const SizedBox(height: 24),
 
