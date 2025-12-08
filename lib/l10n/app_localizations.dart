@@ -1171,6 +1171,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Next Page'**
   String get sales_nextPage;
+
+  /// No description provided for @provider_selectOrCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Select or create provider'**
+  String get provider_selectOrCreate;
+
+  /// No description provided for @provider_searchByName.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name...'**
+  String get provider_searchByName;
+
+  /// No description provided for @provider_createNew.
+  ///
+  /// In en, this message translates to:
+  /// **'Create New Provider'**
+  String get provider_createNew;
+
+  /// No description provided for @provider_providerName.
+  ///
+  /// In en, this message translates to:
+  /// **'Provider Name'**
+  String get provider_providerName;
+
+  /// No description provided for @provider_address.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get provider_address;
+
+  /// No description provided for @provider_contactPersonName.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Person Name'**
+  String get provider_contactPersonName;
+
+  /// No description provided for @provider_phone1.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone 1'**
+  String get provider_phone1;
+
+  /// No description provided for @provider_phone2.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone 2 (Optional)'**
+  String get provider_phone2;
+
+  /// No description provided for @provider_email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get provider_email;
+
+  /// No description provided for @provider_buyer.
+  ///
+  /// In en, this message translates to:
+  /// **'Buyer'**
+  String get provider_buyer;
+
+  /// No description provided for @provider_transporter.
+  ///
+  /// In en, this message translates to:
+  /// **'Transporter'**
+  String get provider_transporter;
+
+  /// No description provided for @provider_providerType.
+  ///
+  /// In en, this message translates to:
+  /// **'Provider Type'**
+  String get provider_providerType;
+
+  /// No description provided for @provider_creating.
+  ///
+  /// In en, this message translates to:
+  /// **'Creating...'**
+  String get provider_creating;
+
+  /// No description provided for @provider_createdSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Provider created successfully'**
+  String get provider_createdSuccess;
+
+  /// No description provided for @provider_createError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error creating provider'**
+  String get provider_createError;
 }
 
 class _AppLocalizationsDelegate

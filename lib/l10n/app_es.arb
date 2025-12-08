@@ -242,5 +242,21 @@
   "sales_errorLoading": "Error al cargar ventas",
   "sales_retry": "Reintentar",
   "sales_previousPage": "Página Anterior",
-  "sales_nextPage": "Página Siguiente"
+  "sales_nextPage": "Página Siguiente",
+
+  "provider_selectOrCreate": "Seleccionar o crear proveedor",
+  "provider_searchByName": "Buscar por nombre...",
+  "provider_createNew": "Crear Nuevo Proveedor",
+  "provider_providerName": "Nombre del Proveedor",
+  "provider_address": "Dirección",
+  "provider_contactPersonName": "Nombre de Contacto",
+  "provider_phone1": "Teléfono 1",
+  "provider_phone2": "Teléfono 2 (Opcional)",
+  "provider_email": "Correo Electrónico",
+  "provider_buyer": "Comprador",
+  "provider_transporter": "Transportista",
+  "provider_providerType": "Tipo de Proveedor",
+  "provider_creating": "Creando...",
+  "provider_createdSuccess": "Proveedor creado exitosamente",
+  "provider_createError": "Error al crear proveedor"
 }

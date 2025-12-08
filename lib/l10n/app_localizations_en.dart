@@ -576,4 +576,49 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sales_nextPage => 'Next Page';
+
+  @override
+  String get provider_selectOrCreate => 'Select or create provider';
+
+  @override
+  String get provider_searchByName => 'Search by name...';
+
+  @override
+  String get provider_createNew => 'Create New Provider';
+
+  @override
+  String get provider_providerName => 'Provider Name';
+
+  @override
+  String get provider_address => 'Address';
+
+  @override
+  String get provider_contactPersonName => 'Contact Person Name';
+
+  @override
+  String get provider_phone1 => 'Phone 1';
+
+  @override
+  String get provider_phone2 => 'Phone 2 (Optional)';
+
+  @override
+  String get provider_email => 'Email';
+
+  @override
+  String get provider_buyer => 'Buyer';
+
+  @override
+  String get provider_transporter => 'Transporter';
+
+  @override
+  String get provider_providerType => 'Provider Type';
+
+  @override
+  String get provider_creating => 'Creating...';
+
+  @override
+  String get provider_createdSuccess => 'Provider created successfully';
+
+  @override
+  String get provider_createError => 'Error creating provider';
 }

@@ -251,6 +251,22 @@
   "sales_errorLoading": "Error loading sales",
   "sales_retry": "Retry",
   "sales_previousPage": "Previous Page",
-  "sales_nextPage": "Next Page"
+  "sales_nextPage": "Next Page",
+
+  "provider_selectOrCreate": "Select or create provider",
+  "provider_searchByName": "Search by name...",
+  "provider_createNew": "Create New Provider",
+  "provider_providerName": "Provider Name",
+  "provider_address": "Address",
+  "provider_contactPersonName": "Contact Person Name",
+  "provider_phone1": "Phone 1",
+  "provider_phone2": "Phone 2 (Optional)",
+  "provider_email": "Email",
+  "provider_buyer": "Buyer",
+  "provider_transporter": "Transporter",
+  "provider_providerType": "Provider Type",
+  "provider_creating": "Creating...",
+  "provider_createdSuccess": "Provider created successfully",
+  "provider_createError": "Error creating provider"
 
 }
