@@ -9,6 +9,8 @@ import 'package:finca_app_frontend/modules/shared/widgets/finca_scaffold.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/models/sale_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/models/sale_detail_model.dart';
 import 'package:finca_app_frontend/modules/web/features/sales/widgets/provider_autocomplete_field.dart';
+import 'package:finca_app_frontend/modules/web/features/sales/widgets/weight_approval_dialog.dart';
+import 'package:finca_app_frontend/modules/web/features/sales/services/cattle_validation_service.dart';
 import 'package:uuid/uuid.dart';
 
 class CreateSalePage extends StatelessWidget {
@@ -48,7 +50,11 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
   String? _selectedTransporterId;
   String? _selectedTransporterName; // Added for provider name
   
-  final List<SaleDetailModel> _cattleList = [];
+  // Separate lists for approved and rejected cattle
+  final List<SaleDetailModel> _approvedCattle = [];
+  final List<SaleDetailModel> _rejectedCattle = [];
+  
+  bool _isValidatingCattle = false;
 
   @override
   void dispose() {
@@ -68,79 +74,281 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
     return effectiveWeight * _pricePerKg;
   }
   
-  int get _totalCount => _cattleList.length;
-  double get _totalWeight => _cattleList.fold(0, (sum, item) => sum + item.measuredWeight);
-  double get _totalAmount => _cattleList.fold(0, (sum, item) => sum + item.calculatedPrice);
+  // Calculate totals from APPROVED cattle only
+  int get _totalCount => _approvedCattle.length;
+  double get _totalWeight => _approvedCattle.fold(0, (sum, item) => sum + item.measuredWeight);
+  double get _totalAmount => _approvedCattle.fold(0, (sum, item) => sum + item.calculatedPrice);
 
-  void _addCattle() {
-    if (_cattleIdController.text.isEmpty || _cattleWeightController.text.isEmpty) {
+  Future<void> _addCattle() async {
+    final l10n = AppLocalizations.of(context);
+    final cattleNumber = _cattleIdController.text.trim();
+    final weightText = _cattleWeightController.text.trim();
+
+    // Validate inputs
+    if (cattleNumber.isEmpty || weightText.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter cattle ID and weight')),
+        SnackBar(content: Text('Please enter cattle number and weight')),
       );
       return;
     }
 
-    final weight = double.tryParse(_cattleWeightController.text);
+    final weight = double.tryParse(weightText);
     if (weight == null || weight <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a valid weight')),
+        SnackBar(content: Text('Please enter a valid weight')),
       );
       return;
     }
 
-    final cattleDetail = SaleDetailModel(
-      id: const Uuid().v4(),
-      saleId: '', // Will be set when creating sale
-      cattleId: _cattleIdController.text.trim(),
-      measuredWeight: weight,
-      calculatedPrice: _calculateCattlePrice(weight),
-      isApproved: true,
-      rejectionReason: null,
-      trackerRemoved: false,
+    setState(() => _isValidatingCattle = true);
+
+    try {
+      // 1. Validate cattle by number (checks ACTIVE status)
+      final cattleData = await CattleValidationService.validateCattleByNumber(cattleNumber);
+      final cattleId = cattleData['id'];
+
+      // 2. Compare weight vs minWeight
+      final minWeight = _minWeight;
+      bool isApproved = true;
+      String? rejectionReason;
+
+      if (weight < minWeight && minWeight > 0) {
+        // Show approval dialog
+        final approved = await showDialog<bool>(
+          context: context,
+          builder: (context) => WeightApprovalDialog(
+            cattleNumber: cattleNumber,
+            measuredWeight: weight,
+            minWeight: minWeight,
+          ),
+        );
+
+        if (approved == null) {
+          // User dismissed dialog
+          setState(() => _isValidatingCattle = false);
+          return;
+        }
+
+        isApproved = approved;
+        if (!approved) {
+          rejectionReason = l10n?.cattle_rejectionReason ?? 'Underweight';
+        }
+      }
+
+      // 3. Record weight in history
+      await CattleValidationService.recordWeightHistory(
+        cattleId: cattleId,
+        weight: weight,
+        measuredDate: DateTime.now(),
+        context: 'SALE',
+      );
+
+      // 4. Update cattle current weight
+      await CattleValidationService.updateCattleWeight(
+        cattleId: cattleId,
+        weight: weight,
+      );
+
+      // 5. Create sale detail
+      final cattleDetail = SaleDetailModel(
+        id: const Uuid().v4(),
+        saleId: '',
+        cattleId: cattleId,
+        measuredWeight: weight,
+        calculatedPrice: _calculateCattlePrice(weight),
+        isApproved: isApproved,
+        rejectionReason: rejectionReason,
+        trackerRemoved: false,
+      );
+
+      // 6. Add to appropriate list
+      setState(() {
+        if (isApproved) {
+          _approvedCattle.add(cattleDetail);
+        } else {
+          _rejectedCattle.add(cattleDetail);
+        }
+        _cattleIdController.clear();
+        _cattleWeightController.clear();
+        _isValidatingCattle = false;
+      });
+
+    } catch (e) {
+      setState(() => _isValidatingCattle = false);
+      
+      // Show validation error dialog
+      await showDialog(
+        context: context,
+        builder: (context) => CattleValidationErrorDialog(
+          cattleNumber: cattleNumber,
+          errorMessage: e.toString().replaceAll('Exception: ', ''),
+        ),
+      );
+    }
+  }
+
+  void _removeApprovedCattle(int index) {
+    setState(() => _approvedCattle.removeAt(index));
+  }
+
+  void _removeRejectedCattle(int index) {
+    setState(() => _rejectedCattle.removeAt(index));
+  }
+
+  // Helper method to build cattle list sections
+  Widget _buildCattleListSection(
+    BuildContext context, {
+    required String title,
+    required int count,
+    required List<SaleDetailModel> cattle,
+    required bool isEmpty,
+    required String emptyMessage,
+    required Color color,
+    required Function(int) onRemove,
+    bool showRejectionReason = false,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: color.withOpacity(0.3), width: 2),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Section Header
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.1),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  showRejectionReason ? Icons.cancel : Icons.check_circle,
+                  color: color,
+                  size: 20,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  '$title ($count)',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: color,
+                    fontSize: 16,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          
+          // Content
+          if (isEmpty)
+            Padding(
+              padding: const EdgeInsets.all(24),
+              child: Center(
+                child: Text(
+                  emptyMessage,
+                  style: TextStyle(color: Colors.grey.shade600),
+                ),
+              ),
+            )
+          else
+            ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: cattle.length,
+              separatorBuilder: (_, __) => const Divider(height: 1),
+              itemBuilder: (context, index) {
+                final item = cattle[index];
+                return Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: Text(
+                          'Cattle #${item.cattleId}',
+                          style: const TextStyle(fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                      Expanded(
+                        child: Text('${item.measuredWeight.toStringAsFixed(2)} kg'),
+                      ),
+                      if (showRejectionReason && item.rejectionReason != null)
+                        Expanded(
+                          child: Text(
+                            item.rejectionReason!,
+                            style: TextStyle(color: Colors.red.shade700, fontSize: 12),
+                          ),
+                        )
+                      else
+                        Expanded(
+                          child: Text('\$${item.calculatedPrice.toStringAsFixed(2)}'),
+                        ),
+                      IconButton(
+                        icon: const Icon(Icons.delete, size: 20),
+                        onPressed: () => onRemove(index),
+                        color: Colors.red,
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+        ],
+      ),
     );
-
-    setState(() {
-      _cattleList.add(cattleDetail);
-      _cattleIdController.clear();
-      _cattleWeightController.clear();
-    });
   }
 
-  void _removeCattle(int index) {
-    setState(() {
-      _cattleList.removeAt(index);
-    });
-  }
-
-  void _submitSale() {
+  Future<void> _submitSale() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
 
-    if (_cattleList.isEmpty) {
+    // Check we have approved cattle
+    if (_approvedCattle.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please add at least one cattle')),
+        const SnackBar(content: Text('Please add at least one approved cattle')),
       );
       return;
     }
 
-    final sale = SaleModel(
-      id: const Uuid().v4(),
-      idTenant: '', // Will be set by backend
-      transactionDate: _transactionDate,
-      buyerId: _selectedBuyerId!,
-      transporterId: _selectedTransporterId,
-      minWeightConfig: _minWeight,
-      valuePerKgConfig: _pricePerKg,
-      totalAmount: _totalAmount,
-      totalWeight: _totalWeight,
-      totalCount: _totalCount,
-      notes: _notesController.text.trim().isEmpty ? null : _notesController.text.trim(),
-      isSynced: false,
-      details: _cattleList,
-    );
+    try {
+      // 1. Create sale with APPROVED cattle only
+      final sale = SaleModel(
+        id: const Uuid().v4(),
+        idTenant: '', // Will be set by backend
+        transactionDate: _transactionDate,
+        buyerId: _selectedBuyerId!,
+        transporterId: _selectedTransporterId,
+        minWeightConfig: _minWeight,
+        valuePerKgConfig: _pricePerKg,
+        totalAmount: _totalAmount,
+        totalWeight: _totalWeight,
+        totalCount: _totalCount,
+        notes: _notesController.text.trim().isEmpty ? null : _notesController.text.trim(),
+        isSynced: false,
+        details: _approvedCattle,
+      );
 
-    context.read<SalesWebBloc>().add(CreateSaleEvent(sale: sale));
+      // 2. Submit sale
+      context.read<SalesWebBloc>().add(CreateSaleEvent(sale: sale));
+
+      // 3. Update cattle status to SOLD
+      final cattleIds = _approvedCattle.map((c) => c.cattleId).toList();
+      await CattleValidationService.bulkUpdateCattleStatus(
+        cattleIds: cattleIds,
+        status: 'SOLD',
+      );
+      
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
+    }
   }
 
   @override
@@ -370,6 +578,8 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
   }
 
   Widget _buildCattleSection(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(24),
@@ -420,78 +630,32 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
             ),
             const SizedBox(height: 24),
 
-            // Cattle List
-            if (_cattleList.isEmpty)
-              Container(
-                padding: const EdgeInsets.all(48),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey.shade300),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Center(
-                  child: Column(
-                    children: [
-                      Icon(Icons.pets, size: 48, color: Colors.grey.shade400),
-                      const SizedBox(height: 16),
-                      Text(
-                        'No cattle added yet',
-                        style: TextStyle(color: Colors.grey.shade600),
-                      ),
-                    ],
-                  ),
-                ),
-              )
-            else
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey.shade300),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Column(
-                  children: [
-                    // Table Header
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.surfaceVariant,
-                        borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
-                      ),
-                      child: const Row(
-                        children: [
-                          Expanded(flex: 2, child: Text('Cattle ID', style: TextStyle(fontWeight: FontWeight.bold))),
-                          Expanded(child: Text('Weight (kg)', style: TextStyle(fontWeight: FontWeight.bold))),
-                          Expanded(child: Text('Price', style: TextStyle(fontWeight: FontWeight.bold))),
-                          SizedBox(width: 48),
-                        ],
-                      ),
-                    ),
-                    // Table Rows
-                    ListView.separated(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: _cattleList.length,
-                      separatorBuilder: (_, __) => const Divider(height: 1),
-                      itemBuilder: (context, index) {
-                        final cattle = _cattleList[index];
-                        return Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: Row(
-                            children: [
-                              Expanded(flex: 2, child: Text(cattle.cattleId)),
-                              Expanded(child: Text(cattle.measuredWeight.toStringAsFixed(2))),
-                              Expanded(child: Text('\$${cattle.calculatedPrice.toStringAsFixed(2)}')),
-                              IconButton(
-                                icon: const Icon(Icons.delete, size: 20),
-                                onPressed: () => _removeCattle(index),
-                                color: Colors.red,
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
+            // Approved Cattle Section
+            _buildCattleListSection(
+              context,
+              title: l10n?.cattle_approved_title ?? 'Approved Cattle',
+              count: _approvedCattle.length,
+              cattle: _approvedCattle,
+              isEmpty: _approvedCattle.isEmpty,
+              emptyMessage: l10n?.cattle_noApproved ?? 'No approved cattle yet',
+              color: Colors.green,
+              onRemove: _removeApprovedCattle,
+            ),
+            
+            const SizedBox(height: 16),
+
+            // Rejected Cattle Section
+            if (_rejectedCattle.isNotEmpty)
+              _buildCattleListSection(
+                context,
+                title: l10n?.cattle_rejected_title ?? 'Rejected Cattle',
+                count: _rejectedCattle.length,
+                cattle: _rejectedCattle,
+                isEmpty: false,
+                emptyMessage: '',
+                color: Colors.red,
+                onRemove: _removeRejectedCattle,
+                showRejectionReason: true,
               ),
           ],
         ),
