@@ -10,6 +10,7 @@ import 'package:finca_app_frontend/modules/shared/features/sales/models/sale_mod
 import 'package:finca_app_frontend/modules/shared/features/sales/models/sale_detail_model.dart';
 import 'package:finca_app_frontend/modules/web/features/sales/widgets/provider_autocomplete_field.dart';
 import 'package:finca_app_frontend/modules/web/features/sales/widgets/weight_approval_dialog.dart';
+import 'package:finca_app_frontend/modules/web/features/sales/widgets/sale_confirmation_dialog.dart';
 import 'package:finca_app_frontend/modules/web/features/sales/services/cattle_validation_service.dart';
 import 'package:uuid/uuid.dart';
 
@@ -302,6 +303,8 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
   }
 
   Future<void> _submitSale() async {
+    final l10n = AppLocalizations.of(context);
+    
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -309,9 +312,44 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
     // Check we have approved cattle
     if (_approvedCattle.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please add at least one approved cattle')),
+        SnackBar(content: Text(l10n?.cattle_noApproved ?? 'Please add at least one approved cattle')),
       );
       return;
+    }
+
+    // Show confirmation dialog
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => SaleConfirmationDialog(
+        approvedCattle: _approvedCattle,
+        totalAmount: _totalAmount,
+        totalWeight: _totalWeight,
+      ),
+    );
+
+    // User cancelled or dismissed
+    if (confirmed != true) {
+      return;
+    }
+
+    // Show loading indicator
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+              ),
+              const SizedBox(width: 16),
+              Text(l10n?.sale_creating ?? 'Creating sale...'),
+            ],
+          ),
+          duration: const Duration(minutes: 1), // Long duration, will be manually dismissed
+        ),
+      );
     }
 
     try {
@@ -332,20 +370,59 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
         details: _approvedCattle,
       );
 
-      // 2. Submit sale
-      context.read<SalesWebBloc>().add(CreateSaleEvent(sale: sale));
-
-      // 3. Update cattle status to SOLD
+      // 2. Update cattle status to SOLD
       final cattleIds = _approvedCattle.map((c) => c.cattleId).toList();
       await CattleValidationService.bulkUpdateCattleStatus(
         cattleIds: cattleIds,
         status: 'SOLD',
       );
+
+      // 3. Submit sale
+      if (mounted) {
+        context.read<SalesWebBloc>().add(CreateSaleEvent(sale: sale));
+        
+        // Dismiss loading snackbar
+        ScaffoldMessenger.of(context).clearSnackBars();
+        
+        // Show success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                Icon(Icons.check_circle, color: Colors.white),
+                const SizedBox(width: 12),
+                Text(l10n?.sale_created ?? 'Sale created successfully'),
+              ],
+            ),
+            backgroundColor: Colors.green,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+
+        // Navigate back to sales dashboard
+        if (mounted) {
+          context.go('/sales');
+        }
+      }
       
     } catch (e) {
+      // Dismiss loading snackbar
       if (mounted) {
+        ScaffoldMessenger.of(context).clearSnackBars();
+        
+        // Show error message
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
+          SnackBar(
+            content: Row(
+              children: [
+                Icon(Icons.error, color: Colors.white),
+                const SizedBox(width: 12),
+                Expanded(child: Text('${l10n?.sale_createError ?? "Error creating sale"}: $e')),
+              ],
+            ),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 5),
+          ),
         );
       }
     }
