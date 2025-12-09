@@ -70,6 +70,34 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
         children: [
           if (errorMsg != null) MessageBanner.error(errorMsg!),
           if (okMsg != null) MessageBanner.success(okMsg!),
+
+          // Formulario de ingreso
+          if (ov != null)
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: IntakeForm(
+                lots: lots.cast<Map<String, dynamic>>(),
+                onSubmit: (data) async {
+                  try {
+                    await api.receiveOne(
+                      receptionId: ov!['receptionId'],
+                      purchaseId: widget.purchaseId,
+                      number: data.number,
+                      weightKg: data.weightKg,
+                      lotId: data.lotId,
+                      colorId: data.colorId,
+                      characteristicsIds: data.characteristicsIds,
+                      eartag: data.eartag,
+                      trackerId: data.trackerId,
+                    );
+                    await _load();
+                    setState(() => okMsg = t.receivedOk);
+                  } catch (e) {
+                    setState(() => errorMsg = e.toString());
+                  }
+                },
+              ),
+            ),
           Expanded(
             child: Row(
               children: [
@@ -174,35 +202,9 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
                 ),
               ],
             ),
-          ),
+          ), //expanded
 
-          // Formulario de ingreso
-          if (ov != null)
-            Padding(
-              padding: const EdgeInsets.all(8),
-              child: IntakeForm(
-                lots: lots.cast<Map<String, dynamic>>(),
-                onSubmit: (data) async {
-                  try {
-                    await api.receiveOne(
-                      receptionId: ov!['receptionId'],
-                      purchaseId: widget.purchaseId,
-                      number: data.number,
-                      weightKg: data.weightKg,
-                      lotId: data.lotId,
-                      colorId: data.colorId,
-                      characteristicsIds: data.characteristicsIds,
-                      eartag: data.eartag,
-                      trackerId: data.trackerId,
-                    );
-                    await _load();
-                    setState(() => okMsg = t.receivedOk);
-                  } catch (e) {
-                    setState(() => errorMsg = e.toString());
-                  }
-                },
-              ),
-            ),
+          
         ],
       ),
     );

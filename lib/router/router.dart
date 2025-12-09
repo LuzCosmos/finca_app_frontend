@@ -17,7 +17,6 @@ import 'package:finca_app_frontend/modules/shared/features/massiveEvent/data/mas
     if (dart.library.io) 'package:finca_app_frontend/modules/mobile/data/massive_event/massive_event_page_data_source_mobile_interface.dart'
     if (dart.library.html) 'package:finca_app_frontend/modules/web/data/massive_event/massive_event_page_data_source_web_interface.dart';
 
-
 final GoRouter appRouter = GoRouter(
   initialLocation: '/loading',
   routes: [
@@ -69,11 +68,11 @@ final GoRouter appRouter = GoRouter(
       },
     ),
   ],
-  redirect: (context, state) async {
-    final bool loggedIn = await SessionService.hasValidToken();
+  redirect: (context, state) => null,
+  /*redirect: (context, state) async {
+    final bool loggedIn = false; //await SessionService.hasValidToken();
     final bool loggingIn = state.uri.path == '/login';
     final bool loading = state.uri.path == '/loading';
-
     if (!loggedIn && !loggingIn && !loading) {
       return '/login';
     }
@@ -81,5 +80,5 @@ final GoRouter appRouter = GoRouter(
       return '/home';
     }
     return null;
-  },
+  },*/
 );
