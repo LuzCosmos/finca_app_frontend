@@ -116,6 +116,12 @@ abstract class AppLocalizations {
   /// **'Invalid value.'**
   String get invalidValue;
 
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
   /// No description provided for @delete.
   ///
   /// In en, this message translates to:
@@ -1651,6 +1657,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error creating sale'**
   String get sale_createError;
+
+  /// No description provided for @user_editUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit User'**
+  String get user_editUser;
+
+  /// No description provided for @user_logout.
+  ///
+  /// In en, this message translates to:
+  /// **'Logout'**
+  String get user_logout;
+
+  /// No description provided for @user_editUserPageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit User'**
+  String get user_editUserPageTitle;
+
+  /// No description provided for @user_editUserPageMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This feature is under development'**
+  String get user_editUserPageMessage;
 }
 
 class _AppLocalizationsDelegate

@@ -10,6 +10,7 @@ import 'package:finca_app_frontend/modules/shared/features/massiveEvent/bloc/mas
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:finca_app_frontend/modules/web/features/purchase_reception/pages/purchase_reception_page.dart';
 import 'package:finca_app_frontend/modules/web/features/cattle_purchase/pages/purchases_list_page.dart';
+import 'package:finca_app_frontend/modules/shared/features/employeeManagement/pages/edit_user_page.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
 
 // Conditional imports para data source específico de plataforma
@@ -67,10 +68,14 @@ final GoRouter appRouter = GoRouter(
         return PurchaseReceptionPage(purchaseId: id);
       },
     ),
+    /*GoRoute(
+      path: '/user/edit',
+      name: 'editUser',
+      builder: (context, state) => const EditUserPage(),
+    ),*/
   ],
-  redirect: (context, state) => null,
-  /*redirect: (context, state) async {
-    final bool loggedIn = false; //await SessionService.hasValidToken();
+  redirect: (context, state) async {
+    final bool loggedIn = await SessionService.hasValidToken();
     final bool loggingIn = state.uri.path == '/login';
     final bool loading = state.uri.path == '/loading';
     if (!loggedIn && !loggingIn && !loading) {
@@ -80,5 +85,5 @@ final GoRouter appRouter = GoRouter(
       return '/home';
     }
     return null;
-  },*/
+  },
 );

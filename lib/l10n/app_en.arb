@@ -4,6 +4,7 @@
 
   "fieldRequired":"This field is mandatory",
   "invalidValue":"Invalid value.",
+  "save":"Save",
   "delete": "Delete",
   "yes": "Yes",
   "no": "No",
@@ -348,6 +349,11 @@
   "sale_confirm_proceed": "Confirm & Create Sale",
   "sale_creating": "Creating sale...",
   "sale_created": "Sale created successfully",
-  "sale_createError": "Error creating sale"
+  "sale_createError": "Error creating sale",
+
+  "user_editUser": "Edit User",
+  "user_logout": "Logout",
+  "user_editUserPageTitle": "Edit User",
+  "user_editUserPageMessage": "This feature is under development"
 
 }

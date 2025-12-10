@@ -18,6 +18,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get invalidValue => 'Invalid value.';
 
   @override
+  String get save => 'Save';
+
+  @override
   String get delete => 'Delete';
 
   @override
@@ -834,4 +837,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sale_createError => 'Error creating sale';
+
+  @override
+  String get user_editUser => 'Edit User';
+
+  @override
+  String get user_logout => 'Logout';
+
+  @override
+  String get user_editUserPageTitle => 'Edit User';
+
+  @override
+  String get user_editUserPageMessage => 'This feature is under development';
 }

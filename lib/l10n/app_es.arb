@@ -4,6 +4,7 @@
 
   "fieldRequired":"Este campo es obligatorio",
   "invalidValue":"Valor inválido",
+  "save":"Guardar",
   "delete": "Eliminar",
   "yes": "Si",
   "no": "No",
@@ -340,5 +341,10 @@
   "sale_confirm_proceed": "Confirmar y Crear Venta",
   "sale_creating": "Creando venta...",
   "sale_created": "Venta creada exitosamente",
-  "sale_createError": "Error al crear venta"
+  "sale_createError": "Error al crear venta",
+
+  "user_editUser": "Editar Usuario",
+  "user_logout": "Cerrar Sesión",
+  "user_editUserPageTitle": "Editar Usuario",
+  "user_editUserPageMessage": "Esta funcionalidad está en desarrollo"
 }
