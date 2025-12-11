@@ -10,7 +10,6 @@ import 'package:finca_app_frontend/modules/shared/features/massiveEvent/bloc/mas
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:finca_app_frontend/modules/web/features/purchase_reception/pages/purchase_reception_page.dart';
 import 'package:finca_app_frontend/modules/web/features/cattle_purchase/pages/purchases_list_page.dart';
-import 'package:finca_app_frontend/modules/shared/features/employeeManagement/pages/edit_user_page.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
 
 // Conditional imports para data source específico de plataforma
@@ -24,7 +23,7 @@ final GoRouter appRouter = GoRouter(
     GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
     GoRoute(path: '/home', builder: (context, state) => const HomePage()),
     GoRoute(
-      path: '/cattle-purchase',
+      path: '/purchases/create',
       builder: (context, state) => const PurchaseFormPage(),
     ),
     GoRoute(
@@ -51,7 +50,7 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => const LoadingPage(),
     ), //ruta de espera
     GoRoute(
-      path: '/massive-event',
+      path: '/massive-events/create',
       builder: (context, state) {
         final dataSource = createMassiveEventPageDataSource();
         return BlocProvider(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 
-class IntakeData {
+class CattleData {
   final String number;
   final double? weightKg;
   final String? lotId;
@@ -10,7 +10,7 @@ class IntakeData {
   final String? eartag;
   final String? trackerId;
 
-  IntakeData({
+  CattleData({
     required this.number,
     this.weightKg,
     this.lotId,
@@ -21,17 +21,17 @@ class IntakeData {
   });
 }
 
-class IntakeForm extends StatefulWidget {
+class RecieveCattleForm extends StatefulWidget {
   final List<Map<String, dynamic>> lots;
-  final Future<void> Function(IntakeData) onSubmit;
+  final Future<void> Function(CattleData) onSubmit;
 
-  const IntakeForm({super.key, required this.lots, required this.onSubmit});
+  const RecieveCattleForm({super.key, required this.lots, required this.onSubmit});
 
   @override
-  State<IntakeForm> createState() => _IntakeFormState();
+  State<RecieveCattleForm> createState() => _RecieveCattleFormState();
 }
 
-class _IntakeFormState extends State<IntakeForm> {
+class _RecieveCattleFormState extends State<RecieveCattleForm> {
   final _formKey = GlobalKey<FormState>();
   final _number = TextEditingController();
   final _weight = TextEditingController();
@@ -136,7 +136,7 @@ class _IntakeFormState extends State<IntakeForm> {
                 onPressed: () async {
                   if (!_formKey.currentState!.validate()) return;
                   await widget.onSubmit(
-                    IntakeData(
+                    CattleData(
                       number: _number.text.trim(),
                       weightKg:
                           _weight.text.isEmpty

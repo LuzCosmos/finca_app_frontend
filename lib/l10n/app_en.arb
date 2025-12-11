@@ -236,7 +236,7 @@
   "trackerId": "Tracker",
   "addCattle": "Add animal",
   "cattleCountLabel": "{count, plural, =0 {0 head} one {1 head} other {{count} head}}",
-
+  "purchaseCountLabel": "{count, plural, =0 {0 head} one {1 head} other {{count} head}}",
 
 
 

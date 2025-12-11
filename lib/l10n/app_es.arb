@@ -228,6 +228,7 @@
   "trackerId": "Tracker",
   "addCattle": "Agregar res",
   "cattleCountLabel": "{count, plural, =0 {0 reses} one {1 res} other {{count} reses}}",
+  "purchaseCountLabel": "{count, plural, =0 {0 reses} one {1 res} other {{count} reses}}",
 
 
 

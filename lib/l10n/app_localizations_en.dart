@@ -536,6 +536,18 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String purchaseCountLabel(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count head',
+      one: '1 head',
+      zero: '0 head',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get from => 'From';
 
   @override

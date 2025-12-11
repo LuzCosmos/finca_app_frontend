@@ -1070,6 +1070,12 @@ abstract class AppLocalizations {
   /// **'{count, plural, =0 {0 head} one {1 head} other {{count} head}}'**
   String cattleCountLabel(num count);
 
+  /// No description provided for @purchaseCountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0 {0 head} one {1 head} other {{count} head}}'**
+  String purchaseCountLabel(num count);
+
   /// No description provided for @from.
   ///
   /// In en, this message translates to:

@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/web/features/purchase_reception/services/reception_api_service.dart';
-import 'package:finca_app_frontend/modules/web/features/purchase_reception/widgets/intake_form.dart';
+import 'package:finca_app_frontend/modules/web/features/purchase_reception/widgets/recieve_cattle_form.dart';
 import 'package:finca_app_frontend/modules/shared/widgets/message_banner.dart';
+import 'package:finca_app_frontend/modules/shared/widgets/finca_scaffold.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_model.dart';
+import 'package:finca_app_frontend/modules/web/features/purchase_reception/widgets/purchase_reception_info.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/widgets/event_config_panel.dart';
 
 class PurchaseReceptionPage extends StatefulWidget {
   final String purchaseId;
@@ -13,6 +17,11 @@ class PurchaseReceptionPage extends StatefulWidget {
 }
 
 class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
+  String? idMassiveEvent;
+  List<SimpleEventModel> simpleEvents = [];
+  String? _globalErrorMessage;
+  String? _globalSuccessMessage;
+  String? _globalInfoMessage;
   late final ReceptionApiService api;
   Map<String, dynamic>? ov; // overview
   String? selectedLotId; // null => Sin lote
@@ -29,6 +38,56 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
       }, // ajusta integración real
     );
     _load();
+  }
+
+  void setidMassiveEvent(String id) {
+    setState(() {
+      idMassiveEvent = id;
+    });
+  }
+
+  void setEvents(List<SimpleEventModel> events) {
+    setState(() {
+      simpleEvents = events;
+    });
+  }
+
+  void setGlobalInfo(String? msg) {
+    setState(() {
+      _globalInfoMessage = msg;
+      _globalSuccessMessage = null;
+      _globalErrorMessage = null;
+    });
+    Future.delayed(Duration(seconds: 5), () {
+      if (mounted) {
+        setState(() {
+          _globalInfoMessage = null;
+        });
+      }
+    });
+  }
+
+   void setGlobalError(String? msg) {
+    setState(() {
+      _globalErrorMessage = msg;
+      _globalSuccessMessage = null;
+      _globalInfoMessage = null;
+    });
+  }
+
+  void setGlobalSuccess(String? msg) {
+    setState(() {
+      _globalSuccessMessage = msg;
+      _globalErrorMessage = null;
+      _globalInfoMessage = null;
+    });
+    Future.delayed(Duration(seconds: 5), () {
+      if (mounted) {
+        setState(() {
+          _globalSuccessMessage = null;
+        });
+      }
+    });
   }
 
   Future<void> _load() async {
@@ -62,20 +121,47 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
 
   @override
   Widget build(BuildContext context) {
-    final t = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
 
-    return Scaffold(
-      appBar: AppBar(title: Text(t.purchaseReceptionTitle)),
+    return FincaScaffold(
+      title: l10n.purchaseReceptionTitle,
       body: Column(
         children: [
           if (errorMsg != null) MessageBanner.error(errorMsg!),
           if (okMsg != null) MessageBanner.success(okMsg!),
+          Expanded(
+            child: Row(
+              children: [
+                Expanded(flex: 1, child: PurchaseReceptionInfo(
+                  lots: lots.cast<Map<String, dynamic>>(),
+                  onSubmit: (data) async {
+                    // TODO: Implement submission logic if needed
+                  },
+                )),
+                const VerticalDivider(width: 1),
+                Expanded(flex: 1, child: EventConfigPanel(
+                  key: const ValueKey('eventConfigPanel_reception'),
+                  isWide: false,
+                  eventDate: new DateTime.now(),
+                  simpleEvents: simpleEvents,
+                  idMassiveEvent: idMassiveEvent,
+                  onMassiveEventCreated: (newId) {
+                    setidMassiveEvent(newId);
+                  },
+                  showError: setGlobalError,
+                  showSuccess: setGlobalSuccess,
+                  showInfo: setGlobalInfo,
+                  onEventsChanged: setEvents,
+                )),
+              ],
+            ),
+          ),
 
           // Formulario de ingreso
           if (ov != null)
             Padding(
               padding: const EdgeInsets.all(8),
-              child: IntakeForm(
+              child: RecieveCattleForm(
                 lots: lots.cast<Map<String, dynamic>>(),
                 onSubmit: (data) async {
                   try {
@@ -91,13 +177,15 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
                       trackerId: data.trackerId,
                     );
                     await _load();
-                    setState(() => okMsg = t.receivedOk);
+                    setState(() => okMsg = l10n.receivedOk);
                   } catch (e) {
                     setState(() => errorMsg = e.toString());
                   }
                 },
               ),
             ),
+          
+          // Panel de lotes y reses
           Expanded(
             child: Row(
               children: [
@@ -107,10 +195,10 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
                   child: Card(
                     child: Column(
                       children: [
-                        ListTile(title: Text(t.purchaseBatchesTitle)),
+                        ListTile(title: Text(l10n.purchaseBatchesTitle)),
                         ListTile(
                           selected: selectedLotId == null,
-                          title: Text(t.withoutLot),
+                          title: Text(l10n.withoutLot),
                           onTap:
                               () => setState(() {
                                 selectedLotId = null;
@@ -127,9 +215,10 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
                               return ListTile(
                                 selected: selectedLotId == lot['id'],
                                 title: Text(
-                                  '${t.lot} ${lot['lotNumber'] ?? i + 1}',
+                                  '${l10n.lot} ${lot['lotNumber'] ?? i + 1}',
                                 ),
-                                subtitle: Text('${t.cattleCountLabel(count)}'),
+                                subtitle: Text('${l10n.cattleCountLabel(count)}'),
+                                trailing: Text('${l10n.purchaseCountLabel(lot['purchaseCattleCount'])}'),
                                 onTap:
                                     () => setState(() {
                                       selectedLotId = lot['id'] as String;
@@ -149,7 +238,7 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
                   child: Card(
                     child: Column(
                       children: [
-                        ListTile(title: Text(t.cattleOfSelection)),
+                        ListTile(title: Text(l10n.cattleOfSelection)),
                         Expanded(
                           child: ListView.builder(
                             itemCount: cattle.length,
@@ -191,7 +280,7 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
                 // Panel eventos simples
                 SizedBox(
                   width: 360,
-                  child: _SimpleEventsPanel(
+                  child: _CattleSimpleEventsPanel(
                     api: api,
                     massEventId: ov?['massEventId'],
                     catalog:
@@ -243,14 +332,14 @@ class _LotDropdown extends StatelessWidget {
   }
 }
 
-class _SimpleEventsPanel extends StatefulWidget {
+class _CattleSimpleEventsPanel extends StatefulWidget {
   final ReceptionApiService api;
   final String? massEventId;
   final List<dynamic> catalog;
   final String? animalId;
   final Future<void> Function() onChanged;
 
-  const _SimpleEventsPanel({
+  const _CattleSimpleEventsPanel({
     required this.api,
     required this.massEventId,
     required this.catalog,
@@ -259,15 +348,15 @@ class _SimpleEventsPanel extends StatefulWidget {
   });
 
   @override
-  State<_SimpleEventsPanel> createState() => _SimpleEventsPanelState();
+  State<_CattleSimpleEventsPanel> createState() => _CattleSimpleEventsPanelState();
 }
 
-class _SimpleEventsPanelState extends State<_SimpleEventsPanel> {
+class _CattleSimpleEventsPanelState extends State<_CattleSimpleEventsPanel> {
   List<Map<String, dynamic>> applied = [];
   bool loading = false;
 
   @override
-  void didUpdateWidget(covariant _SimpleEventsPanel oldWidget) {
+  void didUpdateWidget(covariant _CattleSimpleEventsPanel oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.animalId != widget.animalId) _load();
   }
@@ -287,7 +376,7 @@ class _SimpleEventsPanelState extends State<_SimpleEventsPanel> {
 
   @override
   Widget build(BuildContext context) {
-    final t = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
 
     final appliedIds = applied.map((e) => e['id'] as String).toSet();
     final notApplied =
@@ -296,14 +385,14 @@ class _SimpleEventsPanelState extends State<_SimpleEventsPanel> {
     return Card(
       child: Column(
         children: [
-          ListTile(title: Text(t.simpleEventsTitle)),
+          ListTile(title: Text(l10n.simpleEventsTitle)),
           if (widget.animalId == null)
             Padding(
               padding: const EdgeInsets.all(16),
-              child: Text(t.selectAnimalHint),
+              child: Text(l10n.selectAnimalHint),
             ),
           if (widget.animalId != null) ...[
-            Text(t.appliedEvents),
+            Text(l10n.appliedEvents),
             Expanded(
               child: ListView(
                 children:
@@ -328,7 +417,7 @@ class _SimpleEventsPanelState extends State<_SimpleEventsPanel> {
               ),
             ),
             const Divider(height: 1),
-            Text(t.availableEvents),
+            Text(l10n.availableEvents),
             Expanded(
               child: ListView(
                 children:
