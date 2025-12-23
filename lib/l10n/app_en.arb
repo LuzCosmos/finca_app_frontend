@@ -237,6 +237,23 @@
   "addCattle": "Add animal",
   "cattleCountLabel": "{count, plural, =0 {0 head} one {1 head} other {{count} head}}",
   "purchaseCountLabel": "{count, plural, =0 {0 head} one {1 head} other {{count} head}}",
+  "receptionDate": "Reception Date",
+  "initialCattleNumber": "Initial Cattle Number",
+  "numberInUse": "This number is already in use",
+  "hasHorns": "Has Horns",
+  "isCastrated": "Is Castrated",
+  "comments": "Comments",
+  "receiveCattle": "Receive Cattle",
+  "purchasedAvgWeight": "Purchased Avg Weight (kg)",
+  "receivedAvgWeight": "Received Avg Weight (kg)",
+  "unassignedCattle": "Cattle without Identified Lot",
+  "assignLotTitle": "Assign Lot",
+  "selectLot": "Select Lot",
+  "providerName": "Provider",
+  "eventsApplied": "Events Applied",
+  "noEventsApplied": "No events applied",
+  "receivedCount": "Received",
+  "purchasedCount": "Purchased",
 
 
 

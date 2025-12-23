@@ -548,6 +548,57 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get receptionDate => 'Reception Date';
+
+  @override
+  String get initialCattleNumber => 'Initial Cattle Number';
+
+  @override
+  String get numberInUse => 'This number is already in use';
+
+  @override
+  String get hasHorns => 'Has Horns';
+
+  @override
+  String get isCastrated => 'Is Castrated';
+
+  @override
+  String get comments => 'Comments';
+
+  @override
+  String get receiveCattle => 'Receive Cattle';
+
+  @override
+  String get purchasedAvgWeight => 'Purchased Avg Weight (kg)';
+
+  @override
+  String get receivedAvgWeight => 'Received Avg Weight (kg)';
+
+  @override
+  String get unassignedCattle => 'Cattle without Identified Lot';
+
+  @override
+  String get assignLotTitle => 'Assign Lot';
+
+  @override
+  String get selectLot => 'Select Lot';
+
+  @override
+  String get providerName => 'Provider';
+
+  @override
+  String get eventsApplied => 'Events Applied';
+
+  @override
+  String get noEventsApplied => 'No events applied';
+
+  @override
+  String get receivedCount => 'Received';
+
+  @override
+  String get purchasedCount => 'Purchased';
+
+  @override
   String get from => 'From';
 
   @override

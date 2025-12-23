@@ -25,8 +25,8 @@ class AppTheme {
       foregroundColor: Colors.white, // Texto e íconos en AppBar
       centerTitle: true,
       titleTextStyle: TextStyle(
-        fontSize: 20,
-        fontWeight: FontWeight.w400,
+        fontSize: 30,
+        fontWeight: FontWeight.w600,
         color: Colors.white,
       ),
       elevation: 0,
@@ -39,7 +39,7 @@ class AppTheme {
         ), // Texto por defecto oscuro para no saturar
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-        textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
       ),
     ),
     textButtonTheme: TextButtonThemeData(
@@ -62,6 +62,30 @@ class AppTheme {
         borderSide: const BorderSide(color: Color(0xFF7CA77C), width: 2),
       ),*/
       floatingLabelStyle: const TextStyle(color: Color(0xFF374137)),
+    ),
+    textTheme: const TextTheme(
+      bodyLarge: TextStyle(
+        fontSize: 16,
+        //fontWeight: FontWeight.w400,
+        color: Color(0xFF374137),
+      ),
+    ),
+    filledButtonTheme: FilledButtonThemeData(
+      style: ButtonStyle(
+        backgroundColor: const WidgetStatePropertyAll<Color>(Color(0xFF7CA77C)),
+        foregroundColor: const WidgetStatePropertyAll<Color>(Colors.white),
+        shape: WidgetStatePropertyAll<OutlinedBorder>(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        padding: const WidgetStatePropertyAll<EdgeInsetsGeometry>(
+          EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        ),
+        textStyle: const WidgetStatePropertyAll<TextStyle>(
+          TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        ),
+      ),
     ),
   );
 }

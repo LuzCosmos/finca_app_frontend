@@ -229,6 +229,23 @@
   "addCattle": "Agregar res",
   "cattleCountLabel": "{count, plural, =0 {0 reses} one {1 res} other {{count} reses}}",
   "purchaseCountLabel": "{count, plural, =0 {0 reses} one {1 res} other {{count} reses}}",
+  "receptionDate": "Fecha de recepción",
+  "initialCattleNumber": "Número res inicial",
+  "numberInUse": "Este número ya está en uso",
+  "hasHorns": "Tiene cachos",
+  "isCastrated": "Está castrado",
+  "comments": "Comentarios",
+  "receiveCattle": "Recibir res",
+  "purchasedAvgWeight": "Peso Prom. Comprado (kg)",
+  "receivedAvgWeight": "Peso Prom. Recibido (kg)",
+  "unassignedCattle": "Reses sin lote identificado",
+  "assignLotTitle": "Asignar Lote",
+  "selectLot": "Seleccionar Lote",
+  "providerName": "Proveedor",
+  "eventsApplied": "Eventos Aplicados",
+  "noEventsApplied": "Sin eventos aplicados",
+  "receivedCount": "Recibidos",
+  "purchasedCount": "Comprados",
 
 
 

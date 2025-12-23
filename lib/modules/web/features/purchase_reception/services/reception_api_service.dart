@@ -59,45 +59,72 @@ class ReceptionApiService {
 
   Future<Map<String, dynamic>> receiveOne({
     required String receptionId,
-    required String purchaseId,
+    required String idPurchase,
     required String number,
-    double? weightKg,
-    String? lotId,
-    String? colorId,
+    double? receivedWeight,
+    double? purchaseWeight,
+    double? purchasePrice,
+    bool? hasHorn,
+    bool? castrated,
+    String? idLot,
+    String? idColor,
     List<String>? characteristicsIds,
     String? eartag,
-    String? trackerId,
-    List<String>? simpleEventIds,
+    String? idDevice,
+    String? idProvider,
+    String? comments,
+    List<String>? idSimpleEvents,
   }) async {
+    final token = await SessionService.getToken();
     final body = {
-      'purchaseId': purchaseId,
+      'idPurchase': idPurchase,
       'number': number,
-      if (weightKg != null) 'weightKg': weightKg,
-      'lotId': lotId,
-      'colorId': colorId,
+      if (receivedWeight != null) 'receivedWeight': receivedWeight,
+      if (purchaseWeight != null) 'purchaseWeight': purchaseWeight,
+      if (purchasePrice != null) 'purchasePrice': purchasePrice,
+      'hasHorn': hasHorn,
+      'castrated': castrated,
+      'idLot': idLot,
+      'idColor': idColor,
       'characteristicsIds': characteristicsIds ?? [],
       'eartag': eartag,
-      'trackerId': trackerId,
-      'simpleEventIds': simpleEventIds ?? [],
+      'idDevice': idDevice,
+      'idProvider': idProvider,
+      'comments': comments,
+      'idSimpleEvents': idSimpleEvents ?? [],
     };
     final r = await http.post(
-      Uri.parse('$baseUrl/$receptionId/receive'),
-      headers: {...defaultHeaders, 'Content-Type': 'application/json'},
+      Uri.parse('$baseUrl/receive-cattle'),
+      headers: {...defaultHeaders,'Authorization': 'Bearer $token', 'Content-Type': 'application/json'},
       body: jsonEncode(body),
     );
-    if (r.statusCode >= 400) throw Exception('Error receive: ${r.body}');
-    return jsonDecode(r.body) as Map<String, dynamic>;
+    if  (r.statusCode == 201 || r.statusCode == 200) {
+      final responseBody = jsonDecode(r.body) as Map<String, dynamic>;
+      return responseBody;
+    }
+    if (r.statusCode >= 400) {
+      throw Exception('Error receive: ${r.body}');
+    }
+
+    throw Exception('Unexpected status code: ${r.statusCode}');
+    
   }
+
+
+
+
+
 
   Future<void> reassignLot({
     required String purchaseId,
     required String animalId,
-    String? lotId,
+    required String lotId,
   }) async {
+    final token = await SessionService.getToken();
     final r = await http.patch(
-      Uri.parse('$baseUrl/$purchaseId/cattle/$animalId/lot'),
-      headers: {...defaultHeaders, 'Content-Type': 'application/json'},
-      body: jsonEncode({'lotId': lotId}),
+      Uri.parse('$baseUrl/assign-lot-cattle'),
+      headers: {...defaultHeaders,'Authorization': 'Bearer $token', 'Content-Type': 'application/json'},
+      body: jsonEncode({'idLot': lotId, 'idCattle': animalId}),
     );
     if (r.statusCode >= 400) throw Exception('Error reasignar lote: ${r.body}');
   }
