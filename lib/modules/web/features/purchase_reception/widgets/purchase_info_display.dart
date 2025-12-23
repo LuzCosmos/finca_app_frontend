@@ -123,32 +123,6 @@ class PurchaseInfoDisplay extends StatelessWidget {
                 ),
               ],
             ),
-            /*Row(
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: Text(
-                    l10n.initialCattleNumber,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-                Expanded(
-                  flex: 3,
-                  child: TextFormField(
-                    initialValue: initialCattleNumber,
-                    decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 8,
-                      ),
-                      border: const OutlineInputBorder(),
-                      hintText: '10001',
-                    ),
-                    onChanged: onInitialNumberChanged,
-                  ),
-                ),
-              ],
-            ),*/
           ],
         ),
       ),

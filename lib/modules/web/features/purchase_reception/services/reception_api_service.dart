@@ -111,10 +111,6 @@ class ReceptionApiService {
   }
 
 
-
-
-
-
   Future<void> reassignLot({
     required String purchaseId,
     required String animalId,

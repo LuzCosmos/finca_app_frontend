@@ -246,7 +246,7 @@ class _UnassignedCattleListState extends State<UnassignedCattleList> {
       itemCount: events.length,
       itemBuilder: (context, index) {
         final event = events[index] as Map<String, dynamic>;
-        
+        final data = event['data'] as Map<String, dynamic>?; 
         return Card(
           margin: const EdgeInsets.only(bottom: 8.0),
           child: Padding(
@@ -254,10 +254,15 @@ class _UnassignedCattleListState extends State<UnassignedCattleList> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  event['type'] ?? 'Event',
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
+                if (data != null && data.containsKey('medicationName'))
+                  ..._buildMedicationInfo(data, l10n)
+                else if (data != null && data.containsKey('brandName'))
+                  ..._buildBrandInfo(data, l10n)
+                else
+                  Text(
+                    event['id'] ?? 'Event',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 if (event['appliedAt'] != null) ...[
                   const SizedBox(height: 4),
                   Text(
@@ -274,5 +279,38 @@ class _UnassignedCattleListState extends State<UnassignedCattleList> {
         );
       },
     );
+  }
+
+  List<Widget> _buildMedicationInfo(Map<String, dynamic> data, AppLocalizations l10n) {
+    var firstLine = '';
+    if (data['dosage'] != null){
+      firstLine = '${l10n.medicationDosage}: ${data['dosage']}';
+    }
+    if (data['route'] != null){
+      firstLine += '; ${l10n.medicationRoute}: ${data['route']}';
+    }
+    var secondLine = '';
+    if (data['lot'] != null){
+      secondLine = '${l10n.medicationLot}: ${data['lot']}';
+    }
+    return [
+      Text(
+        data['medicationName'] ?? 'Medication',
+        style: const TextStyle(fontWeight: FontWeight.bold),
+      ),
+      Text(firstLine,
+      style: const TextStyle(fontSize: 13),),
+      Text(secondLine,
+      style: const TextStyle(fontSize: 13),),
+    ];
+  }
+
+  List<Widget> _buildBrandInfo(Map<String, dynamic> data, AppLocalizations l10n) {
+    return [
+      Text(
+        l10n.eventTypeBrand + ': ${data['brandName'] ?? 'Brand'}',
+        style: const TextStyle(fontWeight: FontWeight.bold),
+      ),
+    ];
   }
 }
