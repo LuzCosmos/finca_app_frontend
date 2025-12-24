@@ -1178,6 +1178,12 @@ abstract class AppLocalizations {
   /// **'Purchased'**
   String get purchasedCount;
 
+  /// No description provided for @actions.
+  ///
+  /// In en, this message translates to:
+  /// **'Actions'**
+  String get actions;
+
   /// No description provided for @from.
   ///
   /// In en, this message translates to:

@@ -599,6 +599,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get purchasedCount => 'Purchased';
 
   @override
+  String get actions => 'Actions';
+
+  @override
   String get from => 'From';
 
   @override

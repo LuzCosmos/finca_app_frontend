@@ -86,7 +86,15 @@ class _UnassignedCattleListState extends State<UnassignedCattleList> {
                       Expanded(
                         flex: 2,
                         child: Text(
-                          'Acciones',
+                          l10n.trackerId,
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: Text(
+                          l10n.actions,
                           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                           textAlign: TextAlign.center,
                         ),
@@ -149,6 +157,14 @@ class _UnassignedCattleListState extends State<UnassignedCattleList> {
                                       flex: 2,
                                       child: Text(
                                         animal['eartag'] ?? '—',
+                                        style: const TextStyle(fontSize: 11),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Text(
+                                        animal['deviceName'] ?? '—',
                                         style: const TextStyle(fontSize: 11),
                                         textAlign: TextAlign.center,
                                       ),

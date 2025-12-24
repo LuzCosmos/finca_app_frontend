@@ -601,6 +601,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get purchasedCount => 'Comprados';
 
   @override
+  String get actions => 'Acciones';
+
+  @override
   String get from => 'Desde';
 
   @override

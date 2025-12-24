@@ -400,6 +400,8 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
                           Expanded(
                             child: CattleListWithEvents(
                               cattle: selectedCattle,
+                              availableLots: lots,
+                              onAssignLot: _assignLot,
                             ),
                           ),
                         ],

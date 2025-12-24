@@ -64,7 +64,7 @@ class LotsTable extends StatelessWidget {
                 Expanded(
                   flex: 3,
                   child: Text(
-                    'Peso Prom. Compra',
+                    l10n.purchasedAvgWeight,
                     style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 11),
                     textAlign: TextAlign.center,
                   ),
@@ -72,7 +72,7 @@ class LotsTable extends StatelessWidget {
                 Expanded(
                   flex: 3,
                   child: Text(
-                    'Peso Prom. Recep.',
+                    l10n.receivedAvgWeight,
                     style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 11),
                     textAlign: TextAlign.center,
                   ),

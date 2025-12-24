@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
+import 'package:finca_app_frontend/modules/web/features/purchase_reception/widgets/assign_lot_dialog.dart';
 
 class CattleListWithEvents extends StatefulWidget {
   final List<Map<String, dynamic>> cattle;
+  final List<Map<String, dynamic>> availableLots;
+  final Function(String cattleId, String lotId) onAssignLot;
   final Function(String? cattleId)? onCattleSelected;
 
   const CattleListWithEvents({
     super.key,
     required this.cattle,
+    required this.availableLots,
+    required this.onAssignLot,
     this.onCattleSelected,
   });
 
@@ -84,6 +89,14 @@ class _CattleListWithEventsState extends State<CattleListWithEvents> {
                           textAlign: TextAlign.center,
                         ),
                       ),
+                      Expanded(
+                        flex: 2,
+                        child: Text(
+                          l10n.actions,
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -149,9 +162,39 @@ class _CattleListWithEventsState extends State<CattleListWithEvents> {
                                     Expanded(
                                       flex: 2,
                                       child: Text(
-                                        cattle['idDevice'] ?? '—',
+                                        cattle['deviceName'] ?? '—',
                                         style: const TextStyle(fontSize: 11),
                                         textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Center(
+                                        child: ElevatedButton.icon(
+                                          onPressed: () async {
+                                            await showDialog(
+                                              context: context,
+                                              builder: (context) => AssignLotDialog(
+                                                availableLots: widget.availableLots,
+                                                onAssign: (lotId) {
+                                                  widget.onAssignLot(cattle['id'], lotId);
+                                                },
+                                              ),
+                                            );
+                                          },
+                                          icon: const Icon(Icons.playlist_add, size: 14),
+                                          label: Text(
+                                            l10n.assignLot,
+                                            style: const TextStyle(fontSize: 11),
+                                          ),
+                                          style: ElevatedButton.styleFrom(
+                                            visualDensity: VisualDensity.compact,
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 6,
+                                              vertical: 2,
+                                            ),
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ],
