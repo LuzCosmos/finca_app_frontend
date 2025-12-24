@@ -129,7 +129,11 @@ class LotsTable extends StatelessWidget {
                           flex: 2,
                           child: Text(
                             receivedCount.toString(),
-                            style: const TextStyle(fontSize: 12),
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: receivedCount > purchasedCount ? Colors.red : null,
+                              fontWeight: receivedCount > purchasedCount ? FontWeight.bold : null,
+                            ),
                             textAlign: TextAlign.center,
                           ),
                         ),

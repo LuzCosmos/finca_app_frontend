@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
@@ -308,64 +309,64 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
                     if (_globalInfoMessage != null)
                       MessageBanner.info(_globalInfoMessage!),
 
-                    // Top Section: Purchase Info + Form + Event Config Panel
+              // Top Section: Purchase Info + Form + Event Config Panel
                     SizedBox(
-                      height: 450,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            flex: 2,
-                            child: SingleChildScrollView(
-                              child: Column(
-                                children: [
-                                  PurchaseInfoDisplay(
-                                    providerName: reception['purchaseProviderName'] ?? '—',
-                                    purchaseDate: reception['purchaseDate']?.substring(0, 10) ?? '—',
-                                    receptionDate: receptionDate,
-                                    initialCattleNumber: currentCattleNumber.isEmpty ? null : currentCattleNumber,
-                                    onReceptionDateChanged: (date) {
-                                      setState(() => receptionDate = date);
-                                    },
-                                    onInitialNumberChanged: (number) {
-                                      setState(() => currentCattleNumber = number);
-                                    },
-                                  ),
-                                  const SizedBox(height: 5),
-                                  ReceiveCattleForm(
-                                    currentNumber: currentCattleNumber,
-                                    availableLots: lots,
-                                    colors: _getColors(),
-                                    characteristics: _getCharacteristics(),
-                                    activeEvents: simpleEvents.where((e) => e.isActive).toList(),
-                                    onSubmit: _receiveCattle,
-                                    onNumberChanged: (number) {
-                                      setState(() => currentCattleNumber = number);
-                                    },
-                                  ),
-                                ],
+                  height: 450,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              PurchaseInfoDisplay(
+                                providerName: reception['purchaseProviderName'] ?? '—',
+                                purchaseDate: reception['purchaseDate']?.substring(0, 10) ?? '—',
+                                receptionDate: receptionDate,
+                                initialCattleNumber: currentCattleNumber.isEmpty ? null : currentCattleNumber,
+                                onReceptionDateChanged: (date) {
+                                  setState(() => receptionDate = date);
+                                },
+                                onInitialNumberChanged: (number) {
+                                  setState(() => currentCattleNumber = number);
+                                },
                               ),
-                            ),
+                              const SizedBox(height: 5),
+                              ReceiveCattleForm(
+                                currentNumber: currentCattleNumber,
+                                availableLots: lots,
+                                colors: _getColors(),
+                                characteristics: _getCharacteristics(),
+                                activeEvents: simpleEvents.where((e) => e.isActive).toList(),
+                                onSubmit: _receiveCattle,
+                                onNumberChanged: (number) {
+                                  setState(() => currentCattleNumber = number);
+                                },
+                              ),
+                            ],
                           ),
-                          const VerticalDivider(width: 1),
-                          Expanded(
-                            flex: 1,
-                            child: EventConfigPanel(
-                              key: const ValueKey('eventConfigPanel_reception'),
-                              isWide: true,
-                              eventDate: receptionDate ?? DateTime.now(),
-                              simpleEvents: simpleEvents,
-                              idMassiveEvent: idMassiveEvent,
-                              onMassiveEventCreated: (newId) {
-                                setidMassiveEvent(newId);
-                              },
-                              showError: setGlobalError,
-                              showSuccess: setGlobalSuccess,
-                              showInfo: setGlobalInfo,
-                              onEventsChanged: setEvents,
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
+                      const VerticalDivider(width: 1),
+                      Expanded(
+                        flex: 1,
+                        child: EventConfigPanel(
+                          key: const ValueKey('eventConfigPanel_reception'),
+                          isWide: true,
+                          eventDate: receptionDate ?? DateTime.now(),
+                          simpleEvents: simpleEvents,
+                          idMassiveEvent: idMassiveEvent,
+                          onMassiveEventCreated: (newId) {
+                            setidMassiveEvent(newId);
+                          },
+                          showError: setGlobalError,
+                          showSuccess: setGlobalSuccess,
+                          showInfo: setGlobalInfo,
+                          onEventsChanged: setEvents,
+                        ),
+                      ),
+                    ],
+                  ),
                     ),
                   ],
                 ),
@@ -407,23 +408,25 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
                         ],
                       ),
                     ),
-                    const Divider(height: 1),
+                    if (unassignedCattle.isNotEmpty) ...[
+                      const Divider(height: 1),
 
-                    // Row 2: Unassigned Cattle with conditional events
-                    Expanded(
-                      flex: 3,
-                      child: UnassignedCattleList(
-                        cattle: unassignedCattle,
-                        availableLots: lots,
-                        onAssignLot: _assignLot,
+                      // Row 2: Unassigned Cattle with conditional events
+                      Expanded(
+                        flex: 3,
+                        child: UnassignedCattleList(
+                          cattle: unassignedCattle,
+                          availableLots: lots,
+                          onAssignLot: _assignLot,
+                        ),
                       ),
-                    ),
+                    ],
                   ],
                 ),
               ),
             ],
           ),
-    ),
+        ),
       ),
     );
   }

@@ -58,9 +58,21 @@ class LotsList extends StatelessWidget {
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        '${l10n.purchasedCount}: $purchasedCount | ${l10n.receivedCount}: $receivedCount',
-                        style: const TextStyle(fontSize: 12),
+                      Text.rich(
+                        TextSpan(
+                          children: [
+                            TextSpan(text: '${l10n.purchasedCount}: $purchasedCount | '),
+                            TextSpan(
+                              text: '${l10n.receivedCount}: $receivedCount',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: receivedCount > purchasedCount ? Colors.red : null,
+                                fontWeight: receivedCount > purchasedCount ? FontWeight.bold : null,
+                              ),
+                            ),
+                          ],
+                          style: const TextStyle(fontSize: 12),
+                        ),
                       ),
                       Text(
                         '${l10n.purchasedAvgWeight}: ${avgPurchasedWeight.toStringAsFixed(1)}',
