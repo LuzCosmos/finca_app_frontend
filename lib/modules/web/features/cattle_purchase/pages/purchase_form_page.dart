@@ -70,7 +70,7 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
           return {
             "lotNumber": lot.lotNumber,
             "originPlace": lot.origin,
-            "cattleCount": lot.cattleCount,
+            "purchasedCattleCount": lot.purchasedCattleCount,
             "totalWeight": lot.totalWeight,
             "pricePerKg": lot.pricePerKg,
             "totalValue": lot.totalValue,

@@ -374,6 +374,58 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
 
               // Bottom Section (Fills remaining space)
               SliverFillRemaining(
+                hasScrollBody: true,
+                child: Column(
+                  children: [
+                    const Divider(height: 1),
+
+                    Flexible(
+                      flex: unassignedCattle.isNotEmpty ? 6 : 1,
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.4,
+                            child: LotsTable(
+                              lots: lots,
+                              selectedLotId: selectedLotId,
+                              onLotSelected: (lotId) {
+                                setState(() => selectedLotId = lotId);
+                              },
+                            ),
+                          ),
+                          const VerticalDivider(width: 1),
+                          Expanded(
+                            child: CattleListWithEvents(
+                              cattle: selectedCattle,
+                              availableLots: lots,
+                              onAssignLot: _assignLot,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    if (unassignedCattle.isNotEmpty) ...[
+                      const Divider(height: 1),
+
+                      // 👇 En vez de Expanded: Flexible + scroll interno
+                      Flexible(
+                        flex: 4,
+                        child: UnassignedCattleList(
+                          cattle: unassignedCattle,
+                          availableLots: lots,
+                          onAssignLot: _assignLot,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+
+
+
+              
+              /*SliverFillRemaining(
                 child: Column(
                   children: [
                     const Divider(height: 1),
@@ -423,7 +475,7 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
                     ],
                   ],
                 ),
-              ),
+              ),*/
             ],
           ),
         ),

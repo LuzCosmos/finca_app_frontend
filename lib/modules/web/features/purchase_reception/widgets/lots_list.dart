@@ -21,16 +21,16 @@ class LotsList extends StatelessWidget {
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(12.0 ),
+            padding: const EdgeInsets.all(12.0),
             child: Text(
               l10n.purchaseBatchesTitle,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
           ),
           const Divider(height: 1),
-          
+
           // Lots list
           Expanded(
             child: ListView.builder(
@@ -39,14 +39,22 @@ class LotsList extends StatelessWidget {
                 final lot = lots[index];
                 final lotId = lot['id'] as String;
                 final lotNumber = lot['lotNumber'] ?? '—';
-                final purchasedCount = lot['purchaseCattleCount'] ?? 0;
+                final purchasedCount = lot['purchasedCattleCount'] ?? 0;
                 final receivedCount = lot['receivedCattleCount'] ?? 0;
-                final avgPurchasedWeight = lot['totalWeight'] != null && purchasedCount > 0
-                    ? (double.tryParse(lot['totalWeight'].toString()) ?? 0) / purchasedCount
-                    : 0.0;
-                final avgReceivedWeight = lot['receivedTotalWeight'] != null && receivedCount > 0
-                    ? (double.tryParse(lot['receivedTotalWeight'].toString()) ?? 0) / receivedCount
-                    : 0.0;
+                final avgPurchasedWeight =
+                    lot['totalWeight'] != null && purchasedCount > 0
+                        ? (double.tryParse(lot['totalWeight'].toString()) ??
+                                0) /
+                            purchasedCount
+                        : 0.0;
+                final avgReceivedWeight =
+                    lot['receivedTotalWeight'] != null && receivedCount > 0
+                        ? (double.tryParse(
+                                  lot['receivedTotalWeight'].toString(),
+                                ) ??
+                                0) /
+                            receivedCount
+                        : 0.0;
 
                 return ListTile(
                   selected: selectedLotId == lotId,
@@ -61,13 +69,22 @@ class LotsList extends StatelessWidget {
                       Text.rich(
                         TextSpan(
                           children: [
-                            TextSpan(text: '${l10n.purchasedCount}: $purchasedCount | '),
+                            TextSpan(
+                              text:
+                                  '${l10n.purchasedCount}: $purchasedCount | ',
+                            ),
                             TextSpan(
                               text: '${l10n.receivedCount}: $receivedCount',
                               style: TextStyle(
                                 fontSize: 12,
-                                color: receivedCount > purchasedCount ? Colors.red : null,
-                                fontWeight: receivedCount > purchasedCount ? FontWeight.bold : null,
+                                color:
+                                    receivedCount > purchasedCount
+                                        ? Colors.red
+                                        : null,
+                                fontWeight:
+                                    receivedCount > purchasedCount
+                                        ? FontWeight.bold
+                                        : null,
                               ),
                             ),
                           ],

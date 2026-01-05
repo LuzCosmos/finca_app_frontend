@@ -93,12 +93,12 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
             children: [
               Text(
                 l10n.receiveCattle.toUpperCase(),
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 1),
-              
+
               Wrap(
                 spacing: 12,
                 runSpacing: 12,
@@ -113,10 +113,11 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                         labelText: l10n.cattleNumber,
                         border: const OutlineInputBorder(),
                       ),
-                      validator: (v) =>
-                          (v == null || v.trim().isEmpty)
-                              ? l10n.fieldRequired
-                              : null,
+                      validator:
+                          (v) =>
+                              (v == null || v.trim().isEmpty)
+                                  ? l10n.fieldRequired
+                                  : null,
                       onChanged: (value) {
                         widget.onNumberChanged(value);
                       },
@@ -312,24 +313,25 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                 width: 400,
                 height: 400,
                 child: ListView(
-                  children: widget.characteristics.map((char) {
-                    final charId = char['id'] as String;
-                    final isSelected = tempSelected.contains(charId);
+                  children:
+                      widget.characteristics.map((char) {
+                        final charId = char['id'] as String;
+                        final isSelected = tempSelected.contains(charId);
 
-                    return CheckboxListTile(
-                      value: isSelected,
-                      onChanged: (value) {
-                        setDialogState(() {
-                          if (value == true) {
-                            tempSelected.add(charId);
-                          } else {
-                            tempSelected.remove(charId);
-                          }
-                        });
-                      },
-                      title: Text(char['name']),
-                    );
-                  }).toList(),
+                        return CheckboxListTile(
+                          value: isSelected,
+                          onChanged: (value) {
+                            setDialogState(() {
+                              if (value == true) {
+                                tempSelected.add(charId);
+                              } else {
+                                tempSelected.remove(charId);
+                              }
+                            });
+                          },
+                          title: Text(char['name']),
+                        );
+                      }).toList(),
                 ),
               ),
               actions: [
@@ -369,24 +371,42 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
         if (lot['id'] == selectedLotId) {
           try {
             var rawTotalWeight = lot['totalWeight'];
-            var rawTotalCount = lot['purchaseCattleCount'];
+            var rawTotalCount = lot['purchasedCattleCount'];
             var rawPricePerKg = lot['pricePerKg'];
-            
-            num totalPurchaseWeight = rawTotalWeight is String ? double.parse(rawTotalWeight) : (rawTotalWeight as num? ?? 0);
-            num totalPurchaseCount = rawTotalCount is String ? double.parse(rawTotalCount) : (rawTotalCount as num? ?? 0);
-            num pricePerKg = rawPricePerKg is String ? double.parse(rawPricePerKg) : (rawPricePerKg as num? ?? 0);
 
-            print('DEBUG: totalPurchaseWeight: $totalPurchaseWeight, totalPurchaseCount: $totalPurchaseCount, pricePerKg: $pricePerKg');
+            num totalPurchaseWeight =
+                rawTotalWeight is String
+                    ? double.parse(rawTotalWeight)
+                    : (rawTotalWeight as num? ?? 0);
+            num totalPurchaseCount =
+                rawTotalCount is String
+                    ? double.parse(rawTotalCount)
+                    : (rawTotalCount as num? ?? 0);
+            num pricePerKg =
+                rawPricePerKg is String
+                    ? double.parse(rawPricePerKg)
+                    : (rawPricePerKg as num? ?? 0);
+
+            print(
+              'DEBUG: totalPurchaseWeight: $totalPurchaseWeight, totalPurchaseCount: $totalPurchaseCount, pricePerKg: $pricePerKg',
+            );
 
             double averagePurchaseWeight = 0;
             if (totalPurchaseCount != 0) {
-              averagePurchaseWeight = (totalPurchaseWeight / totalPurchaseCount).toDouble();
+              averagePurchaseWeight =
+                  (totalPurchaseWeight / totalPurchaseCount).toDouble();
             }
             // Round to 2 decimal places
-            purchaseWeight = double.parse(averagePurchaseWeight.toStringAsFixed(2));
-            purchasePrice = double.parse((averagePurchaseWeight * pricePerKg).toStringAsFixed(2));
-            
-            print('DEBUG: Calculated purchaseWeight: $purchaseWeight, purchasePrice: $purchasePrice');
+            purchaseWeight = double.parse(
+              averagePurchaseWeight.toStringAsFixed(2),
+            );
+            purchasePrice = double.parse(
+              (averagePurchaseWeight * pricePerKg).toStringAsFixed(2),
+            );
+
+            print(
+              'DEBUG: Calculated purchaseWeight: $purchaseWeight, purchasePrice: $purchasePrice',
+            );
           } catch (e) {
             print('ERROR calculating purchase data: $e');
           }
@@ -404,15 +424,18 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
       'isCastrated': isCastrated,
       'idColor': selectedColorId,
       'characteristicsIds': selectedCharacteristicIds,
-      'eartag': _eartagController.text.trim().isEmpty
-          ? null
-          : _eartagController.text.trim(),
-      'idDevice': _trackerController.text.trim().isEmpty
-          ? null
-          : _trackerController.text.trim(),
-      'comments': _commentsController.text.trim().isEmpty
-          ? null
-          : _commentsController.text.trim(),
+      'eartag':
+          _eartagController.text.trim().isEmpty
+              ? null
+              : _eartagController.text.trim(),
+      'idDevice':
+          _trackerController.text.trim().isEmpty
+              ? null
+              : _trackerController.text.trim(),
+      'comments':
+          _commentsController.text.trim().isEmpty
+              ? null
+              : _commentsController.text.trim(),
       'idSimpleEvents': widget.activeEvents.map((e) => e.id).toList(),
     };
 

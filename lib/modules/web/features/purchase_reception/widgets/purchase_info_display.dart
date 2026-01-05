@@ -47,13 +47,13 @@ class PurchaseInfoDisplay extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
+            /*Text(
               l10n.purchaseReceptionTitle.toUpperCase(),
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 16),*/
             
             // Provider name (read-only)
             Row(
