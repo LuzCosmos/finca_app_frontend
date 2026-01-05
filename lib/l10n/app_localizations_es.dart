@@ -18,6 +18,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get invalidValue => 'Valor inválido';
 
   @override
+  String get save => 'Guardar';
+
+  @override
   String get delete => 'Eliminar';
 
   @override
@@ -535,6 +538,72 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String purchaseCountLabel(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count reses',
+      one: '1 res',
+      zero: '0 reses',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get receptionDate => 'Fecha de recepción';
+
+  @override
+  String get initialCattleNumber => 'Número res inicial';
+
+  @override
+  String get numberInUse => 'Este número ya está en uso';
+
+  @override
+  String get hasHorns => 'Tiene cachos';
+
+  @override
+  String get isCastrated => 'Está castrado';
+
+  @override
+  String get comments => 'Comentarios';
+
+  @override
+  String get receiveCattle => 'Recibir res';
+
+  @override
+  String get purchasedAvgWeight => 'Peso Prom. Comprado (kg)';
+
+  @override
+  String get receivedAvgWeight => 'Peso Prom. Recibido (kg)';
+
+  @override
+  String get unassignedCattle => 'Reses sin lote identificado';
+
+  @override
+  String get assignLotTitle => 'Asignar Lote';
+
+  @override
+  String get selectLot => 'Seleccionar Lote';
+
+  @override
+  String get providerName => 'Proveedor';
+
+  @override
+  String get eventsApplied => 'Eventos Aplicados';
+
+  @override
+  String get noEventsApplied => 'Sin eventos aplicados';
+
+  @override
+  String get receivedCount => 'Recibidos';
+
+  @override
+  String get purchasedCount => 'Comprados';
+
+  @override
+  String get actions => 'Acciones';
+
+  @override
   String get from => 'Desde';
 
   @override
@@ -838,4 +907,17 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get sale_createError => 'Error al crear venta';
+
+  @override
+  String get user_editUser => 'Editar Usuario';
+
+  @override
+  String get user_logout => 'Cerrar Sesión';
+
+  @override
+  String get user_editUserPageTitle => 'Editar Usuario';
+
+  @override
+  String get user_editUserPageMessage =>
+      'Esta funcionalidad está en desarrollo';
 }

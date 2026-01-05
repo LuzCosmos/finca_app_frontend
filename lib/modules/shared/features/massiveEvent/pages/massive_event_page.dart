@@ -290,12 +290,11 @@ class _MassiveEventPageState extends State<MassiveEventPage> {
                       : ListView(
                         padding: EdgeInsets.zero,
                         children: [
-                          // 👇 ahora el panel SÍ está dentro del mismo scroll
                           eventConfigPanel,
                           const Divider(height: 1),
                           animalEntryForm,
                           const SizedBox(height: 16),
-                          processedAnimalsTable, // sin Expanded aquí
+                          processedAnimalsTable,
                         ],
                       ),
             ),

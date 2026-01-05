@@ -58,10 +58,24 @@ class SessionService {
     return token != null && token.isNotEmpty;
   }
 
-  static Future<void> clearSession() async {
+  static Future<void> cleanSession() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_tokenKey);
     await prefs.remove(_permissionsKey);
     await prefs.remove(_idTenantKey);
+    await prefs.remove(_idUserKey);
+  }
+
+  static Future<bool> logout() async {
+    try {
+      await cleanSession();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  static Future<bool> isAuthenticated() async {
+    return await hasValidToken();
   }
 }

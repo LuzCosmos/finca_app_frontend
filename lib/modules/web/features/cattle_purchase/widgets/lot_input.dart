@@ -103,7 +103,7 @@ class LotInputState extends State<LotInput> {
       gender: _genderController.text,
       avgWeight: (cattleCount > 0) ? totalWeight / cattleCount : 0,
       pricePerKg: pricePerKg,
-      cattleCount: cattleCount,
+      purchasedCattleCount: cattleCount,
       totalWeight: totalWeight,
       totalValue: totalValue,
     );
@@ -148,7 +148,7 @@ class LotInputState extends State<LotInput> {
         gender: _genderController.text,
         avgWeight: avgWeight,
         pricePerKg: pricePerKg,
-        cattleCount: cattleCount,
+        purchasedCattleCount: cattleCount,
         totalWeight: totalWeight,
         totalValue: totalValue,
       );
@@ -352,10 +352,10 @@ class LotInputState extends State<LotInput> {
   }
 
   LotModel? getLotOrNull() {
-    final cattleCount = int.tryParse(
+    final purchasedCattleCount = int.tryParse(
       _cattleCountController.text.replaceAll(',', ''),
     );
-    if (cattleCount == null || cattleCount == 0) return null;
+    if (purchasedCattleCount == null || purchasedCattleCount == 0) return null;
     final avgWeight =
         double.tryParse(_avgWeightController.text.replaceAll(',', '')) ?? 0;
     final pricePerKg =
@@ -371,7 +371,7 @@ class LotInputState extends State<LotInput> {
       gender: _genderController.text,
       avgWeight: avgWeight,
       pricePerKg: pricePerKg,
-      cattleCount: cattleCount,
+      purchasedCattleCount: purchasedCattleCount,
       totalWeight: totalWeight,
       totalValue: totalValue,
     );

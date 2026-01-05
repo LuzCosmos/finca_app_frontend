@@ -6,7 +6,7 @@ class LotModel {
   final String gender;
   final double avgWeight;
   final double pricePerKg;
-  final int cattleCount;
+  final int purchasedCattleCount;
   final double totalWeight;
   final double totalValue;
   bool isValid;
@@ -15,7 +15,7 @@ class LotModel {
     this.id,
     required this.lotNumber,
     required this.origin,
-    required this.cattleCount,
+    required this.purchasedCattleCount,
     required this.age,
     required this.gender,
     required this.avgWeight,
@@ -29,7 +29,7 @@ class LotModel {
     bool isValidFields =
         lotNumber.isNotEmpty &&
         origin.isNotEmpty &&
-        cattleCount > 0 &&
+        purchasedCattleCount > 0 &&
         age.isNotEmpty &&
         gender.isNotEmpty &&
         avgWeight > 0 &&

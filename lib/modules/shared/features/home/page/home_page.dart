@@ -34,7 +34,7 @@ class HomePage extends StatelessWidget {
                 resource: "massive_events",
                 title: l10n.home_massiveEvent,
                 icon: CupertinoIcons.list_bullet,
-                route: "/massive-event",
+                route: "/massive-events/create",
                 forWebOnly: false,
               ),
               HomeOptionWithPermission(

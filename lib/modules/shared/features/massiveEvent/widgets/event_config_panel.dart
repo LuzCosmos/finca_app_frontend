@@ -215,7 +215,7 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
         children: [
           Text(
             l10n.eventConfigTitle,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 4),
           ElevatedButton.icon(
@@ -236,7 +236,7 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
                       Text(
                         l10n.activeDetails,
                         style: const TextStyle(
-                          fontSize: 13,
+                          fontSize: 15,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -261,7 +261,7 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
 
                                     return Card(
                                       shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(2),
+                                        borderRadius: BorderRadius.circular(4),
                                       ),
                                       margin: const EdgeInsets.symmetric(
                                         vertical: 1,
@@ -283,7 +283,7 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
                                                   Text(
                                                     titleText,
                                                     style: const TextStyle(
-                                                      fontSize: 12,
+                                                      fontSize: 14,
                                                     ),
                                                   ),
                                                   if (subtitleText != null)
@@ -295,7 +295,7 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
                                                       child: Text(
                                                         subtitleText,
                                                         style: const TextStyle(
-                                                          fontSize: 10,
+                                                          fontSize: 12,
                                                         ),
                                                       ),
                                                     ),
@@ -338,7 +338,7 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
                         l10n.inactiveTitle,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 13,
+                          fontSize: 15,
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -363,7 +363,7 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
                                         vertical: 1,
                                       ),
                                       shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(2),
+                                        borderRadius: BorderRadius.circular(4),
                                       ),
                                       child: Padding(
                                         padding: const EdgeInsets.symmetric(
@@ -389,7 +389,7 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
                                               child: Text(
                                                 titleText,
                                                 style: const TextStyle(
-                                                  fontSize: 12,
+                                                  fontSize: 14,
                                                 ),
                                               ),
                                             ),

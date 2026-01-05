@@ -126,7 +126,7 @@ lib/
 3. Para limpiar sesión manualmente:
 
 ```dart
-await SessionService.clearSession();
+await SessionService.cleanSession();
 context.go('/login');
 ```
 

@@ -17,14 +17,13 @@ import 'package:finca_app_frontend/modules/shared/features/massiveEvent/data/mas
     if (dart.library.io) 'package:finca_app_frontend/modules/mobile/data/massive_event/massive_event_page_data_source_mobile_interface.dart'
     if (dart.library.html) 'package:finca_app_frontend/modules/web/data/massive_event/massive_event_page_data_source_web_interface.dart';
 
-
 final GoRouter appRouter = GoRouter(
   initialLocation: '/loading',
   routes: [
     GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
     GoRoute(path: '/home', builder: (context, state) => const HomePage()),
     GoRoute(
-      path: '/cattle-purchase',
+      path: '/purchases/create',
       builder: (context, state) => const PurchaseFormPage(),
     ),
     GoRoute(
@@ -51,7 +50,7 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => const LoadingPage(),
     ), //ruta de espera
     GoRoute(
-      path: '/massive-event',
+      path: '/massive-events/create',
       builder: (context, state) {
         final dataSource = createMassiveEventPageDataSource();
         return BlocProvider(
@@ -68,12 +67,16 @@ final GoRouter appRouter = GoRouter(
         return PurchaseReceptionPage(purchaseId: id);
       },
     ),
+    /*GoRoute(
+      path: '/user/edit',
+      name: 'editUser',
+      builder: (context, state) => const EditUserPage(),
+    ),*/
   ],
   redirect: (context, state) async {
     final bool loggedIn = await SessionService.hasValidToken();
     final bool loggingIn = state.uri.path == '/login';
     final bool loading = state.uri.path == '/loading';
-
     if (!loggedIn && !loggingIn && !loading) {
       return '/login';
     }

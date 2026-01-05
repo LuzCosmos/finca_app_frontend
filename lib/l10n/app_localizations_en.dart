@@ -18,6 +18,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get invalidValue => 'Invalid value.';
 
   @override
+  String get save => 'Save';
+
+  @override
   String get delete => 'Delete';
 
   @override
@@ -533,6 +536,72 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String purchaseCountLabel(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count head',
+      one: '1 head',
+      zero: '0 head',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get receptionDate => 'Reception Date';
+
+  @override
+  String get initialCattleNumber => 'Initial Cattle Number';
+
+  @override
+  String get numberInUse => 'This number is already in use';
+
+  @override
+  String get hasHorns => 'Has Horns';
+
+  @override
+  String get isCastrated => 'Is Castrated';
+
+  @override
+  String get comments => 'Comments';
+
+  @override
+  String get receiveCattle => 'Receive Cattle';
+
+  @override
+  String get purchasedAvgWeight => 'Purchased Avg Weight (kg)';
+
+  @override
+  String get receivedAvgWeight => 'Received Avg Weight (kg)';
+
+  @override
+  String get unassignedCattle => 'Cattle without Identified Lot';
+
+  @override
+  String get assignLotTitle => 'Assign Lot';
+
+  @override
+  String get selectLot => 'Select Lot';
+
+  @override
+  String get providerName => 'Provider';
+
+  @override
+  String get eventsApplied => 'Events Applied';
+
+  @override
+  String get noEventsApplied => 'No events applied';
+
+  @override
+  String get receivedCount => 'Received';
+
+  @override
+  String get purchasedCount => 'Purchased';
+
+  @override
+  String get actions => 'Actions';
+
+  @override
   String get from => 'From';
 
   @override
@@ -834,4 +903,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sale_createError => 'Error creating sale';
+
+  @override
+  String get user_editUser => 'Edit User';
+
+  @override
+  String get user_logout => 'Logout';
+
+  @override
+  String get user_editUserPageTitle => 'Edit User';
+
+  @override
+  String get user_editUserPageMessage => 'This feature is under development';
 }

@@ -70,7 +70,7 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
           return {
             "lotNumber": lot.lotNumber,
             "originPlace": lot.origin,
-            "cattleCount": lot.cattleCount,
+            "purchasedCattleCount": lot.purchasedCattleCount,
             "totalWeight": lot.totalWeight,
             "pricePerKg": lot.pricePerKg,
             "totalValue": lot.totalValue,
@@ -155,7 +155,7 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
                 child: ElevatedButton.icon(
                   onPressed: _onSubmit,
                   icon: const Icon(Icons.save),
-                  label: Text(l10n.purchase_create),
+                  label: Text(l10n.save),
                 ),
               ),
               const SizedBox(height: 5),

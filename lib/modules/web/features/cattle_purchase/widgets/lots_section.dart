@@ -66,7 +66,10 @@ class LotsSectionState extends State<LotsSection> {
             .map((key) => key.currentState?.getLotOrNull())
             .whereType<LotModel>()
             .toList();
-    final totalCattle = lots.fold<int>(0, (sum, l) => sum + l.cattleCount);
+    final totalCattle = lots.fold<int>(
+      0,
+      (sum, l) => sum + l.purchasedCattleCount,
+    );
     final rawTotalWeight = lots.fold<double>(
       0,
       (sum, l) => sum + l.totalWeight,

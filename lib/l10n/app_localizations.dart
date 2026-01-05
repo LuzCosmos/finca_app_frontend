@@ -116,6 +116,12 @@ abstract class AppLocalizations {
   /// **'Invalid value.'**
   String get invalidValue;
 
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
   /// No description provided for @delete.
   ///
   /// In en, this message translates to:
@@ -1064,6 +1070,120 @@ abstract class AppLocalizations {
   /// **'{count, plural, =0 {0 head} one {1 head} other {{count} head}}'**
   String cattleCountLabel(num count);
 
+  /// No description provided for @purchaseCountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0 {0 head} one {1 head} other {{count} head}}'**
+  String purchaseCountLabel(num count);
+
+  /// No description provided for @receptionDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Reception Date'**
+  String get receptionDate;
+
+  /// No description provided for @initialCattleNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Initial Cattle Number'**
+  String get initialCattleNumber;
+
+  /// No description provided for @numberInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'This number is already in use'**
+  String get numberInUse;
+
+  /// No description provided for @hasHorns.
+  ///
+  /// In en, this message translates to:
+  /// **'Has Horns'**
+  String get hasHorns;
+
+  /// No description provided for @isCastrated.
+  ///
+  /// In en, this message translates to:
+  /// **'Is Castrated'**
+  String get isCastrated;
+
+  /// No description provided for @comments.
+  ///
+  /// In en, this message translates to:
+  /// **'Comments'**
+  String get comments;
+
+  /// No description provided for @receiveCattle.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive Cattle'**
+  String get receiveCattle;
+
+  /// No description provided for @purchasedAvgWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchased Avg Weight (kg)'**
+  String get purchasedAvgWeight;
+
+  /// No description provided for @receivedAvgWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Received Avg Weight (kg)'**
+  String get receivedAvgWeight;
+
+  /// No description provided for @unassignedCattle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cattle without Identified Lot'**
+  String get unassignedCattle;
+
+  /// No description provided for @assignLotTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Assign Lot'**
+  String get assignLotTitle;
+
+  /// No description provided for @selectLot.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Lot'**
+  String get selectLot;
+
+  /// No description provided for @providerName.
+  ///
+  /// In en, this message translates to:
+  /// **'Provider'**
+  String get providerName;
+
+  /// No description provided for @eventsApplied.
+  ///
+  /// In en, this message translates to:
+  /// **'Events Applied'**
+  String get eventsApplied;
+
+  /// No description provided for @noEventsApplied.
+  ///
+  /// In en, this message translates to:
+  /// **'No events applied'**
+  String get noEventsApplied;
+
+  /// No description provided for @receivedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Received'**
+  String get receivedCount;
+
+  /// No description provided for @purchasedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchased'**
+  String get purchasedCount;
+
+  /// No description provided for @actions.
+  ///
+  /// In en, this message translates to:
+  /// **'Actions'**
+  String get actions;
+
   /// No description provided for @from.
   ///
   /// In en, this message translates to:
@@ -1651,6 +1771,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error creating sale'**
   String get sale_createError;
+
+  /// No description provided for @user_editUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit User'**
+  String get user_editUser;
+
+  /// No description provided for @user_logout.
+  ///
+  /// In en, this message translates to:
+  /// **'Logout'**
+  String get user_logout;
+
+  /// No description provided for @user_editUserPageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit User'**
+  String get user_editUserPageTitle;
+
+  /// No description provided for @user_editUserPageMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This feature is under development'**
+  String get user_editUserPageMessage;
 }
 
 class _AppLocalizationsDelegate
