@@ -70,6 +70,7 @@
   "home_purchaseReception": "Recepción de compra",
   "home_massiveEvent": "Evento masivo",
   "home_sale": "Venta",
+  "home_reception": "Recepción",
 
   "purchase_date": "Fecha de Compra",
   "purchase_dateRequired": "Debes seleccionar una fecha de compra.",
@@ -79,6 +80,9 @@
   "cattlePurchase": "Compra de Ganado",
   "cp_error_noLots": "Debe agregar al menos un lote",
   "cp_error_providerRequired": "Por favor seleccione o cree un proveedor.",
+  "purchase_totalWeightKg": "Peso total (Kg)",
+  "purchase_totalCattle":"Reses totales",
+  "noPurchasesFound":"Compra no encontrada",
 
   "provider": "Proveedor",  
   "provider_nit": "NIT",
@@ -203,6 +207,53 @@
   "@event_finishSuccess": {
     "description": "Se muestra cuando un evento masivo ha sido finalizado exitosamente."
   },
+
+   "purchaseReceptionTitle": "Recepción de compra",
+  "purchaseBatchesTitle": "Lotes de la compra",
+  "withoutLot": "Sin lote",
+  "lot": "Lote",
+  "cattleOfSelection": "Reses de la selección",
+  "simpleEventsTitle": "Eventos simples",
+  "selectAnimalHint": "Selecciona una res para ver sus eventos",
+  "appliedEvents": "Aplicados",
+  "availableEvents": "Disponibles",
+  "assignLot": "Asignar lote",
+  "receivedOk": "Res recibida",
+  "cattleNumber": "Número",
+  "weightKg": "Peso (kg)",
+  "color": "Color",
+  "characteristics": "Características",
+  "eartag": "Arete",
+  "trackerId": "Tracker",
+  "addCattle": "Agregar res",
+  "cattleCountLabel": "{count, plural, =0 {0 reses} one {1 res} other {{count} reses}}",
+
+
+
+
+
+
+  "create": "Crear",
+  "from": "Desde",
+  "to": "Hasta",
+  "all": "Todas",
+  "pending": "Pendientes",
+  "received": "Recibido",
+  "receiveAction": "Recibir",
+  "rowsPerPage": "Filas por página",
+  "page": "Página",
+  "results": "resultados",
+  "previous": "Anterior",
+  "next": "Siguiente",
+  "receivedCattle": "Cant. recibida",
+  "refresh": "Actualizar",
+
+  "all": "Todas",
+  "pending": "Pendientes",
+  "received": "Recibidas",
+
+
+
   "sales_title": "Ventas",
   "sales_addSale": "Agregar Venta",
   "sales_searchPlaceholder": "Buscar ventas...",
