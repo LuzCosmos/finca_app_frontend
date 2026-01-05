@@ -696,15 +696,32 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                 ),
                 const SizedBox(width: 12),
                 ElevatedButton.icon(
-                  onPressed: _addCattle,
-                  icon: const Icon(Icons.add),
-                  label: const Text('Add'),
+                  onPressed: _minWeight > 0 && !_isValidatingCattle ? _addCattle : null,
+                  icon: _isValidatingCattle 
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                      )
+                    : const Icon(Icons.add),
+                  label: Text(_isValidatingCattle ? 'Validating...' : (l10n?.cattle_addButton ?? 'Add')),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
                   ),
                 ),
               ],
             ),
+            
+            // Validation message for min weight
+            if (_minWeight <= 0)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(
+                  'Please set a minimum weight in the pricing configuration above before adding cattle',
+                  style: TextStyle(color: Colors.orange.shade700, fontSize: 12),
+                ),
+              ),
+            
             const SizedBox(height: 24),
 
             // Approved Cattle Section
