@@ -128,8 +128,13 @@ class _ProviderAutocompleteFieldState extends State<ProviderAutocompleteField> {
   Future<void> _showCreateDialog() async {
     final l10n = AppLocalizations.of(context);
     
+    // Unfocus and hide dropdown before showing dialog
+    _focusNode.unfocus();
+    setState(() => _showDropdown = false);
+    
     final result = await showDialog<Map<String, dynamic>>(
       context: context,
+      barrierDismissible: true,
       builder: (context) => CreateProviderDialog(
         providerType: widget.providerType,
       ),
