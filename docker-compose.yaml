@@ -1,0 +1,26 @@
+services:
+  # Frontend Web App
+  frontend:
+    container_name: finca_app_frontend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - '${FRONTEND_PORT:-8080}:80'
+    environment:
+      API_BASE_URL: ${API_BASE_URL:-http://localhost:3000/api/v1}
+    networks:
+      - finca_app_net
+    healthcheck:
+      test: [ "CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+networks:
+  finca_app_net:
+    name: '${ENVIRONMENT:-develop}_finca_app_net'
+    driver: bridge
+    external: true
