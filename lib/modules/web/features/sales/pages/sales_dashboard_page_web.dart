@@ -246,7 +246,7 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
                     const Spacer(),
                     // Add Sale Button
                     ElevatedButton.icon(
-                      onPressed: () => context.go('/sales/create'),
+                      onPressed: () => context.push('/sales/create'),
                       icon: const Icon(Icons.add),
                       label: Text(l10n?.sales_addSale ?? 'Add Sale'),
                       style: ElevatedButton.styleFrom(
@@ -370,7 +370,7 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
           ),
           const SizedBox(height: 24),
           ElevatedButton.icon(
-            onPressed: hasFilters ? _clearFilters : () => context.go('/sales/create'),
+            onPressed: hasFilters ? _clearFilters : () => context.push('/sales/create'),
             icon: Icon(hasFilters ? Icons.clear : Icons.add),
             label: Text(hasFilters ? (l10n?.sales_clearFilters ?? 'Clear Filters') : (l10n?.sales_addSale ?? 'Add Sale')),
           ),

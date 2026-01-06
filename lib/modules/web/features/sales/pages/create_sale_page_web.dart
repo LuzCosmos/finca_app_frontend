@@ -13,6 +13,7 @@ import 'package:finca_app_frontend/modules/web/features/sales/widgets/weight_app
 import 'package:finca_app_frontend/modules/web/features/sales/widgets/sale_confirmation_dialog.dart';
 import 'package:finca_app_frontend/modules/web/features/sales/services/cattle_validation_service.dart';
 import 'package:uuid/uuid.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class CreateSalePage extends StatelessWidget {
  const CreateSalePage({super.key});
@@ -763,7 +764,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
     return Card(
       color: Theme.of(context).colorScheme.primaryContainer,
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -771,16 +772,16 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
               l10n?.label_summary ?? 'Summary',
               style: Theme.of(context).textTheme.titleLarge,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 8),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildSummaryItem(context, l10n?.label_totalCattle ?? 'Total Cattle', _totalCount.toString(), Icons.pets),
+                _buildSummaryItem(context, l10n?.label_totalCattle ?? 'Total Cattle', _totalCount.toString(), FontAwesomeIcons.cow),
                 _buildSummaryItem(context, l10n?.sales_totalWeight ?? 'Total Weight', '${_totalWeight.toStringAsFixed(2)} kg', Icons.scale),
                 _buildSummaryItem(context, l10n?.sales_totalAmount ?? 'Total Amount', '\$${_totalAmount.toStringAsFixed(2)}', Icons.attach_money),
               ],
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: 8),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -791,7 +792,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                     padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: 8),
                 ElevatedButton(
                   onPressed: state.status == SalesWebStatus.loading ? null : _submitSale,
                   style: ElevatedButton.styleFrom(
@@ -816,7 +817,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
   Widget _buildSummaryItem(BuildContext context, String label, String value, IconData icon) {
     return Column(
       children: [
-        Icon(icon, size: 32, color: Theme.of(context).colorScheme.primary),
+        Icon(icon, size: 25, color: Theme.of(context).colorScheme.primary),
         const SizedBox(height: 8),
         Text(label, style: Theme.of(context).textTheme.bodySmall),
         const SizedBox(height: 4),

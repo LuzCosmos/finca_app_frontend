@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/models/sale_detail_model.dart';
 
+
 /// Sale Confirmation Dialog
 /// 
 /// Shows before creating sale to confirm which cattle will be marked as SOLD
@@ -92,13 +93,13 @@ class SaleConfirmationDialog extends StatelessWidget {
                         children: [
                           Expanded(
                             flex: 2,
-                            child: Text(AppLocalizations.of(context)!.cattle_number, style: const TextStyle(fontWeight: FontWeight.bold)),
+                            child: Text(l10n!.cattle_number, style: const TextStyle(fontWeight: FontWeight.bold)),
                           ),
                           Expanded(
-                            child: Text(AppLocalizations.of(context)!.weightKg, style: const TextStyle(fontWeight: FontWeight.bold)),
+                            child: Text(l10n!.weightKg, style: const TextStyle(fontWeight: FontWeight.bold)),
                           ),
                           Expanded(
-                            child: Text(AppLocalizations.of(context)!.sales_price, style: const TextStyle(fontWeight: FontWeight.bold)),
+                            child: Text(l10n!.sales_price, style: const TextStyle(fontWeight: FontWeight.bold)),
                           ),
                         ],
                       ),
@@ -140,7 +141,7 @@ class SaleConfirmationDialog extends StatelessWidget {
 
               // Summary
               Container(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   color: Colors.blue.shade50,
                   borderRadius: BorderRadius.circular(8),
@@ -150,7 +151,7 @@ class SaleConfirmationDialog extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('${AppLocalizations.of(context)!.label_totalCattle}:', style: const TextStyle(fontWeight: FontWeight.bold)),
+                        Text('${l10n!.label_totalCattle}:', style: const TextStyle(fontWeight: FontWeight.bold)),
                         Text('$count', style: TextStyle(fontWeight: FontWeight.bold)),
                       ],
                     ),
@@ -158,7 +159,7 @@ class SaleConfirmationDialog extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('${AppLocalizations.of(context)!.sales_totalWeight}:', style: const TextStyle(fontWeight: FontWeight.bold)),
+                        Text('${l10n!.sales_totalWeight}:', style: const TextStyle(fontWeight: FontWeight.bold)),
                         Text('${totalWeight.toStringAsFixed(2)} kg', style: TextStyle(fontWeight: FontWeight.bold)),
                       ],
                     ),
@@ -166,7 +167,7 @@ class SaleConfirmationDialog extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('${AppLocalizations.of(context)!.sales_totalAmount}:', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                        Text('${l10n!.sales_totalAmount}:', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                         Text(
                           '\$${totalAmount.toStringAsFixed(2)}',
                           style: TextStyle(
