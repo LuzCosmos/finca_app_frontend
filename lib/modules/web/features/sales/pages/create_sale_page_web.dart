@@ -59,6 +59,32 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
   bool _isValidatingCattle = false;
 
   @override
+  void initState() {
+    super.initState();
+    _pricePerKgController.addListener(_onPriceChanged);
+  }
+
+  void _onPriceChanged() {
+    setState(() {
+      for (int i = 0; i < _approvedCattle.length; i++) {
+        final item = _approvedCattle[i];
+        final newPrice = _calculateCattlePrice(item.measuredWeight);
+        _approvedCattle[i] = SaleDetailModel(
+            id: item.id,
+            saleId: item.saleId,
+            cattleId: item.cattleId,
+            cattleNumber: item.cattleNumber,
+            measuredWeight: item.measuredWeight,
+            calculatedPrice: newPrice,
+            isApproved: item.isApproved,
+            rejectionReason: item.rejectionReason,
+            trackerRemoved: item.trackerRemoved,
+        );
+      }
+    });
+  }
+
+  @override
   void dispose() {
     _minWeightController.dispose();
     _pricePerKgController.dispose();
@@ -156,6 +182,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
         id: const Uuid().v4(),
         saleId: '',
         cattleId: cattleId,
+        cattleNumber: cattleNumber,
         measuredWeight: weight,
         calculatedPrice: _calculateCattlePrice(weight),
         isApproved: isApproved,
@@ -209,6 +236,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
     required Function(int) onRemove,
     bool showRejectionReason = false,
   }) {
+    final l10n = AppLocalizations.of(context);
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: color.withOpacity(0.3), width: 2),
@@ -270,7 +298,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                       Expanded(
                         flex: 2,
                         child: Text(
-                          'Cattle #${item.cattleId}',
+                          '${l10n!.cattle} #${item.cattleNumber}',
                           style: const TextStyle(fontWeight: FontWeight.w500),
                         ),
                       ),
@@ -666,7 +694,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              l10n?.label_cattle_management ?? 'Cattle Management',
+              l10n!.label_cattle_management,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 24),
@@ -679,9 +707,9 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                   child: TextFormField(
                     controller: _cattleIdController,
                     decoration: InputDecoration(
-                      labelText: l10n?.cattle_number ?? 'Cattle ID',
+                      labelText: l10n!.cattle_number,
                       border: const OutlineInputBorder(),
-                      hintText: l10n?.hint_enterScanId ?? 'Enter or scan ID',
+                      hintText: l10n!.hint_enterScanId,
                     ),
                   ),
                 ),
@@ -690,7 +718,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                   child: TextFormField(
                     controller: _cattleWeightController,
                     decoration: InputDecoration(
-                      labelText: l10n?.weightKg ?? 'Weight (kg)',
+                      labelText: l10n!.weightKg,
                       border: const OutlineInputBorder(),
                     ),
                     keyboardType: const TextInputType.numberWithOptions(decimal: true),

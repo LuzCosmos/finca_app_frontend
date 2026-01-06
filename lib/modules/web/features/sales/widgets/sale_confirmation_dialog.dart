@@ -67,7 +67,7 @@ class SaleConfirmationDialog extends StatelessWidget {
 
               // Message
               Text(
-                (l10n?.sale_confirm_message ?? 'The following {count} approved cattle will be marked as SOLD:')
+                (l10n!.sale_confirm_message(count) ?? 'The following {count} approved cattle will be marked as SOLD:')
                     .toString()
                     .replaceAll('{count}', count.toString()),
                 style: Theme.of(context).textTheme.titleMedium,
@@ -119,7 +119,7 @@ class SaleConfirmationDialog extends StatelessWidget {
                               Expanded(
                                 flex: 2,
                                 child: Text(
-                                  cattle.cattleId,
+                                  cattle.cattleNumber,
                                   style: const TextStyle(fontWeight: FontWeight.w500),
                                 ),
                               ),

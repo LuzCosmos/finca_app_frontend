@@ -4,6 +4,7 @@ class SaleDetailModel extends Equatable {
   final String id;
   final String? saleId;
   final String cattleId;
+  final String cattleNumber;
   final double measuredWeight;
   final double calculatedPrice;
   final bool isApproved;
@@ -14,6 +15,7 @@ class SaleDetailModel extends Equatable {
     required this.id,
     this.saleId,
     required this.cattleId,
+    required this.cattleNumber,
     required this.measuredWeight,
     required this.calculatedPrice,
     required this.isApproved,
@@ -26,6 +28,7 @@ class SaleDetailModel extends Equatable {
       id: json['id'],
       saleId: json['sale_id'] ?? json['saleId'],
       cattleId: json['cattle_id'] ?? json['cattleId'],
+      cattleNumber: json['cattle_number'] ?? json['cattleNumber'],
       measuredWeight: (json['measured_weight'] ?? json['measuredWeight'] ?? 0).toDouble(),
       calculatedPrice: (json['calculated_price'] ?? json['calculatedPrice'] ?? 0).toDouble(),
       isApproved: json['is_approved'] ?? json['isApproved'] ?? false,
@@ -39,6 +42,7 @@ class SaleDetailModel extends Equatable {
       'id': id,
       'saleId': saleId,
       'cattleId': cattleId,
+      'cattleNumber': cattleNumber,
       'measuredWeight': measuredWeight,
       'calculatedPrice': calculatedPrice,
       'isApproved': isApproved,
@@ -52,6 +56,7 @@ class SaleDetailModel extends Equatable {
         id,
         saleId,
         cattleId,
+        cattleNumber,
         measuredWeight,
         calculatedPrice,
         isApproved,

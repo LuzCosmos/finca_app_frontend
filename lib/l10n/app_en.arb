@@ -72,6 +72,8 @@
   "home_massiveEvent": "Massive Event",
   "home_sale": "Sale",
   "home_reception": "Reception",
+  
+  "cattle": "Cattle",
 
   "purchase_date": "Purchase Date",
   "purchase_dateRequired": "You must select a purchase date.",

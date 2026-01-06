@@ -34,11 +34,8 @@ class WeightApprovalDialog extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            (l10n?.cattle_weightUnderMinMessage ?? 
-              'The measured weight ({measured} kg) is below the minimum weight ({min} kg). This cattle will receive the minimum weight for pricing.')
-                .toString()
-                .replaceAll('{measured}', measuredWeight.toStringAsFixed(2))
-                .replaceAll('{min}', minWeight.toStringAsFixed(2)),
+            (l10n?.cattle_weightUnderMinMessage(measuredWeight, minWeight))
+                .toString(),
             style: Theme.of(context).textTheme.bodyLarge,
           ),
           const SizedBox(height: 16),

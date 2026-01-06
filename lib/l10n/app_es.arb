@@ -73,6 +73,8 @@
   "home_sale": "Venta",
   "home_reception": "Recepción",
 
+  "cattle": "Res",
+
   "purchase_date": "Fecha de Compra",
   "purchase_dateRequired": "Debes seleccionar una fecha de compra.",
   "purchase_create": "Crear Compra",

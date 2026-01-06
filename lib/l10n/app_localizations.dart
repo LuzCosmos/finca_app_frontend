@@ -332,6 +332,12 @@ abstract class AppLocalizations {
   /// **'Reception'**
   String get home_reception;
 
+  /// No description provided for @cattle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cattle'**
+  String get cattle;
+
   /// No description provided for @purchase_date.
   ///
   /// In en, this message translates to:

@@ -49,11 +49,6 @@ class _ProviderAutocompleteFieldState extends State<ProviderAutocompleteField> {
   void initState() {
     super.initState();
     _controller.addListener(_onSearchChanged);
-    _focusNode.addListener(() {
-      if (!_focusNode.hasFocus) {
-        setState(() => _showDropdown = false);
-      }
-    });
   }
 
   @override
@@ -156,71 +151,81 @@ class _ProviderAutocompleteFieldState extends State<ProviderAutocompleteField> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        TextFormField(
-          controller: _controller,
-          focusNode: _focusNode,
-          decoration: InputDecoration(
-            labelText: widget.label,
-            border: const OutlineInputBorder(),
-            suffixIcon: _isLoading
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: Padding(
-                      padding: EdgeInsets.all(12.0),
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    ),
-                  )
-                : const Icon(Icons.search),
-            hintText: l10n?.provider_searchByName ?? 'Search by name...',
-          ),
-          validator: widget.validator,
-        ),
-        
-        // Dropdown overlay
-        if (_showDropdown)
-          Material(
-            elevation: 4,
-            child: Container(
-              constraints: const BoxConstraints(maxHeight: 200),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade300),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: _providers.isEmpty && !_isLoading
-                  ? ListTile(
-                      leading: const Icon(Icons.add_circle, color: Colors.green),
-                      title: Text(l10n?.provider_createNew ?? 'Create New Provider'),
-                      onTap: () {
-                        _focusNode.unfocus();
-                        _showCreateDialog();
-                      },
+    return TapRegion(
+      onTapOutside: (event) {
+        if (_showDropdown) {
+          setState(() {
+            _showDropdown = false;
+          });
+          _focusNode.unfocus();
+        }
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextFormField(
+            controller: _controller,
+            focusNode: _focusNode,
+            decoration: InputDecoration(
+              labelText: widget.label,
+              border: const OutlineInputBorder(),
+              suffixIcon: _isLoading
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: Padding(
+                        padding: EdgeInsets.all(12.0),
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
                     )
-                  : ListView(
-                      shrinkWrap: true,
-                      children: [
-                        ..._providers.map((provider) => ListTile(
-                          title: Text(provider['name']),
-                          subtitle: Text('${l10n?.provider_nit}: ${provider['nit']}'),
-                          onTap: () => _selectProvider(provider['id'], provider['name']),
-                        )),
-                        const Divider(),
-                        ListTile(
-                          leading: const Icon(Icons.add_circle, color: Colors.green),
-                          title: Text(l10n?.provider_createNew ?? 'Create New Provider'),
-                          onTap: () {
-                            _focusNode.unfocus();
-                            _showCreateDialog();
-                          },
-                        ),
-                      ],
-                    ),
+                  : const Icon(Icons.search),
+              hintText: l10n?.provider_searchByName ?? 'Search by name...',
             ),
+            validator: widget.validator,
           ),
-      ],
+          
+          // Dropdown overlay
+          if (_showDropdown)
+            Material(
+              elevation: 4,
+              child: Container(
+                constraints: const BoxConstraints(maxHeight: 200),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey.shade300),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: _providers.isEmpty && !_isLoading
+                    ? ListTile(
+                        leading: const Icon(Icons.add_circle, color: Colors.green),
+                        title: Text(l10n?.provider_createNew ?? 'Create New Provider'),
+                        onTap: () {
+                          _focusNode.unfocus();
+                          _showCreateDialog();
+                        },
+                      )
+                    : ListView(
+                        shrinkWrap: true,
+                        children: [
+                          ..._providers.map((provider) => ListTile(
+                            title: Text(provider['name']),
+                            subtitle: Text('${l10n?.provider_nit}: ${provider['nit']}'),
+                            onTap: () => _selectProvider(provider['id'], provider['name']),
+                          )),
+                          const Divider(),
+                          ListTile(
+                            leading: const Icon(Icons.add_circle, color: Colors.green),
+                            title: Text(l10n?.provider_createNew ?? 'Create New Provider'),
+                            onTap: () {
+                              _focusNode.unfocus();
+                              _showCreateDialog();
+                            },
+                          ),
+                        ],
+                      ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }

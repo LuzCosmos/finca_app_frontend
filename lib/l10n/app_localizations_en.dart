@@ -139,6 +139,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get home_reception => 'Reception';
 
   @override
+  String get cattle => 'Cattle';
+
+  @override
   String get purchase_date => 'Purchase Date';
 
   @override
