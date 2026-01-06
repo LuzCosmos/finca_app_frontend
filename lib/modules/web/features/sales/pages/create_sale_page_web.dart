@@ -57,6 +57,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
   final List<SaleDetailModel> _rejectedCattle = [];
   
   bool _isValidatingCattle = false;
+  bool _trackerRemoved = false;
 
   @override
   void initState() {
@@ -187,7 +188,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
         calculatedPrice: _calculateCattlePrice(weight),
         isApproved: isApproved,
         rejectionReason: rejectionReason,
-        trackerRemoved: false,
+        trackerRemoved: _trackerRemoved,
       );
 
       // 6. Add to appropriate list
@@ -199,6 +200,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
         }
         _cattleIdController.clear();
         _cattleWeightController.clear();
+        _trackerRemoved = false;
         _isValidatingCattle = false;
       });
 
@@ -400,11 +402,11 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
       );
 
       // 2. Update cattle status to SOLD
-      final cattleIds = _approvedCattle.map((c) => c.cattleId).toList();
+      /*final cattleIds = _approvedCattle.map((c) => c.cattleId).toList();
       await CattleValidationService.bulkUpdateCattleStatus(
         cattleIds: cattleIds,
         status: 'SOLD',
-      );
+      );*/
 
       // 3. Submit sale
       if (mounted) {
@@ -740,6 +742,15 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                   ),
                 ),
               ],
+            ),
+            
+            // Tracker Removed Checkbox
+            CheckboxListTile(
+              title: Text(l10n!.tracker_removed),
+              value: _trackerRemoved,
+              onChanged: (val) => setState(() => _trackerRemoved = val ?? false),
+              controlAffinity: ListTileControlAffinity.leading,
+              contentPadding: EdgeInsets.zero,
             ),
             
             // Validation message for min weight

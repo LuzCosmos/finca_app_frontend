@@ -397,5 +397,6 @@
   "label_buyer_required": "Comprador *",
   "error_buyer_required": "Comprador es requerido",
   "label_price_per_kg_required": "Precio / Kg *",
-  "label_cattle_management": "Gestión de Ganado"
+  "label_cattle_management": "Gestión de Ganado",
+  "tracker_removed": "Rastreador Removido"
 }

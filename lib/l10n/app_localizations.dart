@@ -1975,6 +1975,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cattle Management'**
   String get label_cattle_management;
+
+  /// No description provided for @tracker_removed.
+  ///
+  /// In en, this message translates to:
+  /// **'Tracker Removed'**
+  String get tracker_removed;
 }
 
 class _AppLocalizationsDelegate

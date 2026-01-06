@@ -418,6 +418,6 @@
   "label_buyer_required": "Buyer *",
   "error_buyer_required": "Buyer is required",
   "label_price_per_kg_required": "Price / Kg *",
-  "label_cattle_management": "Cattle Management"
-
+  "label_cattle_management": "Cattle Management",
+  "tracker_removed": "Tracker Removed"
 }

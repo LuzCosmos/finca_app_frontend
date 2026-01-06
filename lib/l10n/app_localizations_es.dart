@@ -1019,4 +1019,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get label_cattle_management => 'Gestión de Ganado';
+
+  @override
+  String get tracker_removed => 'Rastreador Removido';
 }
