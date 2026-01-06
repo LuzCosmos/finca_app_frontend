@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/bloc/sales_bloc.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/bloc/sales_event.dart';
@@ -25,9 +26,10 @@ class SaleDashboardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sales Dashboard'),
+        title: Text(l10n.salesDashboard),
         actions: [
           IconButton(
             icon: const Icon(Icons.sync),
@@ -44,15 +46,15 @@ class SaleDashboardView extends StatelessWidget {
           }
           if (state is UnsyncedSalesLoaded) {
              if (state.sales.isEmpty) {
-               return const Center(child: Text('No offline sales pending sync.'));
+               return Center(child: Text(l10n.noOfflineSales));
              }
              return ListView.builder(
                itemCount: state.sales.length,
                itemBuilder: (context, index) {
                  final sale = state.sales[index];
                  return ListTile(
-                   title: Text('Sale ${sale.transactionDate}'),
-                   subtitle: Text('Total: ${sale.totalAmount}'),
+                   title: Text(l10n.saleWithDate(sale.transactionDate.toString())),
+                   subtitle: Text(l10n.totalWithAmount(sale.totalAmount.toString())),
                    trailing: const Icon(Icons.sync_problem, color: Colors.orange),
                  );
                },

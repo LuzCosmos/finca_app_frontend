@@ -915,4 +915,98 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get user_editUserPageMessage => 'This feature is under development';
+
+  @override
+  String get newSale => 'New Sale';
+
+  @override
+  String get saleSavedSuccess => 'Sale saved successfully';
+
+  @override
+  String get cattleFoundPending => 'Cattle found (Implementation pending)';
+
+  @override
+  String get minWeightKg => 'Min Weight (Kg)';
+
+  @override
+  String get scanEnterNumber => 'Scan/Enter Number';
+
+  @override
+  String get salesDashboard => 'Sales Dashboard';
+
+  @override
+  String get noOfflineSales => 'No offline sales pending sync.';
+
+  @override
+  String saleWithDate(String date) {
+    return 'Sale $date';
+  }
+
+  @override
+  String totalWithAmount(String amount) {
+    return 'Total: $amount';
+  }
+
+  @override
+  String get label_measuredWeight => 'Measured Weight';
+
+  @override
+  String get label_minimumWeight => 'Minimum Weight';
+
+  @override
+  String get label_totalCattle => 'Total Cattle';
+
+  @override
+  String get error_enterCattleNumberWeight =>
+      'Please enter cattle number and weight';
+
+  @override
+  String get error_enterValidWeight => 'Please enter a valid weight';
+
+  @override
+  String get error_addApprovedCattle =>
+      'Please add at least one approved cattle';
+
+  @override
+  String get sale_info => 'Sale Information';
+
+  @override
+  String get pricing_config => 'Pricing Configuration';
+
+  @override
+  String get hint_enterScanId => 'Enter or scan ID';
+
+  @override
+  String get label_validating => 'Validating...';
+
+  @override
+  String get warning_set_min_weight =>
+      'Please set a minimum weight in the pricing configuration above before adding cattle';
+
+  @override
+  String get label_summary => 'Summary';
+
+  @override
+  String get error_invalid_number => 'Invalid number';
+
+  @override
+  String get error_invalid_price => 'Invalid price';
+
+  @override
+  String get label_notes_optional => 'Notes (Optional)';
+
+  @override
+  String get label_transporter_optional => 'Transporter (Optional)';
+
+  @override
+  String get label_buyer_required => 'Buyer *';
+
+  @override
+  String get error_buyer_required => 'Buyer is required';
+
+  @override
+  String get label_price_per_kg_required => 'Price / Kg *';
+
+  @override
+  String get label_cattle_management => 'Cattle Management';
 }

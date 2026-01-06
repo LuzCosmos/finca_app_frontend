@@ -204,7 +204,7 @@ class _ProviderAutocompleteFieldState extends State<ProviderAutocompleteField> {
                       children: [
                         ..._providers.map((provider) => ListTile(
                           title: Text(provider['name']),
-                          subtitle: Text('NIT: ${provider['nit']}'),
+                          subtitle: Text('${l10n?.provider_nit}: ${provider['nit']}'),
                           onTap: () => _selectProvider(provider['id'], provider['name']),
                         )),
                         const Divider(),

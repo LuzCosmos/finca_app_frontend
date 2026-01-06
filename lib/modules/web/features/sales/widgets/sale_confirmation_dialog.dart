@@ -92,13 +92,13 @@ class SaleConfirmationDialog extends StatelessWidget {
                         children: [
                           Expanded(
                             flex: 2,
-                            child: Text('Cattle #', style: TextStyle(fontWeight: FontWeight.bold)),
+                            child: Text(AppLocalizations.of(context)!.cattle_number, style: const TextStyle(fontWeight: FontWeight.bold)),
                           ),
                           Expanded(
-                            child: Text('Weight (kg)', style: TextStyle(fontWeight: FontWeight.bold)),
+                            child: Text(AppLocalizations.of(context)!.weightKg, style: const TextStyle(fontWeight: FontWeight.bold)),
                           ),
                           Expanded(
-                            child: Text('Price', style: TextStyle(fontWeight: FontWeight.bold)),
+                            child: Text(AppLocalizations.of(context)!.sales_price, style: const TextStyle(fontWeight: FontWeight.bold)),
                           ),
                         ],
                       ),
@@ -150,7 +150,7 @@ class SaleConfirmationDialog extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Total Cattle:', style: TextStyle(fontWeight: FontWeight.bold)),
+                        Text('${AppLocalizations.of(context)!.label_totalCattle}:', style: const TextStyle(fontWeight: FontWeight.bold)),
                         Text('$count', style: TextStyle(fontWeight: FontWeight.bold)),
                       ],
                     ),
@@ -158,7 +158,7 @@ class SaleConfirmationDialog extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Total Weight:', style: TextStyle(fontWeight: FontWeight.bold)),
+                        Text('${AppLocalizations.of(context)!.sales_totalWeight}:', style: const TextStyle(fontWeight: FontWeight.bold)),
                         Text('${totalWeight.toStringAsFixed(2)} kg', style: TextStyle(fontWeight: FontWeight.bold)),
                       ],
                     ),
@@ -166,7 +166,7 @@ class SaleConfirmationDialog extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Total Amount:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                        Text('${AppLocalizations.of(context)!.sales_totalAmount}:', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                         Text(
                           '\$${totalAmount.toStringAsFixed(2)}',
                           style: TextStyle(

@@ -55,7 +55,7 @@ class WeightApprovalDialog extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Cattle #:', style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text('${AppLocalizations.of(context)!.cattleNumber}:', style: const TextStyle(fontWeight: FontWeight.bold)),
                     Text(cattleNumber),
                   ],
                 ),
@@ -63,15 +63,15 @@ class WeightApprovalDialog extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Measured Weight:', style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text('${AppLocalizations.of(context)!.label_measuredWeight}:', style: const TextStyle(fontWeight: FontWeight.bold)),
                     Text('${measuredWeight.toStringAsFixed(2)} kg', 
-                      style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold)),
+                      style: const TextStyle(color: Colors.orange, fontWeight: FontWeight.bold)),
                   ],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Minimum Weight:', style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text('${AppLocalizations.of(context)!.label_minimumWeight}:', style: const TextStyle(fontWeight: FontWeight.bold)),
                     Text('${minWeight.toStringAsFixed(2)} kg'),
                   ],
                 ),
@@ -131,14 +131,16 @@ class CattleValidationErrorDialog extends StatelessWidget {
         children: [
           Icon(Icons.error, color: Colors.red, size: 28),
           const SizedBox(width: 12),
-          Text(l10n?.cattle_validation_invalid ?? 'Invalid Cattle'),
+           Icon(Icons.error, color: Colors.red, size: 28),
+           const SizedBox(width: 12),
+           Text(l10n?.cattle_validation_invalid ?? 'Invalid Cattle'),
         ],
       ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Cattle #$cattleNumber', style: TextStyle(fontWeight: FontWeight.bold)),
+          Text('${AppLocalizations.of(context)!.cattleNumber} #$cattleNumber', style: const TextStyle(fontWeight: FontWeight.bold)),
           const SizedBox(height: 12),
           Text(errorMessage, style: Theme.of(context).textTheme.bodyLarge),
         ],
