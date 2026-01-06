@@ -158,6 +158,12 @@ abstract class AppLocalizations {
   /// **'Please fix the errors highlighted in red.'**
   String get fixErrors;
 
+  /// No description provided for @error_readingObject.
+  ///
+  /// In en, this message translates to:
+  /// **'An unexpected error occurred while reading.'**
+  String get error_readingObject;
+
   /// No description provided for @error_savingObject.
   ///
   /// In en, this message translates to:
@@ -331,6 +337,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reception'**
   String get home_reception;
+
+  /// No description provided for @cattle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cattle'**
+  String get cattle;
 
   /// No description provided for @purchase_date.
   ///
@@ -1795,6 +1807,186 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This feature is under development'**
   String get user_editUserPageMessage;
+
+  /// No description provided for @newSale.
+  ///
+  /// In en, this message translates to:
+  /// **'New Sale'**
+  String get newSale;
+
+  /// No description provided for @saleSavedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Sale saved successfully'**
+  String get saleSavedSuccess;
+
+  /// No description provided for @cattleFoundPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Cattle found (Implementation pending)'**
+  String get cattleFoundPending;
+
+  /// No description provided for @minWeightKg.
+  ///
+  /// In en, this message translates to:
+  /// **'Min Weight (Kg)'**
+  String get minWeightKg;
+
+  /// No description provided for @scanEnterNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan/Enter Number'**
+  String get scanEnterNumber;
+
+  /// No description provided for @salesDashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Sales Dashboard'**
+  String get salesDashboard;
+
+  /// No description provided for @noOfflineSales.
+  ///
+  /// In en, this message translates to:
+  /// **'No offline sales pending sync.'**
+  String get noOfflineSales;
+
+  /// No description provided for @saleWithDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Sale {date}'**
+  String saleWithDate(String date);
+
+  /// No description provided for @totalWithAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Total: {amount}'**
+  String totalWithAmount(String amount);
+
+  /// No description provided for @label_measuredWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Measured Weight'**
+  String get label_measuredWeight;
+
+  /// No description provided for @label_minimumWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum Weight'**
+  String get label_minimumWeight;
+
+  /// No description provided for @label_totalCattle.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Cattle'**
+  String get label_totalCattle;
+
+  /// No description provided for @error_enterCattleNumberWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter cattle number and weight'**
+  String get error_enterCattleNumberWeight;
+
+  /// No description provided for @error_enterValidWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid weight'**
+  String get error_enterValidWeight;
+
+  /// No description provided for @error_addApprovedCattle.
+  ///
+  /// In en, this message translates to:
+  /// **'Please add at least one approved cattle'**
+  String get error_addApprovedCattle;
+
+  /// No description provided for @sale_info.
+  ///
+  /// In en, this message translates to:
+  /// **'Sale Information'**
+  String get sale_info;
+
+  /// No description provided for @pricing_config.
+  ///
+  /// In en, this message translates to:
+  /// **'Pricing Configuration'**
+  String get pricing_config;
+
+  /// No description provided for @hint_enterScanId.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter or scan ID'**
+  String get hint_enterScanId;
+
+  /// No description provided for @label_validating.
+  ///
+  /// In en, this message translates to:
+  /// **'Validating...'**
+  String get label_validating;
+
+  /// No description provided for @warning_set_min_weight.
+  ///
+  /// In en, this message translates to:
+  /// **'Please set a minimum weight in the pricing configuration above before adding cattle'**
+  String get warning_set_min_weight;
+
+  /// No description provided for @label_summary.
+  ///
+  /// In en, this message translates to:
+  /// **'Summary'**
+  String get label_summary;
+
+  /// No description provided for @error_invalid_number.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid number'**
+  String get error_invalid_number;
+
+  /// No description provided for @error_invalid_price.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid price'**
+  String get error_invalid_price;
+
+  /// No description provided for @label_notes_optional.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes (Optional)'**
+  String get label_notes_optional;
+
+  /// No description provided for @label_transporter_optional.
+  ///
+  /// In en, this message translates to:
+  /// **'Transporter (Optional)'**
+  String get label_transporter_optional;
+
+  /// No description provided for @label_buyer_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Buyer *'**
+  String get label_buyer_required;
+
+  /// No description provided for @error_buyer_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Buyer is required'**
+  String get error_buyer_required;
+
+  /// No description provided for @label_price_per_kg_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Price / Kg *'**
+  String get label_price_per_kg_required;
+
+  /// No description provided for @label_cattle_management.
+  ///
+  /// In en, this message translates to:
+  /// **'Cattle Management'**
+  String get label_cattle_management;
+
+  /// No description provided for @tracker_removed.
+  ///
+  /// In en, this message translates to:
+  /// **'Tracker Removed'**
+  String get tracker_removed;
 }
 
 class _AppLocalizationsDelegate

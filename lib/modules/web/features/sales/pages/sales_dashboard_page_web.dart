@@ -157,7 +157,7 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
                   const Divider(),
                   if (sale.details.isEmpty) Text(l10n?.sales_noDetails ?? 'No details available.'),
                   ...sale.details.map((detail) => ListTile(
-                    title: Text('${l10n?.sales_cattleId ?? 'Cattle ID'}: ${detail.cattleId}'), 
+                    title: Text('${l10n?.cattle }# ${detail.cattleNumber}'), 
                     subtitle: Text('${l10n?.sales_weight ?? 'Weight'}: ${detail.measuredWeight} kg | ${l10n?.sales_price ?? 'Price'}: ${NumberFormat.currency(symbol: '\$').format(detail.calculatedPrice)}'),
                   )),
                 ],
@@ -197,6 +197,7 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
               return const Center(child: CircularProgressIndicator());
             }
             if (state.error != null && state.sales == null) {
+               print(state.error);
                return Center(child: Column(
                  mainAxisAlignment: MainAxisAlignment.center,
                  children: [
@@ -246,7 +247,7 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
                     const Spacer(),
                     // Add Sale Button
                     ElevatedButton.icon(
-                      onPressed: () => context.go('/sales/create'),
+                      onPressed: () => context.push('/sales/create'),
                       icon: const Icon(Icons.add),
                       label: Text(l10n?.sales_addSale ?? 'Add Sale'),
                       style: ElevatedButton.styleFrom(
@@ -370,7 +371,7 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
           ),
           const SizedBox(height: 24),
           ElevatedButton.icon(
-            onPressed: hasFilters ? _clearFilters : () => context.go('/sales/create'),
+            onPressed: hasFilters ? _clearFilters : () => context.push('/sales/create'),
             icon: Icon(hasFilters ? Icons.clear : Icons.add),
             label: Text(hasFilters ? (l10n?.sales_clearFilters ?? 'Clear Filters') : (l10n?.sales_addSale ?? 'Add Sale')),
           ),

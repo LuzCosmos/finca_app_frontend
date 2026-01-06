@@ -12,6 +12,9 @@
   "numberFormat_country":"en_US",
 
   "fixErrors": "Por favor corrige los errores resaltados en rojo.",
+  
+  "error_readingObject": "Ocurrió un error inesperado al leer.",
+  
   "error_savingObject": "Ocurrió un error inesperado al guardar.",
 
   "error_badRequest": "La solicitud no es válida. Revisa los datos e inténtalo de nuevo.",
@@ -72,6 +75,8 @@
   "home_massiveEvent": "Evento masivo",
   "home_sale": "Venta",
   "home_reception": "Recepción",
+
+  "cattle": "Res",
 
   "purchase_date": "Fecha de Compra",
   "purchase_dateRequired": "Debes seleccionar una fecha de compra.",
@@ -364,5 +369,37 @@
   "user_editUser": "Editar Usuario",
   "user_logout": "Cerrar Sesión",
   "user_editUserPageTitle": "Editar Usuario",
-  "user_editUserPageMessage": "Esta funcionalidad está en desarrollo"
+  "user_editUserPageMessage": "Esta funcionalidad está en desarrollo",
+
+  "newSale": "Nueva Venta",
+  "saleSavedSuccess": "Venta guardada exitosamente",
+  "cattleFoundPending": "Ganado encontrado (Implementación pendiente)",
+  "minWeightKg": "Peso Mín. (Kg)",
+  "scanEnterNumber": "Escanear/Ingresar Número",
+  "salesDashboard": "Tablero de Ventas",
+  "noOfflineSales": "No hay ventas fuera de línea pendientes de sincronización.",
+  "saleWithDate": "Venta {date}",
+  "totalWithAmount": "Total: {amount}",
+  "label_measuredWeight": "Peso Medido",
+  "label_minimumWeight": "Peso Mínimo",
+  "label_totalCattle": "Total Reses",
+
+  "error_enterCattleNumberWeight": "Por favor ingrese el número de ganado y el peso",
+  "error_enterValidWeight": "Por favor ingrese un peso válido",
+  "error_addApprovedCattle": "Por favor agregue al menos un ganado aprobado",
+  "sale_info": "Información de Venta",
+  "pricing_config": "Configuración de Precios",
+  "hint_enterScanId": "Ingresar o escanear ID",
+  "label_validating": "Validando...",
+  "warning_set_min_weight": "Por favor configure un peso mínimo en la configuración anterior antes de agregar ganado",
+  "label_summary": "Resumen",
+  "error_invalid_number": "Número inválido",
+  "error_invalid_price": "Precio inválido",
+  "label_notes_optional": "Notas (Opcional)",
+  "label_transporter_optional": "Transportista (Opcional)",
+  "label_buyer_required": "Comprador *",
+  "error_buyer_required": "Comprador es requerido",
+  "label_price_per_kg_required": "Precio / Kg *",
+  "label_cattle_management": "Gestión de Ganado",
+  "tracker_removed": "Rastreador Removido"
 }

@@ -67,6 +67,7 @@ dependencies:
   file_picker: ^8.0.0
   mime: ^2.0.0
   collection: ^1.19.1
+  font_awesome_flutter: ^10.7.0
 
 dependency_overrides:
   win32: ^5.0.0

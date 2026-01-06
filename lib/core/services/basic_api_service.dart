@@ -7,7 +7,8 @@ class BasicApiService {
   static Future<String> getToken() async {
     final token = await SessionService.getToken();
     if (token == null || token.isEmpty) {
-      throw Exception('⚠️ No se encontró token de sesión');
+      throw ApiException(ApiExceptionCode.unauthorized.name, 'Unauthorized');
+      //throw Exception('⚠️ No se encontró token de sesión');
     }
     return token;
   }

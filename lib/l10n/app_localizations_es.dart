@@ -39,6 +39,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get fixErrors => 'Por favor corrige los errores resaltados en rojo.';
 
   @override
+  String get error_readingObject => 'Ocurrió un error inesperado al leer.';
+
+  @override
   String get error_savingObject => 'Ocurrió un error inesperado al guardar.';
 
   @override
@@ -137,6 +140,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get home_reception => 'Recepción';
+
+  @override
+  String get cattle => 'Res';
 
   @override
   String get purchase_date => 'Fecha de Compra';
@@ -920,4 +926,103 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get user_editUserPageMessage =>
       'Esta funcionalidad está en desarrollo';
+
+  @override
+  String get newSale => 'Nueva Venta';
+
+  @override
+  String get saleSavedSuccess => 'Venta guardada exitosamente';
+
+  @override
+  String get cattleFoundPending =>
+      'Ganado encontrado (Implementación pendiente)';
+
+  @override
+  String get minWeightKg => 'Peso Mín. (Kg)';
+
+  @override
+  String get scanEnterNumber => 'Escanear/Ingresar Número';
+
+  @override
+  String get salesDashboard => 'Tablero de Ventas';
+
+  @override
+  String get noOfflineSales =>
+      'No hay ventas fuera de línea pendientes de sincronización.';
+
+  @override
+  String saleWithDate(String date) {
+    return 'Venta $date';
+  }
+
+  @override
+  String totalWithAmount(String amount) {
+    return 'Total: $amount';
+  }
+
+  @override
+  String get label_measuredWeight => 'Peso Medido';
+
+  @override
+  String get label_minimumWeight => 'Peso Mínimo';
+
+  @override
+  String get label_totalCattle => 'Total Reses';
+
+  @override
+  String get error_enterCattleNumberWeight =>
+      'Por favor ingrese el número de ganado y el peso';
+
+  @override
+  String get error_enterValidWeight => 'Por favor ingrese un peso válido';
+
+  @override
+  String get error_addApprovedCattle =>
+      'Por favor agregue al menos un ganado aprobado';
+
+  @override
+  String get sale_info => 'Información de Venta';
+
+  @override
+  String get pricing_config => 'Configuración de Precios';
+
+  @override
+  String get hint_enterScanId => 'Ingresar o escanear ID';
+
+  @override
+  String get label_validating => 'Validando...';
+
+  @override
+  String get warning_set_min_weight =>
+      'Por favor configure un peso mínimo en la configuración anterior antes de agregar ganado';
+
+  @override
+  String get label_summary => 'Resumen';
+
+  @override
+  String get error_invalid_number => 'Número inválido';
+
+  @override
+  String get error_invalid_price => 'Precio inválido';
+
+  @override
+  String get label_notes_optional => 'Notas (Opcional)';
+
+  @override
+  String get label_transporter_optional => 'Transportista (Opcional)';
+
+  @override
+  String get label_buyer_required => 'Comprador *';
+
+  @override
+  String get error_buyer_required => 'Comprador es requerido';
+
+  @override
+  String get label_price_per_kg_required => 'Precio / Kg *';
+
+  @override
+  String get label_cattle_management => 'Gestión de Ganado';
+
+  @override
+  String get tracker_removed => 'Rastreador Removido';
 }

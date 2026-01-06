@@ -12,6 +12,9 @@
   "numberFormat_country":"en_US",
 
   "fixErrors": "Please fix the errors highlighted in red.",
+
+  "error_readingObject": "An unexpected error occurred while reading.",
+
   "error_savingObject": "An unexpected error occurred while saving.",
 
   "error_badRequest": "The request is invalid. Please check the data and try again.",
@@ -72,6 +75,8 @@
   "home_massiveEvent": "Massive Event",
   "home_sale": "Sale",
   "home_reception": "Reception",
+  
+  "cattle": "Cattle",
 
   "purchase_date": "Purchase Date",
   "purchase_dateRequired": "You must select a purchase date.",
@@ -371,6 +376,51 @@
   "user_editUser": "Edit User",
   "user_logout": "Logout",
   "user_editUserPageTitle": "Edit User",
-  "user_editUserPageMessage": "This feature is under development"
+  "user_editUserPageMessage": "This feature is under development",
+  
+  "newSale": "New Sale",
+  "saleSavedSuccess": "Sale saved successfully",
+  "cattleFoundPending": "Cattle found (Implementation pending)",
+  "minWeightKg": "Min Weight (Kg)",
+  "scanEnterNumber": "Scan/Enter Number",
+  "salesDashboard": "Sales Dashboard",
+  "noOfflineSales": "No offline sales pending sync.",
+  "saleWithDate": "Sale {date}",
+  "@saleWithDate": {
+    "placeholders": {
+        "date": {
+            "type": "String"
+        }
+    }
+  },
+  "totalWithAmount": "Total: {amount}",
+  "@totalWithAmount": {
+    "placeholders": {
+        "amount": {
+            "type": "String"
+        }
+    }
+  },
+  "label_measuredWeight": "Measured Weight",
+  "label_minimumWeight": "Minimum Weight",
+  "label_totalCattle": "Total Cattle",
 
+  "error_enterCattleNumberWeight": "Please enter cattle number and weight",
+  "error_enterValidWeight": "Please enter a valid weight",
+  "error_addApprovedCattle": "Please add at least one approved cattle",
+  "sale_info": "Sale Information",
+  "pricing_config": "Pricing Configuration",
+  "hint_enterScanId": "Enter or scan ID",
+  "label_validating": "Validating...",
+  "warning_set_min_weight": "Please set a minimum weight in the pricing configuration above before adding cattle",
+  "label_summary": "Summary",
+  "error_invalid_number": "Invalid number",
+  "error_invalid_price": "Invalid price",
+  "label_notes_optional": "Notes (Optional)",
+  "label_transporter_optional": "Transporter (Optional)",
+  "label_buyer_required": "Buyer *",
+  "error_buyer_required": "Buyer is required",
+  "label_price_per_kg_required": "Price / Kg *",
+  "label_cattle_management": "Cattle Management",
+  "tracker_removed": "Tracker Removed"
 }

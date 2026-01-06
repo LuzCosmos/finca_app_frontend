@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/bloc/sales_bloc.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/bloc/sales_event.dart';
@@ -32,14 +33,15 @@ class _CreateSalePageState extends State<CreateSalePage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text('New Sale')),
+      appBar: AppBar(title: Text(l10n.newSale)),
       body: BlocConsumer<SalesBloc, SalesState>(
         listener: (context, state) {
           if (state is SaleSavedSuccess) {
             Navigator.pop(context);
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Sale saved successfully')),
+              SnackBar(content: Text(l10n.saleSavedSuccess)),
             );
           }
           if (state is SalesError) {
@@ -49,7 +51,7 @@ class _CreateSalePageState extends State<CreateSalePage> {
           }
           if (state is CattleSearchSuccess) {
              ScaffoldMessenger.of(context).showSnackBar(
-               const SnackBar(content: Text('Cattle found (Implementation pending)')),
+               SnackBar(content: Text(l10n.cattleFoundPending)),
              );
           }
         },
@@ -80,17 +82,17 @@ class _CreateSalePageState extends State<CreateSalePage> {
                   _buildDatePicker(context),
                   const SizedBox(height: 16),
                   DropdownButtonFormField<String>(
-                    decoration: const InputDecoration(labelText: 'Buyer'),
+                    decoration: InputDecoration(labelText: l10n.sales_buyer),
                     value: _selectedBuyerId,
                     items: buyers.map<DropdownMenuItem<String>>((b) {
                       return DropdownMenuItem(value: b.id, child: Text(b.name));
                     }).toList(),
                     onChanged: (val) => setState(() => _selectedBuyerId = val),
-                    validator: (val) => val == null ? 'Required' : null,
+                    validator: (val) => val == null ? l10n.fieldRequired : null,
                   ),
                   const SizedBox(height: 16),
                   DropdownButtonFormField<String>(
-                    decoration: const InputDecoration(labelText: 'Transporter'),
+                    decoration: InputDecoration(labelText: l10n.provider_transporter),
                     value: _selectedTransporterId,
                     items: transporters.map<DropdownMenuItem<String>>((t) {
                       return DropdownMenuItem(value: t.id, child: Text(t.name));
@@ -103,7 +105,7 @@ class _CreateSalePageState extends State<CreateSalePage> {
                       Expanded(
                         child: TextFormField(
                           controller: _minWeightController,
-                          decoration: const InputDecoration(labelText: 'Min Weight (Kg)'),
+                          decoration: InputDecoration(labelText: l10n.minWeightKg),
                           keyboardType: TextInputType.number,
                         ),
                       ),
@@ -111,21 +113,21 @@ class _CreateSalePageState extends State<CreateSalePage> {
                       Expanded(
                         child: TextFormField(
                           controller: _priceController,
-                          decoration: const InputDecoration(labelText: 'Price / Kg'),
+                          decoration: InputDecoration(labelText: l10n.lot_pricePerKg),
                           keyboardType: TextInputType.number,
-                          validator: (val) => val == null || val.isEmpty ? 'Required' : null,
+                          validator: (val) => val == null || val.isEmpty ? l10n.fieldRequired : null,
                         ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 24),
-                  const Text('Cattle', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  Text(l10n.sales_animals, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   Row(
                     children: [
                       Expanded(
                         child: TextFormField(
                           controller: _cattleSearchController,
-                          decoration: const InputDecoration(labelText: 'Scan/Enter Number'),
+                          decoration: InputDecoration(labelText: l10n.scanEnterNumber),
                         ),
                       ),
                       IconButton(
@@ -151,7 +153,7 @@ class _CreateSalePageState extends State<CreateSalePage> {
                            // context.read<SalesBloc>().add(SaveSaleTransaction(model));
                          }
                       },
-                      child: const Text('Save Sale'),
+                      child: Text(l10n.sales_save),
                     ),
                   )
                 ],
@@ -175,7 +177,7 @@ class _CreateSalePageState extends State<CreateSalePage> {
         if (date != null) setState(() => _selectedDate = date);
       },
       child: InputDecorator(
-        decoration: const InputDecoration(labelText: 'Transaction Date'),
+        decoration: InputDecoration(labelText: l10n.sales_transactionDate),
         child: Text("${_selectedDate.toLocal()}".split(' ')[0]),
       ),
     );
