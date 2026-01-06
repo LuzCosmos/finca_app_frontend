@@ -13,7 +13,7 @@ class ReceptionApiService {
   ReceptionApiService({required this.defaultHeaders});
 
   Future<Map<String, dynamic>> getPurchaseReception(String purchaseId) async {
-    final token = await SessionService.getToken();
+    final token = await BasicApiService.getToken();
     final url = Uri.parse('$baseUrl/$purchaseId');
     var response;
     try {
@@ -75,7 +75,7 @@ class ReceptionApiService {
     String? comments,
     List<String>? idSimpleEvents,
   }) async {
-    final token = await SessionService.getToken();
+    final token = await BasicApiService.getToken();
     final body = {
       'idPurchase': idPurchase,
       'number': number,
@@ -116,7 +116,7 @@ class ReceptionApiService {
     required String animalId,
     required String lotId,
   }) async {
-    final token = await SessionService.getToken();
+    final token = await BasicApiService.getToken();
     final r = await http.patch(
       Uri.parse('$baseUrl/assign-lot-cattle'),
       headers: {...defaultHeaders,'Authorization': 'Bearer $token', 'Content-Type': 'application/json'},

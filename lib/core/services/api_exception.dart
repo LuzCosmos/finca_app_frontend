@@ -8,6 +8,7 @@ enum ApiExceptionCode {
   conflictError,
   serverError,
   savingObjectError,
+  readingObjectError,
   unknownError,
   serverConnectionError,
   notFound,
@@ -35,6 +36,9 @@ extension ApiExceptionCodeL10n on ApiExceptionCode {
         return l10n.error_serverConnection;
       case ApiExceptionCode.savingObjectError:
         return l10n.error_savingObject +
+            (objectName != null ? " $objectName" : "");
+      case ApiExceptionCode.readingObjectError:
+        return l10n.error_readingObject +
             (objectName != null ? " $objectName" : "");
       case ApiExceptionCode.notFound:
         return l10n.error_notFound(objectName ?? "");

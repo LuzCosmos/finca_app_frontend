@@ -158,6 +158,12 @@ abstract class AppLocalizations {
   /// **'Please fix the errors highlighted in red.'**
   String get fixErrors;
 
+  /// No description provided for @error_readingObject.
+  ///
+  /// In en, this message translates to:
+  /// **'An unexpected error occurred while reading.'**
+  String get error_readingObject;
+
   /// No description provided for @error_savingObject.
   ///
   /// In en, this message translates to:

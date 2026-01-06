@@ -12,6 +12,9 @@
   "numberFormat_country":"en_US",
 
   "fixErrors": "Please fix the errors highlighted in red.",
+
+  "error_readingObject": "An unexpected error occurred while reading.",
+
   "error_savingObject": "An unexpected error occurred while saving.",
 
   "error_badRequest": "The request is invalid. Please check the data and try again.",

@@ -39,6 +39,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fixErrors => 'Please fix the errors highlighted in red.';
 
   @override
+  String get error_readingObject =>
+      'An unexpected error occurred while reading.';
+
+  @override
   String get error_savingObject => 'An unexpected error occurred while saving.';
 
   @override

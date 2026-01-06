@@ -39,6 +39,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get fixErrors => 'Por favor corrige los errores resaltados en rojo.';
 
   @override
+  String get error_readingObject => 'Ocurrió un error inesperado al leer.';
+
+  @override
   String get error_savingObject => 'Ocurrió un error inesperado al guardar.';
 
   @override

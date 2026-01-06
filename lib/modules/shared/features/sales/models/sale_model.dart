@@ -70,15 +70,15 @@ class SaleModel extends Equatable {
 
   factory SaleModel.fromJson(Map<String, dynamic> json) {
     return SaleModel(
-      id: json['id'],
-      idTenant: json['id_tenant'] ?? json['idTenant'], // Support snake and camel if needed
-      transactionDate: DateTime.parse(json['transaction_date'] ?? json['transactionDate']),
-      buyerId: json['buyer_id'] ?? json['buyerId'],
+      id: json['id'] ?? '',
+      idTenant: json['id_tenant'] ?? json['idTenant'] ?? '', // Support snake and camel if needed
+      transactionDate: DateTime.tryParse(json['transaction_date'] ?? json['transactionDate'] ?? '') ?? DateTime.now(),
+      buyerId: json['buyer_id'] ?? json['buyerId'] ?? '',
       transporterId: json['transporter_id'] ?? json['transporterId'],
-      minWeightConfig: (json['min_weight_config'] ?? json['minWeightConfig'] ?? 0).toDouble(),
-      valuePerKgConfig: (json['value_per_kg_config'] ?? json['valuePerKgConfig'] ?? 0).toDouble(),
-      totalAmount: (json['total_amount'] ?? json['totalAmount'] ?? 0).toDouble(),
-      totalWeight: (json['total_weight_kg'] ?? json['totalWeightKg'] ?? 0).toDouble(), // Note: Backend DTO calls it totalWeightKg. Entity totalAmount.
+      minWeightConfig: _parseDouble(json['min_weight_config'] ?? json['minWeightConfig']),
+      valuePerKgConfig: _parseDouble(json['value_per_kg_config'] ?? json['valuePerKgConfig']),
+      totalAmount: _parseDouble(json['total_amount'] ?? json['totalAmount']),
+      totalWeight: _parseDouble(json['total_weight_kg'] ?? json['totalWeightKg']), // Note: Backend DTO calls it totalWeightKg. Entity totalAmount.
       totalCount: json['total_animal_count'] ?? json['totalAnimalCount'] ?? 0,
       notes: json['notes'],
       isSynced: true, // If from JSON (backend), it's synced.
@@ -87,6 +87,13 @@ class SaleModel extends Equatable {
           .toList() ?? [],
       buyerName: json['buyer'] != null ? json['buyer']['name'] : null,
     );
+  }
+
+  static double _parseDouble(dynamic value) {
+    if (value == null) return 0.0;
+    if (value is num) return value.toDouble();
+    if (value is String) return double.tryParse(value) ?? 0.0;
+    return 0.0;
   }
 
   Map<String, dynamic> toJson() {
@@ -102,6 +109,22 @@ class SaleModel extends Equatable {
       'totalAmount': totalAmount,
       'notes': notes,
       'details': details.map((e) => e.toJson()).toList(),
+      // 'idTenant' and 'createdBy' usually injected by backend from token
+    };
+  }
+
+  Map<String, dynamic> toJsonCreate() {
+    return {
+      'transactionDate': transactionDate.toIso8601String(), // DTO expects camelCase usually? check DTO
+      'buyerId': buyerId,
+      'transporterId': transporterId,
+      'minWeightConfig': minWeightConfig,
+      'valuePerKgConfig': valuePerKgConfig,
+      'totalAnimalCount': totalCount,
+      'totalWeightKg': totalWeight,
+      'totalAmount': totalAmount,
+      'notes': notes,
+      'details': details.map((e) => e.toJsonCreate()).toList(),
       // 'idTenant' and 'createdBy' usually injected by backend from token
     };
   }

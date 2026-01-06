@@ -12,6 +12,9 @@
   "numberFormat_country":"en_US",
 
   "fixErrors": "Por favor corrige los errores resaltados en rojo.",
+  
+  "error_readingObject": "Ocurrió un error inesperado al leer.",
+  
   "error_savingObject": "Ocurrió un error inesperado al guardar.",
 
   "error_badRequest": "La solicitud no es válida. Revisa los datos e inténtalo de nuevo.",
