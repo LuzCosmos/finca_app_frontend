@@ -57,5 +57,5 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 3; // Increment schema version to trigger migration logic if handled (Drift usually needs migration strategy but auto-create works for dev)
+  int get schemaVersion => 1; // Increment schema version to trigger migration logic if handled (Drift usually needs migration strategy but auto-create works for dev)
 }
