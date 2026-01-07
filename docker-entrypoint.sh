@@ -1,19 +1,12 @@
 #!/bin/sh
-
-# This script injects environment variables into the Flutter web app at runtime
-# by creating a JavaScript file that sets window.ENV
-
 set -e
 
-# Create env-config.js with environment variables
+: "${API_BASE_URL:?API_BASE_URL must be set via docker-compose environment}"
+
 cat > /usr/share/nginx/html/env-config.js <<EOF
 window.ENV = {
-  API_BASE_URL: "${API_BASE_URL:-http://localhost:3000/api/v1}"
+  API_BASE_URL: "${API_BASE_URL}"
 };
 EOF
 
-echo "Environment configuration created:"
-cat /usr/share/nginx/html/env-config.js
-
-# Execute the CMD
 exec "$@"
