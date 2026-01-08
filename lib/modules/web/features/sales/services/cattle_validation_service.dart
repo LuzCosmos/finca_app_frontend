@@ -2,6 +2,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
+import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 
 /// Cattle Validation Service
 /// 
@@ -12,7 +13,7 @@ class CattleValidationService {
   /// Throws exception with user-friendly message if invalid
   static Future<Map<String, dynamic>> validateCattleByNumber(String number) async {
     final token = await SessionService.getToken();
-    final baseUrl = dotenv.env['API_BASE_URL'] ?? 'http://localhost:3000';
+    final baseUrl = BasicApiService.baseUrl;
     
     final response = await http.get(
       Uri.parse('$baseUrl/cattle/validate-number/$number'),
@@ -38,7 +39,7 @@ class CattleValidationService {
     String context = 'SALE',
   }) async {
     final token = await SessionService.getToken();
-    final baseUrl = dotenv.env['API_BASE_URL'] ?? 'http://localhost:3000';
+    final baseUrl = BasicApiService.baseUrl;
     
     final response = await http.post(
       Uri.parse('$baseUrl/cattle/$cattleId/weight-history'),
@@ -64,7 +65,7 @@ class CattleValidationService {
     required double weight,
   }) async {
     final token = await SessionService.getToken();
-    final baseUrl = dotenv.env['API_BASE_URL'] ?? 'http://localhost:3000';
+    final baseUrl = BasicApiService.baseUrl;
     
     final response = await http.put(
       Uri.parse('$baseUrl/cattle/$cattleId/weight'),
@@ -86,7 +87,7 @@ class CattleValidationService {
     required String status,
   }) async {
     final token = await SessionService.getToken();
-    final baseUrl = dotenv.env['API_BASE_URL'] ?? 'http://localhost:3000';
+    final baseUrl = BasicApiService.baseUrl;
     
     final response = await http.put(
       Uri.parse('$baseUrl/cattle/bulk-status'),

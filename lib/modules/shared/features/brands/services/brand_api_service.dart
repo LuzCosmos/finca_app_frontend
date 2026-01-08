@@ -10,7 +10,7 @@ import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/brands/models/brand_model.dart';
 
 class BrandApiService {
-  static get _baseUrl => dotenv.env['API_BASE_URL'] ?? '';
+  static get _baseUrl => BasicApiService.baseUrl;
 
   static Future<List<BrandModel>> getAllBrands() async {
     final token = await SessionService.getToken();

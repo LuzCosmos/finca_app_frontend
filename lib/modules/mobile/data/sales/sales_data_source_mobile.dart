@@ -10,6 +10,7 @@ import 'package:finca_app_frontend/core/data/database/daos/sale_dao.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/data/sales_data_source.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/models/sale_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/models/sale_detail_model.dart';
+import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 
 class SalesDataSourceMobile implements ISalesDataSource {
   final AppDatabase db;
@@ -106,7 +107,7 @@ class SalesDataSourceMobile implements ISalesDataSource {
     final pendingSales = await getUnsyncedSales();
     if (pendingSales.isEmpty) return;
     
-    final baseUrl = dotenv.env['API_BASE_URL']; 
+    final baseUrl = BasicApiService.baseUrl; 
     if (baseUrl == null) {
       throw Exception('API_URL not configured');
     }
@@ -162,7 +163,7 @@ class SalesDataSourceMobile implements ISalesDataSource {
 
   @override
   Future<void> fetchCatalogs() async {
-    final baseUrl = dotenv.env['API_BASE_URL'];
+    final baseUrl = BasicApiService.baseUrl;
     if (baseUrl == null) return;
     final token = await SessionService.getToken();
     if (token == null) return;
@@ -208,7 +209,7 @@ class SalesDataSourceMobile implements ISalesDataSource {
 
   @override
   Future<PaginatedSales> getSales(SalesQuery query) async {
-    final baseUrl = dotenv.env['API_BASE_URL'];
+    final baseUrl = BasicApiService.baseUrl;
     final token = await SessionService.getToken();
     if (baseUrl == null || token == null) {
       // Offline fallback? Return empty for now.
@@ -234,7 +235,7 @@ class SalesDataSourceMobile implements ISalesDataSource {
 
   @override
   Future<void> updateSale(String id, Map<String, dynamic> updates) async {
-    final baseUrl = dotenv.env['API_BASE_URL'];
+    final baseUrl = BasicApiService.baseUrl;
     final token = await SessionService.getToken();
     if (baseUrl == null || token == null) throw Exception('Offline or No session');
 

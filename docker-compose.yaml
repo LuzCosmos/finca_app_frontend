@@ -7,7 +7,8 @@ services:
     ports:
       - '${FRONTEND_PORT}:80'
     environment:
-      API_BASE_URL: ${API_BASE_URL:-http://localhost:3000/api/v1}
+      API_BASE_URL: ${API_BASE_URL:-/api/v1}
+      BACKEND_URL: ${BACKEND_URL:-http://finca_app_backend:3000}
     networks:
       - finca_app_net
     healthcheck:

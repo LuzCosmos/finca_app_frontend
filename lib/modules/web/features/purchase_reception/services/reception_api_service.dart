@@ -7,7 +7,7 @@ import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 
 class ReceptionApiService {
-  final String baseUrl = '${dotenv.env['API_BASE_URL']}/purchase-receptions';
+  final String baseUrl = '${BasicApiService.baseUrl}/purchase-receptions';
   final Map<String, String> defaultHeaders;
 
   ReceptionApiService({required this.defaultHeaders});

@@ -8,7 +8,7 @@ import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 class AuthService {
   final http.Client client;
   AuthService({http.Client? client}) : client = client ?? http.Client();
-  static final String _baseUrl = '${dotenv.env['API_BASE_URL']}/auth/login';
+  static String get _baseUrl => '${BasicApiService.baseUrl}/auth/login';
 
   Future<Map<String, dynamic>> login({
     required String username,

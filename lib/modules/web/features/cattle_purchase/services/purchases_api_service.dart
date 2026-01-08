@@ -23,7 +23,7 @@ class PurchasesPageResult {
 }
 
 class PurchasesApiService {
-  final String baseUrl = '${dotenv.env['API_BASE_URL']}/purchases';
+  final String baseUrl = '${BasicApiService.baseUrl}/purchases';
 
   Future<void> createPurchase({
     required String idProvider,

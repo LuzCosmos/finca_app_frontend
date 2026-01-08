@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
+import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 
 /// Provider Autocomplete Field with Create Dialog
 /// 
@@ -90,7 +91,7 @@ class _ProviderAutocompleteFieldState extends State<ProviderAutocompleteField> {
 
   Future<List<Map<String, dynamic>>> _searchProviders(String name) async {
     final token = await SessionService.getToken();
-    final baseUrl = dotenv.env['API_BASE_URL'] ?? 'http://localhost:3000';
+    final baseUrl = BasicApiService.baseUrl;
     
     final response = await http.get(
       Uri.parse('$baseUrl/providers/search?name=$name&type=${widget.providerType}'),
@@ -280,7 +281,7 @@ class _CreateProviderDialogState extends State<CreateProviderDialog> {
 
     try {
       final token = await SessionService.getToken();
-      final baseUrl = dotenv.env['API_BASE_URL'] ?? 'http://localhost:3000';
+      final baseUrl = BasicApiService.baseUrl;
       
       final response = await http.post(
         Uri.parse('$baseUrl/providers'),

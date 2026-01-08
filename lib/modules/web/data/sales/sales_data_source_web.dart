@@ -12,7 +12,7 @@ import 'package:finca_app_frontend/core/services/api_exception.dart';
 
 
 class SalesDataSourceWeb implements ISalesDataSource {
-  final String baseUrl = '${dotenv.env['API_BASE_URL']}';
+  final String baseUrl = BasicApiService.baseUrl;
   @override
   Future<void> fetchCatalogs() async {
     // No-op for web if we fetch on demand, or implement caching if needed.
@@ -126,7 +126,7 @@ class SalesDataSourceWeb implements ISalesDataSource {
 
   @override
   Future<void> updateSale(String id, Map<String, dynamic> updates) async {
-    final baseUrl = dotenv.env['API_BASE_URL'];
+    final baseUrl = BasicApiService.baseUrl;
     if (baseUrl == null) throw Exception('API_URL is not configured');
 
     final token = await SessionService.getToken();
