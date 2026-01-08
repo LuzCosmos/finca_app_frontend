@@ -2,8 +2,40 @@ import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:http/http.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'dart:convert';
+import 'package:universal_html/html.dart' as html;
+import 'package:universal_html/js.dart' as js;
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class BasicApiService {
+
+  static String get baseUrl {
+    if (kIsWeb) {
+      // En Web, usamos universal_html/js.dart para acceder al contexto global (window)
+      // de forma segura y compatible con el compilador.
+      if (js.context.hasProperty('ENV')) {
+         final env = js.context['ENV'];
+         if (env is js.JsObject && env.hasProperty('API_BASE_URL')) {
+           return env['API_BASE_URL']; 
+         } 
+         // Si es mapeado como Map o dynamic por universal_html
+         // (depende de la implementación interna de js.context)
+         try {
+            // Intento acceso directo dinámico si JsObject falla o es otro tipo wrapper
+            final dynamic dEnv = env; 
+            if (dEnv != null && dEnv['API_BASE_URL'] != null) {
+              return dEnv['API_BASE_URL'].toString();
+            }
+         } catch(e) {
+           // ignore
+         }
+      }
+    }
+    // Fallback a dotenv (Development local o Mobile)
+    return dotenv.env['API_BASE_URL'] ?? 'http://localhost:3000/api/v1';
+  }
+
+
   static Future<String> getToken() async {
     final token = await SessionService.getToken();
     if (token == null || token.isEmpty) {

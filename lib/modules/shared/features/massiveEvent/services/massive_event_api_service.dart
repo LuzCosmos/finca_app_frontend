@@ -12,7 +12,7 @@ import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 
 class MassiveEventApiService {
   // Obtén baseUrl directo de dotenv (asegúrate de tener cargado dotenv antes de usar)
-  static get _baseUrl => dotenv.env['API_BASE_URL'] ?? '';
+  static get _baseUrl => BasicApiService.baseUrl;
 
   static Future<MassiveEventModel> createMassiveEvent({
     required MassiveEventModel massiveEvent,

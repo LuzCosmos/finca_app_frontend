@@ -9,7 +9,7 @@ import 'package:finca_app_frontend/core/utils/logger.dart';
 import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 
 class ProviderService {
-  final String baseUrl = '${dotenv.env['API_BASE_URL']}/providers';
+  final String baseUrl = '${BasicApiService.baseUrl}/providers';
 
   Future<List<ProviderModel>> searchByNit(String query) async {
     final token = await SessionService.getToken();
