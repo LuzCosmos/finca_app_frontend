@@ -11,6 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:finca_app_frontend/modules/web/features/purchase_reception/pages/purchase_reception_page.dart';
 import 'package:finca_app_frontend/modules/web/features/cattle_purchase/pages/purchases_list_page.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
+import 'package:finca_app_frontend/modules/shared/features/users/pages/users_list_page.dart';
 
 // Conditional imports para data source específico de plataforma
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/data/massive_event_page_data_source_stub.dart'
@@ -58,6 +59,10 @@ final GoRouter appRouter = GoRouter(
           child: const MassiveEventPage(),
         );
       },
+    ),
+    GoRoute(
+      path: '/users',
+      builder: (context, state) => const UsersListPage(),
     ),
     GoRoute(
       path: '/purchase/reception/:purchaseId',

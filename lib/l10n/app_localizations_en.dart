@@ -12,6 +12,73 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appTitle => 'Finca App';
 
   @override
+  String get users => 'Users';
+
+  @override
+  String get usersList => 'Users List';
+
+  @override
+  String get createUser => 'Create User';
+
+  @override
+  String get editUser => 'Edit User';
+
+  @override
+  String get deleteUser => 'Delete User';
+
+  @override
+  String get userCreatedSuccess => 'User created successfully';
+
+  @override
+  String get userUpdatedSuccess => 'User updated successfully';
+
+  @override
+  String get userDeletedSuccess => 'User deleted successfully';
+
+  @override
+  String get userDeleteConfirmTitle => 'Delete User';
+
+  @override
+  String get userDeleteConfirmBody =>
+      'Are you sure you want to delete this user? This action cannot be undone.';
+
+  @override
+  String get selectRole => 'Select Role';
+
+  @override
+  String get role => 'Role';
+
+  @override
+  String get confirmPassword => 'Confirm Password';
+
+  @override
+  String get passwordMismatch => 'Passwords do not match';
+
+  @override
+  String get noUsersFound => 'No users found';
+
+  @override
+  String get firstName => 'First Name';
+
+  @override
+  String get lastName => 'Last Name';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get username => 'Username';
+
+  @override
+  String get password => 'Password';
+
+  @override
+  String get search => 'Search';
+
+  @override
+  String get optional => 'Optional';
+
+  @override
   String get fieldRequired => 'This field is mandatory';
 
   @override

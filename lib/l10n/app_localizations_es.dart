@@ -12,6 +12,73 @@ class AppLocalizationsEs extends AppLocalizations {
   String get appTitle => 'Finca App';
 
   @override
+  String get users => 'Usuarios';
+
+  @override
+  String get usersList => 'Lista de Usuarios';
+
+  @override
+  String get createUser => 'Crear Usuario';
+
+  @override
+  String get editUser => 'Editar Usuario';
+
+  @override
+  String get deleteUser => 'Eliminar Usuario';
+
+  @override
+  String get userCreatedSuccess => 'Usuario creado exitosamente';
+
+  @override
+  String get userUpdatedSuccess => 'Usuario actualizado exitosamente';
+
+  @override
+  String get userDeletedSuccess => 'Usuario eliminado exitosamente';
+
+  @override
+  String get userDeleteConfirmTitle => 'Eliminar Usuario';
+
+  @override
+  String get userDeleteConfirmBody =>
+      '¿Estás seguro de que deseas eliminar este usuario? Esta acción no se puede deshacer.';
+
+  @override
+  String get selectRole => 'Seleccionar Rol';
+
+  @override
+  String get role => 'Rol';
+
+  @override
+  String get confirmPassword => 'Confirmar Contraseña';
+
+  @override
+  String get passwordMismatch => 'Las contraseñas no coinciden';
+
+  @override
+  String get noUsersFound => 'No se encontraron usuarios';
+
+  @override
+  String get firstName => 'Nombre';
+
+  @override
+  String get lastName => 'Apellido';
+
+  @override
+  String get email => 'Correo Electrónico';
+
+  @override
+  String get username => 'Nombre de Usuario';
+
+  @override
+  String get password => 'Contraseña';
+
+  @override
+  String get search => 'Buscar';
+
+  @override
+  String get optional => 'Opcional';
+
+  @override
   String get fieldRequired => 'Este campo es obligatorio';
 
   @override
