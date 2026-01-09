@@ -52,6 +52,13 @@ class HomePage extends StatelessWidget {
                 icon: Icons.monetization_on,
                 route: "/sales",
               ),
+              HomeOptionWithPermission(
+                module: "EMP_MGMT",
+                resource: "users",
+                title: l10n.users,
+                icon: Icons.people,
+                route: "/users",
+              ),
             ],
           ),
         ),
