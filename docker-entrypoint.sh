@@ -5,11 +5,12 @@ set -e
 # Default backend URL if not set
 export BACKEND_URL="${BACKEND_URL:-http://finca_app_backend:3000}"
 
-cat > /usr/share/nginx/html/env-config.js <<EOF
-window.ENV = {
-  API_BASE_URL: "${API_BASE_URL}"
-};
-EOF
+# Construct the configuration script
+CONFIG_CONTENT="window.ENV = { API_BASE_URL: \"${API_BASE_URL}\" };"
+
+# Inject configuration directly into index.html
+# Replaces <script src="env-config.js"></script> with the actual script
+sed -i "s|<script src=\"env-config.js\"></script>|<script>${CONFIG_CONTENT}</script>|g" /usr/share/nginx/html/index.html
 
 # Security: Remove .env file from assets if it exists to prevent exposure
 if [ -f /usr/share/nginx/html/assets/.env ]; then
@@ -17,8 +18,7 @@ if [ -f /usr/share/nginx/html/assets/.env ]; then
     echo "Secured: Removed .env file from assets"
 fi
 
-echo "Generated env-config.js:"
-cat /usr/share/nginx/html/env-config.js
+echo "Injected configuration into index.html: ${CONFIG_CONTENT}"
 
 # Inyectar BACKEND_URL en nginx.conf
 sed -i "s|{{BACKEND_URL}}|${BACKEND_URL}|g" /etc/nginx/nginx.conf
