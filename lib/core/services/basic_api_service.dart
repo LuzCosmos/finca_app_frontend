@@ -14,21 +14,27 @@ class BasicApiService {
       // En Web, usamos universal_html/js.dart para acceder al contexto global (window)
       // de forma segura y compatible con el compilador.
       if (js.context.hasProperty('ENV')) {
+         print('BasicApiService: Found ENV in window');
          final env = js.context['ENV'];
+         
+         // 1. Try as simple dynamic map access (most common in universal_html)
+         try {
+            final val = (env as dynamic)['API_BASE_URL'];
+            if (val != null) {
+               print('BasicApiService: Found API_BASE_URL via dynamic access: $val');
+               return val.toString();
+            }
+         } catch (e) {
+            print('BasicApiService: Dynamic access failed: $e');
+         }
+
+         // 2. Try as JsObject
          if (env is js.JsObject && env.hasProperty('API_BASE_URL')) {
+           print('BasicApiService: Found API_BASE_URL via JsObject');
            return env['API_BASE_URL']; 
          } 
-         // Si es mapeado como Map o dynamic por universal_html
-         // (depende de la implementación interna de js.context)
-         try {
-            // Intento acceso directo dinámico si JsObject falla o es otro tipo wrapper
-            final dynamic dEnv = env; 
-            if (dEnv != null && dEnv['API_BASE_URL'] != null) {
-              return dEnv['API_BASE_URL'].toString();
-            }
-         } catch(e) {
-           // ignore
-         }
+      } else {
+         print('BasicApiService: ENV not found in window');
       }
     }
     // Fallback a dotenv (Development local o Mobile)
