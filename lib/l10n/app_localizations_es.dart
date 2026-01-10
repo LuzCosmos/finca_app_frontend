@@ -1092,4 +1092,20 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get tracker_removed => 'Rastreador Removido';
+
+  @override
+  String get user_usernameLengthError =>
+      'El nombre de usuario debe tener entre 5 y 50 caracteres';
+
+  @override
+  String get user_firstNameLengthError =>
+      'El nombre debe tener como máximo 50 caracteres';
+
+  @override
+  String get user_lastNameLengthError =>
+      'El apellido debe tener como máximo 50 caracteres';
+
+  @override
+  String get user_passwordLengthError =>
+      'La contraseña debe tener entre 8 y 50 caracteres';
 }

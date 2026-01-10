@@ -100,8 +100,6 @@ flutter:
   uses-material-design: true
   generate: true #Para que se genere el archivo de localizaciones (app_localizations.dart)
   assets:
-    - assets/images/
-    - assets/icons/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

@@ -423,5 +423,9 @@
   "error_buyer_required": "Comprador es requerido",
   "label_price_per_kg_required": "Precio / Kg *",
   "label_cattle_management": "Gestión de Ganado",
-  "tracker_removed": "Rastreador Removido"
+  "tracker_removed": "Rastreador Removido",
+  "user_usernameLengthError": "El nombre de usuario debe tener entre 5 y 50 caracteres",
+  "user_firstNameLengthError": "El nombre debe tener como máximo 50 caracteres",
+  "user_lastNameLengthError": "El apellido debe tener como máximo 50 caracteres",
+  "user_passwordLengthError": "La contraseña debe tener entre 8 y 50 caracteres"
 }

@@ -2119,6 +2119,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tracker Removed'**
   String get tracker_removed;
+
+  /// No description provided for @user_usernameLengthError.
+  ///
+  /// In en, this message translates to:
+  /// **'Username must be between 5 and 50 characters'**
+  String get user_usernameLengthError;
+
+  /// No description provided for @user_firstNameLengthError.
+  ///
+  /// In en, this message translates to:
+  /// **'First name must be at most 50 characters'**
+  String get user_firstNameLengthError;
+
+  /// No description provided for @user_lastNameLengthError.
+  ///
+  /// In en, this message translates to:
+  /// **'Last name must be at most 50 characters'**
+  String get user_lastNameLengthError;
+
+  /// No description provided for @user_passwordLengthError.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be between 8 and 50 characters'**
+  String get user_passwordLengthError;
 }
 
 class _AppLocalizationsDelegate

@@ -1086,4 +1086,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tracker_removed => 'Tracker Removed';
+
+  @override
+  String get user_usernameLengthError =>
+      'Username must be between 5 and 50 characters';
+
+  @override
+  String get user_firstNameLengthError =>
+      'First name must be at most 50 characters';
+
+  @override
+  String get user_lastNameLengthError =>
+      'Last name must be at most 50 characters';
+
+  @override
+  String get user_passwordLengthError =>
+      'Password must be between 8 and 50 characters';
 }

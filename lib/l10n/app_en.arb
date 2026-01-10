@@ -444,5 +444,9 @@
   "error_buyer_required": "Buyer is required",
   "label_price_per_kg_required": "Price / Kg *",
   "label_cattle_management": "Cattle Management",
-  "tracker_removed": "Tracker Removed"
+  "tracker_removed": "Tracker Removed",
+  "user_usernameLengthError": "Username must be between 5 and 50 characters",
+  "user_firstNameLengthError": "First name must be at most 50 characters",
+  "user_lastNameLengthError": "Last name must be at most 50 characters",
+  "user_passwordLengthError": "Password must be between 8 and 50 characters"
 }

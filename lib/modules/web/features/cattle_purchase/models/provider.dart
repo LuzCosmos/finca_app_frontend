@@ -20,3 +20,9 @@ class ProviderModel {
   @override
   String toString() => '$name ($nit)';
 }
+
+class ProviderType {
+  static const String PROVIDER = 'PROVIDER';
+  static const String BUYER = 'BUYER';
+  static const String TRANSPORTER = 'TRANSPORTER';
+}

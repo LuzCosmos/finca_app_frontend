@@ -48,6 +48,7 @@ class ProviderService {
   Future<ProviderModel> create({
     required String name,
     required String nit,
+    required String type
   }) async {
     final token = await SessionService.getToken();
     final url = Uri.parse(baseUrl);
@@ -59,7 +60,7 @@ class ProviderService {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
         },
-        body: jsonEncode({'name': name, 'nit': nit}),
+        body: jsonEncode({'name': name, 'nit': nit, 'type': type}),
       );
     } catch (e) {
       if (e is SocketException || e is http.ClientException) {
