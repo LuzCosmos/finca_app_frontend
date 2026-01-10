@@ -31,8 +31,11 @@ migrate_working_dir/
 .flutter-plugins-dependencies
 .pub-cache/
 .pub/
-/build/
 
+/build/**
+!/build/
+!/build/web/
+!/build/web/**
 # Symbolication related
 app.*.symbols
 
@@ -46,7 +49,6 @@ app.*.map.json
 
 
 # iOS
-build/
 *.pbxuser
 *.mode1v3
 *.mode2v3
