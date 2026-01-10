@@ -1736,6 +1736,18 @@ abstract class AppLocalizations {
   /// **'Error creating provider'**
   String get provider_createError;
 
+  /// No description provided for @provider_nitLengthError.
+  ///
+  /// In en, this message translates to:
+  /// **'NIT must be between 5 and 20 characters'**
+  String get provider_nitLengthError;
+
+  /// No description provided for @provider_nameLengthError.
+  ///
+  /// In en, this message translates to:
+  /// **'Name must be between 3 and 50 characters'**
+  String get provider_nameLengthError;
+
   /// No description provided for @cattle_validation_validating.
   ///
   /// In en, this message translates to:

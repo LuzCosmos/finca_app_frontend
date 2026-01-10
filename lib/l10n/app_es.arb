@@ -356,6 +356,8 @@
   "provider_creating": "Creando...",
   "provider_createdSuccess": "Proveedor creado exitosamente",
   "provider_createError": "Error al crear proveedor",
+  "provider_nitLengthError": "El NIT debe tener entre 5 y 20 caracteres",
+  "provider_nameLengthError": "El nombre debe tener entre 3 y 50 caracteres",
 
   "cattle_validation_validating": "Validando ganado...",
   "cattle_validation_invalid": "Número de ganado inválido",

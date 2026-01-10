@@ -880,6 +880,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get provider_createError => 'Error creating provider';
 
   @override
+  String get provider_nitLengthError =>
+      'NIT must be between 5 and 20 characters';
+
+  @override
+  String get provider_nameLengthError =>
+      'Name must be between 3 and 50 characters';
+
+  @override
   String get cattle_validation_validating => 'Validating cattle...';
 
   @override
