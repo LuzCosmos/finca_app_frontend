@@ -18,6 +18,7 @@ import 'package:finca_app_frontend/core/data/database/daos/animal_simple_event_d
 import 'package:finca_app_frontend/core/data/database/tables/cattle_local.dart';
 import 'package:finca_app_frontend/core/data/database/tables/provider_local.dart';
 import 'package:finca_app_frontend/core/data/database/tables/sale_local.dart';
+import 'package:finca_app_frontend/core/data/database/tables/sale_detail_local.dart';
 import 'package:finca_app_frontend/core/data/database/daos/cattle_dao.dart';
 import 'package:finca_app_frontend/core/data/database/daos/provider_dao.dart';
 import 'package:finca_app_frontend/core/data/database/daos/sale_dao.dart';

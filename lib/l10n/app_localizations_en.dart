@@ -880,6 +880,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get provider_createError => 'Error creating provider';
 
   @override
+  String get provider_nitLengthError =>
+      'NIT must be between 5 and 20 characters';
+
+  @override
+  String get provider_nameLengthError =>
+      'Name must be between 3 and 50 characters';
+
+  @override
   String get cattle_validation_validating => 'Validating cattle...';
 
   @override
@@ -1086,4 +1094,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tracker_removed => 'Tracker Removed';
+
+  @override
+  String get user_usernameLengthError =>
+      'Username must be between 5 and 50 characters';
+
+  @override
+  String get user_firstNameLengthError =>
+      'First name must be at most 50 characters';
+
+  @override
+  String get user_lastNameLengthError =>
+      'Last name must be at most 50 characters';
+
+  @override
+  String get user_passwordLengthError =>
+      'Password must be between 8 and 50 characters';
 }

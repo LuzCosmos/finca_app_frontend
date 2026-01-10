@@ -356,6 +356,8 @@
   "provider_creating": "Creando...",
   "provider_createdSuccess": "Proveedor creado exitosamente",
   "provider_createError": "Error al crear proveedor",
+  "provider_nitLengthError": "El NIT debe tener entre 5 y 20 caracteres",
+  "provider_nameLengthError": "El nombre debe tener entre 3 y 50 caracteres",
 
   "cattle_validation_validating": "Validando ganado...",
   "cattle_validation_invalid": "Número de ganado inválido",
@@ -423,5 +425,9 @@
   "error_buyer_required": "Comprador es requerido",
   "label_price_per_kg_required": "Precio / Kg *",
   "label_cattle_management": "Gestión de Ganado",
-  "tracker_removed": "Rastreador Removido"
+  "tracker_removed": "Rastreador Removido",
+  "user_usernameLengthError": "El nombre de usuario debe tener entre 5 y 50 caracteres",
+  "user_firstNameLengthError": "El nombre debe tener como máximo 50 caracteres",
+  "user_lastNameLengthError": "El apellido debe tener como máximo 50 caracteres",
+  "user_passwordLengthError": "La contraseña debe tener entre 8 y 50 caracteres"
 }

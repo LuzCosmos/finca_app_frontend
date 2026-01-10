@@ -363,6 +363,8 @@
   "provider_creating": "Creating...",
   "provider_createdSuccess": "Provider created successfully",
   "provider_createError": "Error creating provider",
+  "provider_nitLengthError": "NIT must be between 5 and 20 characters",
+  "provider_nameLengthError": "Name must be between 3 and 50 characters",
 
   "cattle_validation_validating": "Validating cattle...",
   "cattle_validation_invalid": "Invalid cattle number",
@@ -444,5 +446,9 @@
   "error_buyer_required": "Buyer is required",
   "label_price_per_kg_required": "Price / Kg *",
   "label_cattle_management": "Cattle Management",
-  "tracker_removed": "Tracker Removed"
+  "tracker_removed": "Tracker Removed",
+  "user_usernameLengthError": "Username must be between 5 and 50 characters",
+  "user_firstNameLengthError": "First name must be at most 50 characters",
+  "user_lastNameLengthError": "Last name must be at most 50 characters",
+  "user_passwordLengthError": "Password must be between 8 and 50 characters"
 }

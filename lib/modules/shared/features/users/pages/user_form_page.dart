@@ -180,21 +180,33 @@ class _UserFormPageState extends State<UserFormPage> {
               TextFormField(
                 controller: _usernameCtrl,
                 decoration: InputDecoration(labelText: t.username),
-                validator: (v) => (v == null || v.isEmpty) ? t.fieldRequired : null,
+                validator: (v) {
+                  if (v == null || v.isEmpty) return t.fieldRequired;
+                  if (v.length < 5 || v.length > 50) return t.user_usernameLengthError;
+                  return null;
+                },
               ),
               const SizedBox(height: 16),
               
               TextFormField(
                 controller: _firstNameCtrl,
                 decoration: InputDecoration(labelText: t.firstName),
-                validator: (v) => (v == null || v.isEmpty) ? t.fieldRequired : null,
+                validator: (v) {
+                  if (v == null || v.isEmpty) return t.fieldRequired;
+                  if (v.length > 50) return t.user_firstNameLengthError;
+                  return null;
+                },
               ),
               const SizedBox(height: 16),
               
               TextFormField(
                 controller: _lastNameCtrl,
                 decoration: InputDecoration(labelText: t.lastName),
-                validator: (v) => (v == null || v.isEmpty) ? t.fieldRequired : null,
+                validator: (v) {
+                  if (v == null || v.isEmpty) return t.fieldRequired;
+                  if (v.length > 50) return t.user_lastNameLengthError;
+                  return null;
+                },
               ),
               const SizedBox(height: 16),
 
@@ -233,7 +245,11 @@ class _UserFormPageState extends State<UserFormPage> {
                   controller: _passwordCtrl,
                   decoration: InputDecoration(labelText: t.password),
                   obscureText: true,
-                  validator: (v) => (v == null || v.isEmpty) ? t.fieldRequired : null,
+                  validator: (v) {
+                    if (v == null || v.isEmpty) return t.fieldRequired;
+                    if (v.length < 8 || v.length > 50) return t.user_passwordLengthError;
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 16),
                 TextFormField(

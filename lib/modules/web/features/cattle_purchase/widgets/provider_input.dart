@@ -24,6 +24,7 @@ class ProviderInput extends StatefulWidget {
 }
 
 class _ProviderInputState extends State<ProviderInput> {
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   bool _providerExists = false;
   bool _isLoading = false;
@@ -37,12 +38,17 @@ class _ProviderInputState extends State<ProviderInput> {
     final l10n = AppLocalizations.of(context)!;
     final nit = _enteredNit.trim();
     final name = _nameController.text.trim();
+    // Validate form
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
     if (nit.isEmpty || name.isEmpty || _providerExists) return;
 
     setState(() => _isLoading = true);
 
     try {
-      final created = await _service.create(name: name, nit: nit);
+      final created = await _service.create(name: name, nit: nit, type: ProviderType.PROVIDER);
       _selectedProvider = created;
       _providerExists = true;
       _cachedSuggestions.add(created);
@@ -98,9 +104,12 @@ class _ProviderInputState extends State<ProviderInput> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+    return Form(
+      key: _formKey,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
         Row(
           children: [
             Flexible(
@@ -182,11 +191,15 @@ class _ProviderInputState extends State<ProviderInput> {
                               : null,
                     ),
                     keyboardType: TextInputType.number,
-                    validator:
-                        (val) =>
-                            val == null || val.isEmpty
-                                ? l10n.provider_nitIsRequired
-                                : null,
+                    validator: (val) {
+                      if (val == null || val.isEmpty) {
+                        return l10n.provider_nitIsRequired;
+                      }
+                      if (val.length < 5 || val.length > 20) {
+                        return l10n.provider_nitLengthError;
+                      }
+                      return null;
+                    },
                   );
                 },
                 onSelected: (ProviderModel selected) {
@@ -231,11 +244,15 @@ class _ProviderInputState extends State<ProviderInput> {
                   labelStyle: const TextStyle(fontSize: 9),
                 ),
                 enabled: !_providerExists,
-                validator:
-                    (val) =>
-                        val == null || val.isEmpty
-                            ? l10n.cp_error_providerRequired
-                            : null,
+                validator: (val) {
+                  if (val == null || val.isEmpty) {
+                    return l10n.cp_error_providerRequired;
+                  }
+                  if (val.length < 3 || val.length > 50) {
+                    return l10n.provider_nameLengthError;
+                  }
+                  return null;
+                },
               ),
             ),
           ],
@@ -249,7 +266,8 @@ class _ProviderInputState extends State<ProviderInput> {
             icon: const Icon(Icons.add),
             label: Text(l10n.provider_create),
           ),
-      ],
+        ],
+      ),
     );
   }
 }

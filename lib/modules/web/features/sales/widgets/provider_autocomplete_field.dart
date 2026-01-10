@@ -339,6 +339,7 @@ class _CreateProviderDialogState extends State<CreateProviderDialog> {
         width: 500,
         child: Form(
           key: _formKey,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           child: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -350,7 +351,11 @@ class _CreateProviderDialogState extends State<CreateProviderDialog> {
                     labelText: '${l10n?.provider_providerName ?? 'Provider Name'} *',
                     border: const OutlineInputBorder(),
                   ),
-                  validator: (val) => val == null || val.trim().isEmpty ? (l10n?.fieldRequired ?? 'Required') : null,
+                  validator: (val) {
+                    if (val == null || val.trim().isEmpty) return (l10n?.fieldRequired ?? 'Required');
+                    if (val.trim().length < 3 || val.trim().length > 50) return (l10n?.provider_nameLengthError ?? 'Name must be between 3 and 50 characters');
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 16),
 
@@ -361,7 +366,11 @@ class _CreateProviderDialogState extends State<CreateProviderDialog> {
                     labelText: '${l10n?.provider_nit ?? 'NIT'} *',
                     border: const OutlineInputBorder(),
                   ),
-                  validator: (val) => val == null || val.trim().isEmpty ? (l10n?.fieldRequired ?? 'Required') : null,
+                  validator: (val) {
+                    if (val == null || val.trim().isEmpty) return (l10n?.fieldRequired ?? 'Required');
+                    if (val.trim().length < 5 || val.trim().length > 20) return (l10n?.provider_nitLengthError ?? 'NIT must be between 5 and 20 characters');
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 16),
 
