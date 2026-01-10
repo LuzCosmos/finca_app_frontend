@@ -6,10 +6,14 @@ import 'package:finca_app_frontend/core/utils/language.dart';
 import 'router/router.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:finca_app_frontend/core/theme/theme.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: ".env");
+  if (!kIsWeb) {
+    await dotenv.load(fileName: '.env');
+  }
   runApp(const MainApp());
 }
 

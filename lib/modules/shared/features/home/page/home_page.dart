@@ -58,6 +58,7 @@ class HomePage extends StatelessWidget {
                 title: l10n.users,
                 icon: Icons.people,
                 route: "/users",
+                forWebOnly: false,
               ),
             ],
           ),
