@@ -27,12 +27,16 @@ class HomeOptionWithPermission extends StatelessWidget {
     return FutureBuilder<bool>(
       future: SessionService.hasPermission(module, resource),
       builder: (context, snapshot) {
-        if (snapshot.connectionState != ConnectionState.done ||
-            !(snapshot.data ?? false)) {
+        if (snapshot.connectionState != ConnectionState.done) {
+          return const SizedBox();
+        }
+        if (!(snapshot.data ?? false)) {
+          print('HomeOptionWithPermission: Hidden $title due to missing permission ($module/$resource)');
           return const SizedBox();
         }
         if (forWebOnly && !PlatformService().isWeb()) {
-          return const SizedBox();
+           print('HomeOptionWithPermission: Hidden $title due to platform constraint (Web only)');
+           return const SizedBox();
         }
         return HomeOptionCard(
           title: title,
