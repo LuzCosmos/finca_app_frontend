@@ -11,6 +11,15 @@ window.ENV = {
 };
 EOF
 
+# Security: Remove .env file from assets if it exists to prevent exposure
+if [ -f /usr/share/nginx/html/assets/.env ]; then
+    rm -f /usr/share/nginx/html/assets/.env
+    echo "Secured: Removed .env file from assets"
+fi
+
+echo "Generated env-config.js:"
+cat /usr/share/nginx/html/env-config.js
+
 # Inyectar BACKEND_URL en nginx.conf
 sed -i "s|{{BACKEND_URL}}|${BACKEND_URL}|g" /etc/nginx/nginx.conf
 
