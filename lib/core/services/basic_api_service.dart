@@ -11,34 +11,39 @@ class BasicApiService {
 
   static String get baseUrl {
     if (kIsWeb) {
-      // En Web, usamos universal_html/js.dart para acceder al contexto global (window)
-      // de forma segura y compatible con el compilador.
       if (js.context.hasProperty('ENV')) {
-         print('BasicApiService: Found ENV in window');
+         print('BasicApiService: check ENV property...');
          final env = js.context['ENV'];
-         
-         // 1. Try as simple dynamic map access (most common in universal_html)
-         try {
-            final val = (env as dynamic)['API_BASE_URL'];
-            if (val != null) {
-               print('BasicApiService: Found API_BASE_URL via dynamic access: $val');
-               return val.toString();
+         // Verify if it is a JsObject (standard valid case)
+         if (env is js.JsObject) {
+            if (env.hasProperty('API_BASE_URL')) {
+               final val = env['API_BASE_URL'];
+               print('BasicApiService: ENV.API_BASE_URL found: $val');
+               if (val != null) {
+                 return val.toString();
+               }
+            } else {
+               print('BasicApiService: ENV object found but no API_BASE_URL property');
             }
-         } catch (e) {
-            print('BasicApiService: Dynamic access failed: $e');
+         } else {
+            // Fallback for some browsers/compilers treating it as a Map/dynamic
+             print('BasicApiService: ENV is not JsObject, trying dynamic read...');
+             try {
+                final val = (env as dynamic)['API_BASE_URL'];
+                print('BasicApiService: dynamic read result: $val');
+                if (val != null) {
+                   return val.toString();
+                }
+             } catch (e) {
+                print('BasicApiService: dynamic read failed: $e');
+             }
          }
-
-         // 2. Try as JsObject
-         if (env is js.JsObject && env.hasProperty('API_BASE_URL')) {
-           print('BasicApiService: Found API_BASE_URL via JsObject');
-           return env['API_BASE_URL']; 
-         } 
       } else {
-         print('BasicApiService: ENV not found in window');
+         print('BasicApiService: window.ENV not found');
       }
     }
     // Fallback a dotenv (Development local o Mobile)
-    return dotenv.env['API_BASE_URL'] ?? 'http://localhost:3000/api/v1';
+    return dotenv.env['API_BASE_URL'] ?? '/api/v1';
   }
 
 
