@@ -2,6 +2,12 @@
 set -e
 
 : "${API_BASE_URL:?API_BASE_URL must be set via docker-compose environment}"
+
+if [ "${API_BASE_URL}" = "null" ]; then
+    echo "Error: API_BASE_URL environment variable is set to the literal string 'null'. Please provide a valid URL."
+    exit 1
+fi
+
 # Default backend URL if not set
 export BACKEND_URL="${BACKEND_URL:-http://finca_app_backend:3000}"
 
