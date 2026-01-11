@@ -35,14 +35,18 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Lowercase Repo URL
+        run: |
+          echo "REPO_LC=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
+
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}/finca-frontend:latest
-            ghcr.io/${{ github.repository }}/finca-frontend:${{ github.sha }}
+            ghcr.io/${{ env.REPO_LC }}/finca-frontend:latest
+            ghcr.io/${{ env.REPO_LC }}/finca-frontend:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           platforms: linux/amd64
