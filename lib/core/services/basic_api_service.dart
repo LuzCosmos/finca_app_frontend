@@ -19,7 +19,7 @@ class BasicApiService {
             if (env.hasProperty('API_BASE_URL')) {
                final val = env['API_BASE_URL'];
                print('BasicApiService: ENV.API_BASE_URL found: $val');
-               if (val != null) {
+               if (val != null && val.toString().toLowerCase() != 'null' && val.toString().trim().isNotEmpty) {
                  return val.toString();
                }
             } else {
@@ -31,7 +31,7 @@ class BasicApiService {
              try {
                 final val = (env as dynamic)['API_BASE_URL'];
                 print('BasicApiService: dynamic read result: $val');
-                if (val != null) {
+                if (val != null && val.toString().toLowerCase() != 'null' && val.toString().trim().isNotEmpty) {
                    return val.toString();
                 }
              } catch (e) {
