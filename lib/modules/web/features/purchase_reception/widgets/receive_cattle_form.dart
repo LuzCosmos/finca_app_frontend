@@ -564,6 +564,7 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
               ? null
               : _eartagController.text.trim(),
       'idDevice': _selectedDeviceId, // Use selected ID
+      'deviceName': _trackerController.text, // Pass the name for consistency
       'comments':
           _commentsController.text.trim().isEmpty
               ? null
