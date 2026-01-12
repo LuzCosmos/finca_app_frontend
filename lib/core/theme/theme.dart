@@ -1,143 +1,115 @@
 import 'package:flutter/material.dart';
 
+
 class AppTheme {
+  
+  // 0xFF7CA77C first green
+  // 0xFF6CA36C
+  // 014325
+  static const Color kPrimary = Color(0xFF2C5545);
+
+  // Un "inversePrimary" claro y coherente con 2C5545 (verde suave, no menta neón)
+  static const Color kInversePrimary = Color(0xFF9FD4C0);
+
+  // Container más claro derivado (puedes cambiarlo si lo quieres más oscuro/claro)
+  static const Color kPrimaryContainer = Color(0xFF4F7A69);
+
   static ThemeData lightTheme = ThemeData(
     useMaterial3: true,
+
     colorScheme: ColorScheme.fromSeed(
-      seedColor: const Color.fromARGB(
-        255,
-        152,
-        175,
-        152,
-      ), // verde más suave y menos saturado
-      //brightness: Brightness.light,
+      seedColor: kPrimary,
+      brightness: Brightness.light,
     ).copyWith(
-      primary: const Color(0xFF7CA77C), // Verde principal más suave
-      onPrimary: Colors.white, // Texto en contraste cuando sea necesario
-      primaryContainer: const Color(0xFFBFD9BF), // Verde muy claro para fondos
-      //secondary: const Color(0xFF9BC89B), // Verde complementario suave
-      //onSecondary: Colors.black, // Texto oscuro sobre fondos secundarios
-      surface: const Color(0xFFF9FBF9), // Fondo claro
-      onSurface: const Color(0xFF333533), // Texto principal oscuro
+      primary: kPrimary,
+      onPrimary: Colors.white,
+
+      inversePrimary: kInversePrimary,
+
+      primaryContainer: kPrimaryContainer,
+      onPrimaryContainer: Colors.white,
+
+      // Puedes dejar tus secundarios tal cual o afinarlos luego
+      secondary: const Color(0xFF6FA88B),
+      onSecondary: const Color(0xFF0F241B),
+
+      surface: const Color(0xFFF6FAF8),
+      onSurface: const Color(0xFF1E2D26),
+
+      background: const Color(0xFFF6FAF8),
+      onBackground: const Color(0xFF1E2D26),
     ),
+
     appBarTheme: const AppBarTheme(
-      backgroundColor: Color(0xFF7CA77C), // Verde más suave para AppBar
-      foregroundColor: Colors.white, // Texto e íconos en AppBar
+      backgroundColor: kPrimary,
+      foregroundColor: Colors.white,
       centerTitle: true,
+      elevation: 0,
+      // Útil en Material 3 para evitar “tint” raro
+      surfaceTintColor: Colors.transparent,
       titleTextStyle: TextStyle(
-        fontSize: 30,
+        fontSize: 28,
         fontWeight: FontWeight.w600,
         color: Colors.white,
       ),
-      elevation: 0,
     ),
+
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFFE8F2E8), // Fondo claro para botones
-        foregroundColor: const Color(
-          0xFF7CA77C,
-        ), // Texto por defecto oscuro para no saturar
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        backgroundColor: kPrimary,
+        foregroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        textStyle: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     ),
-    textButtonTheme: TextButtonThemeData(
-      style: TextButton.styleFrom(
-        foregroundColor: const Color(
-          0xFF7CA77C,
-        ), // Verde suave para texto de botón
-        textStyle: const TextStyle(fontWeight: FontWeight.w600),
-      ),
-    ),
-    inputDecorationTheme: InputDecorationTheme(
-      filled: false,
-      //fillColor: const Color(0xFFF0F5F0),
-      /*border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
-        borderSide: const BorderSide(color: Color(0xFFB5D6B4)),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
-        borderSide: const BorderSide(color: Color(0xFF7CA77C), width: 2),
-      ),*/
-      floatingLabelStyle: const TextStyle(color: Color(0xFF374137)),
-    ),
-    textTheme: const TextTheme(
-      bodyLarge: TextStyle(
-        fontSize: 16,
-        //fontWeight: FontWeight.w400,
-        color: Color(0xFF374137),
-      ),
-    ),
+
     filledButtonTheme: FilledButtonThemeData(
       style: ButtonStyle(
-        backgroundColor: const WidgetStatePropertyAll<Color>(Color(0xFF7CA77C)),
-        foregroundColor: const WidgetStatePropertyAll<Color>(Colors.white),
-        shape: WidgetStatePropertyAll<OutlinedBorder>(
+        backgroundColor: const WidgetStatePropertyAll(kPrimary),
+        foregroundColor: const WidgetStatePropertyAll(Colors.white),
+        shape: WidgetStatePropertyAll(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
         ),
-        padding: const WidgetStatePropertyAll<EdgeInsetsGeometry>(
+        padding: const WidgetStatePropertyAll(
           EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         ),
-        textStyle: const WidgetStatePropertyAll<TextStyle>(
+        textStyle: const WidgetStatePropertyAll(
           TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         ),
       ),
     ),
-  );
-}
 
-class AppThemeDark {
-  static ThemeData darkTheme = ThemeData(
-    useMaterial3: true,
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: const Color(0xFF6CA36C), // un verde suave como base
-      brightness: Brightness.light,
-    ).copyWith(
-      primary: const Color(0xFF6CA36C), // Verde principal suave
-      onPrimary: Colors.white, // Texto en botones primarios
-      primaryContainer: const Color(0xFFAED9A7), // Verde más claro para fondos
-      secondary: const Color(0xFF8BC48A), // Otro verde complementario
-      onSecondary: Colors.white,
-      surface: const Color(0xFFF8FBF6), // Fondo general muy claro
-      onSurface: const Color(0xFF374137), // Texto en fondo claro
-    ),
-    appBarTheme: const AppBarTheme(
-      backgroundColor: Color(0xFF6CA36C),
-      foregroundColor: Colors.white, // Texto e íconos en AppBar
-      centerTitle: true,
-      elevation: 0,
-    ),
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFF6CA36C),
-        foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-        textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-      ),
-    ),
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
-        foregroundColor: const Color(0xFF6CA36C),
+        foregroundColor: kPrimary,
         textStyle: const TextStyle(fontWeight: FontWeight.w600),
       ),
     ),
-    inputDecorationTheme: InputDecorationTheme(
-      filled: true,
-      fillColor: const Color(0xFFF0F5F0),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
-        borderSide: const BorderSide(color: Color(0xFFB5D6B4)),
+
+    inputDecorationTheme: const InputDecorationTheme(
+      floatingLabelStyle: TextStyle(
+        color: kPrimary,
+        fontWeight: FontWeight.w600,
       ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
-        borderSide: const BorderSide(color: Color(0xFF6CA36C), width: 2),
+    ),
+
+    textTheme: const TextTheme(
+      bodyLarge: TextStyle(
+        fontSize: 16,
+        color: Color(0xFF1E2D26),
       ),
-      floatingLabelStyle: const TextStyle(color: Color(0xFF374137)),
+      bodyMedium: TextStyle(
+        fontSize: 14,
+        color: Color(0xFF1E2D26),
+      ),
     ),
   );
 }

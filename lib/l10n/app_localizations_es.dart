@@ -161,6 +161,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get error_generic => 'Ha ocurrido un error inesperado.';
 
   @override
+  String get error_eartagExist => 'Número de Eartag ya existe para otra res.';
+
+  @override
   String get login_username => 'Usuario';
 
   @override
@@ -1116,4 +1119,13 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get user_passwordLengthError =>
       'La contraseña debe tener entre 8 y 50 caracteres';
+
+  @override
+  String get searchTracker => 'Buscar tracker...';
+
+  @override
+  String get trackerNotFound => 'Tracker no encontrado';
+
+  @override
+  String get trackerNotSelected => 'Tracker no seleccionado';
 }

@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'package:flutter/scheduler.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_model.dart';
+import 'package:finca_app_frontend/modules/web/features/purchase_reception/services/reception_api_service.dart';
+import 'package:finca_app_frontend/modules/shared/features/devices/models/device_model.dart';
+import 'package:finca_app_frontend/modules/shared/features/devices/services/device_api_service.dart';
+import 'package:finca_app_frontend/core/services/api_exception.dart';
 
 class ReceiveCattleForm extends StatefulWidget {
   final String? currentNumber;
@@ -10,6 +16,7 @@ class ReceiveCattleForm extends StatefulWidget {
   final List<SimpleEventModel> activeEvents;
   final Function(Map<String, dynamic> cattleData) onSubmit;
   final Function(String number) onNumberChanged;
+  final Function(String error)? onError;
 
   const ReceiveCattleForm({
     super.key,
@@ -20,6 +27,7 @@ class ReceiveCattleForm extends StatefulWidget {
     required this.activeEvents,
     required this.onSubmit,
     required this.onNumberChanged,
+    this.onError,
   });
 
   @override
@@ -33,6 +41,14 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
   final _commentsController = TextEditingController();
   final _eartagController = TextEditingController();
   final _trackerController = TextEditingController();
+  
+  Timer? _debounce;
+  List<DeviceModel> _deviceOptions = [];
+  bool _deviceLoading = false;
+  Completer<List<DeviceModel>>? _lastCompleter; // Track last completer to prevent hangs
+  final ReceptionApiService _apiService = ReceptionApiService(defaultHeaders: {});
+  String? _selectedDeviceId; // Store the selected device ID
+  String? _lastSelectedName; // To track if text matches selection
 
   String? selectedLotId;
   String? selectedColorId;
@@ -44,6 +60,13 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
   void initState() {
     super.initState();
     _numberController = TextEditingController(text: widget.currentNumber);
+    _trackerController.addListener(() {
+      if (_selectedDeviceId != null && _trackerController.text != _lastSelectedName) {
+        setState(() {
+          _selectedDeviceId = null;
+        });
+      }
+    });
   }
 
   @override
@@ -61,6 +84,7 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
     _commentsController.dispose();
     _eartagController.dispose();
     _trackerController.dispose();
+    _debounce?.cancel();
     super.dispose();
   }
 
@@ -75,6 +99,7 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
       selectedCharacteristicIds = [];
       hasHorns = false;
       isCastrated = false;
+      _selectedDeviceId = null; // Clear selected device
     });
   }
 
@@ -259,15 +284,125 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                     ),
                   ),
 
-                  // Tracker
+                  // Tracker Autocomplete
                   SizedBox(
                     width: 200,
-                    child: TextFormField(
-                      controller: _trackerController,
-                      decoration: InputDecoration(
-                        labelText: l10n.trackerId,
-                        border: const OutlineInputBorder(),
-                      ),
+                    child: RawAutocomplete<DeviceModel>(
+
+                      textEditingController: _trackerController,
+                      optionsBuilder: (TextEditingValue textEditingValue) {
+                        // Cancel previous completer if it exists and hasn't completed
+                        if (_lastCompleter != null && !_lastCompleter!.isCompleted) {
+                          _lastCompleter!.complete(const Iterable<DeviceModel>.empty().toList());
+                        }
+
+                        final Completer<List<DeviceModel>> completer = Completer();
+                        _lastCompleter = completer;
+
+                        if (textEditingValue.text.length < 3) {
+                          if (_deviceOptions.isNotEmpty) {
+                            setState(() => _deviceOptions = []);
+                          }
+                          completer.complete(const Iterable<DeviceModel>.empty().toList());
+                          return completer.future;
+                        }
+                        
+                        // Debounce search
+                        if (_debounce?.isActive ?? false) _debounce!.cancel();
+                        
+                         _debounce = Timer(const Duration(milliseconds: 500), () async {
+                           if (!mounted) return;
+                           setState(() => _deviceLoading = true);
+                           try {
+                             final results = await DeviceApiService.searchDevices(textEditingValue.text);
+                             setState(() => _deviceOptions = results);
+                             if (!completer.isCompleted) completer.complete(results);
+                           } catch (e) {
+                             print('DEBUG: API error: $e');
+                             setState(() => _deviceOptions = []);
+                             if (!completer.isCompleted) completer.complete(const Iterable<DeviceModel>.empty().toList());
+                           } finally {
+                             if (mounted) setState(() => _deviceLoading = false);
+                           }
+                        });
+                        
+                        return completer.future;
+                      },
+                      displayStringForOption: (DeviceModel option) => option.name,
+                      fieldViewBuilder: (context, controller, focusNode, onFieldSubmitted) {
+                        return TextFormField(
+                          controller: controller,
+                          focusNode: focusNode,
+                          onFieldSubmitted: (String value) {
+                            onFieldSubmitted();
+                          },
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) {
+                             if (value != null && value.isNotEmpty && _selectedDeviceId == null) {
+                               if (_deviceOptions.isEmpty) return l10n.trackerNotFound;
+                               return l10n.trackerNotSelected;
+                             }
+                             return null;
+                          },
+                          decoration: InputDecoration(
+                            labelText: l10n.trackerLabel, // using existing label key or new one
+                            hintText: l10n.searchTracker, // We'll try to use the key if it exists
+                            border: const OutlineInputBorder(),
+                            suffixIcon: _deviceLoading 
+                                ? const Padding(
+                                    padding: EdgeInsets.all(12.0),
+                                    child: SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)),
+                                  ) 
+                                : null,
+                          ),
+                        );
+                      },
+                      optionsViewBuilder: (context, onSelected, options) {
+                        return Align(
+                          alignment: Alignment.topLeft,
+                          child: Material(
+                            elevation: 4.0,
+                            child: ConstrainedBox(
+                              constraints: const BoxConstraints(maxHeight: 200, maxWidth: 300),
+                              child: ListView.builder(
+                                padding: EdgeInsets.zero,
+                                shrinkWrap: true,
+                                itemCount: options.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  final DeviceModel option = options.elementAt(index);
+                                  return Builder(
+                                    builder: (BuildContext context) {
+                                      final bool highlight = AutocompleteHighlightedOption.of(context) == index;
+                                      if (highlight) {
+                                        SchedulerBinding.instance.addPostFrameCallback((Duration timeStamp) {
+                                          Scrollable.ensureVisible(context, alignment: 0.5);
+                                        });
+                                      }
+                                      return Container(
+                                        color: highlight ? Colors.grey[300] : null,
+                                        child: ListTile(
+                                          title: Text(option.name),
+                                          subtitle: Text(option.deveui),
+                                          onTap: () => onSelected(option),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      onSelected: (DeviceModel selection) {
+                         setState(() {
+                             _selectedDeviceId = selection.id;
+                             _lastSelectedName = selection.name;
+                             _trackerController.text = selection.name;
+                             // Clear suggestions if needed or handle focus
+                         });
+                         // Close the options view typically handled by the widget
+                      },
                     ),
                   ),
 
@@ -356,7 +491,10 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
     );
   }
 
-  void _submitForm() {
+  void _submitForm() async {
+    // Clear previous server errors
+
+
     print('DEBUG: Submit button clicked. Checking validation...');
     if (!_formKey.currentState!.validate()) {
       print('DEBUG: Validation failed');
@@ -428,10 +566,12 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
           _eartagController.text.trim().isEmpty
               ? null
               : _eartagController.text.trim(),
-      'idDevice':
-          _trackerController.text.trim().isEmpty
+      'eartag':
+          _eartagController.text.trim().isEmpty
               ? null
-              : _trackerController.text.trim(),
+              : _eartagController.text.trim(),
+      'idDevice': _selectedDeviceId, // Use selected ID
+      'deviceName': _trackerController.text, // Pass the name for consistency
       'comments':
           _commentsController.text.trim().isEmpty
               ? null
@@ -439,7 +579,18 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
       'idSimpleEvents': widget.activeEvents.map((e) => e.id).toList(),
     };
 
-    widget.onSubmit(cattleData);
+    try {
+      await widget.onSubmit(cattleData);
+      //_resetForm();
+    } on ApiException catch (e) {
+       if (e.code == 'conflictError' && e.message.contains('Eartag')) {
+          widget.onError?.call(e.message);
+       } else {
+         widget.onError?.call(e.message);
+       }
+    } catch (e) {
+      widget.onError?.call(e.toString());
+    }
     //_resetForm();
   }
 }

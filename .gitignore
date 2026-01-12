@@ -36,8 +36,10 @@ migrate_working_dir/
 !/build/
 !/build/web/
 !/build/web/**
+/build/web/.DS_Store
 # Symbolication related
 app.*.symbols
+env-config.js
 
 # Obfuscation related
 app.*.map.json

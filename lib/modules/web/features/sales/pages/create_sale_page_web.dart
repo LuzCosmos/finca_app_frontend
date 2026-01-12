@@ -800,8 +800,10 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
 
   Widget _buildSummarySection(BuildContext context, SalesWebState state) {
     final l10n = AppLocalizations.of(context);
+    final cs = Theme.of(context).colorScheme;
+
     return Card(
-      color: Theme.of(context).colorScheme.primaryContainer,
+      color: cs.primaryContainer,
       child: Padding(
         padding: const EdgeInsets.all(8),
         child: Column(
@@ -809,15 +811,36 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
           children: [
             Text(
               l10n?.label_summary ?? 'Summary',
-              style: Theme.of(context).textTheme.titleLarge,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    color: cs.onPrimaryContainer,
+                  ),
             ),
             const SizedBox(height: 8),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildSummaryItem(context, l10n?.label_totalCattle ?? 'Total Cattle', _totalCount.toString(), FontAwesomeIcons.cow),
-                _buildSummaryItem(context, l10n?.sales_totalWeight ?? 'Total Weight', '${_totalWeight.toStringAsFixed(2)} kg', Icons.scale),
-                _buildSummaryItem(context, l10n?.sales_totalAmount ?? 'Total Amount', '\$${_totalAmount.toStringAsFixed(2)}', Icons.attach_money),
+                _buildSummaryItem(
+                  context,
+                  l10n?.label_totalCattle ?? 'Total Cattle',
+                  _totalCount.toString(),
+                  FontAwesomeIcons.cow,
+                  // si tu _buildSummaryItem acepta color:
+                  // color: cs.onPrimaryContainer,
+                ),
+                _buildSummaryItem(
+                  context,
+                  l10n?.sales_totalWeight ?? 'Total Weight',
+                  '${_totalWeight.toStringAsFixed(2)} kg',
+                  Icons.scale,
+                  // color: cs.onPrimaryContainer,
+                ),
+                _buildSummaryItem(
+                  context,
+                  l10n?.sales_totalAmount ?? 'Total Amount',
+                  '\$${_totalAmount.toStringAsFixed(2)}',
+                  Icons.attach_money,
+                  // color: cs.onPrimaryContainer,
+                ),
               ],
             ),
             const SizedBox(height: 8),
@@ -826,22 +849,29 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
               children: [
                 OutlinedButton(
                   onPressed: () => context.go('/sales'),
-                  child: Text(l10n?.sales_cancel ?? 'Cancel'),
                   style: OutlinedButton.styleFrom(
+                    foregroundColor: cs.onPrimaryContainer, // texto/ícono
+                    side: BorderSide(color: cs.onPrimaryContainer), // borde
                     padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                   ),
+                  child: Text(l10n?.sales_cancel ?? 'Cancel'),
                 ),
                 const SizedBox(width: 8),
                 ElevatedButton(
                   onPressed: state.status == SalesWebStatus.loading ? null : _submitSale,
                   style: ElevatedButton.styleFrom(
+                    backgroundColor: cs.primary,
+                    foregroundColor: cs.onPrimary,
                     padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 16),
                   ),
                   child: state.status == SalesWebStatus.loading
-                      ? const SizedBox(
+                      ? SizedBox(
                           width: 20,
                           height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(cs.onPrimary),
+                          ),
                         )
                       : const Text('Create Sale'),
                 ),
@@ -852,6 +882,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
       ),
     );
   }
+
 
   Widget _buildSummaryItem(BuildContext context, String label, String value, IconData icon) {
     return Column(

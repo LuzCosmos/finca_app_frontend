@@ -163,6 +163,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get error_generic => 'An unexpected error has occurred.';
 
   @override
+  String get error_eartagExist =>
+      'Eartag number already exists for another cattle.';
+
+  @override
   String get login_username => 'Username';
 
   @override
@@ -1110,4 +1114,13 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get user_passwordLengthError =>
       'Password must be between 8 and 50 characters';
+
+  @override
+  String get searchTracker => 'Search tracker...';
+
+  @override
+  String get trackerNotFound => 'Tracker not found';
+
+  @override
+  String get trackerNotSelected => 'Tracker not selected';
 }

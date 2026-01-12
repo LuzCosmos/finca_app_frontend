@@ -21,7 +21,8 @@ class FincaScaffold extends StatelessWidget {
         
         return Scaffold(
           appBar: AppBar(
-            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            foregroundColor: Colors.white,
             title: Text(title ?? 'Finca App'),
             leading: Navigator.of(context).canPop() ? const BackButton() : null,
             automaticallyImplyLeading: true,
