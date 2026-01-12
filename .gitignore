@@ -37,6 +37,8 @@ migrate_working_dir/
 !/build/web/
 !/build/web/**
 /build/web/.DS_Store
+/build/web/flutter_service_worker.js
+/build/web/manifest.json
 # Symbolication related
 app.*.symbols
 env-config.js
