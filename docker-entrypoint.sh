@@ -76,6 +76,10 @@ self.addEventListener('activate', (event) => {
   })());
 });
 EOF
-
+# 🚫 Deploy de limpieza: evita que flutter_bootstrap.js vuelva a registrar SW
+if [ -f /usr/share/nginx/html/flutter_bootstrap.js ]; then
+  sed -i 's/serviceWorkerSettings:[[:space:]]*{[[:space:]]*serviceWorkerVersion:[[:space:]]*"[^"]*"[[:space:]]*}//g' \
+    /usr/share/nginx/html/flutter_bootstrap.js
+fi
 
 exec "$@"
