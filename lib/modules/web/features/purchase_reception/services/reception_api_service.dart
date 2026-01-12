@@ -5,7 +5,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'package:finca_app_frontend/core/services/basic_api_service.dart';
-import 'package:finca_app_frontend/modules/web/features/purchase_reception/models/device_model.dart';
+import 'package:finca_app_frontend/modules/shared/features/devices/models/device_model.dart';
 
 class ReceptionApiService {
   final String baseUrl = '${BasicApiService.baseUrl}/purchase-receptions';

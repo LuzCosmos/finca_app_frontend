@@ -19,4 +19,7 @@ class DeviceModel {
 
   @override
   String toString() => '$name ($deveui)';
+
+  // Helper to standardise display in Autocomplete
+  String displayStringForOption(DeviceModel option) => option.name;
 }

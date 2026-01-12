@@ -4,7 +4,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_model.dart';
 import 'package:finca_app_frontend/modules/web/features/purchase_reception/services/reception_api_service.dart';
-import 'package:finca_app_frontend/modules/web/features/purchase_reception/models/device_model.dart';
+import 'package:finca_app_frontend/modules/shared/features/devices/models/device_model.dart';
+import 'package:finca_app_frontend/modules/shared/features/devices/services/device_api_service.dart';
 
 class ReceiveCattleForm extends StatefulWidget {
   final String? currentNumber;
@@ -310,7 +311,7 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                            if (!mounted) return;
                            setState(() => _deviceLoading = true);
                            try {
-                             final results = await _apiService.searchDevices(textEditingValue.text);
+                             final results = await DeviceApiService.searchDevices(textEditingValue.text);
                              setState(() => _deviceOptions = results);
                              if (!completer.isCompleted) completer.complete(results);
                            } catch (e) {
