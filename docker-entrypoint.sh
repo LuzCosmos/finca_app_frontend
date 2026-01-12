@@ -31,7 +31,7 @@ if [ -f /usr/share/nginx/html/assets/.env ]; then
     echo "Secured: Removed .env file from assets"
 fi
 
-echo "Injected configuration into index.html: ${CONFIG_CONTENT}"
+echo "Injected configuration into index.html"
 
 # Inyectar BACKEND_URL en nginx.conf
 sed -i "s|{{BACKEND_URL}}|${BACKEND_URL}|g" /etc/nginx/nginx.conf
@@ -47,6 +47,35 @@ fi
 
 # Fallback verify all js
 find /usr/share/nginx/html -name "*.js" -type f -exec sed -i '/sourceMappingURL=/d' {} \;
+
+cat > /usr/share/nginx/html/flutter_service_worker.js <<'EOF'
+self.addEventListener('install', (event) => {
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil((async () => {
+    // borra todos los caches
+    const keys = await caches.keys();
+    await Promise.all(keys.map((k) => caches.delete(k)));
+
+    // ⭐ toma control inmediato de las páginas abiertas
+    await self.clients.claim();
+
+    // desregistra el SW
+    await self.registration.unregister();
+
+    // fuerza recarga de pestañas abiertas
+    const clientsArr = await self.clients.matchAll({
+      type: 'window',
+      includeUncontrolled: true
+    });
+    for (const client of clientsArr) {
+      client.navigate(client.url);
+    }
+  })());
+});
+EOF
 
 
 exec "$@"
