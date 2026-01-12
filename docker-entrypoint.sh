@@ -59,11 +59,8 @@ self.addEventListener('activate', (event) => {
     const keys = await caches.keys();
     await Promise.all(keys.map((k) => caches.delete(k)));
 
-    // ⭐ toma control inmediato de las páginas abiertas
+    // toma control inmediato
     await self.clients.claim();
-
-    // desregistra el SW
-    await self.registration.unregister();
 
     // fuerza recarga de pestañas abiertas
     const clientsArr = await self.clients.matchAll({
@@ -73,6 +70,9 @@ self.addEventListener('activate', (event) => {
     for (const client of clientsArr) {
       client.navigate(client.url);
     }
+
+    // AHORA sí: desregistra el SW
+    await self.registration.unregister();
   })());
 });
 EOF
