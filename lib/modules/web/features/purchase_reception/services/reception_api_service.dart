@@ -125,7 +125,7 @@ class ReceptionApiService {
       return responseBody;
     }
     if (r.statusCode >= 400) {
-      throw Exception('Error receive: ${r.body}');
+      BasicApiService.manageNotSuccessResponseCode(r);
     }
 
     throw Exception('Unexpected status code: ${r.statusCode}');

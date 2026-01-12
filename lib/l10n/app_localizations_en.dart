@@ -163,6 +163,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get error_generic => 'An unexpected error has occurred.';
 
   @override
+  String get error_eartagExist =>
+      'Eartag number already exists for another cattle.';
+
+  @override
   String get login_username => 'Username';
 
   @override

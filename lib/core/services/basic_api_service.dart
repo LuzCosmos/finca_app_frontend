@@ -68,7 +68,9 @@ class BasicApiService {
       final message = body['message'] ?? 'Not found';
       throw ApiException(ApiExceptionCode.notFound.name, message);
     } else if (response.statusCode == 409) {
-      throw ApiException(ApiExceptionCode.conflictError.name, 'Conflict');
+      final body = jsonDecode(response.body);
+      final message = body['message'] ?? 'Conflict';
+      throw ApiException(ApiExceptionCode.conflictError.name, message);
     } else if (response.statusCode == 422) {
       final body = jsonDecode(response.body);
       final message = body['message'] ?? 'Unprocessable entity';

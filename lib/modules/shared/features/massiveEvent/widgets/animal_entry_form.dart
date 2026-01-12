@@ -232,7 +232,11 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
               }
             }
             if (e.code == ApiExceptionCode.conflictError.name) {
-              error = l10n.error_conflict;
+              if (e.message.contains('Eartag')) {
+                error = e.message;
+              } else {
+                error = l10n.error_conflict;
+              }
             }
             if (error.isNotEmpty) {
               widget.showError(error);

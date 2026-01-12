@@ -80,6 +80,7 @@
   "error_generic": "Ha ocurrido un error inesperado.",
   "@error_generic": { "description": "Fallback para errores desconocidos." },
   
+  "error_eartagExist": "Número de Eartag ya existe para otra res.",
 
   "login_username": "Usuario",
   "login_usernameRequired": "Ingrese su usuario",

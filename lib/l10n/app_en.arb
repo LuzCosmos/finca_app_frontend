@@ -80,6 +80,8 @@
   "error_generic": "An unexpected error has occurred.",
   "@error_generic": { "description": "Fallback for unknown errors." },
 
+  "error_eartagExist": "Eartag number already exists for another cattle.",
+
 
   "login_username": "Username",
   "login_usernameRequired": "Please enter your username",

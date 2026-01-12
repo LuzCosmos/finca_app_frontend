@@ -6,6 +6,7 @@ import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/s
 import 'package:finca_app_frontend/modules/web/features/purchase_reception/services/reception_api_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/devices/models/device_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/devices/services/device_api_service.dart';
+import 'package:finca_app_frontend/core/services/api_exception.dart';
 
 class ReceiveCattleForm extends StatefulWidget {
   final String? currentNumber;
@@ -15,6 +16,7 @@ class ReceiveCattleForm extends StatefulWidget {
   final List<SimpleEventModel> activeEvents;
   final Function(Map<String, dynamic> cattleData) onSubmit;
   final Function(String number) onNumberChanged;
+  final Function(String error)? onError;
 
   const ReceiveCattleForm({
     super.key,
@@ -25,6 +27,7 @@ class ReceiveCattleForm extends StatefulWidget {
     required this.activeEvents,
     required this.onSubmit,
     required this.onNumberChanged,
+    this.onError,
   });
 
   @override
@@ -488,7 +491,10 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
     );
   }
 
-  void _submitForm() {
+  void _submitForm() async {
+    // Clear previous server errors
+
+
     print('DEBUG: Submit button clicked. Checking validation...');
     if (!_formKey.currentState!.validate()) {
       print('DEBUG: Validation failed');
@@ -573,7 +579,18 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
       'idSimpleEvents': widget.activeEvents.map((e) => e.id).toList(),
     };
 
-    widget.onSubmit(cattleData);
+    try {
+      await widget.onSubmit(cattleData);
+      //_resetForm();
+    } on ApiException catch (e) {
+       if (e.code == 'conflictError' && e.message.contains('Eartag')) {
+          widget.onError?.call(e.message);
+       } else {
+         widget.onError?.call(e.message);
+       }
+    } catch (e) {
+      widget.onError?.call(e.toString());
+    }
     //_resetForm();
   }
 }

@@ -380,6 +380,12 @@ abstract class AppLocalizations {
   /// **'An unexpected error has occurred.'**
   String get error_generic;
 
+  /// No description provided for @error_eartagExist.
+  ///
+  /// In en, this message translates to:
+  /// **'Eartag number already exists for another cattle.'**
+  String get error_eartagExist;
+
   /// No description provided for @login_username.
   ///
   /// In en, this message translates to:

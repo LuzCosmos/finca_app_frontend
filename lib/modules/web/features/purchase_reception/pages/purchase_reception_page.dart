@@ -143,7 +143,7 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
 
   Future<void> _receiveCattle(Map<String, dynamic> cattleData) async {
     final l10n = AppLocalizations.of(context)!;
-    try {
+    // Let errors bubble up to form
       await api.receiveOne(
         receptionId: receptionData!['reception']['id'],
         idPurchase: receptionData!['reception']['purchaseId'],
@@ -168,9 +168,6 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
       
       // Auto-increment cattle number
       _incrementCattleNumber();
-    } catch (e) {
-      setGlobalError(e.toString());
-    }
   }
 
   void _incrementCattleNumber() {
@@ -342,6 +339,7 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
                                 onNumberChanged: (number) {
                                   setState(() => currentCattleNumber = number);
                                 },
+                                onError: setGlobalError,
                               ),
                             ],
                           ),

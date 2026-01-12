@@ -161,6 +161,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get error_generic => 'Ha ocurrido un error inesperado.';
 
   @override
+  String get error_eartagExist => 'Número de Eartag ya existe para otra res.';
+
+  @override
   String get login_username => 'Usuario';
 
   @override
