@@ -450,5 +450,8 @@
   "user_usernameLengthError": "Username must be between 5 and 50 characters",
   "user_firstNameLengthError": "First name must be at most 50 characters",
   "user_lastNameLengthError": "Last name must be at most 50 characters",
-  "user_passwordLengthError": "Password must be between 8 and 50 characters"
+  "user_passwordLengthError": "Password must be between 8 and 50 characters",
+  "searchTracker": "Search tracker...",
+  "trackerNotFound": "Tracker not found",
+  "trackerNotSelected": "Tracker not selected"
 }

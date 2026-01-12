@@ -1110,4 +1110,13 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get user_passwordLengthError =>
       'Password must be between 8 and 50 characters';
+
+  @override
+  String get searchTracker => 'Search tracker...';
+
+  @override
+  String get trackerNotFound => 'Tracker not found';
+
+  @override
+  String get trackerNotSelected => 'Tracker not selected';
 }

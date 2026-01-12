@@ -5,12 +5,34 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'package:finca_app_frontend/core/services/basic_api_service.dart';
+import 'package:finca_app_frontend/modules/web/features/purchase_reception/models/device_model.dart';
 
 class ReceptionApiService {
   final String baseUrl = '${BasicApiService.baseUrl}/purchase-receptions';
   final Map<String, String> defaultHeaders;
 
   ReceptionApiService({required this.defaultHeaders});
+
+  Future<List<DeviceModel>> searchDevices(String query) async {
+    final token = await BasicApiService.getToken();
+    final url = Uri.parse('$baseUrl/search-devices/by-query?q=$query');
+
+    final response = await http.get(
+      url,
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> body = jsonDecode(response.body);
+      return body.map((dynamic item) => DeviceModel.fromJson(item)).toList();
+    } else {
+      BasicApiService.manageNotSuccessResponseCode(response);
+      return []; // unreachable
+    }
+  }
 
   Future<Map<String, dynamic>> getPurchaseReception(String purchaseId) async {
     final token = await BasicApiService.getToken();

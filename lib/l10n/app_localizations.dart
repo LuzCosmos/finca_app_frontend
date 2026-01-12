@@ -2155,6 +2155,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Password must be between 8 and 50 characters'**
   String get user_passwordLengthError;
+
+  /// No description provided for @searchTracker.
+  ///
+  /// In en, this message translates to:
+  /// **'Search tracker...'**
+  String get searchTracker;
+
+  /// No description provided for @trackerNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Tracker not found'**
+  String get trackerNotFound;
+
+  /// No description provided for @trackerNotSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Tracker not selected'**
+  String get trackerNotSelected;
 }
 
 class _AppLocalizationsDelegate

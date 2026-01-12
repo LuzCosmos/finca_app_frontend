@@ -51,6 +51,7 @@ class HomePage extends StatelessWidget {
                 title: l10n.home_sale,
                 icon: Icons.monetization_on,
                 route: "/sales",
+                forWebOnly: true,
               ),
               HomeOptionWithPermission(
                 module: "EMP_MGMT",
