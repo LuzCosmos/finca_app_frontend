@@ -77,9 +77,10 @@ self.addEventListener('activate', (event) => {
 });
 EOF
 
-# 🚫 Deploy de limpieza: elimina el bloque real serviceWorkerSettings:{...} aunque esté minificado
+# ✅ Deploy de limpieza: desactiva SW sin romper el JS minificado
 if [ -f /usr/share/nginx/html/flutter_bootstrap.js ]; then
-  perl -0777 -i -pe 's/,?\s*serviceWorkerSettings\s*:\s*\{.*?\}\s*//s' /usr/share/nginx/html/flutter_bootstrap.js
+  perl -0777 -i -pe 's/serviceWorkerSettings\s*:\s*\{[^}]*\}/serviceWorkerSettings:null/s' \
+    /usr/share/nginx/html/flutter_bootstrap.js
 fi
 
 exec "$@"
