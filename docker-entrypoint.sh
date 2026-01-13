@@ -14,11 +14,6 @@ export BACKEND_URL="${BACKEND_URL:-http://finca_app_backend:3000}"
 WEB_ROOT="/usr/share/nginx/html"
 BOOT="${WEB_ROOT}/flutter_bootstrap.js"
 
-# DEBUG: Inject Timestamp to prove this is the NEW container
-TIMESTAMP=$(date)
-sed -i "s|</body>|<!-- SERVER CONTAINER BUILT AT: $TIMESTAMP --></body>|g" "${WEB_ROOT}/index.html"
-echo "[entrypoint] Injected timestamp into index.html: $TIMESTAMP"
-
 
 echo "[entrypoint] Starting frontend runtime init..."
 
