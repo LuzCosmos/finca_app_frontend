@@ -77,10 +77,11 @@ self.addEventListener('activate', (event) => {
 });
 EOF
 
-# ✅ Deploy de limpieza: desactiva SW sin romper el JS minificado
+# Desactiva el SW en el bloque final del loader (sin perl)
 if [ -f /usr/share/nginx/html/flutter_bootstrap.js ]; then
-  perl -0777 -i -pe 's/serviceWorkerSettings\s*:\s*\{[^}]*\}/serviceWorkerSettings:null/s' \
+  sed -i 's/serviceWorkerSettings:[[:space:]]*{[^}]*}/serviceWorkerSettings:null/g' \
     /usr/share/nginx/html/flutter_bootstrap.js
 fi
+
 
 exec "$@"
