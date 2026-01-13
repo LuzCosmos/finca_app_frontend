@@ -101,36 +101,15 @@ fi
 find "${WEB_ROOT}" -name "*.js" -type f -exec sed -i '/sourceMappingURL=/d' {} \;
 
 ###############################################################################
-# 6) Service worker de limpieza (solo deploy 1)
+# 6) Preserve Flutter service worker for automatic cache busting
+#    Flutter generates flutter_service_worker.js with MD5 hashes for each file
+#    This allows automatic detection of changes and cache invalidation
 ###############################################################################
-cat > "${WEB_ROOT}/flutter_service_worker.js" <<'EOF'
-self.addEventListener('install', (event) => {
-  self.skipWaiting();
-});
-
-self.addEventListener('activate', (event) => {
-  event.waitUntil((async () => {
-    // borra todos los caches
-    const keys = await caches.keys();
-    await Promise.all(keys.map((k) => caches.delete(k)));
-
-    // toma control inmediato
-    await self.clients.claim();
-
-    // fuerza recarga de pestañas abiertas
-    const clientsArr = await self.clients.matchAll({
-      type: 'window',
-      includeUncontrolled: true
-    });
-    for (const client of clientsArr) {
-      client.navigate(client.url);
-    }
-
-    // desregistra el SW
-    await self.registration.unregister();
-  })());
-});
-EOF
+echo "[entrypoint] Preserving Flutter service worker for cache busting..."
+if [ ! -f "${WEB_ROOT}/flutter_service_worker.js" ]; then
+  echo "[entrypoint] WARNING: flutter_service_worker.js not found in build!"
+  echo "[entrypoint] This may cause cache issues in production."
+fi
 
 FLUTTER_JS="${WEB_ROOT}/flutter.js"
 if [ -f "$FLUTTER_JS" ]; then
