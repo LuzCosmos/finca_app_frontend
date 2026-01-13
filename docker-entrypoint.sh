@@ -4,51 +4,81 @@ set -e
 : "${API_BASE_URL:?API_BASE_URL must be set via docker-compose environment}"
 
 if [ "${API_BASE_URL}" = "null" ]; then
-    echo "Error: API_BASE_URL environment variable is set to the literal string 'null'. Please provide a valid URL."
-    exit 1
+  echo "Error: API_BASE_URL environment variable is set to the literal string 'null'. Please provide a valid URL."
+  exit 1
 fi
 
 # Default backend URL if not set
 export BACKEND_URL="${BACKEND_URL:-http://finca_app_backend:3000}"
 
-# Generate env-config.js file
-cat > /usr/share/nginx/html/env-config.js <<EOF
+WEB_ROOT="/usr/share/nginx/html"
+BOOT="${WEB_ROOT}/flutter_bootstrap.js"
+
+echo "[entrypoint] Starting frontend runtime init..."
+
+###############################################################################
+# 1) Deploy de limpieza: impedir que Flutter registre service worker
+#    (Esto evita el error addAll del SW normal y evita volver a cachear)
+###############################################################################
+if [ -f "$BOOT" ]; then
+  echo "[entrypoint] Patching flutter_bootstrap.js to remove serviceWorkerSettings block..."
+
+  # AWK robusto: elimina desde la línea que contiene 'serviceWorkerSettings: {' hasta
+  # la primera línea que contenga un '}' (en cualquier posición) mientras estamos en skip.
+  # Esto funciona aunque esté minificado o con saltos de línea raros.
+  awk '
+    BEGIN { skip=0 }
+    /serviceWorkerSettings:[[:space:]]*\{/ { skip=1; next }
+    skip==1 {
+      if ($0 ~ /\}/) { skip=0 }
+      next
+    }
+    { print }
+  ' "$BOOT" > "${BOOT}.tmp" && mv "${BOOT}.tmp" "$BOOT"
+fi
+
+###############################################################################
+# 2) Generar env-config.js (runtime env para Flutter Web)
+###############################################################################
+cat > "${WEB_ROOT}/env-config.js" <<EOF
 window.ENV = {
   API_BASE_URL: "${API_BASE_URL}"
 };
 EOF
 
-# Ensure env-config.js is loaded in index.html (if inline injection was attempted previously or if template is clean)
-# We trust the index.html has <script src="env-config.js"></script> as per source.
-# If previous run modified it, the container rebuild (fresh copy) restores it.
+echo "[entrypoint] Generated env-config.js:"
+cat "${WEB_ROOT}/env-config.js"
 
-echo "Generated env-config.js with content:"
-cat /usr/share/nginx/html/env-config.js
-
-# Security: Remove .env file from assets if it exists to prevent exposure
-if [ -f /usr/share/nginx/html/assets/.env ]; then
-    rm -f /usr/share/nginx/html/assets/.env
-    echo "Secured: Removed .env file from assets"
+###############################################################################
+# 3) Seguridad: eliminar .env expuesto en assets si existe
+###############################################################################
+if [ -f "${WEB_ROOT}/assets/.env" ]; then
+  rm -f "${WEB_ROOT}/assets/.env"
+  echo "[entrypoint] Secured: Removed .env file from assets"
 fi
 
-echo "Injected configuration into index.html"
-
-# Inyectar BACKEND_URL en nginx.conf
+###############################################################################
+# 4) Inyectar BACKEND_URL en nginx.conf (proxy /api)
+###############################################################################
 sed -i "s|{{BACKEND_URL}}|${BACKEND_URL}|g" /etc/nginx/nginx.conf
+echo "[entrypoint] Injected BACKEND_URL into nginx.conf: ${BACKEND_URL}"
 
-# Remove source map references explicitly from known files to prevent browser warnings
-echo "Stripping source maps from JS files..."
-if [ -f /usr/share/nginx/html/flutter_bootstrap.js ]; then
-    sed -i '/sourceMappingURL/d' /usr/share/nginx/html/flutter_bootstrap.js
+###############################################################################
+# 5) Strip sourceMappingURL para evitar warnings
+###############################################################################
+echo "[entrypoint] Stripping source maps from JS files..."
+if [ -f "${WEB_ROOT}/flutter_bootstrap.js" ]; then
+  sed -i '/sourceMappingURL/d' "${WEB_ROOT}/flutter_bootstrap.js"
 fi
-if [ -f /usr/share/nginx/html/main.dart.js ]; then
-    sed -i '/sourceMappingURL/d' /usr/share/nginx/html/main.dart.js
+if [ -f "${WEB_ROOT}/main.dart.js" ]; then
+  sed -i '/sourceMappingURL/d' "${WEB_ROOT}/main.dart.js"
 fi
+find "${WEB_ROOT}" -name "*.js" -type f -exec sed -i '/sourceMappingURL=/d' {} \;
 
-# Fallback verify all js
-find /usr/share/nginx/html -name "*.js" -type f -exec sed -i '/sourceMappingURL=/d' {} \;
-
-cat > /usr/share/nginx/html/flutter_service_worker.js <<'EOF'
+###############################################################################
+# 6) Service worker de limpieza (solo deploy 1)
+###############################################################################
+cat > "${WEB_ROOT}/flutter_service_worker.js" <<'EOF'
 self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
@@ -71,17 +101,17 @@ self.addEventListener('activate', (event) => {
       client.navigate(client.url);
     }
 
-    // AHORA sí: desregistra el SW
+    // desregistra el SW
     await self.registration.unregister();
   })());
 });
 EOF
 
-# Desactiva el SW en el bloque final del loader (sin perl)
-if [ -f /usr/share/nginx/html/flutter_bootstrap.js ]; then
-  sed -i 's/serviceWorkerSettings:[[:space:]]*{[^}]*}/serviceWorkerSettings:null/g' \
-    /usr/share/nginx/html/flutter_bootstrap.js
-fi
+###############################################################################
+# 7) Verificación en logs (para no adivinar)
+###############################################################################
+echo "[entrypoint] Bootstrap SW settings (should be empty):"
+grep -n 'serviceWorkerSettings:' "${WEB_ROOT}/flutter_bootstrap.js" | head -n 5 || true
 
-
+echo "[entrypoint] Runtime init complete. Starting nginx..."
 exec "$@"
