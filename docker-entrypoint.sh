@@ -18,22 +18,47 @@ echo "[entrypoint] Starting frontend runtime init..."
 
 ###############################################################################
 # 1) Deploy de limpieza: impedir que Flutter registre service worker
-#    (Esto evita el error addAll del SW normal y evita volver a cachear)
+#    (Elimina el bloque serviceWorkerSettings:{...} aunque cierre en la misma línea)
 ###############################################################################
 if [ -f "$BOOT" ]; then
-  echo "[entrypoint] Patching flutter_bootstrap.js to remove serviceWorkerSettings block..."
+  echo "[entrypoint] Patching flutter_bootstrap.js to remove serviceWorkerSettings block (balanced braces)..."
 
-  # AWK robusto: elimina desde la línea que contiene 'serviceWorkerSettings: {' hasta
-  # la primera línea que contenga un '}' (en cualquier posición) mientras estamos en skip.
-  # Esto funciona aunque esté minificado o con saltos de línea raros.
   awk '
-    BEGIN { skip=0 }
-    /serviceWorkerSettings:[[:space:]]*\{/ { skip=1; next }
-    skip==1 {
-      if ($0 ~ /\}/) { skip=0 }
+    BEGIN { skipping=0; depth=0 }
+
+    skipping==0 {
+      if ($0 ~ /serviceWorkerSettings:[[:space:]]*\{/) {
+        skipping=1
+
+        # contamos llaves en esta línea
+        nOpen = gsub(/\{/, "{")
+        nClose = gsub(/\}/, "}")
+        depth += (nOpen - nClose)
+
+        # quitamos todo desde serviceWorkerSettings:{ hasta el final de la línea
+        sub(/,?[[:space:]]*serviceWorkerSettings:[[:space:]]*\{.*/, "", $0)
+
+        # si después de remover queda algo útil, imprímelo
+        if (length($0) > 0) print $0
+
+        # si el bloque se cerró en la misma línea
+        if (depth <= 0) { skipping=0; depth=0 }
+        next
+      }
+
+      print
       next
     }
-    { print }
+
+    skipping==1 {
+      # seguimos contando llaves hasta que depth vuelva a 0
+      nOpen = gsub(/\{/, "{")
+      nClose = gsub(/\}/, "}")
+      depth += (nOpen - nClose)
+
+      if (depth <= 0) { skipping=0; depth=0 }
+      next
+    }
   ' "$BOOT" > "${BOOT}.tmp" && mv "${BOOT}.tmp" "$BOOT"
 fi
 
@@ -110,8 +135,8 @@ EOF
 ###############################################################################
 # 7) Verificación en logs (para no adivinar)
 ###############################################################################
-echo "[entrypoint] Bootstrap SW settings (should be empty):"
-grep -n 'serviceWorkerSettings:' "${WEB_ROOT}/flutter_bootstrap.js" | head -n 5 || true
+echo "[entrypoint] Bootstrap SW settings (config block should be gone):"
+grep -n 'serviceWorkerSettings:[[:space:]]*{' "${WEB_ROOT}/flutter_bootstrap.js" | head -n 5 || true
 
 echo "[entrypoint] Runtime init complete. Starting nginx..."
 exec "$@"
