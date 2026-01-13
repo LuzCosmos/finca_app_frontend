@@ -2,13 +2,13 @@ services:
   # Frontend Web App
   web:
     container_name: finca_app_frontend
-    image: finca_app_frontend:0.1.0
+    image: finca_app_frontend:0.1.1
     restart: unless-stopped
     ports:
       - '${FRONTEND_PORT}:80'
     environment:
-      API_BASE_URL: ${API_BASE_URL:-/api/v1}
-      BACKEND_URL: ${BACKEND_URL:-http://finca_app_backend:3000}
+      API_BASE_URL: ${API_BASE_URL}
+      BACKEND_URL: ${BACKEND_URL}
     networks:
       - finca_app_net
     healthcheck:
