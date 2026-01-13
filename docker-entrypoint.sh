@@ -76,10 +76,10 @@ self.addEventListener('activate', (event) => {
   })());
 });
 EOF
-# 🚫 Deploy de limpieza: evita que flutter_bootstrap.js vuelva a registrar SW
+
+# 🚫 Deploy de limpieza: elimina el bloque real serviceWorkerSettings:{...} aunque esté minificado
 if [ -f /usr/share/nginx/html/flutter_bootstrap.js ]; then
-  sed -i 's/serviceWorkerSettings:[[:space:]]*{[[:space:]]*serviceWorkerVersion:[[:space:]]*"[^"]*"[[:space:]]*}//g' \
-    /usr/share/nginx/html/flutter_bootstrap.js
+  perl -0777 -i -pe 's/,?\s*serviceWorkerSettings\s*:\s*\{.*?\}\s*//s' /usr/share/nginx/html/flutter_bootstrap.js
 fi
 
 exec "$@"
