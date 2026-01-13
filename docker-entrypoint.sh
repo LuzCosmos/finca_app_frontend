@@ -176,31 +176,4 @@ grep -n 'serviceWorkerSettings:[[:space:]]*{' "${WEB_ROOT}/flutter_bootstrap.js"
 echo "[entrypoint] Runtime init complete. Starting nginx..."
 
 
-cat > /usr/share/nginx/html/kill-sw.html <<'EOF'
-<!doctype html>
-<html>
-<head><meta charset="utf-8"><title>Reset</title></head>
-<body>
-<script>
-(async () => {
-  try {
-    if ('serviceWorker' in navigator) {
-      const regs = await navigator.serviceWorker.getRegistrations();
-      await Promise.all(regs.map(r => r.unregister()));
-    }
-    if ('caches' in window) {
-      const keys = await caches.keys();
-      await Promise.all(keys.map(k => caches.delete(k)));
-    }
-  } finally {
-    // vuelve a la app
-    location.replace('/?reset=' + Date.now());
-  }
-})();
-</script>
-Resetting…
-</body>
-</html>
-EOF
-
 exec "$@"

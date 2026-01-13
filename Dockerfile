@@ -10,6 +10,7 @@ RUN chmod +x /docker-entrypoint.sh
 
 # Copy pre-built web app (built in CI/GitHub Actions)
 # CI will place the contents of build/web in the build context
+RUN rm -rf /usr/share/nginx/html/*
 COPY build/web /usr/share/nginx/html
 
 # Use custom entrypoint to inject environment variables at runtime
