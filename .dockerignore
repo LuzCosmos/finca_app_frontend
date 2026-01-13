@@ -1,5 +1,7 @@
 # Build outputs
-# build/ <- Removed to allow COPY build/web in Dockerfile
+# Build outputs
+build/
+
 .dart_tool/
 
 # Git
