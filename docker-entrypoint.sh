@@ -132,6 +132,41 @@ self.addEventListener('activate', (event) => {
 });
 EOF
 
+FLUTTER_JS="${WEB_ROOT}/flutter.js"
+if [ -f "$FLUTTER_JS" ]; then
+  echo "[entrypoint] Patching flutter.js to disable serviceWorkerSettings..."
+  awk '
+    BEGIN { skipping=0; depth=0 }
+
+    skipping==0 {
+      if ($0 ~ /serviceWorkerSettings:[[:space:]]*\{/) {
+        skipping=1
+        nOpen = gsub(/\{/, "{")
+        nClose = gsub(/\}/, "}")
+        depth += (nOpen - nClose)
+
+        sub(/,?[[:space:]]*serviceWorkerSettings:[[:space:]]*\{.*/, "", $0)
+        if (length($0) > 0) print $0
+
+        if (depth <= 0) { skipping=0; depth=0 }
+        next
+      }
+      print
+      next
+    }
+
+    skipping==1 {
+      nOpen = gsub(/\{/, "{")
+      nClose = gsub(/\}/, "}")
+      depth += (nOpen - nClose)
+      if (depth <= 0) { skipping=0; depth=0 }
+      next
+    }
+  ' "$FLUTTER_JS" > "${FLUTTER_JS}.tmp" && mv "${FLUTTER_JS}.tmp" "$FLUTTER_JS"
+fi
+
+
+
 ###############################################################################
 # 7) Verificación en logs (para no adivinar)
 ###############################################################################
@@ -139,4 +174,33 @@ echo "[entrypoint] Bootstrap SW settings (config block should be gone):"
 grep -n 'serviceWorkerSettings:[[:space:]]*{' "${WEB_ROOT}/flutter_bootstrap.js" | head -n 5 || true
 
 echo "[entrypoint] Runtime init complete. Starting nginx..."
+
+
+cat > /usr/share/nginx/html/kill-sw.html <<'EOF'
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Reset</title></head>
+<body>
+<script>
+(async () => {
+  try {
+    if ('serviceWorker' in navigator) {
+      const regs = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.map(r => r.unregister()));
+    }
+    if ('caches' in window) {
+      const keys = await caches.keys();
+      await Promise.all(keys.map(k => caches.delete(k)));
+    }
+  } finally {
+    // vuelve a la app
+    location.replace('/?reset=' + Date.now());
+  }
+})();
+</script>
+Resetting…
+</body>
+</html>
+EOF
+
 exec "$@"
