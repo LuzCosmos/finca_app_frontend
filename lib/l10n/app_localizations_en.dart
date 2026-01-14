@@ -1123,4 +1123,61 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get trackerNotSelected => 'Tracker not selected';
+
+  @override
+  String get colSystemNumber => 'System No.';
+
+  @override
+  String get colBrandColor => 'Color';
+
+  @override
+  String get colCharacteristics => 'Characteristics';
+
+  @override
+  String get colHorns => 'Horns';
+
+  @override
+  String get colCastrated => 'Castrated';
+
+  @override
+  String get colAuctionLot => 'Auction Lot';
+
+  @override
+  String get colReceivedAt => 'Received At';
+
+  @override
+  String get colPurchaseWeight => 'Purchase Weight (kg)';
+
+  @override
+  String get colReceivedDate => 'Received Date';
+
+  @override
+  String get colComments => 'Comments';
+
+  @override
+  String get colPurchasePrice => 'Purchase Price';
+
+  @override
+  String get colPurchaseCommission => 'Commission';
+
+  @override
+  String get colStatus => 'Status';
+
+  @override
+  String get colWeightHistory => 'Weight History';
+
+  @override
+  String get colMedicationHistory => 'Medication History';
+
+  @override
+  String get colSaleWeight => 'Sale Weight';
+
+  @override
+  String get colSalePrice => 'Sale Price';
+
+  @override
+  String get masterListTitle => 'Cattle Master List';
+
+  @override
+  String get addCattleRow => 'Add Cattle';
 }

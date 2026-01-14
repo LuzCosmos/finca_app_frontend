@@ -455,5 +455,25 @@
   "user_passwordLengthError": "Password must be between 8 and 50 characters",
   "searchTracker": "Search tracker...",
   "trackerNotFound": "Tracker not found",
-  "trackerNotSelected": "Tracker not selected"
+  "trackerNotSelected": "Tracker not selected",
+  
+  "colSystemNumber": "System No.",
+  "colBrandColor": "Color",
+  "colCharacteristics": "Characteristics",
+  "colHorns": "Horns",
+  "colCastrated": "Castrated",
+  "colAuctionLot": "Auction Lot",
+  "colReceivedAt": "Received At",
+  "colPurchaseWeight": "Purchase Weight (kg)",
+  "colReceivedDate": "Received Date",
+  "colComments": "Comments",
+  "colPurchasePrice": "Purchase Price",
+  "colPurchaseCommission": "Commission",
+  "colStatus": "Status",
+  "colWeightHistory": "Weight History",
+  "colMedicationHistory": "Medication History",
+  "colSaleWeight": "Sale Weight",
+  "colSalePrice": "Sale Price",
+  "masterListTitle": "Cattle Master List",
+  "addCattleRow": "Add Cattle"
 }

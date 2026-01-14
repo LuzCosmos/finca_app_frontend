@@ -433,5 +433,25 @@
   "user_passwordLengthError": "La contraseña debe tener entre 8 y 50 caracteres",
   "searchTracker": "Buscar tracker...",
   "trackerNotFound": "Tracker no encontrado",
-  "trackerNotSelected": "Tracker no seleccionado"
+  "trackerNotSelected": "Tracker no seleccionado",
+
+  "colSystemNumber": "No. Sistema",
+  "colBrandColor": "Color",
+  "colCharacteristics": "Características",
+  "colHorns": "Cachos",
+  "colCastrated": "Castrado",
+  "colAuctionLot": "Lote Subasta",
+  "colReceivedAt": "Recibido En",
+  "colPurchaseWeight": "Peso Compra (kg)",
+  "colReceivedDate": "Fecha Recibido",
+  "colComments": "Comentarios",
+  "colPurchasePrice": "Precio Compra",
+  "colPurchaseCommission": "Comisión",
+  "colStatus": "Estado",
+  "colWeightHistory": "Hist. Peso",
+  "colMedicationHistory": "Hist. Medicamentos",
+  "colSaleWeight": "Peso Venta",
+  "colSalePrice": "Precio Venta",
+  "masterListTitle": "Lista Maestra de Ganado",
+  "addCattleRow": "Agregar Res"
 }

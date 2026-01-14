@@ -2179,6 +2179,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tracker not selected'**
   String get trackerNotSelected;
+
+  /// No description provided for @colSystemNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'System No.'**
+  String get colSystemNumber;
+
+  /// No description provided for @colBrandColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Color'**
+  String get colBrandColor;
+
+  /// No description provided for @colCharacteristics.
+  ///
+  /// In en, this message translates to:
+  /// **'Characteristics'**
+  String get colCharacteristics;
+
+  /// No description provided for @colHorns.
+  ///
+  /// In en, this message translates to:
+  /// **'Horns'**
+  String get colHorns;
+
+  /// No description provided for @colCastrated.
+  ///
+  /// In en, this message translates to:
+  /// **'Castrated'**
+  String get colCastrated;
+
+  /// No description provided for @colAuctionLot.
+  ///
+  /// In en, this message translates to:
+  /// **'Auction Lot'**
+  String get colAuctionLot;
+
+  /// No description provided for @colReceivedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Received At'**
+  String get colReceivedAt;
+
+  /// No description provided for @colPurchaseWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase Weight (kg)'**
+  String get colPurchaseWeight;
+
+  /// No description provided for @colReceivedDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Received Date'**
+  String get colReceivedDate;
+
+  /// No description provided for @colComments.
+  ///
+  /// In en, this message translates to:
+  /// **'Comments'**
+  String get colComments;
+
+  /// No description provided for @colPurchasePrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase Price'**
+  String get colPurchasePrice;
+
+  /// No description provided for @colPurchaseCommission.
+  ///
+  /// In en, this message translates to:
+  /// **'Commission'**
+  String get colPurchaseCommission;
+
+  /// No description provided for @colStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get colStatus;
+
+  /// No description provided for @colWeightHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight History'**
+  String get colWeightHistory;
+
+  /// No description provided for @colMedicationHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Medication History'**
+  String get colMedicationHistory;
+
+  /// No description provided for @colSaleWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Sale Weight'**
+  String get colSaleWeight;
+
+  /// No description provided for @colSalePrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Sale Price'**
+  String get colSalePrice;
+
+  /// No description provided for @masterListTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cattle Master List'**
+  String get masterListTitle;
+
+  /// No description provided for @addCattleRow.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Cattle'**
+  String get addCattleRow;
 }
 
 class _AppLocalizationsDelegate
