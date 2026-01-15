@@ -48,7 +48,7 @@ class _ProviderInputState extends State<ProviderInput> {
     setState(() => _isLoading = true);
 
     try {
-      final created = await _service.create(name: name, nit: nit, type: ProviderType.PROVIDER);
+      final created = await _service.create(name: name, nit: nit, type: ProviderType.PROVIDER.name);
       _selectedProvider = created;
       _providerExists = true;
       _cachedSuggestions.add(created);

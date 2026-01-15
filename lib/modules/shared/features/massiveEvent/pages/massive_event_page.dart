@@ -168,7 +168,7 @@ class _MassiveEventPageState extends State<MassiveEventPage> {
     final l10n = AppLocalizations.of(context)!;
     final isWide = MediaQuery.of(context).size.width > 500;
     final eventConfigPanel = EventConfigPanel(
-      key: const ValueKey('eventConfigPanel'),
+      key: const ValueKey('eventConfigPanel_massiveEvent'),
       isWide: isWide,
       eventDate: _selectedDate,
       simpleEvents: simpleEvents,

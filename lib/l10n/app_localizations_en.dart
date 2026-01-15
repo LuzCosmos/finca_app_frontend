@@ -812,9 +812,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sales_noDetails => 'No details available.';
 
   @override
-  String get sales_cattleId => 'Cattle ID';
-
-  @override
   String get sales_price => 'Price';
 
   @override
@@ -845,10 +842,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get provider_searchByName => 'Search by name...';
 
   @override
-  String get provider_createNew => 'Create New Provider';
+  String get provider_createNew => 'Create New ';
 
   @override
-  String get provider_providerName => 'Provider Name';
+  String provider_providerName(Object providerTypeLabel) {
+    return '$providerTypeLabel Name';
+  }
 
   @override
   String get provider_address => 'Address';
@@ -872,16 +871,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get provider_transporter => 'Transporter';
 
   @override
-  String get provider_providerType => 'Provider Type';
+  String get provider_providerType => 'Type';
 
   @override
   String get provider_creating => 'Creating...';
 
   @override
-  String get provider_createdSuccess => 'Provider created successfully';
+  String provider_createdSuccess(Object providerTypeLabel) {
+    return '$providerTypeLabel created successfully';
+  }
 
   @override
-  String get provider_createError => 'Error creating provider';
+  String provider_createError(Object providerTypeLabel) {
+    return 'Error creating $providerTypeLabel';
+  }
 
   @override
   String get provider_nitLengthError =>
@@ -898,7 +901,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cattle_validation_invalid => 'Invalid cattle number';
 
   @override
-  String get cattle_validation_notFound => 'Cattle not found for this tenant';
+  String get cattle_validation_notFound => 'Cattle not found.';
 
   @override
   String get cattle_validation_notActive => 'Cattle is not ACTIVE';
