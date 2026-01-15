@@ -2,7 +2,7 @@ services:
   # Frontend Web App
   web:
     container_name: finca_app_frontend
-    image: finca_app_frontend:0.1.1
+    image: finca_app_frontend:0.1.2
     restart: unless-stopped
     ports:
       - '${FRONTEND_PORT}:80'
