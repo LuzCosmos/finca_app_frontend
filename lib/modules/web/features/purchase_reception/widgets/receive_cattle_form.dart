@@ -73,7 +73,9 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
   void didUpdateWidget(ReceiveCattleForm oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.currentNumber != oldWidget.currentNumber) {
-      _numberController.text = widget.currentNumber ?? '';
+      if (_numberController.text != widget.currentNumber) {
+        _numberController.text = widget.currentNumber ?? '';
+      }
     }
   }
 
@@ -135,7 +137,7 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                     child: TextFormField(
                       controller: _numberController,
                       decoration: InputDecoration(
-                        labelText: l10n.cattleNumber,
+                        labelText: l10n.cattle_number,
                         border: const OutlineInputBorder(),
                       ),
                       validator:

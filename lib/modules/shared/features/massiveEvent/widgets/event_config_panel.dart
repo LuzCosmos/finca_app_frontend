@@ -76,7 +76,13 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
       widget.showError(null);
       final massiveBloc = context.read<MassiveEventBloc>();
       final activeEventTypes = activeDetails.map((e) => e.type).toList();
-
+      if (widget.key != null && 
+          widget.key is ValueKey<String> && 
+          (widget.key as ValueKey<String>).value.contains('eventConfigPanel_reception')) {
+        activeEventTypes.add(SimpleEventType.weight);
+        activeEventTypes.add(SimpleEventType.tracker);
+        activeEventTypes.add(SimpleEventType.eartag);
+      }
       final result = await showDialog<Map<String, dynamic>>(
         context: context,
         builder:

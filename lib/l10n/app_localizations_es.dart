@@ -813,9 +813,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get sales_noDetails => 'No hay detalles disponibles.';
 
   @override
-  String get sales_cattleId => 'ID de Ganado';
-
-  @override
   String get sales_price => 'Precio';
 
   @override
@@ -846,10 +843,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get provider_searchByName => 'Buscar por nombre...';
 
   @override
-  String get provider_createNew => 'Crear Nuevo Proveedor';
+  String get provider_createNew => 'Crear Nuevo';
 
   @override
-  String get provider_providerName => 'Nombre del Proveedor';
+  String provider_providerName(Object providerTypeLabel) {
+    return 'Nombre $providerTypeLabel';
+  }
 
   @override
   String get provider_address => 'Dirección';
@@ -873,16 +872,20 @@ class AppLocalizationsEs extends AppLocalizations {
   String get provider_transporter => 'Transportista';
 
   @override
-  String get provider_providerType => 'Tipo de Proveedor';
+  String get provider_providerType => 'Tipo';
 
   @override
   String get provider_creating => 'Creando...';
 
   @override
-  String get provider_createdSuccess => 'Proveedor creado exitosamente';
+  String provider_createdSuccess(Object providerTypeLabel) {
+    return '$providerTypeLabel creado exitosamente';
+  }
 
   @override
-  String get provider_createError => 'Error al crear proveedor';
+  String provider_createError(Object providerTypeLabel) {
+    return 'Error al crear $providerTypeLabel';
+  }
 
   @override
   String get provider_nitLengthError =>
@@ -899,23 +902,22 @@ class AppLocalizationsEs extends AppLocalizations {
   String get cattle_validation_invalid => 'Número de ganado inválido';
 
   @override
-  String get cattle_validation_notFound =>
-      'Ganado no encontrado para este inquilino';
+  String get cattle_validation_notFound => 'Res no encontrada';
 
   @override
   String get cattle_validation_notActive => 'El ganado no está ACTIVO';
 
   @override
-  String get cattle_validation_sold => 'Este ganado ya ha sido vendido';
+  String get cattle_validation_sold => 'Esta res ya ha sido vendida';
 
   @override
-  String get cattle_validation_dead => 'Este ganado está marcado como muerto';
+  String get cattle_validation_dead => 'Esta res está marcada como muerta';
 
   @override
-  String get cattle_validation_lost => 'Este ganado está marcado como perdido';
+  String get cattle_validation_lost => 'Esta res está marcada como perdida';
 
   @override
-  String get cattle_number => 'Número de Ganado';
+  String get cattle_number => 'Número de Res';
 
   @override
   String get cattle_weight => 'Peso (kg)';
