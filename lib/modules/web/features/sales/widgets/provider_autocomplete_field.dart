@@ -5,6 +5,9 @@ import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/core/services/basic_api_service.dart';
+import 'package:finca_app_frontend/modules/web/features/cattle_purchase/models/provider.dart';
+
+
 
 /// Provider Autocomplete Field with Create Dialog
 /// 
@@ -142,16 +145,29 @@ class _ProviderAutocompleteFieldState extends State<ProviderAutocompleteField> {
       // Show success message
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n?.provider_createdSuccess ?? 'Provider created successfully')),
+          SnackBar(content: Text(l10n!.provider_createdSuccess(_providerTypeLabel))),
         );
       }
     }
   }
 
+  String get _providerTypeLabel {
+    final l10n = AppLocalizations.of(context);
+    var providerTypeLabel = '';
+    if (widget.providerType == ProviderType.BUYER.name) {
+      providerTypeLabel = l10n!.provider_buyer;
+    } else if (widget.providerType == ProviderType.TRANSPORTER.name) {
+      providerTypeLabel = l10n!.provider_transporter;
+    } else if (widget.providerType == ProviderType.PROVIDER.name) {
+      providerTypeLabel = l10n!.provider;
+    }
+    return providerTypeLabel;
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    
+    var providerTypeLabel = _providerTypeLabel;
     return TapRegion(
       onTapOutside: (event) {
         if (_showDropdown) {
@@ -198,7 +214,7 @@ class _ProviderAutocompleteFieldState extends State<ProviderAutocompleteField> {
                 child: _providers.isEmpty && !_isLoading
                     ? ListTile(
                         leading: const Icon(Icons.add_circle, color: Colors.green),
-                        title: Text(l10n?.provider_createNew ?? 'Create New Provider'),
+                        title: Text('${l10n!.provider_createNew} $providerTypeLabel'),
                         onTap: () {
                           _focusNode.unfocus();
                           _showCreateDialog();
@@ -215,7 +231,7 @@ class _ProviderAutocompleteFieldState extends State<ProviderAutocompleteField> {
                           const Divider(),
                           ListTile(
                             leading: const Icon(Icons.add_circle, color: Colors.green),
-                            title: Text(l10n?.provider_createNew ?? 'Create New Provider'),
+                            title: Text('${l10n!.provider_createNew} $providerTypeLabel'),
                             onTap: () {
                               _focusNode.unfocus();
                               _showCreateDialog();
@@ -274,6 +290,19 @@ class _CreateProviderDialogState extends State<CreateProviderDialog> {
     super.dispose();
   }
 
+  String get _providerTypeLabel {
+    final l10n = AppLocalizations.of(context);
+    var providerTypeLabel = '';
+    if (widget.providerType == ProviderType.BUYER.name) {
+      providerTypeLabel = l10n!.provider_buyer;
+    } else if (widget.providerType == ProviderType.TRANSPORTER.name) {
+      providerTypeLabel = l10n!.provider_transporter;
+    } else if (widget.providerType == ProviderType.PROVIDER.name) {
+      providerTypeLabel = l10n!.provider;
+    }
+    return providerTypeLabel;
+  }
+
   Future<void> _createProvider() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -316,7 +345,7 @@ class _CreateProviderDialogState extends State<CreateProviderDialog> {
       if (mounted) {
         final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n?.provider_createError ?? 'Error creating provider: $e')),
+          SnackBar(content: Text(l10n?.provider_createError(_providerTypeLabel) ?? 'Error creating provider: $e')),
         );
       }
     } finally {
@@ -329,12 +358,10 @@ class _CreateProviderDialogState extends State<CreateProviderDialog> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final providerTypeLabel = widget.providerType == 'BUYER' 
-        ? (l10n?.provider_buyer ?? 'Buyer')
-        : (l10n?.provider_transporter ?? 'Transporter');
+    final providerTypeLabel = _providerTypeLabel;
 
     return AlertDialog(
-      title: Text('${l10n?.provider_createNew ?? 'Create New Provider'} - $providerTypeLabel'),
+      title: Text('${l10n!.provider_createNew} $providerTypeLabel'),
       content: SizedBox(
         width: 500,
         child: Form(
@@ -348,7 +375,7 @@ class _CreateProviderDialogState extends State<CreateProviderDialog> {
                 TextFormField(
                   controller: _nameController,
                   decoration: InputDecoration(
-                    labelText: '${l10n?.provider_providerName ?? 'Provider Name'} *',
+                    labelText: '${l10n?.provider_providerName(providerTypeLabel)} *',
                     border: const OutlineInputBorder(),
                   ),
                   validator: (val) {

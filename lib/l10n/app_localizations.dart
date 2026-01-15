@@ -1598,12 +1598,6 @@ abstract class AppLocalizations {
   /// **'No details available.'**
   String get sales_noDetails;
 
-  /// No description provided for @sales_cattleId.
-  ///
-  /// In en, this message translates to:
-  /// **'Cattle ID'**
-  String get sales_cattleId;
-
   /// No description provided for @sales_price.
   ///
   /// In en, this message translates to:
@@ -1667,14 +1661,14 @@ abstract class AppLocalizations {
   /// No description provided for @provider_createNew.
   ///
   /// In en, this message translates to:
-  /// **'Create New Provider'**
+  /// **'Create New '**
   String get provider_createNew;
 
   /// No description provided for @provider_providerName.
   ///
   /// In en, this message translates to:
-  /// **'Provider Name'**
-  String get provider_providerName;
+  /// **'{providerTypeLabel} Name'**
+  String provider_providerName(Object providerTypeLabel);
 
   /// No description provided for @provider_address.
   ///
@@ -1721,7 +1715,7 @@ abstract class AppLocalizations {
   /// No description provided for @provider_providerType.
   ///
   /// In en, this message translates to:
-  /// **'Provider Type'**
+  /// **'Type'**
   String get provider_providerType;
 
   /// No description provided for @provider_creating.
@@ -1733,14 +1727,14 @@ abstract class AppLocalizations {
   /// No description provided for @provider_createdSuccess.
   ///
   /// In en, this message translates to:
-  /// **'Provider created successfully'**
-  String get provider_createdSuccess;
+  /// **'{providerTypeLabel} created successfully'**
+  String provider_createdSuccess(Object providerTypeLabel);
 
   /// No description provided for @provider_createError.
   ///
   /// In en, this message translates to:
-  /// **'Error creating provider'**
-  String get provider_createError;
+  /// **'Error creating {providerTypeLabel}'**
+  String provider_createError(Object providerTypeLabel);
 
   /// No description provided for @provider_nitLengthError.
   ///
@@ -1769,7 +1763,7 @@ abstract class AppLocalizations {
   /// No description provided for @cattle_validation_notFound.
   ///
   /// In en, this message translates to:
-  /// **'Cattle not found for this tenant'**
+  /// **'Cattle not found.'**
   String get cattle_validation_notFound;
 
   /// No description provided for @cattle_validation_notActive.
