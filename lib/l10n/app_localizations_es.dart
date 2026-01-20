@@ -1187,4 +1187,115 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get addCattleRow => 'Agregar Res';
+
+  @override
+  String get colorBlack => 'Negro';
+
+  @override
+  String get colorWhite => 'Blanco';
+
+  @override
+  String get colorBrown => 'Café';
+
+  @override
+  String get colorBlackBrown => 'Negro-Café';
+
+  @override
+  String get colorLightBrown => 'Café Claro';
+
+  @override
+  String get colorGrey => 'Gris';
+
+  @override
+  String get charBlackBelly => 'Barriga Negra';
+
+  @override
+  String get charWhiteBelly => 'Barriga Blanca';
+
+  @override
+  String get charBrownBelly => 'Barriga Café';
+
+  @override
+  String get charLightBrownBelly => 'Barriga Café Clara';
+
+  @override
+  String get charGreyBelly => 'Barriga Gris';
+
+  @override
+  String get charBlackHead => 'Cabeza Negra';
+
+  @override
+  String get charWhiteHead => 'Cabeza Blanca';
+
+  @override
+  String get charBrownHead => 'Cabeza Café';
+
+  @override
+  String get charLightBrownHead => 'Cabeza Café Clara';
+
+  @override
+  String get charGreyHead => 'Cabeza Gris';
+
+  @override
+  String get charBlackHalfHead => 'Media Cabeza Negra';
+
+  @override
+  String get charWhiteHalfHead => 'Media Cabeza Blanca';
+
+  @override
+  String get charBrownHalfHead => 'Media Cabeza Café';
+
+  @override
+  String get charLightBrownHalfHead => 'Media Cabeza Café Clara';
+
+  @override
+  String get charGreyHalfHead => 'Media Cabeza Gris';
+
+  @override
+  String get charBlackLegs => 'Patas Negras';
+
+  @override
+  String get charWhiteLegs => 'Patas Blancas';
+
+  @override
+  String get charBrownLegs => 'Patas Café';
+
+  @override
+  String get charLightBrownLegs => 'Patas Café Claras';
+
+  @override
+  String get charGreyLegs => 'Patas Grises';
+
+  @override
+  String get charBlackFeet => 'Pies Negros';
+
+  @override
+  String get charWhiteFeet => 'Pies Blancos';
+
+  @override
+  String get charBrownFeet => 'Pies Café';
+
+  @override
+  String get charLightBrownFeet => 'Pies Café Claros';
+
+  @override
+  String get charGreyFeet => 'Pies Grises';
+
+  @override
+  String get charBlackSpots => 'Manchas Negras';
+
+  @override
+  String get charBrownSpots => 'Manchas Café';
+
+  @override
+  String get charLightBrownSpots => 'Manchas Café Claras';
+
+  @override
+  String get charGreySpots => 'Manchas Grises';
+
+  @override
+  String get charBlackPattern => 'Patrón Negro';
+
+  @override
+  String get charBrownPattern => 'Patrón Café';
 }

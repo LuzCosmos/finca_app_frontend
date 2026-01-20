@@ -7,12 +7,13 @@ import 'package:finca_app_frontend/modules/web/features/purchase_reception/servi
 import 'package:finca_app_frontend/modules/shared/features/devices/models/device_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/devices/services/device_api_service.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
+import 'package:finca_app_frontend/modules/shared/enums/cattle_enums.dart';
 
 class ReceiveCattleForm extends StatefulWidget {
   final String? currentNumber;
   final List<Map<String, dynamic>> availableLots;
-  final List<Map<String, dynamic>> colors;
-  final List<Map<String, dynamic>> characteristics;
+  final List<String> colors;
+  final List<String> characteristics;
   final List<SimpleEventModel> activeEvents;
   final Function(Map<String, dynamic> cattleData) onSubmit;
   final Function(String number) onNumberChanged;
@@ -243,18 +244,21 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                       value: selectedColorId,
                       decoration: InputDecoration(
                         labelText: l10n.color,
-                        border: const OutlineInputBorder(),
                       ),
+                      validator: (value) => value == null ? l10n.fieldRequired : null,
                       items: [
                         DropdownMenuItem<String>(
                           value: null,
                           child: const Text('—'),
                         ),
                         ...widget.colors.map(
-                          (color) => DropdownMenuItem<String>(
-                            value: color['id'] as String,
-                            child: Text(color['name']),
-                          ),
+                          (color) {
+                            final enumVal = CattleColor.fromString(color);
+                            return DropdownMenuItem<String>(
+                              value: color,
+                              child: Text(enumVal.localizedName(context)),
+                            );
+                          },
                         ),
                       ],
                       onChanged: (value) {
@@ -452,8 +456,9 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                 child: ListView(
                   children:
                       widget.characteristics.map((char) {
-                        final charId = char['id'] as String;
+                        final charId = char;
                         final isSelected = tempSelected.contains(charId);
+                        final enumVal = CattleCharacteristic.fromString(charId);
 
                         return CheckboxListTile(
                           value: isSelected,
@@ -466,7 +471,7 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                               }
                             });
                           },
-                          title: Text(char['name']),
+                          title: Text(enumVal?.localizedName(context) ?? char),
                         );
                       }).toList(),
                 ),
@@ -562,12 +567,8 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
       'idLot': selectedLotId,
       'hasHorns': hasHorns,
       'isCastrated': isCastrated,
-      'idColor': selectedColorId,
-      'characteristicsIds': selectedCharacteristicIds,
-      'eartag':
-          _eartagController.text.trim().isEmpty
-              ? null
-              : _eartagController.text.trim(),
+      'color': selectedColorId,
+      'characteristics': selectedCharacteristicIds,
       'eartag':
           _eartagController.text.trim().isEmpty
               ? null

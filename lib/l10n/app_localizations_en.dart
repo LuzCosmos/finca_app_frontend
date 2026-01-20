@@ -1183,4 +1183,115 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get addCattleRow => 'Add Cattle';
+
+  @override
+  String get colorBlack => 'Black';
+
+  @override
+  String get colorWhite => 'White';
+
+  @override
+  String get colorBrown => 'Brown';
+
+  @override
+  String get colorBlackBrown => 'Black-Brown';
+
+  @override
+  String get colorLightBrown => 'Light Brown';
+
+  @override
+  String get colorGrey => 'Grey';
+
+  @override
+  String get charBlackBelly => 'Black Belly';
+
+  @override
+  String get charWhiteBelly => 'White Belly';
+
+  @override
+  String get charBrownBelly => 'Brown Belly';
+
+  @override
+  String get charLightBrownBelly => 'Light Brown Belly';
+
+  @override
+  String get charGreyBelly => 'Grey Belly';
+
+  @override
+  String get charBlackHead => 'Black Head';
+
+  @override
+  String get charWhiteHead => 'White Head';
+
+  @override
+  String get charBrownHead => 'Brown Head';
+
+  @override
+  String get charLightBrownHead => 'Light Brown Head';
+
+  @override
+  String get charGreyHead => 'Grey Head';
+
+  @override
+  String get charBlackHalfHead => 'Black Half Head';
+
+  @override
+  String get charWhiteHalfHead => 'White Half Head';
+
+  @override
+  String get charBrownHalfHead => 'Brown Half Head';
+
+  @override
+  String get charLightBrownHalfHead => 'Light Brown Half Head';
+
+  @override
+  String get charGreyHalfHead => 'Grey Half Head';
+
+  @override
+  String get charBlackLegs => 'Black Legs';
+
+  @override
+  String get charWhiteLegs => 'White Legs';
+
+  @override
+  String get charBrownLegs => 'Brown Legs';
+
+  @override
+  String get charLightBrownLegs => 'Light Brown Legs';
+
+  @override
+  String get charGreyLegs => 'Grey Legs';
+
+  @override
+  String get charBlackFeet => 'Black Feet';
+
+  @override
+  String get charWhiteFeet => 'White Feet';
+
+  @override
+  String get charBrownFeet => 'Brown Feet';
+
+  @override
+  String get charLightBrownFeet => 'Light Brown Feet';
+
+  @override
+  String get charGreyFeet => 'Grey Feet';
+
+  @override
+  String get charBlackSpots => 'Black Spots';
+
+  @override
+  String get charBrownSpots => 'Brown Spots';
+
+  @override
+  String get charLightBrownSpots => 'Light Brown Spots';
+
+  @override
+  String get charGreySpots => 'Grey Spots';
+
+  @override
+  String get charBlackPattern => 'Black Pattern';
+
+  @override
+  String get charBrownPattern => 'Brown Pattern';
 }

@@ -2287,6 +2287,228 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add Cattle'**
   String get addCattleRow;
+
+  /// No description provided for @colorBlack.
+  ///
+  /// In en, this message translates to:
+  /// **'Black'**
+  String get colorBlack;
+
+  /// No description provided for @colorWhite.
+  ///
+  /// In en, this message translates to:
+  /// **'White'**
+  String get colorWhite;
+
+  /// No description provided for @colorBrown.
+  ///
+  /// In en, this message translates to:
+  /// **'Brown'**
+  String get colorBrown;
+
+  /// No description provided for @colorBlackBrown.
+  ///
+  /// In en, this message translates to:
+  /// **'Black-Brown'**
+  String get colorBlackBrown;
+
+  /// No description provided for @colorLightBrown.
+  ///
+  /// In en, this message translates to:
+  /// **'Light Brown'**
+  String get colorLightBrown;
+
+  /// No description provided for @colorGrey.
+  ///
+  /// In en, this message translates to:
+  /// **'Grey'**
+  String get colorGrey;
+
+  /// No description provided for @charBlackBelly.
+  ///
+  /// In en, this message translates to:
+  /// **'Black Belly'**
+  String get charBlackBelly;
+
+  /// No description provided for @charWhiteBelly.
+  ///
+  /// In en, this message translates to:
+  /// **'White Belly'**
+  String get charWhiteBelly;
+
+  /// No description provided for @charBrownBelly.
+  ///
+  /// In en, this message translates to:
+  /// **'Brown Belly'**
+  String get charBrownBelly;
+
+  /// No description provided for @charLightBrownBelly.
+  ///
+  /// In en, this message translates to:
+  /// **'Light Brown Belly'**
+  String get charLightBrownBelly;
+
+  /// No description provided for @charGreyBelly.
+  ///
+  /// In en, this message translates to:
+  /// **'Grey Belly'**
+  String get charGreyBelly;
+
+  /// No description provided for @charBlackHead.
+  ///
+  /// In en, this message translates to:
+  /// **'Black Head'**
+  String get charBlackHead;
+
+  /// No description provided for @charWhiteHead.
+  ///
+  /// In en, this message translates to:
+  /// **'White Head'**
+  String get charWhiteHead;
+
+  /// No description provided for @charBrownHead.
+  ///
+  /// In en, this message translates to:
+  /// **'Brown Head'**
+  String get charBrownHead;
+
+  /// No description provided for @charLightBrownHead.
+  ///
+  /// In en, this message translates to:
+  /// **'Light Brown Head'**
+  String get charLightBrownHead;
+
+  /// No description provided for @charGreyHead.
+  ///
+  /// In en, this message translates to:
+  /// **'Grey Head'**
+  String get charGreyHead;
+
+  /// No description provided for @charBlackHalfHead.
+  ///
+  /// In en, this message translates to:
+  /// **'Black Half Head'**
+  String get charBlackHalfHead;
+
+  /// No description provided for @charWhiteHalfHead.
+  ///
+  /// In en, this message translates to:
+  /// **'White Half Head'**
+  String get charWhiteHalfHead;
+
+  /// No description provided for @charBrownHalfHead.
+  ///
+  /// In en, this message translates to:
+  /// **'Brown Half Head'**
+  String get charBrownHalfHead;
+
+  /// No description provided for @charLightBrownHalfHead.
+  ///
+  /// In en, this message translates to:
+  /// **'Light Brown Half Head'**
+  String get charLightBrownHalfHead;
+
+  /// No description provided for @charGreyHalfHead.
+  ///
+  /// In en, this message translates to:
+  /// **'Grey Half Head'**
+  String get charGreyHalfHead;
+
+  /// No description provided for @charBlackLegs.
+  ///
+  /// In en, this message translates to:
+  /// **'Black Legs'**
+  String get charBlackLegs;
+
+  /// No description provided for @charWhiteLegs.
+  ///
+  /// In en, this message translates to:
+  /// **'White Legs'**
+  String get charWhiteLegs;
+
+  /// No description provided for @charBrownLegs.
+  ///
+  /// In en, this message translates to:
+  /// **'Brown Legs'**
+  String get charBrownLegs;
+
+  /// No description provided for @charLightBrownLegs.
+  ///
+  /// In en, this message translates to:
+  /// **'Light Brown Legs'**
+  String get charLightBrownLegs;
+
+  /// No description provided for @charGreyLegs.
+  ///
+  /// In en, this message translates to:
+  /// **'Grey Legs'**
+  String get charGreyLegs;
+
+  /// No description provided for @charBlackFeet.
+  ///
+  /// In en, this message translates to:
+  /// **'Black Feet'**
+  String get charBlackFeet;
+
+  /// No description provided for @charWhiteFeet.
+  ///
+  /// In en, this message translates to:
+  /// **'White Feet'**
+  String get charWhiteFeet;
+
+  /// No description provided for @charBrownFeet.
+  ///
+  /// In en, this message translates to:
+  /// **'Brown Feet'**
+  String get charBrownFeet;
+
+  /// No description provided for @charLightBrownFeet.
+  ///
+  /// In en, this message translates to:
+  /// **'Light Brown Feet'**
+  String get charLightBrownFeet;
+
+  /// No description provided for @charGreyFeet.
+  ///
+  /// In en, this message translates to:
+  /// **'Grey Feet'**
+  String get charGreyFeet;
+
+  /// No description provided for @charBlackSpots.
+  ///
+  /// In en, this message translates to:
+  /// **'Black Spots'**
+  String get charBlackSpots;
+
+  /// No description provided for @charBrownSpots.
+  ///
+  /// In en, this message translates to:
+  /// **'Brown Spots'**
+  String get charBrownSpots;
+
+  /// No description provided for @charLightBrownSpots.
+  ///
+  /// In en, this message translates to:
+  /// **'Light Brown Spots'**
+  String get charLightBrownSpots;
+
+  /// No description provided for @charGreySpots.
+  ///
+  /// In en, this message translates to:
+  /// **'Grey Spots'**
+  String get charGreySpots;
+
+  /// No description provided for @charBlackPattern.
+  ///
+  /// In en, this message translates to:
+  /// **'Black Pattern'**
+  String get charBlackPattern;
+
+  /// No description provided for @charBrownPattern.
+  ///
+  /// In en, this message translates to:
+  /// **'Brown Pattern'**
+  String get charBrownPattern;
 }
 
 class _AppLocalizationsDelegate

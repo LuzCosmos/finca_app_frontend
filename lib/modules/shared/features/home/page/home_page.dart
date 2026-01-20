@@ -37,14 +37,14 @@ class HomePage extends StatelessWidget {
                 route: "/massive-events/create",
                 forWebOnly: false,
               ),
-              HomeOptionWithPermission(
+              /*HomeOptionWithPermission(
                 module: "RECEPTION",
                 resource: "receptions",
                 title: l10n.home_reception,
                 icon: Icons.shopping_cart_checkout,
                 route: "/purchases/pending",
                 forWebOnly: true,
-              ),
+              ),*/
               HomeOptionWithPermission(
                 module: "COMMERCE",
                 resource: "sales",

@@ -154,8 +154,8 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
         idLot: cattleData['idLot'],
         hasHorn: cattleData['hasHorn'],
         castrated: cattleData['isCastrated'],
-        idColor: cattleData['idColor'],
-        characteristicsIds: cattleData['characteristicsIds'],
+        color: cattleData['color'],
+        characteristics: cattleData['characteristics'],
         eartag: cattleData['eartag'],
         idDevice: cattleData['idDevice'],
         idProvider: receptionData!['reception']['providerId'],
@@ -225,16 +225,14 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
     return (lot['cattle'] as List<dynamic>).cast<Map<String, dynamic>>();
   }
 
-  List<Map<String, dynamic>> _getColors() {
+  List<String> _getColors() {
     if (receptionData == null) return [];
-    return (receptionData!['colors'] as List<dynamic>)
-        .cast<Map<String, dynamic>>();
+    return (receptionData!['colors'] as List?)?.map((e) => e.toString()).toList() ?? [];
   }
 
-  List<Map<String, dynamic>> _getCharacteristics() {
+  List<String> _getCharacteristics() {
     if (receptionData == null) return [];
-    return (receptionData!['characteristics'] as List<dynamic>)
-        .cast<Map<String, dynamic>>();
+    return (receptionData!['characteristics'] as List?)?.map((e) => e.toString()).toList() ?? [];
   }
 
   @override

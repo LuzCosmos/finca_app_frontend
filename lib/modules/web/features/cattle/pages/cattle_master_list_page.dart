@@ -7,6 +7,10 @@ import 'package:finca_app_frontend/modules/web/features/cattle/services/cattle_m
 // import 'package:finca_app_frontend/modules/shared/features/devices/models/device_model.dart';
 import 'dart:async';
 
+import 'package:finca_app_frontend/modules/web/features/cattle/widgets/tracker_edit_dialog.dart';
+import 'package:finca_app_frontend/modules/web/features/cattle/widgets/characteristics_edit_dialog.dart';
+import 'package:finca_app_frontend/modules/shared/enums/cattle_enums.dart';
+
 class CattleMasterListPage extends StatefulWidget {
   const CattleMasterListPage({super.key});
 
@@ -14,13 +18,14 @@ class CattleMasterListPage extends StatefulWidget {
   State<CattleMasterListPage> createState() => _CattleMasterListPageState();
 }
 
+
 class _CattleMasterListPageState extends State<CattleMasterListPage> {
   late final PlutoGridStateManager stateManager;
   final CattleMasterService _service = CattleMasterService();
   
   List<PlutoRow> rows = [];
-  List<Map<String, dynamic>> _colors = [];
-  // List<Map<String, dynamic>> _characteristics = [];
+  List<String> _colors = [];
+  List<String> _characteristics = [];
   bool isLoading = true;
 
   // Need to rebuild columns when locale changes
@@ -41,19 +46,24 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
         _service.getCharacteristics(),
       ]);
 
-      final cattleList = results[0] as List<Map<String, dynamic>>;
-      _colors = results[1] as List<Map<String, dynamic>>;
-      // Characteristics loaded but not yet used in column renderer
-      // _characteristics = results[2] as List<Map<String, dynamic>>;
+      final cattleList = (results[0] as List).cast<Map<String, dynamic>>();
+      _colors = (results[1] as List).cast<String>();
+      _characteristics = (results[2] as List).cast<String>();
 
       rows = cattleList.map((cattle) {
+        final charIds = (cattle['characteristicsIds'] as List?)?.cast<String>() ?? [];
         return PlutoRow(
           cells: {
              'systemNumber': PlutoCell(value: cattle['systemNumber'] ?? 'New'),
              'number': PlutoCell(value: cattle['number'] ?? ''),
              'eartag': PlutoCell(value: cattle['eartag'] ?? ''),
-             'color': PlutoCell(value: cattle['idColor'] ?? ''), // Should map ID to value if possible, but select column handles this via items
-             'characteristics': PlutoCell(value: (cattle['characteristicsIds'] as List?)?.join(', ') ?? ''),
+             'color': PlutoCell(value: cattle['color'] ?? ''), // New Enum string field
+             'characteristics': PlutoCell(value: (cattle['cattleCharacteristics'] as List?)
+                ?.map((c) => c['characteristic'] as String)
+                .join(', ') ?? ''), 
+             'characteristicsIds': PlutoCell(value: (cattle['cattleCharacteristics'] as List?)
+                ?.map((c) => c['characteristic'] as String)
+                .toList() ?? []), // Store formatted List<String>
              'hasHorn': PlutoCell(value: (cattle['hasHorn'] ?? false).toString()),
              'isCastrated': PlutoCell(value: (cattle['castrated'] ?? false).toString()),
              'auctionLot': PlutoCell(value: cattle['auctionLot'] ?? ''), // Assuming this field exists
@@ -68,15 +78,20 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
              'medicationHistory': PlutoCell(value: ''),
              'saleWeight': PlutoCell(value: 0), // Fetch if available
              'salePrice': PlutoCell(value: 0),
-             'tracker': PlutoCell(value: cattle['deviceName'] ?? ''),
-             'idDevice': PlutoCell(value: cattle['idDevice'] ?? ''),
+             'tracker': PlutoCell(value: cattle['device'] != null ? cattle['device']['name'] : (cattle['deviceName'] ?? '')),
+             'idDevice': PlutoCell(value: cattle['device'] != null ? cattle['device']['id'] : (cattle['idDevice'] ?? '')),
           }
         );
       }).toList();
 
     } catch (e) {
       // Handle error
-      print('Error loading cattle data: $e');
+      debugPrint('Error loading cattle data: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+        );
+      }
     } finally {
       setState(() => isLoading = false);
     }
@@ -113,14 +128,44 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
       PlutoColumn(
         title: l10n.colBrandColor, 
         field: 'color', 
-        type: PlutoColumnType.select(_colors.map((c) => c['id']).toList()), // Determine if we use ID or Name. Usually ID for value.
+        type: PlutoColumnType.select(_colors), // Determine if we use ID or Name. Usually ID for value.
         formatter: (value) {
-            final color = _colors.firstWhere((c) => c['id'] == value, orElse: () => {'name': value});
-            return color['name'];
+            final colorEnum = CattleColor.fromString(value);
+            return colorEnum.localizedName(context);
         },
         width: 100
       ),
-      PlutoColumn(title: l10n.colCharacteristics, field: 'characteristics', type: PlutoColumnType.text(), width: 150),
+      PlutoColumn(
+        title: l10n.colCharacteristics, 
+        field: 'characteristics', 
+        type: PlutoColumnType.text(), 
+        width: 150,
+        enableEditingMode: false,
+        renderer: (rendererContext) {
+           return InkWell(
+               onTap: () {
+                   final ids = rendererContext.row.cells['characteristicsIds']?.value as List<String>;
+                   showDialog(
+                       context: context,
+                       builder: (ctx) => CharacteristicsEditDialog(
+                           availableCharacteristics: _characteristics,
+                           selectedIds: ids,
+                           onSaved: (newIds, newNames) {
+                               stateManager.changeCellValue(rendererContext.row.cells['characteristicsIds']!, newIds);
+                               stateManager.changeCellValue(rendererContext.cell, newNames.join(', '));
+                           },
+                       )
+                   );
+               },
+               child: Row(
+                    children: [
+                        Expanded(child: Text(rendererContext.cell.value.toString(), overflow: TextOverflow.ellipsis)),
+                        const Icon(Icons.edit, size: 14, color: Colors.grey),
+                    ],
+                ),
+           );
+        }
+      ),
       PlutoColumn(
         title: l10n.colHorns,
         field: 'hasHorn',
@@ -156,15 +201,30 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
         field: 'tracker',
         type: PlutoColumnType.text(),
         width: 150,
-        enableEditingMode: true,
+        enableEditingMode: false,
         renderer: (rendererContext) {
-            return Row(
-                children: [
-                    if (rendererContext.cell.value.toString().isNotEmpty)
-                        const Icon(Icons.gps_fixed, size: 16, color: Colors.green),
-                    const SizedBox(width: 4),
-                    Expanded(child: Text(rendererContext.cell.value.toString())),
-                ],
+            return InkWell(
+                onTap: () {
+                    showDialog(
+                        context: context,
+                        builder: (ctx) => TrackerEditDialog(
+                            initialValue: rendererContext.cell.value.toString(),
+                            onSelected: (device) {
+                                stateManager.changeCellValue(rendererContext.cell, device.name);
+                                stateManager.changeCellValue(rendererContext.row.cells['idDevice']!, device.id);
+                            },
+                        ),
+                    );
+                },
+                child: Row(
+                    children: [
+                        if (rendererContext.cell.value.toString().isNotEmpty)
+                            const Icon(Icons.gps_fixed, size: 16, color: Colors.green),
+                        const SizedBox(width: 4),
+                        Expanded(child: Text(rendererContext.cell.value.toString(), overflow: TextOverflow.ellipsis)),
+                        const Icon(Icons.edit, size: 14, color: Colors.grey),
+                    ],
+                ),
             );
         }
       ),
@@ -181,6 +241,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
       PlutoColumn(title: l10n.colSaleWeight, field: 'saleWeight', type: PlutoColumnType.number(), width: 110),
       PlutoColumn(title: l10n.colSalePrice, field: 'salePrice', type: PlutoColumnType.number(), width: 110),
       PlutoColumn(title: 'IdDevice', field: 'idDevice', type: PlutoColumnType.text(), hide: true, width: 0),
+      PlutoColumn(title: 'CharacteristicsIds', field: 'characteristicsIds', type: PlutoColumnType.text(), hide: true, width: 0),
     ];
 
     return FincaScaffold(
@@ -226,7 +287,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
           'systemNumber': PlutoCell(value: 'New'),
           'number': PlutoCell(value: ''),
           'eartag': PlutoCell(value: ''),
-          'color': PlutoCell(value: _colors.isNotEmpty ? _colors[0]['id'] : ''), // Default to first color
+          'color': PlutoCell(value: _colors.isNotEmpty ? _colors[0] : ''), // Default to first color
           'characteristics': PlutoCell(value: ''),
           'hasHorn': PlutoCell(value: 'false'),
           'isCastrated': PlutoCell(value: 'false'),
@@ -244,6 +305,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
           'salePrice': PlutoCell(value: 0),
           'tracker': PlutoCell(value: ''),
           'idDevice': PlutoCell(value: ''),
+          'characteristicsIds': PlutoCell(value: []),
         }),
       ],
     );
