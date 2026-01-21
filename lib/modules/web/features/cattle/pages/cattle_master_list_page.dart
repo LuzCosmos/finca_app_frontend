@@ -89,7 +89,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                 .join(', ') ?? ''), 
              'characteristicsIds': PlutoCell(value: (cattle['cattleCharacteristics'] as List?)
                 ?.map((c) => c['characteristic'] as String)
-                .toList() ?? []), // Store formatted List<String>
+                .toList() ?? <String>[]), // Store formatted List<String>
              'hasHorn': PlutoCell(value: (cattle['hasHorn'] ?? false).toString()),
              'isCastrated': PlutoCell(value: (cattle['castrated'] ?? false).toString()),
              'auctionLot': PlutoCell(value: cattle['auctionLot'] ?? ''), // Assuming this field exists
@@ -173,26 +173,32 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
            return InkWell(
                onTap: !_hasEditPermission ? null : () {
                    final ids = rendererContext.row.cells['characteristicsIds']?.value as List<String>;
+                   // Capture key to ensure we find the correct row even if sorting/filtering changed usage
+                   final rowKey = rendererContext.row.key;
+                   
                    showDialog(
                        context: context,
                        builder: (ctx) => CharacteristicsEditDialog(
                            availableCharacteristics: _characteristics,
                            selectedIds: ids,
                            onSaved: (newIds, newNames) {
+                               debugPrint('CharacteristicsEditDialog onSaved called with IDs: \$newIds');
                                
-                               // Safely retrieve real row instance
-                               PlutoRow? currentRow;
+                               // Find the row in the current state manager rows
+                               PlutoRow? activeRow;
                                try {
-                                  currentRow = stateManager.rows.firstWhere((r) => r.key == rendererContext.row.key);
-                               } catch (_) {
-                                  currentRow = null;
+                                 activeRow = stateManager.rows.firstWhere((r) => r.key == rowKey);
+                               } catch (e) {
+                                 debugPrint('Could not find row with key $rowKey: $e');
+                                 return;
                                }
+
+                               // activeRow is not null here if we passed the catch
+                               debugPrint("Updating row ${activeRow!.cells['id']?.value}");
                                
-                               if (currentRow != null) {
-                                  stateManager.changeCellValue(currentRow!.cells['characteristicsIds']!, newIds);
-                                  stateManager.changeCellValue(currentRow!.cells['characteristics']!, newNames.join(', '));
-                                  stateManager.notifyListeners();
-                               }
+                               // Update cells
+                               stateManager.changeCellValue(activeRow.cells['characteristicsIds']!, newIds);
+                               stateManager.changeCellValue(activeRow.cells['characteristics']!, newNames.join(', '));
                            },
                        )
                    );
@@ -400,7 +406,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
           'salePrice': PlutoCell(value: 0),
           'tracker': PlutoCell(value: ''),
           'idDevice': PlutoCell(value: ''),
-          'characteristicsIds': PlutoCell(value: []),
+          'characteristicsIds': PlutoCell(value: <String>[]),
         }),
       ],
     );
