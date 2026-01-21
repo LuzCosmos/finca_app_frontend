@@ -69,7 +69,6 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
       _characteristics = (results[2] as List).cast<String>();
 
       rows = cattleList.map((cattle) {
-        final charIds = (cattle['characteristicsIds'] as List?)?.cast<String>() ?? [];
         return PlutoRow(
           cells: {
              'id': PlutoCell(value: cattle['id'] ?? ''), // Store cattle ID
@@ -78,7 +77,15 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
              'eartag': PlutoCell(value: cattle['eartag'] ?? ''),
              'color': PlutoCell(value: cattle['color'] ?? ''), // New Enum string field
              'characteristics': PlutoCell(value: (cattle['cattleCharacteristics'] as List?)
-                ?.map((c) => c['characteristic'] as String)
+                ?.map((c) {
+                   final val = c['characteristic'] as String;
+                   // Ensure context is valid, though in _loadData it should be if mounted check logic surrounds it?
+                   // However, modifying rows in setState logic is safe.
+                   // But retrieving localizedName requires context. 
+                   // Ideally we preload localized Strings or use a safe method.
+                   // State context is available.
+                   return CattleCharacteristic.fromString(val)?.localizedName(context) ?? val;
+                })
                 .join(', ') ?? ''), 
              'characteristicsIds': PlutoCell(value: (cattle['cattleCharacteristics'] as List?)
                 ?.map((c) => c['characteristic'] as String)
@@ -172,8 +179,20 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                            availableCharacteristics: _characteristics,
                            selectedIds: ids,
                            onSaved: (newIds, newNames) {
-                               stateManager.changeCellValue(rendererContext.row.cells['characteristicsIds']!, newIds);
-                               stateManager.changeCellValue(rendererContext.cell, newNames.join(', '));
+                               
+                               // Safely retrieve real row instance
+                               PlutoRow? currentRow;
+                               try {
+                                  currentRow = stateManager.rows.firstWhere((r) => r.key == rendererContext.row.key);
+                               } catch (_) {
+                                  currentRow = null;
+                               }
+                               
+                               if (currentRow != null) {
+                                  stateManager.changeCellValue(currentRow!.cells['characteristicsIds']!, newIds);
+                                  stateManager.changeCellValue(currentRow!.cells['characteristics']!, newNames.join(', '));
+                                  stateManager.notifyListeners();
+                               }
                            },
                        )
                    );
