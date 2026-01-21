@@ -5,6 +5,7 @@ import 'package:pluto_grid/pluto_grid.dart';
 import 'package:finca_app_frontend/modules/web/features/cattle/services/cattle_master_service.dart';
 // import 'package:finca_app_frontend/modules/shared/features/devices/services/device_api_service.dart';
 // import 'package:finca_app_frontend/modules/shared/features/devices/models/device_model.dart';
+import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'dart:async';
 
 import 'package:finca_app_frontend/modules/web/features/cattle/widgets/tracker_edit_dialog.dart';
@@ -27,6 +28,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
   List<String> _colors = [];
   List<String> _characteristics = [];
   bool isLoading = true;
+  bool _hasEditPermission = false;
 
   // Need to rebuild columns when locale changes
   Key _gridKey = UniqueKey();
@@ -34,7 +36,20 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
   @override
   void initState() {
     super.initState();
+    _checkPermissions();
     _loadData();
+  }
+
+  Future<void> _checkPermissions() async {
+     final permissions = await SessionService.getPermissions();
+     // Check for FARM module and cattle resource. Permission string format: C R U D L (5 chars)
+     // CRUDL: Create, Read, Update, Delete, List. Index 2 is Update.
+     if (permissions['FARM'] != null && permissions['FARM']['cattle'] != null) {
+        final permString = permissions['FARM']['cattle'].toString();
+        if (permString.length >= 3 && permString[2] == '1') {
+             setState(() => _hasEditPermission = true);
+        }
+     }
   }
 
   Future<void> _loadData() async {
@@ -47,6 +62,9 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
       ]);
 
       final cattleList = (results[0] as List).cast<Map<String, dynamic>>();
+      if (cattleList.isNotEmpty) {
+          debugPrint('First cattle record: ${cattleList.first}');
+      }
       _colors = (results[1] as List).cast<String>();
       _characteristics = (results[2] as List).cast<String>();
 
@@ -54,6 +72,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
         final charIds = (cattle['characteristicsIds'] as List?)?.cast<String>() ?? [];
         return PlutoRow(
           cells: {
+             'id': PlutoCell(value: cattle['id'] ?? ''), // Store cattle ID
              'systemNumber': PlutoCell(value: cattle['systemNumber'] ?? 'New'),
              'number': PlutoCell(value: cattle['number'] ?? ''),
              'eartag': PlutoCell(value: cattle['eartag'] ?? ''),
@@ -115,20 +134,22 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
     }
 
     final columns = [
+      PlutoColumn(title: 'Id', field: 'id', type: PlutoColumnType.text(), hide: true, width: 0),
       PlutoColumn(
         title: l10n.colSystemNumber,
         field: 'systemNumber',
         type: PlutoColumnType.text(),
-        enableEditingMode: true,
+        enableEditingMode: _hasEditPermission,
         width: 100,
       ),
-      PlutoColumn(title: l10n.cattleNumber, field: 'number', type: PlutoColumnType.text(), width: 90),
-      PlutoColumn(title: l10n.eartag, field: 'eartag', type: PlutoColumnType.text(), width: 100),
+      PlutoColumn(title: l10n.cattleNumber, field: 'number', type: PlutoColumnType.text(), width: 90, enableEditingMode: _hasEditPermission),
+      PlutoColumn(title: l10n.eartag, field: 'eartag', type: PlutoColumnType.text(), width: 100, enableEditingMode: _hasEditPermission),
       // Dynamic Color Dropdown
       PlutoColumn(
         title: l10n.colBrandColor, 
         field: 'color', 
         type: PlutoColumnType.select(_colors), // Determine if we use ID or Name. Usually ID for value.
+        enableEditingMode: _hasEditPermission,
         formatter: (value) {
             final colorEnum = CattleColor.fromString(value);
             return colorEnum.localizedName(context);
@@ -143,7 +164,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
         enableEditingMode: false,
         renderer: (rendererContext) {
            return InkWell(
-               onTap: () {
+               onTap: !_hasEditPermission ? null : () {
                    final ids = rendererContext.row.cells['characteristicsIds']?.value as List<String>;
                    showDialog(
                        context: context,
@@ -174,7 +195,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
           bool value = rendererContext.cell.value.toString() == 'true';
           return Checkbox(
             value: value,
-            onChanged: (newValue) {
+            onChanged: !_hasEditPermission ? null : (newValue) {
               stateManager.changeCellValue(rendererContext.cell, newValue.toString());
             },
           );
@@ -189,7 +210,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
           bool value = rendererContext.cell.value.toString() == 'true';
           return Checkbox(
             value: value,
-            onChanged: (newValue) {
+            onChanged: !_hasEditPermission ? null : (newValue) {
               stateManager.changeCellValue(rendererContext.cell, newValue.toString());
             },
           );
@@ -204,7 +225,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
         enableEditingMode: false,
         renderer: (rendererContext) {
             return InkWell(
-                onTap: () {
+                onTap: !_hasEditPermission ? null : () {
                     showDialog(
                         context: context,
                         builder: (ctx) => TrackerEditDialog(
@@ -268,8 +289,63 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                   stateManager = event.stateManager;
                   stateManager.setShowColumnFilter(true);
                 },
-                onChanged: (event) {
-                    // Logic to update backend
+                onChanged: (event) async {
+                  final rowId = event.row.cells['id']!.value.toString();
+                  debugPrint('onChanged triggered for rowId: $rowId, field: ${event.column.field}, value: ${event.value}');
+                  
+                  if (rowId.isEmpty || rowId == 'New') {
+                      debugPrint('Skipping save for new/empty row');
+                      return; 
+                  }
+
+                  // Map column field to DTO field if necessary
+                  String field = event.column.field;
+                  dynamic value = event.value;
+
+                  // Handle special fields
+                  if (field == 'hasHorn' || field == 'isCastrated') {
+                     // Checkbox returns 'true'/'false' string, converting to boolean
+                     if (field == 'hasHorn') value = value.toString() == 'true';
+                     if (field == 'isCastrated') {
+                         field = 'castrated';
+                         value = value.toString() == 'true';
+                     }
+                  } else if (field == 'tracker') {
+                     // Tracker isn't directly editable via text, dialog handles it by setting idDevice
+                     // Logic handled below
+                     return; 
+                  } else if (field == 'characteristics') {
+                     // Characteristics text isn't directly saved, we use characteristicsIds from dialog
+                     return;
+                  } else if (field == 'characteristicsIds') {
+                      field = 'characteristics'; // DTO expects 'characteristics'
+                      // value is List<String>
+                  } else if (field == 'idDevice') {
+                      // Handled by tracker dialog
+                  } else if (field == 'auctionLot') {
+                      // field name matches
+                  }
+
+                  // Construct payload
+                  final Map<String, dynamic> payload = {field: value};
+
+                  try {
+                    await _service.updateCattle(rowId, payload);
+                     if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                           const SnackBar(content: Text('Saved'), duration: Duration(milliseconds: 500), backgroundColor: Colors.green),
+                        );
+                     }
+                  } catch (e) {
+                      debugPrint('Error saving field $field: $e');
+                      if (mounted) {
+                        // Revert change?
+                        // stateManager.changeCellValue(event.row.cells[field]!, event.oldValue);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Error saving: $e'), backgroundColor: Colors.red),
+                        );
+                      }
+                  }
                 },
               ),
             ),

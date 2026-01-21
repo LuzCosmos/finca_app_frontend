@@ -89,4 +89,26 @@ class CattleMasterService {
     }
     return [];
   }
+
+  /// Update cattle data
+  Future<void> updateCattle(String id, Map<String, dynamic> data) async {
+    final token = await BasicApiService.getToken();
+    final url = Uri.parse('$baseUrl/cattle/$id');
+
+    print('Updating cattle $id with data: $data');
+
+    final response = await http.patch(
+      url,
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(data),
+    );
+
+    if (response.statusCode != 200 && response.statusCode != 201 && response.statusCode != 204) {
+       print('Error updating cattle: ${response.statusCode} - ${response.body}');
+       throw Exception('Failed to update cattle: ${response.body}');
+    }
+  }
 }
