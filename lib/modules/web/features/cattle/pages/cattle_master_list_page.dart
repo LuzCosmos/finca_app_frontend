@@ -208,11 +208,16 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                                    await _service.updateCattle(rowId, {'characteristics': newIds});
                                    
                                    if (mounted) {
-                                      // Update hidden value directly to avoid PlutoGrid type casting issues on notification
-                                      activeRow.cells['characteristicsIds']!.value = newIds;
+                                      // Update hidden value directly
+                                      activeRow!.cells['characteristicsIds']!.value = newIds;
 
-                                      // Update visible text to refresh UI
-                                      stateManager.changeCellValue(activeRow.cells['characteristics']!, newNames.join(', '));
+                                      // Update visible text manually
+                                      activeRow!.cells['characteristics']!.value = newNames.join(', ');
+
+                                      // Force grid refresh
+                                      stateManager.notifyListeners(); // Notify PlutoGrid to rebuild
+                                      
+                                      setState(() {}); // Trigger local widget rebuild just in case
                                       
                                       ScaffoldMessenger.of(context).showSnackBar(
                                          const SnackBar(content: Text('Saved'), duration: Duration(milliseconds: 500), backgroundColor: Colors.green),
