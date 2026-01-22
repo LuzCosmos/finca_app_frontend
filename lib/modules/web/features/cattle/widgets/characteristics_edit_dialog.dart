@@ -5,13 +5,11 @@ import 'package:finca_app_frontend/modules/shared/enums/cattle_enums.dart';
 class CharacteristicsEditDialog extends StatefulWidget {
   final List<String> availableCharacteristics;
   final List<String> selectedIds;
-  final Function(List<String> ids, List<String> names) onSaved;
 
   const CharacteristicsEditDialog({
     super.key,
     required this.availableCharacteristics,
     required this.selectedIds,
-    required this.onSaved,
   });
 
   @override
@@ -73,8 +71,10 @@ class _CharacteristicsEditDialogState extends State<CharacteristicsEditDialog> {
                return enumVal?.localizedName(context) ?? id;
             }).toList();
 
-            widget.onSaved(_tempSelectedIds, names);
-            Navigator.of(context).pop();
+            Navigator.of(context).pop({
+              'ids': _tempSelectedIds,
+              'names': names,
+            });
           },
           child: Text(l10n.save),
         ),

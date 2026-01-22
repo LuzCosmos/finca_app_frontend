@@ -171,37 +171,68 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
         enableEditingMode: false,
         renderer: (rendererContext) {
            return InkWell(
-               onTap: !_hasEditPermission ? null : () {
+               onTap: !_hasEditPermission ? null : () async {
                    final ids = rendererContext.row.cells['characteristicsIds']?.value as List<String>;
                    // Capture key to ensure we find the correct row even if sorting/filtering changed usage
                    final rowKey = rendererContext.row.key;
                    
-                   showDialog(
+                   final result = await showDialog(
                        context: context,
                        builder: (ctx) => CharacteristicsEditDialog(
                            availableCharacteristics: _characteristics,
                            selectedIds: ids,
-                           onSaved: (newIds, newNames) {
-                               debugPrint('CharacteristicsEditDialog onSaved called with IDs: \$newIds');
-                               
-                               // Find the row in the current state manager rows
-                               PlutoRow? activeRow;
-                               try {
-                                 activeRow = stateManager.rows.firstWhere((r) => r.key == rowKey);
-                               } catch (e) {
-                                 debugPrint('Could not find row with key $rowKey: $e');
-                                 return;
-                               }
-
-                               // activeRow is not null here if we passed the catch
-                               debugPrint("Updating row ${activeRow!.cells['id']?.value}");
-                               
-                               // Update cells
-                               stateManager.changeCellValue(activeRow.cells['characteristicsIds']!, newIds);
-                               stateManager.changeCellValue(activeRow.cells['characteristics']!, newNames.join(', '));
-                           },
-                       )
+                       ),
                    );
+
+                   if (result != null && result is Map && mounted) {
+                       final newIds = result['ids'] as List<String>;
+                       final newNames = result['names'] as List<String>;
+                       
+                       debugPrint('Dialog result received. IDs: $newIds');
+
+                       // Find the row
+                       PlutoRow? activeRow;
+                       try {
+                         activeRow = stateManager.rows.firstWhere((r) => r.key == rowKey);
+                       } catch (e) {
+                         debugPrint('Could not find row with key $rowKey: $e');
+                         return;
+                       }
+
+                       if (activeRow != null) {
+                           final rowId = activeRow.cells['id']?.value.toString();
+                           if (rowId != null && rowId != 'New' && rowId.isNotEmpty) {
+                               debugPrint("Saving to DB for row $rowId");
+                               try {
+                                   // Manual API call to avoid triggering onChanged with List value
+                                   await _service.updateCattle(rowId, {'characteristics': newIds});
+                                   
+                                   if (mounted) {
+                                      // Update hidden value directly to avoid PlutoGrid type casting issues on notification
+                                      activeRow.cells['characteristicsIds']!.value = newIds;
+
+                                      // Update visible text to refresh UI
+                                      stateManager.changeCellValue(activeRow.cells['characteristics']!, newNames.join(', '));
+                                      
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                         const SnackBar(content: Text('Saved'), duration: Duration(milliseconds: 500), backgroundColor: Colors.green),
+                                      );
+                                   }
+                               } catch (e) {
+                                   debugPrint("Error saving characteristics: $e");
+                                   if (mounted) {
+                                       ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(content: Text('Error saving: $e'), backgroundColor: Colors.red),
+                                       );
+                                   }
+                               }
+                           } else {
+                               // For new rows not yet saved to DB, just update local state
+                               activeRow.cells['characteristicsIds']!.value = newIds;
+                               stateManager.changeCellValue(activeRow.cells['characteristics']!, newNames.join(', '));
+                           }
+                       }
+                   }
                },
                child: Row(
                     children: [
