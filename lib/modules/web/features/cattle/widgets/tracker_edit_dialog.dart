@@ -147,7 +147,7 @@ class _TrackerEditDialogState extends State<TrackerEditDialog> {
               },
               onSelected: (DeviceModel selection) {
                 widget.onSelected(selection);
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(selection);
               },
             ),
           ],

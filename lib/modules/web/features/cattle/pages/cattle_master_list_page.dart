@@ -3,8 +3,8 @@ import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/shared/widgets/finca_scaffold.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 import 'package:finca_app_frontend/modules/web/features/cattle/services/cattle_master_service.dart';
-// import 'package:finca_app_frontend/modules/shared/features/devices/services/device_api_service.dart';
-// import 'package:finca_app_frontend/modules/shared/features/devices/models/device_model.dart';
+import 'package:finca_app_frontend/modules/shared/features/devices/services/device_api_service.dart';
+import 'package:finca_app_frontend/modules/shared/features/devices/models/device_model.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'dart:async';
 
@@ -286,17 +286,55 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
         enableEditingMode: false,
         renderer: (rendererContext) {
             return InkWell(
-                onTap: !_hasEditPermission ? null : () {
-                    showDialog(
+                onTap: !_hasEditPermission ? null : () async {
+                    final rowKey = rendererContext.row.key;
+
+                    final result = await showDialog(
                         context: context,
                         builder: (ctx) => TrackerEditDialog(
                             initialValue: rendererContext.cell.value.toString(),
-                            onSelected: (device) {
-                                stateManager.changeCellValue(rendererContext.cell, device.name);
-                                stateManager.changeCellValue(rendererContext.row.cells['idDevice']!, device.id);
-                            },
+                            onSelected: (device) {}, // Handled by await result
                         ),
                     );
+
+                    if (result != null && result is DeviceModel && mounted) {
+                        PlutoRow? activeRow;
+                        try {
+                           activeRow = stateManager.rows.firstWhere((r) => r.key == rowKey);
+                        } catch (e) {
+                           return;
+                        }
+
+                        if (activeRow != null) {
+                            final rowId = activeRow.cells['id']?.value.toString();
+                            if (rowId != null && rowId != 'New' && rowId.isNotEmpty) {
+                                try {
+                                    await _service.updateCattle(rowId, {'idDevice': result.id});
+                                    
+                                    if (mounted) {
+                                        activeRow.cells['tracker']!.value = result.name;
+                                        activeRow.cells['idDevice']!.value = result.id;
+                                        
+                                        stateManager.notifyListeners();
+                                        setState(() {});
+                                        
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                           const SnackBar(content: Text('Saved'), duration: Duration(milliseconds: 500), backgroundColor: Colors.green),
+                                        );
+                                    }
+                                } catch (e) {
+                                    if (mounted) {
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+                                        );
+                                    }
+                                }
+                            } else {
+                                activeRow.cells['tracker']!.value = result.name;
+                                stateManager.changeCellValue(activeRow.cells['idDevice']!, result.id);
+                            }
+                        }
+                    }
                 },
                 child: Row(
                     children: [
