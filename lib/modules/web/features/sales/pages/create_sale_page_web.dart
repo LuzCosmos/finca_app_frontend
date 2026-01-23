@@ -432,7 +432,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
 
         // Navigate back to sales dashboard
         if (mounted) {
-          context.go('/sales');
+          context.push('/sales');
         }
       }
       
@@ -469,7 +469,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(l10n?.saleSavedSuccess ?? 'Sale created successfully!')),
           );
-          context.go('/sales');
+          context.push('/sales');
         } else if (state.status == SalesWebStatus.failure && state.error != null) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Error: ${state.error}')),
@@ -502,7 +502,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                           children: [
                             IconButton(
                               icon: const Icon(Icons.arrow_back),
-                              onPressed: () => context.go('/sales'),
+                              onPressed: () => context.push('/sales'),
                             ),
                             const SizedBox(width: 16),
                             Text(
@@ -848,7 +848,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 OutlinedButton(
-                  onPressed: () => context.go('/sales'),
+                  onPressed: () => context.push('/sales'),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: cs.onPrimaryContainer, // texto/ícono
                     side: BorderSide(color: cs.onPrimaryContainer), // borde

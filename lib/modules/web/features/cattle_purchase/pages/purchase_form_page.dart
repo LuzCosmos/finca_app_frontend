@@ -98,7 +98,7 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
           setState(() {
             _globalSuccessMessage = null;
           });
-          context.go('/purchases');
+          context.push('/purchases');
         }
       });
     } on ApiException catch (e) {

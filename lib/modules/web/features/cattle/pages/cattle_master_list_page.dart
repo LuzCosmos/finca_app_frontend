@@ -312,6 +312,19 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                                     await _service.updateCattle(rowId, {'idDevice': result.id});
                                     
                                     if (mounted) {
+                                        // Find any other row that has this device attached and clear it
+                                        try {
+                                            final oldOwnerRow = stateManager.rows.firstWhere((r) => 
+                                                r.key != rowKey && 
+                                                r.cells['idDevice']?.value == result.id
+                                            );
+                                            // Clear the old owner logic
+                                            oldOwnerRow.cells['tracker']!.value = '';
+                                            oldOwnerRow.cells['idDevice']!.value = '';
+                                        } catch (e) {
+                                            // No previous owner found in current loaded list, ignore
+                                        }
+
                                         activeRow.cells['tracker']!.value = result.name;
                                         activeRow.cells['idDevice']!.value = result.id;
                                         
