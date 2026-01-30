@@ -104,15 +104,12 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
     setState(() => isLoading = true);
     try {
       final data = await api.getPurchaseReception(widget.purchaseId);
-      
       setState(() {
         receptionData = data;
-        
         // Initialize massive event data
         final massEvent = data['reception']['massiveEvent'];
         if (massEvent != null) {
           idMassiveEvent = massEvent['id'];
-          
           final simpleEventsList = massEvent['simpleEvents'] as List<dynamic>?;
           if (simpleEventsList != null) {
             simpleEvents = simpleEventsList
@@ -120,17 +117,15 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
                 .toList();
           }
         }
-        
         // Load reception date if it exists
         final receivedAtStr = data['reception']['receivedAt'] as String?;
         if (receivedAtStr != null) {
           receptionDate = DateTime.parse(receivedAtStr);
         }
-        
         // Set default selected lot (first lot if available)
         final lots = _getLots();
         selectedLotId = lots.isNotEmpty ? lots[0]['id'] : null;
-        
+        currentCattleNumber = data['reception']['nextCattleNumber'] ?? '';
         isLoading = false;
       });
     } catch (e) {
@@ -160,19 +155,18 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
         idDevice: cattleData['idDevice'],
         idProvider: receptionData!['reception']['providerId'],
         comments: cattleData['comments'],
+        gender:cattleData['gender'],
+        age:cattleData['age'],
         idSimpleEvents: cattleData['idSimpleEvents'],
+       
+        
       );
-      
       await _load();
       setGlobalSuccess(l10n.receivedOk);
-      
-      // Auto-increment cattle number
-      _incrementCattleNumber();
   }
 
   void _incrementCattleNumber() {
     if (currentCattleNumber.isEmpty) return;
-    
     // Extract numeric part and increment
     final match = RegExp(r'(\d+)').firstMatch(currentCattleNumber);
     if (match != null) {
@@ -214,13 +208,11 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
 
   List<Map<String, dynamic>> _getCattleForLot(String? lotId) {
     if (lotId == null || receptionData == null) return [];
-    
     final lots = _getLots();
     final lot = lots.firstWhere(
       (l) => l['id'] == lotId,
       orElse: () => {},
     );
-    
     if (lot.isEmpty) return [];
     return (lot['cattle'] as List<dynamic>).cast<Map<String, dynamic>>();
   }
@@ -238,14 +230,13 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-
+    
     if (isLoading) {
       return FincaScaffold(
         title: l10n.purchaseReceptionTitle,
         body: const Center(child: CircularProgressIndicator()),
       );
     }
-
     if (receptionData == null) {
       return FincaScaffold(
         title: l10n.purchaseReceptionTitle,
@@ -261,12 +252,10 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
         ),
       );
     }
-
     final reception = receptionData!['reception'];
     final lots = _getLots();
     final unassignedCattle = _getUnassignedCattle();
     final selectedCattle = _getCattleForLot(selectedLotId);
-
     return BlocProvider(
       create: (context) => MassiveEventBloc(
         dataSource: MassiveEventPageDataSourceWeb(),
@@ -303,7 +292,6 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
                       MessageBanner.success(_globalSuccessMessage!),
                     if (_globalInfoMessage != null)
                       MessageBanner.info(_globalInfoMessage!),
-
               // Top Section: Purchase Info + Form + Event Config Panel
                     SizedBox(
                   height: 450,
@@ -367,14 +355,12 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
                   ],
                 ),
               ),
-
               // Bottom Section (Fills remaining space)
               SliverFillRemaining(
                 hasScrollBody: true,
                 child: Column(
                   children: [
                     const Divider(height: 1),
-
                     Flexible(
                       flex: unassignedCattle.isNotEmpty ? 6 : 1,
                       child: Row(
@@ -400,10 +386,8 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
                         ],
                       ),
                     ),
-
                     if (unassignedCattle.isNotEmpty) ...[
                       const Divider(height: 1),
-
                       // 👇 En vez de Expanded: Flexible + scroll interno
                       Flexible(
                         flex: 4,
@@ -417,61 +401,6 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
                   ],
                 ),
               ),
-
-
-
-              
-              /*SliverFillRemaining(
-                child: Column(
-                  children: [
-                    const Divider(height: 1),
-
-                    // Row 1: Lots + Cattle List with Events
-                    Expanded(
-                      flex: 5,
-                      child: Row(
-                        children: [
-                          // Left: Lots Table (40%)
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.4,
-                            child: LotsTable(
-                              lots: lots,
-                              selectedLotId: selectedLotId,
-                              onLotSelected: (lotId) {
-                                setState(() => selectedLotId = lotId);
-                              },
-                            ),
-                          ),
-
-                          const VerticalDivider(width: 1),
-
-                          // Right: Cattle List with Events (60%)
-                          Expanded(
-                            child: CattleListWithEvents(
-                              cattle: selectedCattle,
-                              availableLots: lots,
-                              onAssignLot: _assignLot,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    if (unassignedCattle.isNotEmpty) ...[
-                      const Divider(height: 1),
-
-                      // Row 2: Unassigned Cattle with conditional events
-                      Expanded(
-                        flex: 3,
-                        child: UnassignedCattleList(
-                          cattle: unassignedCattle,
-                          availableLots: lots,
-                          onAssignLot: _assignLot,
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ),*/
             ],
           ),
         ),

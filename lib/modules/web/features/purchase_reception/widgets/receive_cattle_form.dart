@@ -8,6 +8,9 @@ import 'package:finca_app_frontend/modules/shared/features/devices/models/device
 import 'package:finca_app_frontend/modules/shared/features/devices/services/device_api_service.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'package:finca_app_frontend/modules/shared/enums/cattle_enums.dart';
+import 'package:finca_app_frontend/core/utils/regex_patterns.dart';
+import 'package:finca_app_frontend/modules/shared/validator/validator.dart';
+import 'package:flutter/services.dart';
 
 class ReceiveCattleForm extends StatefulWidget {
   final String? currentNumber;
@@ -56,6 +59,8 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
   List<String> selectedCharacteristicIds = [];
   bool hasHorns = false;
   bool isCastrated = false;
+  final _ageController = TextEditingController();
+  CattleGender _selectedGender = CattleGender.MALE;
 
   @override
   void initState() {
@@ -93,6 +98,7 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
 
   void _resetForm() {
     _weightController.clear();
+    _ageController.clear();
     _commentsController.clear();
     _eartagController.clear();
     _trackerController.clear();
@@ -102,6 +108,7 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
       selectedCharacteristicIds = [];
       hasHorns = false;
       isCastrated = false;
+      _selectedGender = CattleGender.MALE;
       _selectedDeviceId = null; // Clear selected device
     });
   }
@@ -219,7 +226,7 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                     ),
                   ),
 
-                  // Is Castrated Checkbox
+                    // Is Castrated Checkbox
                   SizedBox(
                     width: 125,
                     child: CheckboxListTile(
@@ -234,6 +241,54 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                       dense: true,
                       controlAffinity: ListTileControlAffinity.leading,
                       contentPadding: EdgeInsets.zero,
+                    ),
+                  ),
+
+                  // Age
+                  SizedBox(
+                    width: 70,
+                    child: TextFormField(
+                      controller: _ageController,
+                      textAlign: TextAlign.right,
+                      decoration: InputDecoration(
+                        labelText: l10n.age,
+                        border: const OutlineInputBorder(),
+                      ),
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(
+                          RegexPatterns.permissivePositiveDecimalTwoDigits,
+                        ),
+                      ],
+                      validator: Validator.validateNumericMandatory(
+                        l10n.lot_totalWeightRequired,
+                        l10n.lot_totalWeightInvalid,
+                        RegexPatterns.positiveDecimalTwoDigitsNoZero,
+                      ),
+                    ),
+                  ),
+
+                  // Gender
+                  SizedBox(
+                    width: 120,
+                    child: DropdownButtonFormField<CattleGender>(
+                      value: _selectedGender,
+                      decoration: InputDecoration(
+                        labelText: l10n.gender,
+                        border: const OutlineInputBorder(),
+                      ),
+                      items:
+                          CattleGender.values.map((gender) {
+                            return DropdownMenuItem<CattleGender>(
+                              value: gender,
+                              child: Text(gender.localizedName(context)),
+                            );
+                          }).toList(),
+                      onChanged: (value) {
+                        if (value != null) {
+                          setState(() => _selectedGender = value);
+                        }
+                      },
                     ),
                   ),
 
@@ -567,6 +622,8 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
       'idLot': selectedLotId,
       'hasHorns': hasHorns,
       'isCastrated': isCastrated,
+      'age': double.tryParse(_ageController.text.trim()),
+      'gender': _selectedGender.name,
       'color': selectedColorId,
       'characteristics': selectedCharacteristicIds,
       'eartag':

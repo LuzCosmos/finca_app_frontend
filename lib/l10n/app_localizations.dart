@@ -1250,6 +1250,18 @@ abstract class AppLocalizations {
   /// **'Has Horns'**
   String get hasHorns;
 
+  /// No description provided for @age.
+  ///
+  /// In en, this message translates to:
+  /// **'Age'**
+  String get age;
+
+  /// No description provided for @gender.
+  ///
+  /// In en, this message translates to:
+  /// **'Gender'**
+  String get gender;
+
   /// No description provided for @isCastrated.
   ///
   /// In en, this message translates to:
@@ -2509,6 +2521,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Brown Pattern'**
   String get charBrownPattern;
+
+  /// No description provided for @genderMale.
+  ///
+  /// In en, this message translates to:
+  /// **'Male'**
+  String get genderMale;
+
+  /// No description provided for @genderFemale.
+  ///
+  /// In en, this message translates to:
+  /// **'Female'**
+  String get genderFemale;
+
+  /// No description provided for @statusActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get statusActive;
+
+  /// No description provided for @statusSold.
+  ///
+  /// In en, this message translates to:
+  /// **'Sold'**
+  String get statusSold;
+
+  /// No description provided for @statusDead.
+  ///
+  /// In en, this message translates to:
+  /// **'Dead'**
+  String get statusDead;
+
+  /// No description provided for @statusLost.
+  ///
+  /// In en, this message translates to:
+  /// **'Lost'**
+  String get statusLost;
 }
 
 class _AppLocalizationsDelegate

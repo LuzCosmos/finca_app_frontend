@@ -7,7 +7,6 @@ import 'package:finca_app_frontend/modules/shared/features/devices/services/devi
 import 'package:finca_app_frontend/modules/shared/features/devices/models/device_model.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'dart:async';
-
 import 'package:finca_app_frontend/modules/web/features/cattle/widgets/tracker_edit_dialog.dart';
 import 'package:finca_app_frontend/modules/web/features/cattle/widgets/characteristics_edit_dialog.dart';
 import 'package:finca_app_frontend/modules/shared/enums/cattle_enums.dart';
@@ -72,7 +71,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
         return PlutoRow(
           cells: {
              'id': PlutoCell(value: cattle['id'] ?? ''), // Store cattle ID
-             'systemNumber': PlutoCell(value: cattle['systemNumber'] ?? 'New'),
+             //'systemNumber': PlutoCell(value: cattle['systemNumber'] ?? 'New'),
              'number': PlutoCell(value: cattle['number'] ?? ''),
              'eartag': PlutoCell(value: cattle['eartag'] ?? ''),
              'color': PlutoCell(value: cattle['color'] ?? ''), // New Enum string field
@@ -95,7 +94,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
              'auctionLot': PlutoCell(value: cattle['auctionLot'] ?? ''), // Assuming this field exists
              'receivedAt': PlutoCell(value: cattle['receivedAt'] ?? ''),
              'purchaseWeight': PlutoCell(value: cattle['purchaseWeight'] ?? 0),
-             'receivedDate': PlutoCell(value: cattle['receivedDate'] ?? ''), // Check actual field name
+             //'receivedDate': PlutoCell(value: cattle['receivedDate'] ?? ''), // Check actual field name
              'comments': PlutoCell(value: cattle['comments'] ?? ''),
              'purchasePrice': PlutoCell(value: cattle['purchasePrice'] ?? 0),
              'purchaseCommission': PlutoCell(value: cattle['purchaseCommission'] ?? 0),
@@ -142,13 +141,13 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
 
     final columns = [
       PlutoColumn(title: 'Id', field: 'id', type: PlutoColumnType.text(), hide: true, width: 0),
-      PlutoColumn(
+      /*PlutoColumn(
         title: l10n.colSystemNumber,
         field: 'systemNumber',
         type: PlutoColumnType.text(),
         enableEditingMode: _hasEditPermission,
         width: 100,
-      ),
+      ),*/
       PlutoColumn(title: l10n.cattleNumber, field: 'number', type: PlutoColumnType.text(), width: 90, enableEditingMode: _hasEditPermission),
       PlutoColumn(title: l10n.eartag, field: 'eartag', type: PlutoColumnType.text(), width: 100, enableEditingMode: _hasEditPermission),
       // Dynamic Color Dropdown
@@ -175,7 +174,6 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                    final ids = rendererContext.row.cells['characteristicsIds']?.value as List<String>;
                    // Capture key to ensure we find the correct row even if sorting/filtering changed usage
                    final rowKey = rendererContext.row.key;
-                   
                    final result = await showDialog(
                        context: context,
                        builder: (ctx) => CharacteristicsEditDialog(
@@ -183,13 +181,10 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                            selectedIds: ids,
                        ),
                    );
-
                    if (result != null && result is Map && mounted) {
                        final newIds = result['ids'] as List<String>;
                        final newNames = result['names'] as List<String>;
-                       
                        debugPrint('Dialog result received. IDs: $newIds');
-
                        // Find the row
                        PlutoRow? activeRow;
                        try {
@@ -198,7 +193,6 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                          debugPrint('Could not find row with key $rowKey: $e');
                          return;
                        }
-
                        if (activeRow != null) {
                            final rowId = activeRow.cells['id']?.value.toString();
                            if (rowId != null && rowId != 'New' && rowId.isNotEmpty) {
@@ -206,19 +200,14 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                                try {
                                    // Manual API call to avoid triggering onChanged with List value
                                    await _service.updateCattle(rowId, {'characteristics': newIds});
-                                   
                                    if (mounted) {
                                       // Update hidden value directly
                                       activeRow!.cells['characteristicsIds']!.value = newIds;
-
                                       // Update visible text manually
                                       activeRow!.cells['characteristics']!.value = newNames.join(', ');
-
                                       // Force grid refresh
                                       stateManager.notifyListeners(); // Notify PlutoGrid to rebuild
-                                      
                                       setState(() {}); // Trigger local widget rebuild just in case
-                                      
                                       ScaffoldMessenger.of(context).showSnackBar(
                                          const SnackBar(content: Text('Saved'), duration: Duration(milliseconds: 500), backgroundColor: Colors.green),
                                       );
@@ -288,7 +277,6 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
             return InkWell(
                 onTap: !_hasEditPermission ? null : () async {
                     final rowKey = rendererContext.row.key;
-
                     final result = await showDialog(
                         context: context,
                         builder: (ctx) => TrackerEditDialog(
@@ -296,7 +284,6 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                             onSelected: (device) {}, // Handled by await result
                         ),
                     );
-
                     if (result != null && result is DeviceModel && mounted) {
                         PlutoRow? activeRow;
                         try {
@@ -304,13 +291,11 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                         } catch (e) {
                            return;
                         }
-
                         if (activeRow != null) {
                             final rowId = activeRow.cells['id']?.value.toString();
                             if (rowId != null && rowId != 'New' && rowId.isNotEmpty) {
                                 try {
                                     await _service.updateCattle(rowId, {'idDevice': result.id});
-                                    
                                     if (mounted) {
                                         // Find any other row that has this device attached and clear it
                                         try {
@@ -324,13 +309,10 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                                         } catch (e) {
                                             // No previous owner found in current loaded list, ignore
                                         }
-
                                         activeRow.cells['tracker']!.value = result.name;
                                         activeRow.cells['idDevice']!.value = result.id;
-                                        
                                         stateManager.notifyListeners();
                                         setState(() {});
-                                        
                                         ScaffoldMessenger.of(context).showSnackBar(
                                            const SnackBar(content: Text('Saved'), duration: Duration(milliseconds: 500), backgroundColor: Colors.green),
                                         );
@@ -364,11 +346,21 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
       PlutoColumn(title: l10n.lot, field: 'auctionLot', type: PlutoColumnType.text(), width: 100),
       PlutoColumn(title: l10n.colReceivedAt, field: 'receivedAt', type: PlutoColumnType.date(), width: 110),
       PlutoColumn(title: l10n.colPurchaseWeight, field: 'purchaseWeight', type: PlutoColumnType.number(), width: 110),
-      PlutoColumn(title: l10n.colReceivedDate, field: 'receivedDate', type: PlutoColumnType.date(), width: 110),
+      //PlutoColumn(title: l10n.colReceivedDate, field: 'receivedDate', type: PlutoColumnType.date(), width: 110),
       PlutoColumn(title: l10n.colComments, field: 'comments', type: PlutoColumnType.text(), width: 200),
       PlutoColumn(title: l10n.colPurchasePrice, field: 'purchasePrice', type: PlutoColumnType.number(), width: 110),
       PlutoColumn(title: l10n.colPurchaseCommission, field: 'purchaseCommission', type: PlutoColumnType.number(), width: 110),
-      PlutoColumn(title: l10n.colStatus, field: 'status', type: PlutoColumnType.select(['ACTIVE', 'SOLD', 'DEAD', 'LOST']), width: 100),
+      PlutoColumn(
+        title: l10n.colStatus, 
+        field: 'status', 
+        type: PlutoColumnType.select(CattleStatus.getStatusList()), // Determine if we use ID or Name. Usually ID for value.
+        enableEditingMode: _hasEditPermission,
+        formatter: (value) {
+            final colorEnum = CattleStatus.fromString(value);
+            return colorEnum.localizedName(context);
+        },
+        width: 100
+      ),
       PlutoColumn(title: l10n.colWeightHistory, field: 'weightHistory', type: PlutoColumnType.text(), enableEditingMode: false, width: 100, renderer: (ctx) => const Icon(Icons.history, size: 18)),
       PlutoColumn(title: l10n.colMedicationHistory, field: 'medicationHistory', type: PlutoColumnType.text(), enableEditingMode: false, width: 100, renderer: (ctx) => const Icon(Icons.medical_services, size: 18)),
       PlutoColumn(title: l10n.colSaleWeight, field: 'saleWeight', type: PlutoColumnType.number(), width: 110),
@@ -383,7 +375,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Align(
+            /*Align(
               alignment: Alignment.centerLeft,
               child: ElevatedButton.icon(
                 onPressed: _addCattleRow,
@@ -391,7 +383,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                 label: Text(l10n.addCattleRow),
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 12),*/
             Expanded(
               child: PlutoGrid(
                 key: _gridKey,
@@ -404,16 +396,13 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                 onChanged: (event) async {
                   final rowId = event.row.cells['id']!.value.toString();
                   debugPrint('onChanged triggered for rowId: $rowId, field: ${event.column.field}, value: ${event.value}');
-                  
                   if (rowId.isEmpty || rowId == 'New') {
                       debugPrint('Skipping save for new/empty row');
                       return; 
                   }
-
                   // Map column field to DTO field if necessary
                   String field = event.column.field;
                   dynamic value = event.value;
-
                   // Handle special fields
                   if (field == 'hasHorn' || field == 'isCastrated') {
                      // Checkbox returns 'true'/'false' string, converting to boolean
@@ -437,10 +426,8 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                   } else if (field == 'auctionLot') {
                       // field name matches
                   }
-
                   // Construct payload
                   final Map<String, dynamic> payload = {field: value};
-
                   try {
                     await _service.updateCattle(rowId, payload);
                      if (mounted) {
@@ -472,7 +459,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
       0,
       [
         PlutoRow(cells: {
-          'systemNumber': PlutoCell(value: 'New'),
+          //'systemNumber': PlutoCell(value: 'New'),
           'number': PlutoCell(value: ''),
           'eartag': PlutoCell(value: ''),
           'color': PlutoCell(value: _colors.isNotEmpty ? _colors[0] : ''), // Default to first color
@@ -482,7 +469,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
           'auctionLot': PlutoCell(value: ''),
           'receivedAt': PlutoCell(value: DateTime.now().toString().substring(0, 10)),
           'purchaseWeight': PlutoCell(value: 0),
-          'receivedDate': PlutoCell(value: DateTime.now().toString().substring(0, 10)),
+          //'receivedDate': PlutoCell(value: DateTime.now().toString().substring(0, 10)),
           'comments': PlutoCell(value: ''),
           'purchasePrice': PlutoCell(value: 0),
           'purchaseCommission': PlutoCell(value: 0),

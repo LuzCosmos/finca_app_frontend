@@ -270,6 +270,8 @@
   "initialCattleNumber": "Initial Cattle Number",
   "numberInUse": "This number is already in use",
   "hasHorns": "Has Horns",
+  "age": "Age",
+  "gender": "Gender",
   "isCastrated": "Is Castrated",
   "comments": "Comments",
   "receiveCattle": "Receive Cattle",
@@ -513,5 +515,12 @@
   "charLightBrownSpots": "Light Brown Spots",
   "charGreySpots": "Grey Spots",
   "charBlackPattern": "Black Pattern",
-  "charBrownPattern": "Brown Pattern"
+  "charBrownPattern": "Brown Pattern",
+  "genderMale": "Male",
+  "genderFemale": "Female",
+
+  "statusActive": "Active",
+  "statusSold": "Sold",
+  "statusDead": "Dead",
+  "statusLost": "Lost"
 }

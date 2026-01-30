@@ -261,6 +261,8 @@
   "initialCattleNumber": "Número res inicial",
   "numberInUse": "Este número ya está en uso",
   "hasHorns": "Tiene cachos",
+  "age": "Edad",
+  "gender": "Género",
   "isCastrated": "Está castrado",
   "comments": "Comentarios",
   "receiveCattle": "Recibir res",
@@ -489,5 +491,12 @@
   "charLightBrownSpots": "Manchas Café Claras",
   "charGreySpots": "Manchas Grises",
   "charBlackPattern": "Patrón Negro",
-  "charBrownPattern": "Patrón Café"
+  "charBrownPattern": "Patrón Café",
+  "genderMale": "Macho",
+  "genderFemale": "Hembra",
+
+  "statusActive": "Activo",
+  "statusSold": "Vendido",
+  "statusDead": "Muerto",
+  "statusLost": "Perdido"
 }

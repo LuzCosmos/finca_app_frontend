@@ -1,6 +1,90 @@
 import 'package:flutter/material.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 
+enum CattleStatus {
+  ACTIVE,
+  SOLD,
+  DEAD,
+  LOST;
+
+  static List<String> getStatusList() {
+    return ["ACTIVE", "SOLD", "DEAD", "LOST"];
+  }
+
+  String localizedName(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    switch (this) {
+      case CattleStatus.ACTIVE:
+        return l10n.statusActive;
+      case CattleStatus.DEAD:
+        return l10n.statusDead;
+      case CattleStatus.SOLD:
+        return l10n.statusSold;
+      case CattleStatus.LOST:
+        return l10n.statusLost;
+    }
+  }
+
+  static CattleStatus fromString(String value) {
+    return CattleStatus.values.firstWhere(
+      (e) => e.name == value,
+      orElse: () => CattleStatus.ACTIVE,
+    );
+  }
+
+
+}
+
+enum CattleGender {
+  MALE,
+  FEMALE;
+
+  String localizedName(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    switch (this) {
+      case CattleGender.MALE:
+        return l10n.genderMale;
+      case CattleGender.FEMALE:
+        return l10n.genderFemale;
+    }
+  }
+
+  static CattleGender fromString(String value) {
+    return CattleGender.values.firstWhere(
+      (e) => e.name == value,
+      orElse: () => CattleGender.MALE,
+    );
+  }
+}
+
+enum CattleStatusEnum {
+  ACTIVE,
+  SOLD,
+  DEAD,
+  LOST;
+
+  String localizedName(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    switch (this) {
+      case CattleStatusEnum.ACTIVE:
+        return l10n.statusActive;
+      case CattleStatusEnum.DEAD:
+        return l10n.statusDead;
+      case CattleStatusEnum.SOLD:
+        return l10n.statusSold;
+      case CattleStatusEnum.LOST:
+        return l10n.statusLost;
+    }
+  }
+
+  static CattleStatusEnum fromString(String value) {
+    return CattleStatusEnum.values.firstWhere(
+      (e) => e.name == value,
+      orElse: () => CattleStatusEnum.ACTIVE,
+    );
+  }
+}
+
 enum CattleColor {
   BLACK,
   WHITE,

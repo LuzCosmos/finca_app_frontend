@@ -95,6 +95,8 @@ class ReceptionApiService {
     String? idDevice,
     String? idProvider,
     String? comments,
+    String? gender,
+    String? age,
     List<String>? idSimpleEvents,
   }) async {
     final token = await BasicApiService.getToken();
@@ -106,6 +108,8 @@ class ReceptionApiService {
       if (purchasePrice != null) 'purchasePrice': purchasePrice,
       'hasHorn': hasHorn,
       'castrated': castrated,
+      'gender': gender,
+      'age': age,
       'idLot': idLot,
       'color': color,
       'characteristics': characteristics ?? [],

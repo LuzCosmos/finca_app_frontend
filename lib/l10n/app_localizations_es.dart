@@ -638,6 +638,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get hasHorns => 'Tiene cachos';
 
   @override
+  String get age => 'Edad';
+
+  @override
+  String get gender => 'Género';
+
+  @override
   String get isCastrated => 'Está castrado';
 
   @override
@@ -1298,4 +1304,22 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get charBrownPattern => 'Patrón Café';
+
+  @override
+  String get genderMale => 'Macho';
+
+  @override
+  String get genderFemale => 'Hembra';
+
+  @override
+  String get statusActive => 'Activo';
+
+  @override
+  String get statusSold => 'Vendido';
+
+  @override
+  String get statusDead => 'Muerto';
+
+  @override
+  String get statusLost => 'Perdido';
 }
