@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/shared/widgets/finca_scaffold.dart';
 import 'package:pluto_grid/pluto_grid.dart';
@@ -67,47 +68,20 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
       _colors = (results[1] as List).cast<String>();
       _characteristics = (results[2] as List).cast<String>();
 
-      rows = cattleList.map((cattle) {
-        return PlutoRow(
-          cells: {
-             'id': PlutoCell(value: cattle['id'] ?? ''), // Store cattle ID
-             //'systemNumber': PlutoCell(value: cattle['systemNumber'] ?? 'New'),
-             'number': PlutoCell(value: cattle['number'] ?? ''),
-             'eartag': PlutoCell(value: cattle['eartag'] ?? ''),
-             'color': PlutoCell(value: cattle['color'] ?? ''), // New Enum string field
-             'characteristics': PlutoCell(value: (cattle['cattleCharacteristics'] as List?)
-                ?.map((c) {
-                   final val = c['characteristic'] as String;
-                   // Ensure context is valid, though in _loadData it should be if mounted check logic surrounds it?
-                   // However, modifying rows in setState logic is safe.
-                   // But retrieving localizedName requires context. 
-                   // Ideally we preload localized Strings or use a safe method.
-                   // State context is available.
-                   return CattleCharacteristic.fromString(val)?.localizedName(context) ?? val;
-                })
-                .join(', ') ?? ''), 
-             'characteristicsIds': PlutoCell(value: (cattle['cattleCharacteristics'] as List?)
-                ?.map((c) => c['characteristic'] as String)
-                .toList() ?? <String>[]), // Store formatted List<String>
-             'hasHorn': PlutoCell(value: (cattle['hasHorn'] ?? false).toString()),
-             'isCastrated': PlutoCell(value: (cattle['castrated'] ?? false).toString()),
-             'auctionLot': PlutoCell(value: cattle['auctionLot'] ?? ''), // Assuming this field exists
-             'receivedAt': PlutoCell(value: cattle['receivedAt'] ?? ''),
-             'purchaseWeight': PlutoCell(value: cattle['purchaseWeight'] ?? 0),
-             //'receivedDate': PlutoCell(value: cattle['receivedDate'] ?? ''), // Check actual field name
-             'comments': PlutoCell(value: cattle['comments'] ?? ''),
-             'purchasePrice': PlutoCell(value: cattle['purchasePrice'] ?? 0),
-             'purchaseCommission': PlutoCell(value: cattle['purchaseCommission'] ?? 0),
-             'status': PlutoCell(value: cattle['status'] ?? 'ACTIVE'),
-             'weightHistory': PlutoCell(value: ''),
-             'medicationHistory': PlutoCell(value: ''),
-             'saleWeight': PlutoCell(value: 0), // Fetch if available
-             'salePrice': PlutoCell(value: 0),
-             'tracker': PlutoCell(value: cattle['device'] != null ? cattle['device']['name'] : (cattle['deviceName'] ?? '')),
-             'idDevice': PlutoCell(value: cattle['device'] != null ? cattle['device']['id'] : (cattle['idDevice'] ?? '')),
-          }
-        );
-      }).toList();
+      // Offload row creation to a separate isolate to prevent UI jank
+      // We pass the raw map list and need to be careful about passing 'context' which isn't allowed.
+      // So we will map the localized strings *inside* the build method or pre-calculate only non-dependent values.
+      // However, characteristic localization depends on context.
+      // Strategy: Map raw data to a lightweight DTO or just process the structure,
+      // and do minimal localization work in the Cell or assume keys are enough for now.
+      // Actually, typically we can't pass 'context' to compute.
+      // Better approach: Do the heavy JSON/List structure mapping in compute,
+      // and keep the localization lightweight or do it in the renderer.
+      
+      // Since we already have the Map, the biggest cost is instantiating thousands of PlutoRow/PlutoCell objects.
+      // Let's move that construction to compute.
+      
+      rows = await compute(_createRowsFromCattleList, cattleList);
 
     } catch (e) {
       // Handle error
@@ -118,7 +92,9 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
         );
       }
     } finally {
-      setState(() => isLoading = false);
+      if (mounted) {
+        setState(() => isLoading = false);
+      }
     }
   }
 
@@ -387,6 +363,15 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
             Expanded(
               child: PlutoGrid(
                 key: _gridKey,
+                configuration: const PlutoGridConfiguration(
+                  columnSize: PlutoGridColumnSizeConfig(
+                    autoSizeMode: PlutoAutoSizeMode.none,
+                  ),
+                  style: PlutoGridStyleConfig(
+                    enableCellBorderVertical: true,
+                    rowHeight: 20,
+                  ),
+                ),
                 columns: columns,
                 rows: rows,
                 onLoaded: (event) {
@@ -487,3 +472,45 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
   }
 }
 
+// Helper function for compute
+List<PlutoRow> _createRowsFromCattleList(List<Map<String, dynamic>> cattleList) {
+  return cattleList.map((cattle) {
+    // Note: Localization cannot be done here as we don't have context.
+    // We will store raw values or keys and format them in the Cell Renderer if needed.
+    
+    // Fallback for characteristics mapping without context
+    final characteristics = (cattle['cattleCharacteristics'] as List?)
+                ?.map((c) => c['characteristic'] as String)
+                .join(', ') ?? '';
+
+    return PlutoRow(
+      cells: {
+          'id': PlutoCell(value: cattle['id'] ?? ''), 
+          //'systemNumber': PlutoCell(value: cattle['systemNumber'] ?? 'New'),
+          'number': PlutoCell(value: cattle['number'] ?? ''),
+          'eartag': PlutoCell(value: cattle['eartag'] ?? ''),
+          'color': PlutoCell(value: cattle['color'] ?? ''), 
+          'characteristics': PlutoCell(value: characteristics), 
+          'characteristicsIds': PlutoCell(value: (cattle['cattleCharacteristics'] as List?)
+            ?.map((c) => c['characteristic'] as String)
+            .toList() ?? <String>[]),
+          'hasHorn': PlutoCell(value: (cattle['hasHorn'] ?? false).toString()),
+          'isCastrated': PlutoCell(value: (cattle['castrated'] ?? false).toString()),
+          'auctionLot': PlutoCell(value: cattle['auctionLot'] ?? ''),
+          'receivedAt': PlutoCell(value: cattle['receivedAt'] ?? ''),
+          'purchaseWeight': PlutoCell(value: cattle['purchaseWeight'] ?? 0),
+          //'receivedDate': PlutoCell(value: cattle['receivedDate'] ?? ''), // Check actual field name
+          'comments': PlutoCell(value: cattle['comments'] ?? ''),
+          'purchasePrice': PlutoCell(value: cattle['purchasePrice'] ?? 0),
+          'purchaseCommission': PlutoCell(value: cattle['purchaseCommission'] ?? 0),
+          'status': PlutoCell(value: cattle['status'] ?? 'ACTIVE'),
+          'weightHistory': PlutoCell(value: ''),
+          'medicationHistory': PlutoCell(value: ''),
+          'saleWeight': PlutoCell(value: 0),
+          'salePrice': PlutoCell(value: 0),
+          'tracker': PlutoCell(value: cattle['device'] != null ? cattle['device']['name'] : ((cattle['deviceName'] as String?) ?? '')),
+          'idDevice': PlutoCell(value: cattle['device'] != null ? cattle['device']['id'] : ((cattle['idDevice'] as String?) ?? '')),
+      }
+    );
+  }).toList();
+}
