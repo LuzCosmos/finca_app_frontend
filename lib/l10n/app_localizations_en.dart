@@ -1155,6 +1155,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get colReceivedAt => 'Received At';
 
   @override
+  String get colReceivedWeight => 'Received Weight';
+
+  @override
   String get colPurchaseWeight => 'Purchase Weight (kg)';
 
   @override
@@ -1183,6 +1186,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get colSalePrice => 'Sale Price';
+
+  @override
+  String get colAge => 'Age';
+
+  @override
+  String get colGender => 'Gender';
+
+  @override
+  String get colLastWeight => 'Last Weight';
 
   @override
   String get masterListTitle => 'Cattle Master List';
@@ -1318,4 +1330,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get statusLost => 'Lost';
+
+  @override
+  String get noData => 'No data available';
+
+  @override
+  String get recordedBy => 'Recorded by';
+
+  @override
+  String get close => 'Close';
+
+  @override
+  String get dosage => 'Dosage';
+
+  @override
+  String get route => 'Route';
+
+  @override
+  String get appliedBy => 'Applied by';
+
+  @override
+  String get addMedication => 'Add Medication';
+
+  @override
+  String get date => 'Date';
 }

@@ -124,7 +124,13 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
         }
         // Set default selected lot (first lot if available)
         final lots = _getLots();
-        selectedLotId = lots.isNotEmpty ? lots[0]['id'] : null;
+        // Set default selected lot (first lot if available), but preserve selection if valid
+        if (selectedLotId != null && !lots.any((l) => l['id'] == selectedLotId)) {
+          selectedLotId = null;
+        }
+        if (selectedLotId == null && lots.isNotEmpty) {
+          selectedLotId = lots[0]['id'];
+        }
         currentCattleNumber = data['reception']['nextCattleNumber'] ?? '';
         isLoading = false;
       });
@@ -147,7 +153,7 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
         purchaseWeight: cattleData['purchaseWeight'],
         purchasePrice: cattleData['purchasePrice'],
         idLot: cattleData['idLot'],
-        hasHorn: cattleData['hasHorn'],
+        hasHorn: cattleData['hasHorns'],
         castrated: cattleData['isCastrated'],
         color: cattleData['color'],
         characteristics: cattleData['characteristics'],

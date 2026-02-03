@@ -5,11 +5,13 @@ import 'package:finca_app_frontend/modules/shared/enums/cattle_enums.dart';
 class CharacteristicsEditDialog extends StatefulWidget {
   final List<String> availableCharacteristics;
   final List<String> selectedIds;
+  final String cattleNumber;
 
   const CharacteristicsEditDialog({
     super.key,
     required this.availableCharacteristics,
     required this.selectedIds,
+    required this.cattleNumber,
   });
 
   @override
@@ -30,7 +32,7 @@ class _CharacteristicsEditDialogState extends State<CharacteristicsEditDialog> {
     final l10n = AppLocalizations.of(context)!;
 
     return AlertDialog(
-      title: Text(l10n.characteristics),
+      title: Text('#${widget.cattleNumber} - ${l10n.characteristics}'),
       content: SizedBox(
         width: 300,
         height: 400,

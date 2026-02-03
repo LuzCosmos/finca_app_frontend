@@ -465,6 +465,7 @@
   "colCastrated": "Castrated",
   "colAuctionLot": "Auction Lot",
   "colReceivedAt": "Received At",
+  "colReceivedWeight": "Received Weight",
   "colPurchaseWeight": "Purchase Weight (kg)",
   "colReceivedDate": "Received Date",
   "colComments": "Comments",
@@ -475,6 +476,9 @@
   "colMedicationHistory": "Medication History",
   "colSaleWeight": "Sale Weight",
   "colSalePrice": "Sale Price",
+  "colAge": "Age",
+  "colGender": "Gender",
+  "colLastWeight": "Last Weight",
   "masterListTitle": "Cattle Master List",
   "addCattleRow": "Add Cattle",
 
@@ -522,5 +526,13 @@
   "statusActive": "Active",
   "statusSold": "Sold",
   "statusDead": "Dead",
-  "statusLost": "Lost"
+  "statusLost": "Lost",
+  "noData": "No data available",
+  "recordedBy": "Recorded by",
+  "close": "Close",
+  "dosage": "Dosage",
+  "route": "Route",
+  "appliedBy": "Applied by",
+  "addMedication": "Add Medication",
+  "date": "Date"
 }

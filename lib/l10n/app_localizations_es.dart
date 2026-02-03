@@ -1156,7 +1156,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get colAuctionLot => 'Lote Subasta';
 
   @override
-  String get colReceivedAt => 'Recibido En';
+  String get colReceivedAt => 'Received At';
+
+  @override
+  String get colReceivedWeight => 'Peso Recibido';
 
   @override
   String get colPurchaseWeight => 'Peso Compra (kg)';
@@ -1187,6 +1190,15 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get colSalePrice => 'Precio Venta';
+
+  @override
+  String get colAge => 'Edad';
+
+  @override
+  String get colGender => 'Género';
+
+  @override
+  String get colLastWeight => 'último Peso';
 
   @override
   String get masterListTitle => 'Lista Maestra de Ganado';
@@ -1322,4 +1334,28 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get statusLost => 'Perdido';
+
+  @override
+  String get noData => 'No hay datos disponibles';
+
+  @override
+  String get recordedBy => 'Registrado por';
+
+  @override
+  String get close => 'Cerrar';
+
+  @override
+  String get dosage => 'Dosis';
+
+  @override
+  String get route => 'Vía';
+
+  @override
+  String get appliedBy => 'Aplicado por';
+
+  @override
+  String get addMedication => 'Agregar Medicación';
+
+  @override
+  String get date => 'Fecha';
 }

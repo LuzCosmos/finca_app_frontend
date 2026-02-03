@@ -2228,6 +2228,12 @@ abstract class AppLocalizations {
   /// **'Received At'**
   String get colReceivedAt;
 
+  /// No description provided for @colReceivedWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Received Weight'**
+  String get colReceivedWeight;
+
   /// No description provided for @colPurchaseWeight.
   ///
   /// In en, this message translates to:
@@ -2287,6 +2293,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sale Price'**
   String get colSalePrice;
+
+  /// No description provided for @colAge.
+  ///
+  /// In en, this message translates to:
+  /// **'Age'**
+  String get colAge;
+
+  /// No description provided for @colGender.
+  ///
+  /// In en, this message translates to:
+  /// **'Gender'**
+  String get colGender;
+
+  /// No description provided for @colLastWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Weight'**
+  String get colLastWeight;
 
   /// No description provided for @masterListTitle.
   ///
@@ -2557,6 +2581,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Lost'**
   String get statusLost;
+
+  /// No description provided for @noData.
+  ///
+  /// In en, this message translates to:
+  /// **'No data available'**
+  String get noData;
+
+  /// No description provided for @recordedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Recorded by'**
+  String get recordedBy;
+
+  /// No description provided for @close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
+
+  /// No description provided for @dosage.
+  ///
+  /// In en, this message translates to:
+  /// **'Dosage'**
+  String get dosage;
+
+  /// No description provided for @route.
+  ///
+  /// In en, this message translates to:
+  /// **'Route'**
+  String get route;
+
+  /// No description provided for @appliedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Applied by'**
+  String get appliedBy;
+
+  /// No description provided for @addMedication.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Medication'**
+  String get addMedication;
+
+  /// No description provided for @date.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get date;
 }
 
 class _AppLocalizationsDelegate

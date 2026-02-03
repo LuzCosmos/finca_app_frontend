@@ -440,7 +440,7 @@
   "colHorns": "Cachos",
   "colCastrated": "Castrado",
   "colAuctionLot": "Lote Subasta",
-  "colReceivedAt": "Recibido En",
+  "colReceivedWeight": "Peso Recibido",
   "colPurchaseWeight": "Peso Compra (kg)",
   "colReceivedDate": "Fecha Recibido",
   "colComments": "Comentarios",
@@ -451,6 +451,9 @@
   "colMedicationHistory": "Hist. Medicamentos",
   "colSaleWeight": "Peso Venta",
   "colSalePrice": "Precio Venta",
+  "colAge": "Edad",
+  "colGender": "Género",
+  "colLastWeight": "último Peso",
   "masterListTitle": "Lista Maestra de Ganado",
   "addCattleRow": "Agregar Res",
 
@@ -498,5 +501,13 @@
   "statusActive": "Activo",
   "statusSold": "Vendido",
   "statusDead": "Muerto",
-  "statusLost": "Perdido"
+  "statusLost": "Perdido",
+  "noData": "No hay datos disponibles",
+  "recordedBy": "Registrado por",
+  "close": "Cerrar",
+  "dosage": "Dosis",
+  "route": "Vía",
+  "appliedBy": "Aplicado por",
+  "addMedication": "Agregar Medicación",
+  "date": "Fecha"
 }
