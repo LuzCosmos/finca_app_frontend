@@ -81,7 +81,7 @@ class MassiveEventModel {
       eventDate: DateTime.parse(json['eventDate'] as String),
       simpleEvents:
           (json['simpleEvents'] as List)
-              .map((e) => SimpleEventModel.fromJson(e, isActive: true))
+              .map((e) => SimpleEventModel.fromJson(e))
               .toList(),
       status: json['status'] as String,
       createdAt: DateTime.parse(json['createdAt'] as String),

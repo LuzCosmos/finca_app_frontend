@@ -27,4 +27,6 @@ abstract class IMassiveEventPageDataSource {
   });
 
   Future<void> closeMassiveEvent({required String idMassiveEvent});
+
+  Future<void> updateSimpleEvent({required SimpleEventModel simpleEvent, required String endpoint});
 }
