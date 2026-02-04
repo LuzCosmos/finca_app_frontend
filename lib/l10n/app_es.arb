@@ -255,6 +255,8 @@
   "eartag": "Arete",
   "trackerId": "Tracker",
   "addCattle": "Agregar res",
+  "cattle_exists_error": "El número ya existe (Activa/Perdida)",
+  "eartag_exists_error": "El arete ya existe (Activa/Perdida)",
   "cattleCountLabel": "{count, plural, =0 {0 reses} one {1 res} other {{count} reses}}",
   "purchaseCountLabel": "{count, plural, =0 {0 reses} one {1 res} other {{count} reses}}",
   "receptionDate": "Fecha de recepción",

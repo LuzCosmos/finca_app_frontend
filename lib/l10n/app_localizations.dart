@@ -1214,6 +1214,18 @@ abstract class AppLocalizations {
   /// **'Add animal'**
   String get addCattle;
 
+  /// No description provided for @cattle_exists_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Number already exists (Active/Lost)'**
+  String get cattle_exists_error;
+
+  /// No description provided for @eartag_exists_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Eartag already exists (Active/Lost)'**
+  String get eartag_exists_error;
+
   /// No description provided for @cattleCountLabel.
   ///
   /// In en, this message translates to:

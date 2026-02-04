@@ -9,9 +9,7 @@ import 'package:finca_app_frontend/modules/shared/features/devices/models/device
 
 class ReceptionApiService {
   final String baseUrl = '${BasicApiService.baseUrl}/purchase-receptions';
-  final Map<String, String> defaultHeaders;
-
-  ReceptionApiService({required this.defaultHeaders});
+  ReceptionApiService();
 
   Future<List<DeviceModel>> searchDevices(String query) async {
     final token = await BasicApiService.getToken();
@@ -31,6 +29,42 @@ class ReceptionApiService {
     } else {
       BasicApiService.manageNotSuccessResponseCode(response);
       return []; // unreachable
+    }
+  }
+
+  Future<bool> checkCattleNumberExists(String number) async {
+    final token = await BasicApiService.getToken();
+    final response = await http.get(
+      Uri.parse('$baseUrl/number-exists?number=$number'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+     if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return data['exists'] as bool;
+    } else {
+      BasicApiService.manageNotSuccessResponseCode(response);
+      throw ApiException('serverError', 'Error checking number existence');
+    }
+  }
+
+  Future<bool> checkEartagExists(String eartag) async {
+    final token = await BasicApiService.getToken();
+    final response = await http.get(
+      Uri.parse('$baseUrl/eartag-exists?eartag=$eartag'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+     if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return data['exists'] as bool;
+    } else {
+      BasicApiService.manageNotSuccessResponseCode(response);
+       throw ApiException('serverError', 'Error checking eartag existence');
     }
   }
 
@@ -121,7 +155,10 @@ class ReceptionApiService {
     };
     final r = await http.post(
       Uri.parse('$baseUrl/receive-cattle'),
-      headers: {...defaultHeaders,'Authorization': 'Bearer $token', 'Content-Type': 'application/json'},
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
       body: jsonEncode(body),
     );
     if  (r.statusCode == 201 || r.statusCode == 200) {
@@ -145,16 +182,23 @@ class ReceptionApiService {
     final token = await BasicApiService.getToken();
     final r = await http.patch(
       Uri.parse('$baseUrl/assign-lot-cattle'),
-      headers: {...defaultHeaders,'Authorization': 'Bearer $token', 'Content-Type': 'application/json'},
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
       body: jsonEncode({'idLot': lotId, 'idCattle': animalId}),
     );
     if (r.statusCode >= 400) throw Exception('Error reasignar lote: ${r.body}');
   }
 
   Future<List<Map<String, dynamic>>> listAnimalEvents(String animalId) async {
+    final token = await BasicApiService.getToken();
     final r = await http.get(
       Uri.parse('$baseUrl/animals/$animalId/simple-events'),
-      headers: defaultHeaders,
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
     );
     if (r.statusCode >= 400) throw Exception('Error list events: ${r.body}');
     final data = jsonDecode(r.body) as List<dynamic>;
@@ -167,9 +211,13 @@ class ReceptionApiService {
     List<String> addIds = const [],
     List<String> removeIds = const [],
   }) async {
+    final token = await BasicApiService.getToken();
     final r = await http.patch(
       Uri.parse('$baseUrl/animals/$animalId/simple-events'),
-      headers: {...defaultHeaders, 'Content-Type': 'application/json'},
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
       body: jsonEncode({
         'massEventId': massEventId,
         'addIds': addIds,

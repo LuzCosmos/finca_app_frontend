@@ -602,6 +602,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get addCattle => 'Agregar res';
 
   @override
+  String get cattle_exists_error => 'El número ya existe (Activa/Perdida)';
+
+  @override
+  String get eartag_exists_error => 'El arete ya existe (Activa/Perdida)';
+
+  @override
   String cattleCountLabel(num count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

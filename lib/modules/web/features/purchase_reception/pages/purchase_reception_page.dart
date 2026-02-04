@@ -42,11 +42,7 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
   @override
   void initState() {
     super.initState();
-    api = ReceptionApiService(
-      defaultHeaders: {
-        'Authorization': 'Bearer token',
-      },
-    );
+    api = ReceptionApiService();
     _load();
   }
 
@@ -318,6 +314,9 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
                                 },
                                 onInitialNumberChanged: (number) {
                                   setState(() => currentCattleNumber = number);
+                                },
+                                onError: (errorMsg) {
+                                  setGlobalError(errorMsg);
                                 },
                               ),
                               const SizedBox(height: 5),

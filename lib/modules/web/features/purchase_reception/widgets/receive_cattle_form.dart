@@ -47,10 +47,17 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
   final _trackerController = TextEditingController();
   
   Timer? _debounce;
+  Timer? _numberDebounce;
+  Timer? _eartagDebounce;
+  String? _numberExternalError;
+  String? _eartagExternalError;
+  bool _isValidatingNumber = false;
+  bool _isValidatingEartag = false;
+
   List<DeviceModel> _deviceOptions = [];
   bool _deviceLoading = false;
   Completer<List<DeviceModel>>? _lastCompleter; // Track last completer to prevent hangs
-  final ReceptionApiService _apiService = ReceptionApiService(defaultHeaders: {});
+  final ReceptionApiService _apiService = ReceptionApiService();
   String? _selectedDeviceId; // Store the selected device ID
   String? _lastSelectedName; // To track if text matches selection
 
@@ -81,6 +88,7 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
     if (widget.currentNumber != oldWidget.currentNumber) {
       if (_numberController.text != widget.currentNumber) {
         _numberController.text = widget.currentNumber ?? '';
+        _checkNumberExists(widget.currentNumber ?? '');
       }
     }
   }
@@ -93,6 +101,8 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
     _eartagController.dispose();
     _trackerController.dispose();
     _debounce?.cancel();
+    _numberDebounce?.cancel();
+    _eartagDebounce?.cancel();
     super.dispose();
   }
 
@@ -139,6 +149,7 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                 runSpacing: 12,
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
+
                   // Cattle Number
                   SizedBox(
                     width: 125,
@@ -147,14 +158,33 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                       decoration: InputDecoration(
                         labelText: l10n.cattle_number,
                         border: const OutlineInputBorder(),
+                        errorText: _numberExternalError,
+                        suffixIcon: _isValidatingNumber
+                            ? const Padding(
+                                padding: EdgeInsets.all(12.0),
+                                child: SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                ),
+                              )
+                            : null,
                       ),
-                      validator:
-                          (v) =>
-                              (v == null || v.trim().isEmpty)
-                                  ? l10n.fieldRequired
-                                  : null,
+                      validator: (v) {
+                        if (v == null || v.trim().isEmpty) {
+                          return l10n.fieldRequired;
+                        }
+                        if (_numberExternalError != null) {
+                          return _numberExternalError;
+                        }
+                        return null;
+                      },
                       onChanged: (value) {
                         widget.onNumberChanged(value);
+                        if (_numberDebounce?.isActive ?? false) _numberDebounce!.cancel();
+                        _numberDebounce = Timer(const Duration(milliseconds: 500), () {
+                          _checkNumberExists(value);
+                        });
                       },
                     ),
                   ),
@@ -333,6 +363,7 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                     ),
                   ),
 
+
                   // Eartag
                   SizedBox(
                     width: 180,
@@ -341,7 +372,30 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                       decoration: InputDecoration(
                         labelText: l10n.eartag,
                         border: const OutlineInputBorder(),
+                        errorText: _eartagExternalError,
+                        suffixIcon: _isValidatingEartag
+                            ? const Padding(
+                                padding: EdgeInsets.all(12.0),
+                                child: SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                ),
+                              )
+                            : null,
                       ),
+                      validator: (v) {
+                         if (_eartagExternalError != null) {
+                          return _eartagExternalError;
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {
+                        if (_eartagDebounce?.isActive ?? false) _eartagDebounce!.cancel();
+                        _eartagDebounce = Timer(const Duration(milliseconds: 500), () {
+                          _checkEartagExists(value);
+                        });
+                      },
                     ),
                   ),
 
@@ -493,6 +547,56 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
         ),
       ),
     );
+  }
+
+  Future<void> _checkNumberExists(String val) async {
+    final l10n = AppLocalizations.of(context)!;
+    if (val.isEmpty) {
+      if (_numberExternalError != null) {
+        setState(() => _numberExternalError = null);
+      }
+      return;
+    }
+    setState(() => _isValidatingNumber = true);
+    try {
+      final exists = await _apiService.checkCattleNumberExists(val);
+      if (exists) {
+        setState(() => _numberExternalError = l10n.cattle_exists_error);
+      } else if (_numberExternalError != null) {
+        setState(() => _numberExternalError = null);
+      }
+    } catch (e) {
+      widget.onError?.call(e.toString());
+    } finally {
+      if (mounted) {
+        setState(() => _isValidatingNumber = false);
+      }
+    }
+  }
+
+  Future<void> _checkEartagExists(String val) async {
+    final l10n = AppLocalizations.of(context)!;
+     if (val.isEmpty) {
+      if (_eartagExternalError != null) {
+        setState(() => _eartagExternalError = null);
+      }
+      return;
+    }
+    setState(() => _isValidatingEartag = true);
+    try {
+      final exists = await _apiService.checkEartagExists(val);
+      if (exists) {
+        setState(() => _eartagExternalError = l10n.eartag_exists_error);
+      } else if (_eartagExternalError != null) {
+        setState(() => _eartagExternalError = null);
+      }
+    } catch (e) {
+       widget.onError?.call(e.toString());
+    } finally {
+      if (mounted) {
+        setState(() => _isValidatingEartag = false);
+      }
+    }
   }
 
   Future<void> _showCharacteristicsDialog(AppLocalizations l10n) async {

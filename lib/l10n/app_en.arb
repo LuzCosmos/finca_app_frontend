@@ -264,6 +264,8 @@
   "eartag": "Eartag",
   "trackerId": "Tracker",
   "addCattle": "Add animal",
+  "cattle_exists_error": "Number already exists (Active/Lost)",
+  "eartag_exists_error": "Eartag already exists (Active/Lost)",
   "cattleCountLabel": "{count, plural, =0 {0 head} one {1 head} other {{count} head}}",
   "purchaseCountLabel": "{count, plural, =0 {0 head} one {1 head} other {{count} head}}",
   "receptionDate": "Reception Date",

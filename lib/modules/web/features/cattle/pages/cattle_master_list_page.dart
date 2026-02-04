@@ -408,7 +408,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
            );
         },
       ),
-      PlutoColumn(title: l10n.colAge, field: 'age', type: PlutoColumnType.number(format: '#,##0.##'), width: 100, enableEditingMode: _hasEditPermission),
+      PlutoColumn(title: l10n.colAge, field: 'age', type: PlutoColumnType.number(format: '#,##0.##'), width: 60, enableEditingMode: _hasEditPermission),
       PlutoColumn(
         title: l10n.trackerLabel,
         field: 'tracker',
