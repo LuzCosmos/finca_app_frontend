@@ -280,11 +280,38 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
                                                       child:
                                                           p.canReceive
                                                               ? FilledButton(
-                                                                onPressed: () {
-                                                                  context.push(
+                                                                onPressed: () async {
+                                                                  final result = await context.push(
                                                                     '/purchase/reception/${p.id}',
                                                                   );
-                                                                  // o: context.pushNamed('purchaseReception', pathParameters: {'purchaseId': p.id});
+                                                                  if (result != null && result is Map<String, dynamic> && mounted) {
+                                                                      final updatedReception = result;
+                                                                      final purchaseId = updatedReception['purchaseId'] as String?;
+                                                                      if (purchaseId == p.id) {
+                                                                          setState(() {
+                                                                            final index = _items.indexWhere((i) => i.id == purchaseId);
+                                                                            if (index != -1) {
+                                                                              final oldItem = _items[index];
+                                                                              final receivedCattle = (updatedReception['receivedCattleCount'] ?? 0) as int;
+                                                                              final receivedWeight = double.tryParse('${updatedReception['receivedTotalWeight'] ?? 0}') ?? 0.0;
+                                                                              
+                                                                              // Only update received stats, keep total purchased stats same
+                                                                              final newItem = PurchaseListItemModel(
+                                                                                id: oldItem.id,
+                                                                                purchaseDate: oldItem.purchaseDate,
+                                                                                providerName: oldItem.providerName,
+                                                                                totalCattle: oldItem.totalCattle,
+                                                                                totalWeight: oldItem.totalWeight,
+                                                                                receivedCattle: receivedCattle,
+                                                                                receivedWeight: receivedWeight,
+                                                                                // Update canReceive if needed (simple check)
+                                                                                canReceive: receivedCattle < oldItem.totalCattle, 
+                                                                              );
+                                                                              _items[index] = newItem;
+                                                                            }
+                                                                          });
+                                                                      }
+                                                                  }
                                                                 },
                                                                 child: Text(
                                                                   t.receiveAction,

@@ -659,8 +659,6 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
 
   void _submitForm() async {
     // Clear previous server errors
-
-
     print('DEBUG: Submit button clicked. Checking validation...');
     if (!_formKey.currentState!.validate()) {
       print('DEBUG: Validation failed');

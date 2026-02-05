@@ -633,7 +633,6 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                                 return;
                              }
                           }
-
                           try {
                             final updatedData = await _service.updateCattle(rowId, {field: value});
                             if (mounted) {
@@ -658,10 +657,31 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                                 }
                                 _showSuccess('Saved');
                             }
+                          } on ApiException catch (e) {
+                            if (mounted) {
+                              final code = ApiExceptionCode.values.firstWhere(
+                                (el) => el.name == (e.code ?? ''),
+                                orElse: () => ApiExceptionCode.unknownError,
+                              );
+                              if (code == ApiExceptionCode.conflictError) {
+                                if (field == 'number') {
+                                  _showError(l10n.cattle_exists_error);
+                                } else if (field == 'eartag') {
+                                  _showError(l10n.eartag_exists_error);
+                                } else {
+                                  _showError(e.message);
+                                }
+                              } else {
+                                _showError(e.message);
+                              }
+                              // Revert value on API error as well for consistency
+                              stateManager.changeCellValue(event.row.cells[event.column.field]!, event.oldValue, callOnChangedEvent: false, force: true);
+                            }
                           } catch (e) {
                               debugPrint('Error saving field $field: $e');
                               if (mounted) {
-                                _showError('Error saving: $e');
+                                String errorMsg = 'Error saving: $e';
+                                _showError(errorMsg);
                                 // Revert value on API error as well for consistency
                                 stateManager.changeCellValue(event.row.cells[event.column.field]!, event.oldValue, callOnChangedEvent: false, force: true);
                               }

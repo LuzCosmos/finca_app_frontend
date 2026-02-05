@@ -160,26 +160,9 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
         gender:cattleData['gender'],
         age:cattleData['age'],
         idSimpleEvents: cattleData['idSimpleEvents'],
-       
-        
       );
       await _load();
       setGlobalSuccess(l10n.receivedOk);
-  }
-
-  void _incrementCattleNumber() {
-    if (currentCattleNumber.isEmpty) return;
-    // Extract numeric part and increment
-    final match = RegExp(r'(\d+)').firstMatch(currentCattleNumber);
-    if (match != null) {
-      final numStr = match.group(0)!;
-      final num = int.parse(numStr);
-      final newNum = num + 1;
-      final newNumber = currentCattleNumber.replaceFirst(numStr, newNum.toString());
-      setState(() {
-        currentCattleNumber = newNumber;
-      });
-    }
   }
 
   Future<void> _assignLot(String cattleId, String lotId) async {
@@ -279,7 +262,14 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
             setGlobalError(msg);
           }
         },
-        child: FincaScaffold(
+        child: PopScope(
+          canPop: false,
+          onPopInvoked: (didPop) {
+            if (didPop) return;
+            // Return current reception stats 
+            Navigator.of(context).pop(receptionData?['reception']);
+          },
+          child: FincaScaffold(
           title: l10n.purchaseReceptionTitle,
           body: CustomScrollView(
             slivers: [
@@ -409,6 +399,7 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
             ],
           ),
         ),
+      ),
       ),
     );
   }

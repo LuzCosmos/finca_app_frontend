@@ -47,29 +47,25 @@ class CattleMasterService {
         );
       }
       throw ApiException(
-        'listingError',
+        'readingObjectError',
         'Error al listar ganado: $e',
       );
     }
     print('Response status: ${response.statusCode}');
     if (response.statusCode == 200) {
       final decoded = jsonDecode(response.body);
-      
       // Fallback si el backend aún devuelve lista plana (durante migración)
       if (decoded is List) {
         final list = decoded.cast<Map<String, dynamic>>();
         return CattlePageResult(1, list.length, list.length, false, list);
       }
-
       // Estructura PagedResponseDto
       final rawList = (decoded['items'] as List? ?? []);
       final items = rawList.cast<Map<String, dynamic>>();
-      
       final outPage = int.tryParse('${decoded['page'] ?? page}') ?? 1;
       final outLimit = int.tryParse('${decoded['limit'] ?? limit}') ?? 10;
       final outTotal = int.tryParse('${decoded['total'] ?? items.length}') ?? items.length;
       final bool outHasMore = (outPage * outLimit) < outTotal; // O usar decoded['hasMore']
-
       return CattlePageResult(
         outPage,
         outLimit,
@@ -105,7 +101,7 @@ class CattleMasterService {
           );
         }
         throw ApiException(
-          'listingError',
+          'readingObjectError',
           'Error al listar colores: $e',
         );
       }
@@ -120,7 +116,13 @@ class CattleMasterService {
         BasicApiService.manageNotSuccessResponseCode(response);
       }
     } catch (e) {
-      print('Exception fetching colors: $e');
+      if (e is ApiException) {
+        throw e;
+      }
+      throw ApiException(
+          'readingObjectError',
+          'Error al listar colores: $e',
+        );
     }
     return [];
   }
@@ -131,13 +133,26 @@ class CattleMasterService {
       final token = await BasicApiService.getToken();
       final url = Uri.parse('$baseUrl/color-characteristics/characteristic');
       var response;
-      response = await http.get(
-        url,
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-      );
+      try {
+        response = await http.get(
+          url,
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Content-Type': 'application/json',
+          },
+        );
+      } catch (e) {
+        if (e is SocketException || e is http.ClientException) {
+          throw ApiException(
+            'serverConnectionError',
+            'Error al listar características: $e',
+          );
+        }
+        throw ApiException(
+          'readingObjectError',
+          'Error al listar características: $e',
+        );
+      }
 
       if (response.statusCode == 200) {
         final dynamic body = jsonDecode(response.body);
@@ -147,10 +162,16 @@ class CattleMasterService {
             print('Error: /color-characteristics/characteristic returned non-list: $body');
         }
       } else {
-         print('Error fetching characteristics: ${response.statusCode} - ${response.body}');
+        BasicApiService.manageNotSuccessResponseCode(response);
       }
     } catch (e) {
-       print('Exception fetching characteristics: $e');
+      if (e is ApiException) {
+        throw e;
+      }
+     throw ApiException(
+          'readingObjectError',
+          'Error al listar características: $e',
+        );
     }
     return [];
   }
@@ -160,20 +181,33 @@ class CattleMasterService {
     final token = await BasicApiService.getToken();
     final url = Uri.parse('$baseUrl/cattle/$id');
     print('Updating cattle $id with data: $data');
-    final response = await http.patch(
-      url,
-      headers: {
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode(data),
-    );
+    var response;
+    try {
+      response = await http.patch(
+        url,
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(data),
+      );
+    } catch (e) {
+      if (e is SocketException || e is http.ClientException) {
+        throw ApiException(
+          'serverConnectionError',
+          'Error al actualizar ganado: $e',
+        );
+      }
+      throw ApiException(
+        'savingObjectError',
+        'Error al actualizar ganado: $e',
+      );
+    }
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body) as Map<String, dynamic>;
     } else if (response.statusCode != 204) {
-       print('Error updating cattle: ${response.statusCode} - ${response.body}');
-       throw Exception('Failed to update cattle: ${response.body}');
+       BasicApiService.manageNotSuccessResponseCode(response);
     }
     return null;
   }
@@ -183,19 +217,32 @@ class CattleMasterService {
     final token = await BasicApiService.getToken();
     final url = Uri.parse('$baseUrl/cattle/$id/medication');
     print('Adding medication to cattle $id with data: $data');
-    final response = await http.post(
-      url,
-      headers: {
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode(data),
-    );
+    var response;
+    try {
+      response = await http.post(
+        url,
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(data),
+      );
+    } catch (e) {
+      if (e is SocketException || e is http.ClientException) {
+        throw ApiException(
+          'serverConnectionError',
+          'Error al agregar medicamento: $e',
+        );
+      }
+      throw ApiException(
+        'savingObjectError',
+        'Error al agregar medicamento: $e',
+      );
+    }
     if (response.statusCode == 201) {
       return jsonDecode(response.body) as Map<String, dynamic>;
     } else {
-       print('Error adding medication: ${response.statusCode} - ${response.body}');
-       throw Exception('Failed to add medication: ${response.body}');
+       BasicApiService.manageNotSuccessResponseCode(response);
     }
   }
 }

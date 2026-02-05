@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/bloc/sales_bloc.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/bloc/sales_event.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/bloc/sales_state.dart';
