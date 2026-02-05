@@ -624,6 +624,22 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                           onChanged: (value) {
                             setDialogState(() {
                               if (value == true) {
+                                final category = enumVal?.getCategory() ?? 'OTHER';
+                    
+                                if (['HEAD', 'BELLY', 'LEGS', 'FEET','SPOTS', 'PATTERN'].contains(category)) {
+                                  tempSelected.removeWhere((id) => 
+                                    CattleCharacteristic.fromString(id)?.getCategory() == category
+                                  );
+                                } else if (category == 'HALF_HEAD') {
+                                  final currentHalfHeads = tempSelected.where((id) => 
+                                    CattleCharacteristic.fromString(id)?.getCategory() == 'HALF_HEAD'
+                                  ).toList();
+                                  
+                                  if (currentHalfHeads.length >= 2) {
+                                    // Remove the first one (FIFO)
+                                    tempSelected.remove(currentHalfHeads.first);
+                                  }
+                                }
                                 tempSelected.add(charId);
                               } else {
                                 tempSelected.remove(charId);

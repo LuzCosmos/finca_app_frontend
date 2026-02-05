@@ -50,6 +50,23 @@ class _CharacteristicsEditDialogState extends State<CharacteristicsEditDialog> {
               onChanged: (bool? value) {
                 setState(() {
                   if (value == true) {
+                    final category = enumVal?.getCategory() ?? 'OTHER';
+                    
+                    if (['HEAD', 'BELLY', 'LEGS', 'FEET','SPOTS', 'PATTERN'].contains(category)) {
+                      _tempSelectedIds.removeWhere((id) => 
+                        CattleCharacteristic.fromString(id)?.getCategory() == category
+                      );
+                    } else if (category == 'HALF_HEAD') {
+                      final currentHalfHeads = _tempSelectedIds.where((id) => 
+                        CattleCharacteristic.fromString(id)?.getCategory() == 'HALF_HEAD'
+                      ).toList();
+                      
+                      if (currentHalfHeads.length >= 2) {
+                        // Remove the first one to allow the new selection (FIFO)
+                        _tempSelectedIds.remove(currentHalfHeads.first);
+                      }
+                    }
+                    
                     _tempSelectedIds.add(id);
                   } else {
                     _tempSelectedIds.remove(id);

@@ -167,4 +167,15 @@ enum CattleCharacteristic {
       return null;
     }
   }
+
+  String getCategory() {
+    if (name.contains('HALF_HEAD')) return 'HALF_HEAD';
+    if (name.contains('HEAD')) return 'HEAD';
+    if (name.contains('BELLY')) return 'BELLY';
+    if (name.contains('LEGS')) return 'LEGS';
+    if (name.contains('FEET')) return 'FEET';
+    if (name.contains('SPOTS')) return 'SPOTS';
+    if (name.contains('PATTERN')) return 'PATTERN';
+    return 'OTHER';
+  }
 }
