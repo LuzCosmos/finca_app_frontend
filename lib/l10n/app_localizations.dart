@@ -548,6 +548,18 @@ abstract class AppLocalizations {
   /// **'Purchase not found'**
   String get noPurchasesFound;
 
+  /// No description provided for @purchaseStatusOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get purchaseStatusOpen;
+
+  /// No description provided for @purchaseStatusReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Received'**
+  String get purchaseStatusReceived;
+
   /// No description provided for @provider.
   ///
   /// In en, this message translates to:

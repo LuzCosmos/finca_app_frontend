@@ -112,6 +112,8 @@
   "purchase_totalWeightKg": "Peso total (Kg)",
   "purchase_totalCattle":"Reses totales",
   "noPurchasesFound":"Compra no encontrada",
+  "purchaseStatusOpen": "Abierta",
+  "purchaseStatusReceived": "Recibida",
 
   "provider": "Proveedor",  
   "provider_nit": "NIT",

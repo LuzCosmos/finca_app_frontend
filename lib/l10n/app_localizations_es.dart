@@ -249,6 +249,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get noPurchasesFound => 'Compra no encontrada';
 
   @override
+  String get purchaseStatusOpen => 'Abierta';
+
+  @override
+  String get purchaseStatusReceived => 'Recibida';
+
+  @override
   String get provider => 'Proveedor';
 
   @override

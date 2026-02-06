@@ -53,6 +53,30 @@ class SessionService {
     return moduleData is Map && moduleData.containsKey(resource);
   }
 
+  static const Map<String, int> _actionIndex = {
+    'create': 0,
+    'read': 1,
+    'update': 2,
+    'delete': 3,
+    'list': 4,
+  };
+
+  static Future<bool> hasActionPermission(
+    String module,
+    String resource,
+    String action,
+  ) async {
+    final permissions = await getPermissions();
+    final moduleValue = permissions[module];
+    if (moduleValue is! Map) return false;
+    final rawMask = moduleValue[resource];
+    if (rawMask is! String) return false;
+    final idx = _actionIndex[action.toLowerCase()];
+    if (idx == null) return false;
+    if (rawMask.length < 5) return false;
+    return rawMask[idx] == '1';
+  }
+
   static Future<bool> hasValidToken() async {
     final token = await getToken();
     return token != null && token.isNotEmpty;

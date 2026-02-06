@@ -3,10 +3,12 @@ import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
+import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/modules/shared/widgets/finca_scaffold.dart';
 import 'package:finca_app_frontend/modules/shared/widgets/message_banner.dart';
 import 'package:finca_app_frontend/modules/web/features/cattle_purchase/services/purchases_api_service.dart';
 import 'package:finca_app_frontend/modules/web/features/cattle_purchase/models/purchase_list_item.dart';
+import 'package:finca_app_frontend/modules/web/features/cattle_purchase/models/purchase_status.dart';
 
 import 'package:finca_app_frontend/modules/web/features/cattle_purchase/pages/purchase_form_page.dart';
 
@@ -48,14 +50,29 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
 
   Map<String, String> _statusLabels(BuildContext context) => {
     'all': AppLocalizations.of(context)!.all,
-    'open': AppLocalizations.of(context)!.pending,
-    'received': AppLocalizations.of(context)!.received,
+    'open': AppLocalizations.of(context)!.purchaseStatusOpen,
+    'received': AppLocalizations.of(context)!.purchaseStatusReceived,
   };
+
+  bool _canCreatePurchase = false;
+  bool _canUpdateReception = false;
 
   @override
   void initState() {
     super.initState();
     _status = widget.initialStatusFilter ?? 'all';
+    _checkPermissions();
+  }
+
+  Future<void> _checkPermissions() async {
+    final hasCreatePerm = await SessionService.hasActionPermission('COMMERCE', 'purchases', 'create');
+    final hasUpdatePerm = await SessionService.hasActionPermission('RECEPTION', 'receptions', 'update');
+    if (mounted) {
+      setState(() {
+        _canCreatePurchase = hasCreatePerm;
+        _canUpdateReception = hasUpdatePerm;
+      });
+    }
   }
 
   @override
@@ -143,22 +160,23 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
             if (_error != null) MessageBanner.error(_error!),
             if (_info != null) MessageBanner.info(_info!),
             const SizedBox(height: 8),
-            Align(
-              alignment: Alignment.centerRight,
-              child: FilledButton.icon(
-                onPressed: () {
-                  Navigator.of(context)
-                      .push(
-                        MaterialPageRoute(
-                          builder: (_) => const PurchaseFormPage(),
-                        ),
-                      )
-                      .then((_) => _load());
-                },
-                icon: const Icon(Icons.add),
-                label: Text(t.purchase_create),
+            if (_canCreatePurchase)
+              Align(
+                alignment: Alignment.centerRight,
+                child: FilledButton.icon(
+                  onPressed: () {
+                    Navigator.of(context)
+                        .push(
+                          MaterialPageRoute(
+                            builder: (_) => const PurchaseFormPage(),
+                          ),
+                        )
+                        .then((_) => _load());
+                  },
+                  icon: const Icon(Icons.add),
+                  label: Text(t.purchase_create),
+                ),
               ),
-            ),
             const SizedBox(height: 8),
             // filtros
             Card(
@@ -189,7 +207,6 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
                         },
                       ),
                     ),
-
                     DropdownButton<String>(
                       value: _coerceStatus(_status),
                       onChanged: (v) {
@@ -221,120 +238,100 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
               ),
             ),
             const SizedBox(height: 8),
-
             // tabla
             Expanded(
               child:
-                  _loading
-                      ? const Center(child: CircularProgressIndicator())
-                      : Card(
-                        child:
-                            _items.isEmpty
-                                ? Center(child: Text(t.noPurchasesFound))
-                                : SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                  child: DataTable(
-                                    columns: [
-                                      DataColumn(label: Text(t.purchase_date)),
-                                      DataColumn(label: Text(t.provider)),
-                                      DataColumn(
-                                        label: Text(t.purchase_totalWeightKg),
+                _loading
+                  ? const Center(child: CircularProgressIndicator())
+                  : Card(
+                    child: _items.isEmpty
+                      ? Center(child: Text(t.noPurchasesFound))
+                      : SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: DataTable(
+                            columns: [
+                              DataColumn(label: Text(t.purchase_date)),
+                              DataColumn(label: Text(t.provider)),
+                              DataColumn(label: Text(t.purchase_totalWeightKg)),
+                              DataColumn(label: Text(t.purchase_totalCattle)),
+                              DataColumn(label: Text(t.receivedCattle)),
+                              DataColumn(label: Text(t.colStatus)),
+                              const DataColumn(label: SizedBox()),
+                            ],
+                            rows: _items.map((p) => DataRow(
+                              cells: [
+                                DataCell(Text(fmt.format(p.purchaseDate))),
+                                DataCell(Text(p.providerName ?? '-')),
+                                DataCell(Text(p.totalWeight.toStringAsFixed(1))),
+                                DataCell(Text('${p.totalCattle}')),
+                                DataCell(Text('${p.receivedCattle}')),
+                                DataCell(
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                    decoration: BoxDecoration(
+                                      color: p.status == PurchaseStatus.open ? Colors.green.withOpacity(0.1) : Colors.grey.withOpacity(0.1),
+                                      borderRadius: BorderRadius.circular(4),
+                                      border: Border.all(color: p.status == PurchaseStatus.open ? Colors.green : Colors.grey),
+                                    ),
+                                    child: Text(
+                                      p.status == PurchaseStatus.open ? t.purchaseStatusOpen : t.purchaseStatusReceived,
+                                      style: TextStyle(
+                                        color: p.status == PurchaseStatus.open ? Colors.green[800] : Colors.grey[800],
+                                        fontWeight: FontWeight.bold,
                                       ),
-                                      DataColumn(
-                                        label: Text(t.purchase_totalCattle),
-                                      ),
-                                      DataColumn(label: Text(t.receivedCattle)),
-                                      const DataColumn(label: SizedBox()),
-                                    ],
-                                    rows:
-                                        _items
-                                            .map(
-                                              (p) => DataRow(
-                                                cells: [
-                                                  DataCell(
-                                                    Text(
-                                                      fmt.format(
-                                                        p.purchaseDate,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  DataCell(
-                                                    Text(p.providerName ?? '-'),
-                                                  ),
-                                                  DataCell(
-                                                    Text(
-                                                      p.totalWeight
-                                                          .toStringAsFixed(1),
-                                                    ),
-                                                  ),
-                                                  DataCell(
-                                                    Text('${p.totalCattle}'),
-                                                  ),
-                                                  DataCell(
-                                                    Text('${p.receivedCattle}'),
-                                                  ),
-                                                  DataCell(
-                                                    Align(
-                                                      alignment:
-                                                          Alignment.centerRight,
-                                                      child:
-                                                          p.canReceive
-                                                              ? FilledButton(
-                                                                onPressed: () async {
-                                                                  final result = await context.push(
-                                                                    '/purchase/reception/${p.id}',
-                                                                  );
-                                                                  if (result != null && result is Map<String, dynamic> && mounted) {
-                                                                      final updatedReception = result;
-                                                                      final purchaseId = updatedReception['purchaseId'] as String?;
-                                                                      if (purchaseId == p.id) {
-                                                                          setState(() {
-                                                                            final index = _items.indexWhere((i) => i.id == purchaseId);
-                                                                            if (index != -1) {
-                                                                              final oldItem = _items[index];
-                                                                              final receivedCattle = (updatedReception['receivedCattleCount'] ?? 0) as int;
-                                                                              final receivedWeight = double.tryParse('${updatedReception['receivedTotalWeight'] ?? 0}') ?? 0.0;
-                                                                              
-                                                                              // Only update received stats, keep total purchased stats same
-                                                                              final newItem = PurchaseListItemModel(
-                                                                                id: oldItem.id,
-                                                                                purchaseDate: oldItem.purchaseDate,
-                                                                                providerName: oldItem.providerName,
-                                                                                totalCattle: oldItem.totalCattle,
-                                                                                totalWeight: oldItem.totalWeight,
-                                                                                receivedCattle: receivedCattle,
-                                                                                receivedWeight: receivedWeight,
-                                                                                // Update canReceive if needed (simple check)
-                                                                                canReceive: receivedCattle < oldItem.totalCattle, 
-                                                                              );
-                                                                              _items[index] = newItem;
-                                                                            }
-                                                                          });
-                                                                      }
-                                                                  }
-                                                                },
-                                                                child: Text(
-                                                                  t.receiveAction,
-                                                                ),
-                                                              )
-                                                              : Text(
-                                                                t.received,
-                                                                style:
-                                                                    Theme.of(
-                                                                          context,
-                                                                        )
-                                                                        .textTheme
-                                                                        .bodyMedium,
-                                                              ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            )
-                                            .toList(),
+                                    ),
                                   ),
                                 ),
+                               
+                                DataCell(
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: _canUpdateReception
+                                        ? IconButton(
+                                        tooltip: t.home_reception,
+                                        icon: const Icon(Icons.exit_to_app),
+                                        onPressed: () async {
+                                          final result = await context.push(
+                                            '/purchase/reception/${p.id}',
+                                          );
+                                          if (result != null && result is Map<String, dynamic> && mounted) {
+                                            final updatedReception = result;
+                                            final purchaseId = updatedReception['purchaseId'] as String?;
+                                            if (purchaseId == p.id) {
+                                              setState(() {
+                                                final index = _items.indexWhere((i) => i.id == purchaseId);
+                                                if (index != -1) {
+                                                  final oldItem = _items[index];
+                                                  final receivedCattle = (updatedReception['receivedCattleCount'] ?? 0) as int;
+                                                  final receivedWeight = double.tryParse('${updatedReception['receivedTotalWeight'] ?? 0}') ?? 0.0;
+                                                  // Only update received stats, keep total purchased stats same
+                                                  final newItem = PurchaseListItemModel(
+                                                    id: oldItem.id,
+                                                    purchaseDate: oldItem.purchaseDate,
+                                                    providerName: oldItem.providerName,
+                                                    totalCattle: oldItem.totalCattle,
+                                                    totalWeight: oldItem.totalWeight,
+                                                    receivedCattle: receivedCattle,
+                                                    receivedWeight: receivedWeight,
+                                                    status: oldItem.status, // Keep status until refresh 
+                                                  );
+                                                  _items[index] = newItem;
+                                                }
+                                              });
+                                            }    
+                                            _load(); // Reload to get potential status change
+                                          }
+                                        },
+                                        ) : null,
+                                    ),
+                                  ),
+                              ],
+                            ),
+                            )
+                            .toList(),
+                          ),
                       ),
+                  ),
             ),
             const SizedBox(height: 8),
 
