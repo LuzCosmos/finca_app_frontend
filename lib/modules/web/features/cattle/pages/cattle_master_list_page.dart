@@ -426,45 +426,67 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                             onSelected: (device) {}, // Handled by await result
                         ),
                     );
-                    if (result != null && result is DeviceModel && mounted) {
+                    if (result != null && mounted) {
                         PlutoRow? activeRow;
                         try {
                            activeRow = stateManager.rows.firstWhere((r) => r.key == rowKey);
                         } catch (e) {
                            return;
                         }
+                        
                         if (activeRow != null) {
                             final rowId = activeRow.cells['id']?.value.toString();
-                            if (rowId != null && rowId != 'New' && rowId.isNotEmpty) {
-                                try {
-                                    await _service.updateCattle(rowId, {'idDevice': result.id});
-                                    if (mounted) {
-                                        // Find any other row that has this device attached and clear it
-                                        try {
-                                            final oldOwnerRow = stateManager.rows.firstWhere((r) => 
-                                                r.key != rowKey && 
-                                                r.cells['idDevice']?.value == result.id
-                                            );
-                                            // Clear the old owner logic
-                                            oldOwnerRow.cells['tracker']!.value = '';
-                                            oldOwnerRow.cells['idDevice']!.value = '';
-                                        } catch (e) {
-                                            // No previous owner found in current loaded list, ignore
-                                        }
-                                        activeRow.cells['tracker']!.value = result.name;
-                                        activeRow.cells['idDevice']!.value = result.id;
-                                        stateManager.notifyListeners();
-                                        setState(() {});
-                                        _showSuccess('Saved');
-                                    }
-                                } catch (e) {
-                                    if (mounted) {
-                                        _showError('Error: $e');
-                                    }
+                            
+                            if (result == 'remove') {
+                                // Logic to remove tracker
+                                if (rowId != null && rowId != 'New' && rowId.isNotEmpty) {
+                                  try {
+                                      await _service.updateCattle(rowId, {'idDevice': null});
+                                      if (mounted) {
+                                          activeRow.cells['tracker']!.value = '';
+                                          activeRow.cells['idDevice']!.value = '';
+                                          stateManager.notifyListeners();
+                                          setState(() {});
+                                          _showSuccess('Removed');
+                                      }
+                                  } catch (e) {
+                                      if (mounted) _showError('Error: $e');
+                                  }
+                                } else {
+                                  // For new rows
+                                  activeRow.cells['tracker']!.value = '';
+                                  activeRow.cells['idDevice']!.value = '';
                                 }
-                            } else {
-                                activeRow.cells['tracker']!.value = result.name;
-                                stateManager.changeCellValue(activeRow.cells['idDevice']!, result.id);
+                            } else if (result is DeviceModel) {
+                                // Logic to add tracker (existing)
+                                if (rowId != null && rowId != 'New' && rowId.isNotEmpty) {
+                                    try {
+                                        await _service.updateCattle(rowId, {'idDevice': result.id});
+                                        if (mounted) {
+                                            // Find any other row that has this device attached and clear it
+                                            try {
+                                                final oldOwnerRow = stateManager.rows.firstWhere((r) => 
+                                                    r.key != rowKey && 
+                                                    r.cells['idDevice']?.value == result.id
+                                                );
+                                                oldOwnerRow.cells['tracker']!.value = '';
+                                                oldOwnerRow.cells['idDevice']!.value = '';
+                                            } catch (e) {
+                                                // No previous owner found
+                                            }
+                                            activeRow.cells['tracker']!.value = result.name;
+                                            activeRow.cells['idDevice']!.value = result.id;
+                                            stateManager.notifyListeners();
+                                            setState(() {});
+                                            _showSuccess('Saved');
+                                        }
+                                    } catch (e) {
+                                        if (mounted) _showError('Error: $e');
+                                    }
+                                } else {
+                                    activeRow.cells['tracker']!.value = result.name;
+                                    stateManager.changeCellValue(activeRow.cells['idDevice']!, result.id);
+                                }
                             }
                         }
                     }

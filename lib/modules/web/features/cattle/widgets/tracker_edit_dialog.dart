@@ -45,7 +45,7 @@ class _TrackerEditDialogState extends State<TrackerEditDialog> {
     final l10n = AppLocalizations.of(context)!;
 
     return AlertDialog(
-      title: Text(l10n.trackerLabel), // Assuming trackerLabel exists, else "Tracker"
+      title: Text(l10n.trackerLabel), 
       content: SizedBox(
         width: 300,
         child: Column(
@@ -53,36 +53,28 @@ class _TrackerEditDialogState extends State<TrackerEditDialog> {
           children: [
             RawAutocomplete<DeviceModel>(
               textEditingController: _controller,
-              focusNode: FocusNode(), // Manage focus if needed
-              optionsBuilder: (TextEditingValue textEditingValue) {
-                if (_lastCompleter != null && !_lastCompleter!.isCompleted) {
-                  _lastCompleter!.complete(const Iterable<DeviceModel>.empty().toList());
-                }
-
-                final Completer<List<DeviceModel>> completer = Completer();
-                _lastCompleter = completer;
-
+              optionsBuilder: (TextEditingValue textEditingValue) async {
                 if (textEditingValue.text.length < 3) {
-                  // setState(() => _options = []);
-                  completer.complete(const Iterable<DeviceModel>.empty().toList());
-                  return completer.future;
+                  return const Iterable<DeviceModel>.empty();
                 }
+
+                // Use a Completer to bridge the async gap with debounce
+                final Completer<List<DeviceModel>> completer = Completer();
 
                 if (_debounce?.isActive ?? false) _debounce!.cancel();
 
                 _debounce = Timer(const Duration(milliseconds: 500), () async {
                   if (!mounted) return;
-                  setState(() {
-                    _isLoading = true;
-                    _errorText = null;
-                  });
+                  // Only set loading if not already loading to avoid unnecessary rebuilds
+                  if (!_isLoading) setState(() => _isLoading = true);
+                  
                   try {
                     final results = await DeviceApiService.searchDevices(textEditingValue.text);
                     if (mounted) {
-                      setState(() {
-                        // _options = results;
-                        _isLoading = false;
-                      });
+                       setState(() {
+                         _isLoading = false;
+                         _errorText = null;
+                       });
                     }
                     if (!completer.isCompleted) completer.complete(results);
                   } catch (e) {
@@ -105,7 +97,7 @@ class _TrackerEditDialogState extends State<TrackerEditDialog> {
                   focusNode: focusNode,
                   autofocus: true,
                   decoration: InputDecoration(
-                    labelText: l10n.searchTracker, // Using existing key if possible
+                    labelText: l10n.searchTracker,
                     hintText: 'Min 3 chars...',
                     border: const OutlineInputBorder(),
                     suffixIcon: _isLoading
@@ -117,7 +109,7 @@ class _TrackerEditDialogState extends State<TrackerEditDialog> {
                     errorText: _errorText,
                   ),
                   onSubmitted: (value) {
-                     // Handle submit if needed, or rely on selection
+                     // Submit can be handled if needed
                   },
                 );
               },
@@ -154,6 +146,11 @@ class _TrackerEditDialogState extends State<TrackerEditDialog> {
         ),
       ),
       actions: [
+        if (widget.initialValue != null && widget.initialValue!.isNotEmpty)
+          TextButton(
+            onPressed: () => Navigator.of(context).pop('remove'),
+            child: Text(l10n.cattle_remove, style: const TextStyle(color: Colors.red)),
+          ),
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
           child: Text(l10n.cancel),
