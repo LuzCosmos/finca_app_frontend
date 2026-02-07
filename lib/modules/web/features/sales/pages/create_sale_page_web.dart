@@ -12,6 +12,7 @@ import 'package:finca_app_frontend/modules/web/features/sales/widgets/provider_a
 import 'package:finca_app_frontend/modules/web/features/sales/widgets/weight_approval_dialog.dart';
 import 'package:finca_app_frontend/modules/web/features/sales/widgets/sale_confirmation_dialog.dart';
 import 'package:finca_app_frontend/modules/web/features/sales/services/cattle_validation_service.dart';
+import 'package:finca_app_frontend/modules/web/features/cattle/services/cattle_master_service.dart';
 import 'package:uuid/uuid.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -58,6 +59,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
   
   bool _isValidatingCattle = false;
   bool _trackerRemoved = false;
+  final _cattleService = CattleMasterService();
 
   @override
   void initState() {
@@ -690,13 +692,73 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
               children: [
                 Expanded(
                   flex: 2,
-                  child: TextFormField(
-                    controller: _cattleIdController,
-                    decoration: InputDecoration(
-                      labelText: l10n!.cattle_number,
-                      border: const OutlineInputBorder(),
-                      hintText: l10n!.hint_enterScanId,
-                    ),
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      return RawAutocomplete<Map<String, dynamic>>(
+                        textEditingController: _cattleIdController,
+                        focusNode: FocusNode(),
+                        optionsBuilder: (TextEditingValue textEditingValue) async {
+                          if (textEditingValue.text.isEmpty) {
+                            return const Iterable<Map<String, dynamic>>.empty();
+                          }
+                          try {
+                            return await _cattleService.searchCattle(textEditingValue.text);
+                          } catch (e) {
+                            return const Iterable<Map<String, dynamic>>.empty();
+                          }
+                        },
+                        displayStringForOption: (option) => option['number'],
+                        onSelected: (Map<String, dynamic> selection) {
+                          // Controller is updated automatically by Autocomplete when using displayStringForOption
+                          // No extra action needed for now, user will click Add
+                        },
+                        fieldViewBuilder: (BuildContext context, TextEditingController textEditingController, FocusNode focusNode, VoidCallback onFieldSubmitted) {
+                          return TextFormField(
+                            controller: textEditingController,
+                            focusNode: focusNode,
+                            decoration: InputDecoration(
+                              labelText: l10n!.cattle_number,
+                              border: const OutlineInputBorder(),
+                              hintText: l10n!.hint_enterScanId,
+                            ),
+                            onFieldSubmitted: (String value) {
+                              onFieldSubmitted();
+                            },
+                          );
+                        },
+                        optionsViewBuilder: (BuildContext context, AutocompleteOnSelected<Map<String, dynamic>> onSelected, Iterable<Map<String, dynamic>> options) {
+                          return Align(
+                            alignment: Alignment.topLeft,
+                            child: Material(
+                              elevation: 4.0,
+                              child: SizedBox(
+                                width: constraints.maxWidth,
+                                child: ListView.builder(
+                                  padding: const EdgeInsets.all(8.0),
+                                  shrinkWrap: true,
+                                  itemCount: options.length,
+                                  itemBuilder: (BuildContext context, int index) {
+                                    final Map<String, dynamic> option = options.elementAt(index);
+                                    final device = option['device'];
+                                    String deviceText = '';
+                                    if (device != null) {
+                                      deviceText = ' / ${device['name'] ?? device['deveui'] ?? ''}';
+                                    }
+                                    return ListTile(
+                                      title: Text(option['number'] ?? ''),
+                                      subtitle: Text('${option['eartag'] ?? ''}$deviceText'),
+                                      onTap: () {
+                                        onSelected(option);
+                                      },
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    }
                   ),
                 ),
                 const SizedBox(width: 12),

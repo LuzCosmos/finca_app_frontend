@@ -245,4 +245,46 @@ class CattleMasterService {
        BasicApiService.manageNotSuccessResponseCode(response);
     }
   }
+
+  /// Search cattle by query
+  Future<List<Map<String, dynamic>>> searchCattle(String query) async {
+    try {
+      final token = await BasicApiService.getToken();
+      final url = Uri.parse('$baseUrl/cattle/search').replace(queryParameters: {'q': query});
+      var response;
+      try {
+        response = await http.get(
+          url,
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Content-Type': 'application/json',
+          },
+        );
+      } catch (e) {
+        if (e is SocketException || e is http.ClientException) {
+          throw ApiException(
+            'serverConnectionError',
+            'Error searching cattle: $e',
+          );
+        }
+        throw ApiException(
+          'readingObjectError',
+          'Error searching cattle: $e',
+        );
+      }
+      if (response.statusCode == 200) {
+        final List<dynamic> body = jsonDecode(response.body);
+        return body.cast<Map<String, dynamic>>();
+      } else {
+        BasicApiService.manageNotSuccessResponseCode(response);
+        return [];
+      }
+    } catch (e) {
+      if (e is ApiException) throw e;
+      throw ApiException(
+        'readingObjectError',
+        'Error searching cattle: $e',
+      );
+    }
+  }
 }
