@@ -203,6 +203,7 @@
   "selectImage": "Seleccionar imagen",
   "imageRequired": "La imagen es obligatoria",
   "create": "Crear",
+  "accept": "Aceptar",
 
   "noAnimals": "Aún no se han agregado animales",
   "tableAnimal": "Animal",
@@ -443,7 +444,6 @@
   "colCharacteristics": "Características",
   "colHorns": "Cachos",
   "colCastrated": "Castrado",
-  "colAuctionLot": "Lote Subasta",
   "colReceivedWeight": "Peso Recibido",
   "colPurchaseWeight": "Peso Compra (kg)",
   "colReceivedDate": "Fecha Recibido",

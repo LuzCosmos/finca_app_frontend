@@ -140,10 +140,8 @@ class SalesDataSourceWeb implements ISalesDataSource {
       },
       body: jsonEncode(updates),
     );
-
     if (res.statusCode != 200) {
-      if (res.statusCode == 401) throw Exception('Unauthorized (401)');
-      throw Exception('Failed to update sale: ${res.body}');
+      BasicApiService.manageNotSuccessResponseCode(res);
     }
   }
 }

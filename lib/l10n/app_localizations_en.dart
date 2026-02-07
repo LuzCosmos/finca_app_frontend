@@ -482,6 +482,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cancel => 'Cancel';
 
   @override
+  String get accept => 'Accept';
+
+  @override
   String get add => 'Add';
 
   @override
@@ -1159,9 +1162,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get colCastrated => 'Castrated';
-
-  @override
-  String get colAuctionLot => 'Auction Lot';
 
   @override
   String get colReceivedAt => 'Received At';

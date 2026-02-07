@@ -76,28 +76,19 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
   }
 
   Future<void> _checkPermissions() async {
-     final permissions = await SessionService.getPermissions();
-     // Check for FARM module and cattle resource. Permission string format: C R U D L (5 chars)
-     // CRUDL: Create, Read, Update, Delete, List. Index 2 is Update.
-     if (permissions['FARM'] != null && permissions['FARM']['cattle'] != null) {
-        final permString = permissions['FARM']['cattle'].toString();
-        if (permString.length >= 3 && permString[2] == '1') {
-             setState(() => _hasEditPermission = true);
-        }
+     final canEdit = await SessionService.hasActionPermission('FARM', 'cattle', 'update');
+     if (canEdit) {
+        setState(() => _hasEditPermission = true);
      }
   }
 
   Future<void> _loadData() async {
-    // Only show full screen loader if grid is not initialized yet (first load)
     if (_gridKey == null || rows.isEmpty) {
        setState(() => isLoading = true);
     } else {
-       // Ideally we check if stateManager is initialized, but here we can just rely on mounted check
-       // stateManager might not be accessible if grid is not built yet.
        try {
          stateManager.setShowLoading(true);
        } catch (e) {
-         // Fallback if statemanager not ready
          setState(() => isLoading = true);
        }
     }
@@ -108,32 +99,25 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
         _service.getColors(),
         _service.getCharacteristics(),
       ]);
-
       final cattleResult = results[0] as CattlePageResult;
       _total = cattleResult.total;
       final cattleList = cattleResult.items;
-
       _colors = (results[1] as List).cast<String>();
       _characteristics = (results[2] as List).cast<String>();
-
       final newRows = _createRows(cattleList);
-      
       if (mounted) {
-         // If generic loading was used
          if (isLoading) {
              setState(() {
                isLoading = false;
                rows = newRows;
              });
          } else {
-             // Grid already exists, update rows via stateManager
              stateManager.setShowLoading(false);
              stateManager.removeAllRows();
              stateManager.appendRows(newRows);
-             stateManager.notifyListeners(); // Ensure grid redraws
-             // Update local rows variable just in case, though usually stateManager holds the truth
+             stateManager.notifyListeners(); 
              rows = newRows;
-             setState(() {}); // Trigger rebuild for Footer info (page counts)
+             setState(() {});
          }
       }
     } on ApiException catch (e) {
@@ -503,7 +487,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
             );
         }
       ),
-      PlutoColumn(title: l10n.lot, field: 'auctionLot', type: PlutoColumnType.text(), width: 100, enableEditingMode: _hasEditPermission),
+      PlutoColumn(title: l10n.lot, field: 'lot', type: PlutoColumnType.text(), width: 100, enableEditingMode: _hasEditPermission),
       PlutoColumn(title: l10n.colComments, field: 'comments', type: PlutoColumnType.text(), width: 200, enableEditingMode: _hasEditPermission),
       PlutoColumn(title: l10n.colPurchaseWeight, field: 'purchaseWeight', type: PlutoColumnType.number(), width: 110, enableEditingMode: _hasEditPermission),
       //PlutoColumn(title: l10n.colReceivedDate, field: 'receivedDate', type: PlutoColumnType.date(), width: 110),
@@ -771,7 +755,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
           'age': PlutoCell(value: 0),
           'tracker': PlutoCell(value: ''),
           'idDevice': PlutoCell(value: ''),
-          'auctionLot': PlutoCell(value: ''),
+          'lot': PlutoCell(value: ''),
           'comments': PlutoCell(value: ''),
           'purchaseWeight': PlutoCell(value: 0),
           'purchasePrice': PlutoCell(value: 0),
@@ -813,7 +797,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
             'age': PlutoCell(value: double.tryParse(cattle['age']?.toString() ?? '') ?? 0),
             'tracker': PlutoCell(value: cattle['device'] != null ? cattle['device']['name'] : ((cattle['deviceName'] as String?) ?? '')),
             'idDevice': PlutoCell(value: cattle['device'] != null ? cattle['device']['id'] : ((cattle['idDevice'] as String?) ?? '')),
-            'auctionLot': PlutoCell(value: cattle['auctionLot'] ?? ''),
+            'lot': PlutoCell(value: cattle['lot'] ?? ''),
             'comments': PlutoCell(value: cattle['comments'] ?? ''),
             'purchaseWeight': PlutoCell(value: cattle['purchaseWeight'] ?? 0),
             'purchasePrice': PlutoCell(value: cattle['purchasePrice'] ?? 0),

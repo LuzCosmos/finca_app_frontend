@@ -226,4 +226,22 @@ class ReceptionApiService {
     );
     if (r.statusCode >= 400) throw Exception('Error patch events: ${r.body}');
   }
+
+  Future<void> updateStatus(String purchaseId, String status) async {
+    final token = await BasicApiService.getToken();
+    final url = Uri.parse('${BasicApiService.baseUrl}/purchase-receptions/purchase-status/$purchaseId');
+    final response = await http.patch(
+      url,
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({'status': status}),
+    );
+
+    if (response.statusCode >= 400) {
+      BasicApiService.manageNotSuccessResponseCode(response);
+      throw ApiException('serverError', 'Error updating status: ${response.body}');
+    }
+  }
 }

@@ -83,7 +83,7 @@ class BasicApiService {
       );
     }
     throw ApiException(
-      ApiExceptionCode.savingObjectError.name,
+      ApiExceptionCode.unknownError.name,
       'Error in the request: ${response.statusCode} ${response.body}',
     );
   }

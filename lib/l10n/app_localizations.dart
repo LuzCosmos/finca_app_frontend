@@ -986,6 +986,12 @@ abstract class AppLocalizations {
   /// **'Cancel'**
   String get cancel;
 
+  /// No description provided for @accept.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept'**
+  String get accept;
+
   /// No description provided for @add.
   ///
   /// In en, this message translates to:
@@ -2239,12 +2245,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Castrated'**
   String get colCastrated;
-
-  /// No description provided for @colAuctionLot.
-  ///
-  /// In en, this message translates to:
-  /// **'Auction Lot'**
-  String get colAuctionLot;
 
   /// No description provided for @colReceivedAt.
   ///

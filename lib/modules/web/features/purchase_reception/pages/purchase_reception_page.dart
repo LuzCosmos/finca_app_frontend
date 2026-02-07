@@ -179,6 +179,47 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
     }
   }
 
+  Future<void> _confirmClosePurchase(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.purchaseStatusReceived), // "Received" or "Close Purchase"
+        content: const Text('¿Estás seguro de marcar esta compra como recibida?'), // Localize if possible, hardcoded for now as user requested feature "cerrar compra"
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(l10n.accept),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      await _closePurchase();
+    }
+  }
+
+  Future<void> _closePurchase() async {
+    try {
+      await api.updateStatus(widget.purchaseId, 'RECEIVED');
+      setGlobalSuccess('Compra marcada como recibida');
+      // Update local state if needed (e.g. disable form)
+      // For now just show success
+      // Automatically navigate back or refresh?
+      // Navigator.of(context).pop(); // Maybe?
+      
+      // Refresh to update status variable if we were tracking it (we aren't tracking status in this page explicitly yet)
+      _load();
+    } catch (e) {
+      setGlobalError(e.toString());
+    }
+  }
+
   List<Map<String, dynamic>> _getLots() {
     if (receptionData == null) return [];
     return (receptionData!['reception']['lots'] as List<dynamic>)
@@ -270,8 +311,8 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
             Navigator.of(context).pop(receptionData?['reception']);
           },
           child: FincaScaffold(
-          title: l10n.purchaseReceptionTitle,
-          body: CustomScrollView(
+            title: l10n.purchaseReceptionTitle,
+            body: CustomScrollView(
             slivers: [
               // Top Section (Scrollable)
               SliverToBoxAdapter(
@@ -284,6 +325,25 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
                       MessageBanner.success(_globalSuccessMessage!),
                     if (_globalInfoMessage != null)
                       MessageBanner.info(_globalInfoMessage!),
+
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          FilledButton.icon(
+                            onPressed: () => _confirmClosePurchase(context),
+                            icon: const Icon(Icons.check_circle),
+                            label: Text(l10n.purchaseStatusReceived), // Or "Cerrar Compra" if localized
+                            style: FilledButton.styleFrom(
+                              backgroundColor: Colors.green,
+                              foregroundColor: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
               // Top Section: Purchase Info + Form + Event Config Panel
                     SizedBox(
                   height: 450,
