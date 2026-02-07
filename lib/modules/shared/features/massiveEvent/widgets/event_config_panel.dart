@@ -139,25 +139,42 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
     }
   }
 
-  void _deactivateDetail(SimpleEventModel detail) {
+  Future<void> _deactivateDetail(SimpleEventModel detail) async {
     final allDetails = widget.simpleEvents;
     final idx = allDetails.indexWhere((e) => e.id == detail.id);
     if (idx != -1) {
       allDetails[idx] = allDetails[idx].copyWith(isActive: false);
+      widget.onEventsChanged(allDetails);
+      var endpoint = 'simple-events';
+      if (widget.key != null && widget.key is ValueKey<String> && 
+        (widget.key as ValueKey<String>).value.contains('eventConfigPanel_reception')) {
+        endpoint = 'purchase-receptions/update-simple-event';
+      }
+      await context.read<MassiveEventBloc>().dataSource.updateSimpleEvent(
+        simpleEvent: allDetails[idx],
+        endpoint: endpoint,
+      );
     }
-
-    widget.onEventsChanged(allDetails);
   }
 
-  void _reactivateDetail(SimpleEventModel detail) {
+  Future<void> _reactivateDetail(SimpleEventModel detail) async {
     final allDetails = widget.simpleEvents;
     final idx = allDetails.indexWhere((e) => e.id == detail.id);
     if (idx != -1) {
       allDetails[idx] = allDetails[idx].copyWith(isActive: true);
+      widget.onEventsChanged(allDetails);
+      final l10n = AppLocalizations.of(context)!;
+      widget.showInfo(l10n.reactivatedInfo(detail.type.asText(context)));
+      var endpoint = 'simple-events';
+      if (widget.key != null && widget.key is ValueKey<String> && 
+        (widget.key as ValueKey<String>).value.contains('eventConfigPanel_reception')) {
+        endpoint = 'purchase-receptions/update-simple-event';
+      }
+      await context.read<MassiveEventBloc>().dataSource.updateSimpleEvent(
+        simpleEvent: allDetails[idx],
+        endpoint: endpoint,
+      );
     }
-    widget.onEventsChanged(allDetails);
-    final l10n = AppLocalizations.of(context)!;
-    widget.showInfo(l10n.reactivatedInfo(detail.type.asText(context)));
   }
 
   bool _canAddDetail(String type, String? name) {

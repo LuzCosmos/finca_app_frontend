@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:finca_app_frontend/core/utils/regex_patterns.dart';
 
 class Validator {
   static FormFieldValidator<String> validateNotEmpty(
@@ -28,5 +29,14 @@ class Validator {
       }
       return null;
     };
+  }
+
+  static String? validateCattleAge(
+    String value,
+    String errorMessage,
+  ) {
+    if (value.isEmpty) return null;
+    if (!RegexPatterns.positiveDecimalTwoDigits.hasMatch(value)) return errorMessage;
+    return null;
   }
 }

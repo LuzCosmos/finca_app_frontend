@@ -74,8 +74,7 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
             "totalWeight": lot.totalWeight,
             "pricePerKg": lot.pricePerKg,
             "totalValue": lot.totalValue,
-            "age": lot.age,
-            "sex": lot.gender,
+            "gender": lot.gender.name,
           };
         }).toList();
     try {
@@ -98,7 +97,7 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
           setState(() {
             _globalSuccessMessage = null;
           });
-          context.go('/purchases');
+          context.push('/purchases');
         }
       });
     } on ApiException catch (e) {

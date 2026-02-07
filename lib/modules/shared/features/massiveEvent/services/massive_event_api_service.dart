@@ -196,4 +196,60 @@ class MassiveEventApiService {
       BasicApiService.manageNotSuccessResponseCode(response);
     }
   }
+
+  static Future<SimpleEventModel> updateSimpleEvent({
+    required SimpleEventModel simpleEvent,
+    required String endpoint,
+  }) async {
+    final token = await SessionService.getToken();
+    if (token == null || token.isEmpty) {
+      throw Exception('⚠️ No se encontró token de sesión');
+    }
+    dynamic decodedJson;
+    if (simpleEvent.data != null) {
+      try {
+        decodedJson = jsonDecode(simpleEvent.data!);
+      } catch (e) {
+        throw Exception('⚠️ data inválido para SimpleEvent: $e');
+      }
+    }
+    final payload = {
+      "data": decodedJson,
+      "isActive": simpleEvent.isActive,
+    };
+    var response;
+    try {
+      response = await http.put(
+        Uri.parse('$_baseUrl/$endpoint/${simpleEvent.id}'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(payload),
+      );
+    } catch (e) {
+      if (e is SocketException || e is http.ClientException) {
+        throw ApiException(
+          'serverConnectionError',
+          'Error al actualizar SimpleEvent: $e',
+        );
+      }
+      throw ApiException(
+        'savingObjectError',
+        'Error al actualizar SimpleEvent: $e',
+      );
+    }
+    if (response.statusCode == 201 || response.statusCode == 200) {
+      try {
+        final data = jsonDecode(response.body);
+        final simpleEventSaved = SimpleEventModel.fromJson(data);
+        return simpleEventSaved;
+      } catch (e) {
+        throw Exception('⚠️ Respuesta JSON inválida al actualizar SimpleEvent: $e');
+      }
+    } else {
+      BasicApiService.manageNotSuccessResponseCode(response);
+      throw ApiException('unknownError', 'Error desconocido al actualizar SimpleEvent');
+    }
+  }
 }

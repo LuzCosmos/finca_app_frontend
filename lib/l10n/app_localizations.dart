@@ -548,6 +548,18 @@ abstract class AppLocalizations {
   /// **'Purchase not found'**
   String get noPurchasesFound;
 
+  /// No description provided for @purchaseStatusOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get purchaseStatusOpen;
+
+  /// No description provided for @purchaseStatusReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Received'**
+  String get purchaseStatusReceived;
+
   /// No description provided for @provider.
   ///
   /// In en, this message translates to:
@@ -974,6 +986,12 @@ abstract class AppLocalizations {
   /// **'Cancel'**
   String get cancel;
 
+  /// No description provided for @accept.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept'**
+  String get accept;
+
   /// No description provided for @add.
   ///
   /// In en, this message translates to:
@@ -1214,6 +1232,18 @@ abstract class AppLocalizations {
   /// **'Add animal'**
   String get addCattle;
 
+  /// No description provided for @cattle_exists_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Number already exists (Active/Lost)'**
+  String get cattle_exists_error;
+
+  /// No description provided for @eartag_exists_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Eartag already exists (Active/Lost)'**
+  String get eartag_exists_error;
+
   /// No description provided for @cattleCountLabel.
   ///
   /// In en, this message translates to:
@@ -1249,6 +1279,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Has Horns'**
   String get hasHorns;
+
+  /// No description provided for @age.
+  ///
+  /// In en, this message translates to:
+  /// **'Age'**
+  String get age;
+
+  /// No description provided for @gender.
+  ///
+  /// In en, this message translates to:
+  /// **'Gender'**
+  String get gender;
 
   /// No description provided for @isCastrated.
   ///
@@ -2173,6 +2215,444 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tracker not selected'**
   String get trackerNotSelected;
+
+  /// No description provided for @colSystemNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'System No.'**
+  String get colSystemNumber;
+
+  /// No description provided for @colBrandColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Color'**
+  String get colBrandColor;
+
+  /// No description provided for @colCharacteristics.
+  ///
+  /// In en, this message translates to:
+  /// **'Characteristics'**
+  String get colCharacteristics;
+
+  /// No description provided for @colHorns.
+  ///
+  /// In en, this message translates to:
+  /// **'Horns'**
+  String get colHorns;
+
+  /// No description provided for @colCastrated.
+  ///
+  /// In en, this message translates to:
+  /// **'Castrated'**
+  String get colCastrated;
+
+  /// No description provided for @colReceivedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Received At'**
+  String get colReceivedAt;
+
+  /// No description provided for @colReceivedWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Received Weight'**
+  String get colReceivedWeight;
+
+  /// No description provided for @colPurchaseWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase Weight (kg)'**
+  String get colPurchaseWeight;
+
+  /// No description provided for @colReceivedDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Received Date'**
+  String get colReceivedDate;
+
+  /// No description provided for @colComments.
+  ///
+  /// In en, this message translates to:
+  /// **'Comments'**
+  String get colComments;
+
+  /// No description provided for @colPurchasePrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase Price'**
+  String get colPurchasePrice;
+
+  /// No description provided for @colPurchaseCommission.
+  ///
+  /// In en, this message translates to:
+  /// **'Commission'**
+  String get colPurchaseCommission;
+
+  /// No description provided for @colStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get colStatus;
+
+  /// No description provided for @colWeightHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight History'**
+  String get colWeightHistory;
+
+  /// No description provided for @colMedicationHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Medication History'**
+  String get colMedicationHistory;
+
+  /// No description provided for @colSaleWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Sale Weight'**
+  String get colSaleWeight;
+
+  /// No description provided for @colSalePrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Sale Price'**
+  String get colSalePrice;
+
+  /// No description provided for @colAge.
+  ///
+  /// In en, this message translates to:
+  /// **'Age'**
+  String get colAge;
+
+  /// No description provided for @colGender.
+  ///
+  /// In en, this message translates to:
+  /// **'Gender'**
+  String get colGender;
+
+  /// No description provided for @colLastWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Weight'**
+  String get colLastWeight;
+
+  /// No description provided for @masterListTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cattle Master List'**
+  String get masterListTitle;
+
+  /// No description provided for @addCattleRow.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Cattle'**
+  String get addCattleRow;
+
+  /// No description provided for @colorBlack.
+  ///
+  /// In en, this message translates to:
+  /// **'Black'**
+  String get colorBlack;
+
+  /// No description provided for @colorWhite.
+  ///
+  /// In en, this message translates to:
+  /// **'White'**
+  String get colorWhite;
+
+  /// No description provided for @colorBrown.
+  ///
+  /// In en, this message translates to:
+  /// **'Brown'**
+  String get colorBrown;
+
+  /// No description provided for @colorBlackBrown.
+  ///
+  /// In en, this message translates to:
+  /// **'Black-Brown'**
+  String get colorBlackBrown;
+
+  /// No description provided for @colorLightBrown.
+  ///
+  /// In en, this message translates to:
+  /// **'Light Brown'**
+  String get colorLightBrown;
+
+  /// No description provided for @colorGrey.
+  ///
+  /// In en, this message translates to:
+  /// **'Grey'**
+  String get colorGrey;
+
+  /// No description provided for @charBlackBelly.
+  ///
+  /// In en, this message translates to:
+  /// **'Black Belly'**
+  String get charBlackBelly;
+
+  /// No description provided for @charWhiteBelly.
+  ///
+  /// In en, this message translates to:
+  /// **'White Belly'**
+  String get charWhiteBelly;
+
+  /// No description provided for @charBrownBelly.
+  ///
+  /// In en, this message translates to:
+  /// **'Brown Belly'**
+  String get charBrownBelly;
+
+  /// No description provided for @charLightBrownBelly.
+  ///
+  /// In en, this message translates to:
+  /// **'Light Brown Belly'**
+  String get charLightBrownBelly;
+
+  /// No description provided for @charGreyBelly.
+  ///
+  /// In en, this message translates to:
+  /// **'Grey Belly'**
+  String get charGreyBelly;
+
+  /// No description provided for @charBlackHead.
+  ///
+  /// In en, this message translates to:
+  /// **'Black Head'**
+  String get charBlackHead;
+
+  /// No description provided for @charWhiteHead.
+  ///
+  /// In en, this message translates to:
+  /// **'White Head'**
+  String get charWhiteHead;
+
+  /// No description provided for @charBrownHead.
+  ///
+  /// In en, this message translates to:
+  /// **'Brown Head'**
+  String get charBrownHead;
+
+  /// No description provided for @charLightBrownHead.
+  ///
+  /// In en, this message translates to:
+  /// **'Light Brown Head'**
+  String get charLightBrownHead;
+
+  /// No description provided for @charGreyHead.
+  ///
+  /// In en, this message translates to:
+  /// **'Grey Head'**
+  String get charGreyHead;
+
+  /// No description provided for @charBlackHalfHead.
+  ///
+  /// In en, this message translates to:
+  /// **'Black Half Head'**
+  String get charBlackHalfHead;
+
+  /// No description provided for @charWhiteHalfHead.
+  ///
+  /// In en, this message translates to:
+  /// **'White Half Head'**
+  String get charWhiteHalfHead;
+
+  /// No description provided for @charBrownHalfHead.
+  ///
+  /// In en, this message translates to:
+  /// **'Brown Half Head'**
+  String get charBrownHalfHead;
+
+  /// No description provided for @charLightBrownHalfHead.
+  ///
+  /// In en, this message translates to:
+  /// **'Light Brown Half Head'**
+  String get charLightBrownHalfHead;
+
+  /// No description provided for @charGreyHalfHead.
+  ///
+  /// In en, this message translates to:
+  /// **'Grey Half Head'**
+  String get charGreyHalfHead;
+
+  /// No description provided for @charBlackLegs.
+  ///
+  /// In en, this message translates to:
+  /// **'Black Legs'**
+  String get charBlackLegs;
+
+  /// No description provided for @charWhiteLegs.
+  ///
+  /// In en, this message translates to:
+  /// **'White Legs'**
+  String get charWhiteLegs;
+
+  /// No description provided for @charBrownLegs.
+  ///
+  /// In en, this message translates to:
+  /// **'Brown Legs'**
+  String get charBrownLegs;
+
+  /// No description provided for @charLightBrownLegs.
+  ///
+  /// In en, this message translates to:
+  /// **'Light Brown Legs'**
+  String get charLightBrownLegs;
+
+  /// No description provided for @charGreyLegs.
+  ///
+  /// In en, this message translates to:
+  /// **'Grey Legs'**
+  String get charGreyLegs;
+
+  /// No description provided for @charBlackFeet.
+  ///
+  /// In en, this message translates to:
+  /// **'Black Feet'**
+  String get charBlackFeet;
+
+  /// No description provided for @charWhiteFeet.
+  ///
+  /// In en, this message translates to:
+  /// **'White Feet'**
+  String get charWhiteFeet;
+
+  /// No description provided for @charBrownFeet.
+  ///
+  /// In en, this message translates to:
+  /// **'Brown Feet'**
+  String get charBrownFeet;
+
+  /// No description provided for @charLightBrownFeet.
+  ///
+  /// In en, this message translates to:
+  /// **'Light Brown Feet'**
+  String get charLightBrownFeet;
+
+  /// No description provided for @charGreyFeet.
+  ///
+  /// In en, this message translates to:
+  /// **'Grey Feet'**
+  String get charGreyFeet;
+
+  /// No description provided for @charBlackSpots.
+  ///
+  /// In en, this message translates to:
+  /// **'Black Spots'**
+  String get charBlackSpots;
+
+  /// No description provided for @charBrownSpots.
+  ///
+  /// In en, this message translates to:
+  /// **'Brown Spots'**
+  String get charBrownSpots;
+
+  /// No description provided for @charLightBrownSpots.
+  ///
+  /// In en, this message translates to:
+  /// **'Light Brown Spots'**
+  String get charLightBrownSpots;
+
+  /// No description provided for @charGreySpots.
+  ///
+  /// In en, this message translates to:
+  /// **'Grey Spots'**
+  String get charGreySpots;
+
+  /// No description provided for @charBlackPattern.
+  ///
+  /// In en, this message translates to:
+  /// **'Black Pattern'**
+  String get charBlackPattern;
+
+  /// No description provided for @charBrownPattern.
+  ///
+  /// In en, this message translates to:
+  /// **'Brown Pattern'**
+  String get charBrownPattern;
+
+  /// No description provided for @genderMale.
+  ///
+  /// In en, this message translates to:
+  /// **'Male'**
+  String get genderMale;
+
+  /// No description provided for @genderFemale.
+  ///
+  /// In en, this message translates to:
+  /// **'Female'**
+  String get genderFemale;
+
+  /// No description provided for @statusActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get statusActive;
+
+  /// No description provided for @statusSold.
+  ///
+  /// In en, this message translates to:
+  /// **'Sold'**
+  String get statusSold;
+
+  /// No description provided for @statusDead.
+  ///
+  /// In en, this message translates to:
+  /// **'Dead'**
+  String get statusDead;
+
+  /// No description provided for @statusLost.
+  ///
+  /// In en, this message translates to:
+  /// **'Lost'**
+  String get statusLost;
+
+  /// No description provided for @noData.
+  ///
+  /// In en, this message translates to:
+  /// **'No data available'**
+  String get noData;
+
+  /// No description provided for @recordedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Recorded by'**
+  String get recordedBy;
+
+  /// No description provided for @close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
+
+  /// No description provided for @dosage.
+  ///
+  /// In en, this message translates to:
+  /// **'Dosage'**
+  String get dosage;
+
+  /// No description provided for @route.
+  ///
+  /// In en, this message translates to:
+  /// **'Route'**
+  String get route;
+
+  /// No description provided for @appliedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Applied by'**
+  String get appliedBy;
+
+  /// No description provided for @addMedication.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Medication'**
+  String get addMedication;
+
+  /// No description provided for @date.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get date;
 }
 
 class _AppLocalizationsDelegate

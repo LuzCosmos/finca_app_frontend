@@ -249,6 +249,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get noPurchasesFound => 'Compra no encontrada';
 
   @override
+  String get purchaseStatusOpen => 'Abierta';
+
+  @override
+  String get purchaseStatusReceived => 'Recibida';
+
+  @override
   String get provider => 'Proveedor';
 
   @override
@@ -475,6 +481,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get cancel => 'Cancelar';
 
   @override
+  String get accept => 'Aceptar';
+
+  @override
   String get add => 'Agregar';
 
   @override
@@ -602,6 +611,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get addCattle => 'Agregar res';
 
   @override
+  String get cattle_exists_error => 'El número ya existe (Activa/Perdida)';
+
+  @override
+  String get eartag_exists_error => 'El arete ya existe (Activa/Perdida)';
+
+  @override
   String cattleCountLabel(num count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -636,6 +651,12 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get hasHorns => 'Tiene cachos';
+
+  @override
+  String get age => 'Edad';
+
+  @override
+  String get gender => 'Género';
 
   @override
   String get isCastrated => 'Está castrado';
@@ -1130,4 +1151,223 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get trackerNotSelected => 'Tracker no seleccionado';
+
+  @override
+  String get colSystemNumber => 'No. Sistema';
+
+  @override
+  String get colBrandColor => 'Color';
+
+  @override
+  String get colCharacteristics => 'Características';
+
+  @override
+  String get colHorns => 'Cachos';
+
+  @override
+  String get colCastrated => 'Castrado';
+
+  @override
+  String get colReceivedAt => 'Received At';
+
+  @override
+  String get colReceivedWeight => 'Peso Recibido';
+
+  @override
+  String get colPurchaseWeight => 'Peso Compra (kg)';
+
+  @override
+  String get colReceivedDate => 'Fecha Recibido';
+
+  @override
+  String get colComments => 'Comentarios';
+
+  @override
+  String get colPurchasePrice => 'Precio Compra';
+
+  @override
+  String get colPurchaseCommission => 'Comisión';
+
+  @override
+  String get colStatus => 'Estado';
+
+  @override
+  String get colWeightHistory => 'Hist. Peso';
+
+  @override
+  String get colMedicationHistory => 'Hist. Medicamentos';
+
+  @override
+  String get colSaleWeight => 'Peso Venta';
+
+  @override
+  String get colSalePrice => 'Precio Venta';
+
+  @override
+  String get colAge => 'Edad';
+
+  @override
+  String get colGender => 'Género';
+
+  @override
+  String get colLastWeight => 'último Peso';
+
+  @override
+  String get masterListTitle => 'Lista Maestra de Ganado';
+
+  @override
+  String get addCattleRow => 'Agregar Res';
+
+  @override
+  String get colorBlack => 'Negro';
+
+  @override
+  String get colorWhite => 'Blanco';
+
+  @override
+  String get colorBrown => 'Café';
+
+  @override
+  String get colorBlackBrown => 'Negro-Café';
+
+  @override
+  String get colorLightBrown => 'Café Claro';
+
+  @override
+  String get colorGrey => 'Gris';
+
+  @override
+  String get charBlackBelly => 'Barriga Negra';
+
+  @override
+  String get charWhiteBelly => 'Barriga Blanca';
+
+  @override
+  String get charBrownBelly => 'Barriga Café';
+
+  @override
+  String get charLightBrownBelly => 'Barriga Café Clara';
+
+  @override
+  String get charGreyBelly => 'Barriga Gris';
+
+  @override
+  String get charBlackHead => 'Cabeza Negra';
+
+  @override
+  String get charWhiteHead => 'Cabeza Blanca';
+
+  @override
+  String get charBrownHead => 'Cabeza Café';
+
+  @override
+  String get charLightBrownHead => 'Cabeza Café Clara';
+
+  @override
+  String get charGreyHead => 'Cabeza Gris';
+
+  @override
+  String get charBlackHalfHead => 'Media Cabeza Negra';
+
+  @override
+  String get charWhiteHalfHead => 'Media Cabeza Blanca';
+
+  @override
+  String get charBrownHalfHead => 'Media Cabeza Café';
+
+  @override
+  String get charLightBrownHalfHead => 'Media Cabeza Café Clara';
+
+  @override
+  String get charGreyHalfHead => 'Media Cabeza Gris';
+
+  @override
+  String get charBlackLegs => 'Patas Negras';
+
+  @override
+  String get charWhiteLegs => 'Patas Blancas';
+
+  @override
+  String get charBrownLegs => 'Patas Café';
+
+  @override
+  String get charLightBrownLegs => 'Patas Café Claras';
+
+  @override
+  String get charGreyLegs => 'Patas Grises';
+
+  @override
+  String get charBlackFeet => 'Pies Negros';
+
+  @override
+  String get charWhiteFeet => 'Pies Blancos';
+
+  @override
+  String get charBrownFeet => 'Pies Café';
+
+  @override
+  String get charLightBrownFeet => 'Pies Café Claros';
+
+  @override
+  String get charGreyFeet => 'Pies Grises';
+
+  @override
+  String get charBlackSpots => 'Manchas Negras';
+
+  @override
+  String get charBrownSpots => 'Manchas Café';
+
+  @override
+  String get charLightBrownSpots => 'Manchas Café Claras';
+
+  @override
+  String get charGreySpots => 'Manchas Grises';
+
+  @override
+  String get charBlackPattern => 'Patrón Negro';
+
+  @override
+  String get charBrownPattern => 'Patrón Café';
+
+  @override
+  String get genderMale => 'Macho';
+
+  @override
+  String get genderFemale => 'Hembra';
+
+  @override
+  String get statusActive => 'Activo';
+
+  @override
+  String get statusSold => 'Vendido';
+
+  @override
+  String get statusDead => 'Muerto';
+
+  @override
+  String get statusLost => 'Perdido';
+
+  @override
+  String get noData => 'No hay datos disponibles';
+
+  @override
+  String get recordedBy => 'Registrado por';
+
+  @override
+  String get close => 'Cerrar';
+
+  @override
+  String get dosage => 'Dosis';
+
+  @override
+  String get route => 'Vía';
+
+  @override
+  String get appliedBy => 'Aplicado por';
+
+  @override
+  String get addMedication => 'Agregar Medicación';
+
+  @override
+  String get date => 'Fecha';
 }

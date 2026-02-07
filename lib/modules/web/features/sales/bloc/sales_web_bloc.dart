@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/data/sales_data_source.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/models/sale_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/models/sales_query_models.dart';
+import 'package:finca_app_frontend/core/services/api_exception.dart';
 
 // Events
 abstract class SalesWebEvent extends Equatable {
@@ -100,6 +101,8 @@ class SalesWebBloc extends Bloc<SalesWebEvent, SalesWebState> {
         sales: result,
         query: query,
       ));
+    } on ApiException catch (e) {
+      emit(state.copyWith(status: SalesWebStatus.failure, error: e.code));
     } catch (e) {
       emit(state.copyWith(status: SalesWebStatus.failure, error: e.toString()));
     }
@@ -113,6 +116,8 @@ class SalesWebBloc extends Bloc<SalesWebEvent, SalesWebState> {
         status: SalesWebStatus.success,
         providers: providers.map((p) => p as Map<String, dynamic>).toList(),
       ));
+    } on ApiException catch (e) {
+      emit(state.copyWith(status: SalesWebStatus.failure, error: e.code));
     } catch (e) {
       emit(state.copyWith(status: SalesWebStatus.failure, error: 'Failed to load providers: $e'));
     }
@@ -123,6 +128,8 @@ class SalesWebBloc extends Bloc<SalesWebEvent, SalesWebState> {
     try {
       await dataSource.saveSale(event.sale);
       emit(state.copyWith(status: SalesWebStatus.saleCreated));
+    } on ApiException catch (e) {
+      emit(state.copyWith(status: SalesWebStatus.failure, error: e.code));
     } catch (e) {
       emit(state.copyWith(status: SalesWebStatus.failure, error: 'Failed to create sale: $e'));
     }
@@ -135,6 +142,8 @@ class SalesWebBloc extends Bloc<SalesWebEvent, SalesWebState> {
     try {
       await dataSource.updateSale(event.id, event.updates);
       add(const LoadSalesWeb()); // Reload list
+    } on ApiException catch (e) {
+      emit(state.copyWith(status: SalesWebStatus.failure, error: e.code));
     } catch (e) {
       emit(state.copyWith(status: SalesWebStatus.failure, error: "Update failed: $e"));
     }

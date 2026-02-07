@@ -88,10 +88,7 @@ class SimpleEventModel {
     }
   }
 
-  factory SimpleEventModel.fromJson(
-    Map<String, dynamic> json, {
-    bool isActive = true,
-  }) {
+  factory SimpleEventModel.fromJson(Map<String, dynamic> json) {
     return SimpleEventModel(
       id: json['id'] as String,
       idTenant: json['idTenant'] as String,
@@ -99,7 +96,7 @@ class SimpleEventModel {
       type: SimpleEventType.values.firstWhere((e) => e.name == json['type']),
       data: json['data'] != null ? jsonEncode(json['data']) : null,
       createdAt: DateTime.parse(json['createdAt'] as String),
-      isActive: isActive,
+      isActive: json['isActive'] as bool,
     );
   }
 }

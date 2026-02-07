@@ -7,12 +7,16 @@ import 'package:finca_app_frontend/modules/web/features/purchase_reception/servi
 import 'package:finca_app_frontend/modules/shared/features/devices/models/device_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/devices/services/device_api_service.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
+import 'package:finca_app_frontend/modules/shared/enums/cattle_enums.dart';
+import 'package:finca_app_frontend/core/utils/regex_patterns.dart';
+import 'package:finca_app_frontend/modules/shared/validator/validator.dart';
+import 'package:flutter/services.dart';
 
 class ReceiveCattleForm extends StatefulWidget {
   final String? currentNumber;
   final List<Map<String, dynamic>> availableLots;
-  final List<Map<String, dynamic>> colors;
-  final List<Map<String, dynamic>> characteristics;
+  final List<String> colors;
+  final List<String> characteristics;
   final List<SimpleEventModel> activeEvents;
   final Function(Map<String, dynamic> cattleData) onSubmit;
   final Function(String number) onNumberChanged;
@@ -43,10 +47,17 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
   final _trackerController = TextEditingController();
   
   Timer? _debounce;
+  Timer? _numberDebounce;
+  Timer? _eartagDebounce;
+  String? _numberExternalError;
+  String? _eartagExternalError;
+  bool _isValidatingNumber = false;
+  bool _isValidatingEartag = false;
+
   List<DeviceModel> _deviceOptions = [];
   bool _deviceLoading = false;
   Completer<List<DeviceModel>>? _lastCompleter; // Track last completer to prevent hangs
-  final ReceptionApiService _apiService = ReceptionApiService(defaultHeaders: {});
+  final ReceptionApiService _apiService = ReceptionApiService();
   String? _selectedDeviceId; // Store the selected device ID
   String? _lastSelectedName; // To track if text matches selection
 
@@ -55,6 +66,8 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
   List<String> selectedCharacteristicIds = [];
   bool hasHorns = false;
   bool isCastrated = false;
+  final _ageController = TextEditingController();
+  CattleGender _selectedGender = CattleGender.MALE;
 
   @override
   void initState() {
@@ -75,6 +88,7 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
     if (widget.currentNumber != oldWidget.currentNumber) {
       if (_numberController.text != widget.currentNumber) {
         _numberController.text = widget.currentNumber ?? '';
+        _checkNumberExists(widget.currentNumber ?? '');
       }
     }
   }
@@ -87,11 +101,14 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
     _eartagController.dispose();
     _trackerController.dispose();
     _debounce?.cancel();
+    _numberDebounce?.cancel();
+    _eartagDebounce?.cancel();
     super.dispose();
   }
 
   void _resetForm() {
     _weightController.clear();
+    _ageController.clear();
     _commentsController.clear();
     _eartagController.clear();
     _trackerController.clear();
@@ -101,6 +118,7 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
       selectedCharacteristicIds = [];
       hasHorns = false;
       isCastrated = false;
+      _selectedGender = CattleGender.MALE;
       _selectedDeviceId = null; // Clear selected device
     });
   }
@@ -131,6 +149,7 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                 runSpacing: 12,
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
+
                   // Cattle Number
                   SizedBox(
                     width: 125,
@@ -139,14 +158,33 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                       decoration: InputDecoration(
                         labelText: l10n.cattle_number,
                         border: const OutlineInputBorder(),
+                        errorText: _numberExternalError,
+                        suffixIcon: _isValidatingNumber
+                            ? const Padding(
+                                padding: EdgeInsets.all(12.0),
+                                child: SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                ),
+                              )
+                            : null,
                       ),
-                      validator:
-                          (v) =>
-                              (v == null || v.trim().isEmpty)
-                                  ? l10n.fieldRequired
-                                  : null,
+                      validator: (v) {
+                        if (v == null || v.trim().isEmpty) {
+                          return l10n.fieldRequired;
+                        }
+                        if (_numberExternalError != null) {
+                          return _numberExternalError;
+                        }
+                        return null;
+                      },
                       onChanged: (value) {
                         widget.onNumberChanged(value);
+                        if (_numberDebounce?.isActive ?? false) _numberDebounce!.cancel();
+                        _numberDebounce = Timer(const Duration(milliseconds: 500), () {
+                          _checkNumberExists(value);
+                        });
                       },
                     ),
                   ),
@@ -218,7 +256,7 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                     ),
                   ),
 
-                  // Is Castrated Checkbox
+                    // Is Castrated Checkbox
                   SizedBox(
                     width: 125,
                     child: CheckboxListTile(
@@ -236,6 +274,54 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                     ),
                   ),
 
+                  // Age
+                  SizedBox(
+                    width: 70,
+                    child: TextFormField(
+                      controller: _ageController,
+                      textAlign: TextAlign.right,
+                      decoration: InputDecoration(
+                        labelText: l10n.age,
+                        border: const OutlineInputBorder(),
+                      ),
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(
+                          RegexPatterns.permissivePositiveDecimalTwoDigits,
+                        ),
+                      ],
+                      validator: Validator.validateNumericMandatory(
+                        l10n.lot_totalWeightRequired,
+                        l10n.lot_totalWeightInvalid,
+                        RegexPatterns.positiveDecimalTwoDigitsNoZero,
+                      ),
+                    ),
+                  ),
+
+                  // Gender
+                  SizedBox(
+                    width: 120,
+                    child: DropdownButtonFormField<CattleGender>(
+                      value: _selectedGender,
+                      decoration: InputDecoration(
+                        labelText: l10n.gender,
+                        border: const OutlineInputBorder(),
+                      ),
+                      items:
+                          CattleGender.values.map((gender) {
+                            return DropdownMenuItem<CattleGender>(
+                              value: gender,
+                              child: Text(gender.localizedName(context)),
+                            );
+                          }).toList(),
+                      onChanged: (value) {
+                        if (value != null) {
+                          setState(() => _selectedGender = value);
+                        }
+                      },
+                    ),
+                  ),
+
                   // Color Dropdown
                   SizedBox(
                     width: 180,
@@ -243,18 +329,21 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                       value: selectedColorId,
                       decoration: InputDecoration(
                         labelText: l10n.color,
-                        border: const OutlineInputBorder(),
                       ),
+                      validator: (value) => value == null ? l10n.fieldRequired : null,
                       items: [
                         DropdownMenuItem<String>(
                           value: null,
                           child: const Text('—'),
                         ),
                         ...widget.colors.map(
-                          (color) => DropdownMenuItem<String>(
-                            value: color['id'] as String,
-                            child: Text(color['name']),
-                          ),
+                          (color) {
+                            final enumVal = CattleColor.fromString(color);
+                            return DropdownMenuItem<String>(
+                              value: color,
+                              child: Text(enumVal.localizedName(context)),
+                            );
+                          },
                         ),
                       ],
                       onChanged: (value) {
@@ -274,6 +363,7 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                     ),
                   ),
 
+
                   // Eartag
                   SizedBox(
                     width: 180,
@@ -282,7 +372,30 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                       decoration: InputDecoration(
                         labelText: l10n.eartag,
                         border: const OutlineInputBorder(),
+                        errorText: _eartagExternalError,
+                        suffixIcon: _isValidatingEartag
+                            ? const Padding(
+                                padding: EdgeInsets.all(12.0),
+                                child: SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                ),
+                              )
+                            : null,
                       ),
+                      validator: (v) {
+                         if (_eartagExternalError != null) {
+                          return _eartagExternalError;
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {
+                        if (_eartagDebounce?.isActive ?? false) _eartagDebounce!.cancel();
+                        _eartagDebounce = Timer(const Duration(milliseconds: 500), () {
+                          _checkEartagExists(value);
+                        });
+                      },
                     ),
                   ),
 
@@ -436,6 +549,56 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
     );
   }
 
+  Future<void> _checkNumberExists(String val) async {
+    final l10n = AppLocalizations.of(context)!;
+    if (val.isEmpty) {
+      if (_numberExternalError != null) {
+        setState(() => _numberExternalError = null);
+      }
+      return;
+    }
+    setState(() => _isValidatingNumber = true);
+    try {
+      final exists = await _apiService.checkCattleNumberExists(val);
+      if (exists) {
+        setState(() => _numberExternalError = l10n.cattle_exists_error);
+      } else if (_numberExternalError != null) {
+        setState(() => _numberExternalError = null);
+      }
+    } catch (e) {
+      widget.onError?.call(e.toString());
+    } finally {
+      if (mounted) {
+        setState(() => _isValidatingNumber = false);
+      }
+    }
+  }
+
+  Future<void> _checkEartagExists(String val) async {
+    final l10n = AppLocalizations.of(context)!;
+     if (val.isEmpty) {
+      if (_eartagExternalError != null) {
+        setState(() => _eartagExternalError = null);
+      }
+      return;
+    }
+    setState(() => _isValidatingEartag = true);
+    try {
+      final exists = await _apiService.checkEartagExists(val);
+      if (exists) {
+        setState(() => _eartagExternalError = l10n.eartag_exists_error);
+      } else if (_eartagExternalError != null) {
+        setState(() => _eartagExternalError = null);
+      }
+    } catch (e) {
+       widget.onError?.call(e.toString());
+    } finally {
+      if (mounted) {
+        setState(() => _isValidatingEartag = false);
+      }
+    }
+  }
+
   Future<void> _showCharacteristicsDialog(AppLocalizations l10n) async {
     final tempSelected = List<String>.from(selectedCharacteristicIds);
 
@@ -452,21 +615,38 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                 child: ListView(
                   children:
                       widget.characteristics.map((char) {
-                        final charId = char['id'] as String;
+                        final charId = char;
                         final isSelected = tempSelected.contains(charId);
+                        final enumVal = CattleCharacteristic.fromString(charId);
 
                         return CheckboxListTile(
                           value: isSelected,
                           onChanged: (value) {
                             setDialogState(() {
                               if (value == true) {
+                                final category = enumVal?.getCategory() ?? 'OTHER';
+                    
+                                if (['HEAD', 'BELLY', 'LEGS', 'FEET','SPOTS', 'PATTERN'].contains(category)) {
+                                  tempSelected.removeWhere((id) => 
+                                    CattleCharacteristic.fromString(id)?.getCategory() == category
+                                  );
+                                } else if (category == 'HALF_HEAD') {
+                                  final currentHalfHeads = tempSelected.where((id) => 
+                                    CattleCharacteristic.fromString(id)?.getCategory() == 'HALF_HEAD'
+                                  ).toList();
+                                  
+                                  if (currentHalfHeads.length >= 2) {
+                                    // Remove the first one (FIFO)
+                                    tempSelected.remove(currentHalfHeads.first);
+                                  }
+                                }
                                 tempSelected.add(charId);
                               } else {
                                 tempSelected.remove(charId);
                               }
                             });
                           },
-                          title: Text(char['name']),
+                          title: Text(enumVal?.localizedName(context) ?? char),
                         );
                       }).toList(),
                 ),
@@ -495,8 +675,6 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
 
   void _submitForm() async {
     // Clear previous server errors
-
-
     print('DEBUG: Submit button clicked. Checking validation...');
     if (!_formKey.currentState!.validate()) {
       print('DEBUG: Validation failed');
@@ -562,12 +740,10 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
       'idLot': selectedLotId,
       'hasHorns': hasHorns,
       'isCastrated': isCastrated,
-      'idColor': selectedColorId,
-      'characteristicsIds': selectedCharacteristicIds,
-      'eartag':
-          _eartagController.text.trim().isEmpty
-              ? null
-              : _eartagController.text.trim(),
+      'age': double.tryParse(_ageController.text.trim()),
+      'gender': _selectedGender.name,
+      'color': selectedColorId,
+      'characteristics': selectedCharacteristicIds,
       'eartag':
           _eartagController.text.trim().isEmpty
               ? null

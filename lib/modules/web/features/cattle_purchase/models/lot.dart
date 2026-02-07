@@ -1,9 +1,10 @@
+import 'package:finca_app_frontend/modules/shared/enums/cattle_enums.dart';
+
 class LotModel {
   final String? id;
   final String lotNumber;
   final String origin;
-  final String age;
-  final String gender;
+  final CattleGender gender;
   final double avgWeight;
   final double pricePerKg;
   final int purchasedCattleCount;
@@ -16,7 +17,6 @@ class LotModel {
     required this.lotNumber,
     required this.origin,
     required this.purchasedCattleCount,
-    required this.age,
     required this.gender,
     required this.avgWeight,
     required this.totalWeight,
@@ -30,8 +30,6 @@ class LotModel {
         lotNumber.isNotEmpty &&
         origin.isNotEmpty &&
         purchasedCattleCount > 0 &&
-        age.isNotEmpty &&
-        gender.isNotEmpty &&
         avgWeight > 0 &&
         totalWeight > 0 &&
         pricePerKg > 0 &&

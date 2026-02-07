@@ -154,7 +154,6 @@ class LotsSectionState extends State<LotsSection> {
       children: [
         _HeaderCell(label: l10n.lot, width: 60),
         _HeaderCell(label: l10n.lot_origin, width: 120),
-        _HeaderCell(label: l10n.lot_age, width: 60),
         _HeaderCell(label: l10n.lot_gender, width: 70),
         _HeaderCell(label: l10n.lot_cattleCount, width: 40),
         _HeaderCell(label: l10n.lot_avgWeight, width: 70),
