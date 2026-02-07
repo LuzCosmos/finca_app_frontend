@@ -497,22 +497,6 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        // Header
-                        Row(
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.arrow_back),
-                              onPressed: () => context.push('/sales'),
-                            ),
-                            const SizedBox(width: 16),
-                            Text(
-                              l10n?.newSale ?? 'New Sale',
-                              style: Theme.of(context).textTheme.headlineSmall,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 32),
-
                         // Main Content - Responsive Layout
                         LayoutBuilder(
                           builder: (context, constraints) {
@@ -653,14 +637,14 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                   child: TextFormField(
                     controller: _pricePerKgController,
                     decoration: InputDecoration(
-                      labelText: l10n?.label_price_per_kg_required ?? 'Price / Kg *',
+                      labelText: l10n?.lot_pricePerKg,
                       border: const OutlineInputBorder(),
                       prefixText: '\$ ',
                     ),
                     keyboardType: const TextInputType.numberWithOptions(decimal: true),
                     onChanged: (_) => setState(() {}),
                     validator: (val) {
-                      if (val == null || val.isEmpty) return l10n?.fieldRequired ?? 'Required';
+                      if (val == null || val.trim().isEmpty) return null;
                       final num = double.tryParse(val);
                       if (num == null || num <= 0) return l10n?.error_invalid_price ?? 'Invalid price';
                       return null;
