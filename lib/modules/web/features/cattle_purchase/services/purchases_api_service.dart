@@ -97,14 +97,14 @@ class PurchasesApiService {
           'Error listando compras: $e',
         );
       }
-      throw ApiException('listingError', 'Error listando compras: $e');
+      throw ApiException('readingObjectError', 'Error listando compras: $e');
     }
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
       final decoded = jsonDecode(res.body);
       print(decoded);
       if (decoded is! Map<String, dynamic>) {
-        throw ApiException('listingError', 'Formato de respuesta no soportado');
+        throw ApiException('readingObjectError', 'Formato de respuesta no soportado');
       }
       final rawList = (decoded['items'] as List? ?? const []);
       final items =
@@ -132,10 +132,6 @@ class PurchasesApiService {
       return result;
     } else {
       BasicApiService.manageNotSuccessResponseCode(res);
-      /*throw ApiException(
-        'listingError',
-        'Respuesta inesperada al listar compras',
-      );*/
     }
   }
 }

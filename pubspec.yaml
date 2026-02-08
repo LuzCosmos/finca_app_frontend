@@ -21,7 +21,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # IMPORTANT: Increment the build_number (+X) on EVERY production deployment
 # This forces Flutter to regenerate flutter_service_worker.js with new MD5 hashes,
 # which enables proper cache busting in browsers.
-version: 0.1.2+2
+version: 0.1.0+1
 
 environment:
   sdk: ^3.7.0
@@ -74,6 +74,7 @@ dependencies:
   mime: ^2.0.0
   collection: ^1.19.1
   font_awesome_flutter: ^10.7.0
+  pluto_grid: ^8.1.0
 
 dependency_overrides:
   win32: ^5.0.0

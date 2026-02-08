@@ -51,7 +51,6 @@ class BasicApiService {
     final token = await SessionService.getToken();
     if (token == null || token.isEmpty) {
       throw ApiException(ApiExceptionCode.unauthorized.name, 'Unauthorized');
-      //throw Exception('⚠️ No se encontró token de sesión');
     }
     return token;
   }
@@ -84,7 +83,7 @@ class BasicApiService {
       );
     }
     throw ApiException(
-      ApiExceptionCode.savingObjectError.name,
+      ApiExceptionCode.unknownError.name,
       'Error in the request: ${response.statusCode} ${response.body}',
     );
   }

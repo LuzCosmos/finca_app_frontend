@@ -250,6 +250,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noPurchasesFound => 'Purchase not found';
 
   @override
+  String get purchaseStatusOpen => 'Open';
+
+  @override
+  String get purchaseStatusReceived => 'Received';
+
+  @override
   String get provider => 'Provider';
 
   @override
@@ -476,6 +482,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cancel => 'Cancel';
 
   @override
+  String get accept => 'Accept';
+
+  @override
   String get add => 'Add';
 
   @override
@@ -602,6 +611,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addCattle => 'Add animal';
 
   @override
+  String get cattle_exists_error => 'Number already exists (Active/Lost)';
+
+  @override
+  String get eartag_exists_error => 'Eartag already exists (Active/Lost)';
+
+  @override
   String cattleCountLabel(num count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -636,6 +651,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get hasHorns => 'Has Horns';
+
+  @override
+  String get age => 'Age';
+
+  @override
+  String get gender => 'Gender';
 
   @override
   String get isCastrated => 'Is Castrated';
@@ -1126,4 +1147,223 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get trackerNotSelected => 'Tracker not selected';
+
+  @override
+  String get colSystemNumber => 'System No.';
+
+  @override
+  String get colBrandColor => 'Color';
+
+  @override
+  String get colCharacteristics => 'Characteristics';
+
+  @override
+  String get colHorns => 'Horns';
+
+  @override
+  String get colCastrated => 'Castrated';
+
+  @override
+  String get colReceivedAt => 'Received At';
+
+  @override
+  String get colReceivedWeight => 'Received Weight';
+
+  @override
+  String get colPurchaseWeight => 'Purchase Weight (kg)';
+
+  @override
+  String get colReceivedDate => 'Received Date';
+
+  @override
+  String get colComments => 'Comments';
+
+  @override
+  String get colPurchasePrice => 'Purchase Price';
+
+  @override
+  String get colPurchaseCommission => 'Commission';
+
+  @override
+  String get colStatus => 'Status';
+
+  @override
+  String get colWeightHistory => 'Weight History';
+
+  @override
+  String get colMedicationHistory => 'Medication History';
+
+  @override
+  String get colSaleWeight => 'Sale Weight';
+
+  @override
+  String get colSalePrice => 'Sale Price';
+
+  @override
+  String get colAge => 'Age';
+
+  @override
+  String get colGender => 'Gender';
+
+  @override
+  String get colLastWeight => 'Last Weight';
+
+  @override
+  String get masterListTitle => 'Cattle Master List';
+
+  @override
+  String get addCattleRow => 'Add Cattle';
+
+  @override
+  String get colorBlack => 'Black';
+
+  @override
+  String get colorWhite => 'White';
+
+  @override
+  String get colorBrown => 'Brown';
+
+  @override
+  String get colorBlackBrown => 'Black-Brown';
+
+  @override
+  String get colorLightBrown => 'Light Brown';
+
+  @override
+  String get colorGrey => 'Grey';
+
+  @override
+  String get charBlackBelly => 'Black Belly';
+
+  @override
+  String get charWhiteBelly => 'White Belly';
+
+  @override
+  String get charBrownBelly => 'Brown Belly';
+
+  @override
+  String get charLightBrownBelly => 'Light Brown Belly';
+
+  @override
+  String get charGreyBelly => 'Grey Belly';
+
+  @override
+  String get charBlackHead => 'Black Head';
+
+  @override
+  String get charWhiteHead => 'White Head';
+
+  @override
+  String get charBrownHead => 'Brown Head';
+
+  @override
+  String get charLightBrownHead => 'Light Brown Head';
+
+  @override
+  String get charGreyHead => 'Grey Head';
+
+  @override
+  String get charBlackHalfHead => 'Black Half Head';
+
+  @override
+  String get charWhiteHalfHead => 'White Half Head';
+
+  @override
+  String get charBrownHalfHead => 'Brown Half Head';
+
+  @override
+  String get charLightBrownHalfHead => 'Light Brown Half Head';
+
+  @override
+  String get charGreyHalfHead => 'Grey Half Head';
+
+  @override
+  String get charBlackLegs => 'Black Legs';
+
+  @override
+  String get charWhiteLegs => 'White Legs';
+
+  @override
+  String get charBrownLegs => 'Brown Legs';
+
+  @override
+  String get charLightBrownLegs => 'Light Brown Legs';
+
+  @override
+  String get charGreyLegs => 'Grey Legs';
+
+  @override
+  String get charBlackFeet => 'Black Feet';
+
+  @override
+  String get charWhiteFeet => 'White Feet';
+
+  @override
+  String get charBrownFeet => 'Brown Feet';
+
+  @override
+  String get charLightBrownFeet => 'Light Brown Feet';
+
+  @override
+  String get charGreyFeet => 'Grey Feet';
+
+  @override
+  String get charBlackSpots => 'Black Spots';
+
+  @override
+  String get charBrownSpots => 'Brown Spots';
+
+  @override
+  String get charLightBrownSpots => 'Light Brown Spots';
+
+  @override
+  String get charGreySpots => 'Grey Spots';
+
+  @override
+  String get charBlackPattern => 'Black Pattern';
+
+  @override
+  String get charBrownPattern => 'Brown Pattern';
+
+  @override
+  String get genderMale => 'Male';
+
+  @override
+  String get genderFemale => 'Female';
+
+  @override
+  String get statusActive => 'Active';
+
+  @override
+  String get statusSold => 'Sold';
+
+  @override
+  String get statusDead => 'Dead';
+
+  @override
+  String get statusLost => 'Lost';
+
+  @override
+  String get noData => 'No data available';
+
+  @override
+  String get recordedBy => 'Recorded by';
+
+  @override
+  String get close => 'Close';
+
+  @override
+  String get dosage => 'Dosage';
+
+  @override
+  String get route => 'Route';
+
+  @override
+  String get appliedBy => 'Applied by';
+
+  @override
+  String get addMedication => 'Add Medication';
+
+  @override
+  String get date => 'Date';
 }

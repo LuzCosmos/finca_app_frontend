@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:finca_app_frontend/core/utils/regex_patterns.dart';
 import 'package:finca_app_frontend/modules/shared/validator/validator.dart';
+import 'package:finca_app_frontend/modules/shared/enums/cattle_enums.dart';
 
 class LotInput extends StatefulWidget {
   final void Function(LotModel) onChanged;
@@ -21,14 +22,14 @@ enum PriceInputMode { perKg, perHead }
 class LotInputState extends State<LotInput> {
   final _lotNumberController = TextEditingController();
   final _originController = TextEditingController();
-  final _ageController = TextEditingController();
-  final _genderController = TextEditingController();
+  CattleGender _selectedGender = CattleGender.MALE;
   final _cattleCountController = TextEditingController();
   final _avgWeightController = TextEditingController();
   final _totalWeightController = TextEditingController();
   final _pricePerKgController = TextEditingController();
   final _pricePerHeadController = TextEditingController();
   final _totalValueController = TextEditingController();
+// ... (keeping other methods same but updating _notifyLotChanged and _onFieldChanged)
 
   PriceInputMode? _lastEditedPriceMode;
 
@@ -99,8 +100,7 @@ class LotInputState extends State<LotInput> {
     final lot = LotModel(
       lotNumber: _lotNumberController.text,
       origin: _originController.text,
-      age: _ageController.text,
-      gender: _genderController.text,
+      gender: _selectedGender,
       avgWeight: (cattleCount > 0) ? totalWeight / cattleCount : 0,
       pricePerKg: pricePerKg,
       purchasedCattleCount: cattleCount,
@@ -144,8 +144,7 @@ class LotInputState extends State<LotInput> {
       final lot = LotModel(
         lotNumber: _lotNumberController.text,
         origin: _originController.text,
-        age: _ageController.text,
-        gender: _genderController.text,
+        gender: _selectedGender,
         avgWeight: avgWeight,
         pricePerKg: pricePerKg,
         purchasedCattleCount: cattleCount,
@@ -160,8 +159,6 @@ class LotInputState extends State<LotInput> {
   void dispose() {
     _lotNumberController.dispose();
     _originController.dispose();
-    _ageController.dispose();
-    _genderController.dispose();
     _avgWeightController.dispose();
     _pricePerKgController.dispose();
     _cattleCountController.dispose();
@@ -188,21 +185,19 @@ class LotInputState extends State<LotInput> {
           customRegex: RegexPatterns.permissivePositiveInteger,
         ),
         _buildCell(_originController, '', width: 120),
-        _buildCell(
-          _ageController,
-          '',
-          width: 60,
-          validator: Validator.validateNotEmpty(
-            l10n.fieldRequired,
-            RegexPatterns.cattleAge,
-          ),
-          customRegex: RegexPatterns.permissiveCattleAge,
-        ),
-        _buildCell(
-          _genderController,
-          '',
-          width: 70,
-          validator: Validator.validateNotEmpty(l10n.fieldRequired, null),
+        _buildDropdownCell(
+          width: 85,
+          value: _selectedGender,
+          items: CattleGender.values,
+          onChanged: (value) {
+            if (value != null) {
+              setState(() {
+                _selectedGender = value;
+              });
+              _onFieldChanged();
+            }
+          },
+          itemLabelBuilder: (item) => item.localizedName(context),
         ),
         _buildCell(
           _cattleCountController,
@@ -269,6 +264,46 @@ class LotInputState extends State<LotInput> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildDropdownCell<T>({
+    required double width,
+    required T value,
+    required List<T> items,
+    required ValueChanged<T?> onChanged,
+    required String Function(T) itemLabelBuilder,
+  }) {
+    return Container(
+      width: width,
+      height: 22,
+      margin: const EdgeInsets.symmetric(horizontal: 2),
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey),
+        borderRadius: BorderRadius.circular(4.0),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<T>(
+          value: value,
+          isExpanded: true,
+          icon: const Icon(Icons.arrow_drop_down, size: 16),
+          style: const TextStyle(fontSize: 11.5, color: Colors.black),
+          items: items.map((T item) {
+            return DropdownMenuItem<T>(
+              value: item,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 4.0),
+                child: Text(
+                  itemLabelBuilder(item),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            );
+          }).toList(),
+          onChanged: onChanged,
+        ),
+      ),
     );
   }
 
@@ -367,8 +402,7 @@ class LotInputState extends State<LotInput> {
     return LotModel(
       lotNumber: _lotNumberController.text,
       origin: _originController.text,
-      age: _ageController.text,
-      gender: _genderController.text,
+      gender: _selectedGender,
       avgWeight: avgWeight,
       pricePerKg: pricePerKg,
       purchasedCattleCount: purchasedCattleCount,

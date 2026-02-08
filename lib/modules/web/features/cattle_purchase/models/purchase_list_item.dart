@@ -1,3 +1,5 @@
+import 'package:finca_app_frontend/modules/web/features/cattle_purchase/models/purchase_status.dart';
+
 class PurchaseListItemModel {
   final String id;
   final DateTime purchaseDate;
@@ -6,7 +8,7 @@ class PurchaseListItemModel {
   final double totalWeight;
   final int receivedCattle;
   final double receivedWeight;
-  final bool canReceive;
+  final PurchaseStatus status;
 
   PurchaseListItemModel({
     required this.id,
@@ -16,7 +18,7 @@ class PurchaseListItemModel {
     required this.totalWeight,
     required this.receivedCattle,
     required this.receivedWeight,
-    required this.canReceive,
+    required this.status,
   });
 
   factory PurchaseListItemModel.fromJson(Map<String, dynamic> j) =>
@@ -28,6 +30,6 @@ class PurchaseListItemModel {
         totalWeight: double.tryParse('${j['totalWeight'] ?? 0}') ?? 0,
         receivedCattle: (j['receivedCattle'] ?? 0) as int,
         receivedWeight: double.tryParse('${j['receivedWeight'] ?? 0}') ?? 0,
-        canReceive: (j['canReceive'] ?? false) as bool,
+        status: PurchaseStatus.fromString((j['status'] ?? 'OPEN') as String),
       );
 }

@@ -42,11 +42,7 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
   @override
   void initState() {
     super.initState();
-    api = ReceptionApiService(
-      defaultHeaders: {
-        'Authorization': 'Bearer token',
-      },
-    );
+    api = ReceptionApiService();
     _load();
   }
 
@@ -104,15 +100,12 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
     setState(() => isLoading = true);
     try {
       final data = await api.getPurchaseReception(widget.purchaseId);
-      
       setState(() {
         receptionData = data;
-        
         // Initialize massive event data
         final massEvent = data['reception']['massiveEvent'];
         if (massEvent != null) {
           idMassiveEvent = massEvent['id'];
-          
           final simpleEventsList = massEvent['simpleEvents'] as List<dynamic>?;
           if (simpleEventsList != null) {
             simpleEvents = simpleEventsList
@@ -120,17 +113,21 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
                 .toList();
           }
         }
-        
         // Load reception date if it exists
         final receivedAtStr = data['reception']['receivedAt'] as String?;
         if (receivedAtStr != null) {
           receptionDate = DateTime.parse(receivedAtStr);
         }
-        
         // Set default selected lot (first lot if available)
         final lots = _getLots();
-        selectedLotId = lots.isNotEmpty ? lots[0]['id'] : null;
-        
+        // Set default selected lot (first lot if available), but preserve selection if valid
+        if (selectedLotId != null && !lots.any((l) => l['id'] == selectedLotId)) {
+          selectedLotId = null;
+        }
+        if (selectedLotId == null && lots.isNotEmpty) {
+          selectedLotId = lots[0]['id'];
+        }
+        currentCattleNumber = data['reception']['nextCattleNumber'] ?? '';
         isLoading = false;
       });
     } catch (e) {
@@ -152,38 +149,20 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
         purchaseWeight: cattleData['purchaseWeight'],
         purchasePrice: cattleData['purchasePrice'],
         idLot: cattleData['idLot'],
-        hasHorn: cattleData['hasHorn'],
+        hasHorn: cattleData['hasHorns'],
         castrated: cattleData['isCastrated'],
-        idColor: cattleData['idColor'],
-        characteristicsIds: cattleData['characteristicsIds'],
+        color: cattleData['color'],
+        characteristics: cattleData['characteristics'],
         eartag: cattleData['eartag'],
         idDevice: cattleData['idDevice'],
         idProvider: receptionData!['reception']['providerId'],
         comments: cattleData['comments'],
+        gender:cattleData['gender'],
+        age:cattleData['age'],
         idSimpleEvents: cattleData['idSimpleEvents'],
       );
-      
       await _load();
       setGlobalSuccess(l10n.receivedOk);
-      
-      // Auto-increment cattle number
-      _incrementCattleNumber();
-  }
-
-  void _incrementCattleNumber() {
-    if (currentCattleNumber.isEmpty) return;
-    
-    // Extract numeric part and increment
-    final match = RegExp(r'(\d+)').firstMatch(currentCattleNumber);
-    if (match != null) {
-      final numStr = match.group(0)!;
-      final num = int.parse(numStr);
-      final newNum = num + 1;
-      final newNumber = currentCattleNumber.replaceFirst(numStr, newNum.toString());
-      setState(() {
-        currentCattleNumber = newNumber;
-      });
-    }
   }
 
   Future<void> _assignLot(String cattleId, String lotId) async {
@@ -195,6 +174,47 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
       );
       await _load();
       setGlobalSuccess('Lot assigned successfully');
+    } catch (e) {
+      setGlobalError(e.toString());
+    }
+  }
+
+  Future<void> _confirmClosePurchase(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.purchaseStatusReceived), // "Received" or "Close Purchase"
+        content: const Text('¿Estás seguro de marcar esta compra como recibida?'), // Localize if possible, hardcoded for now as user requested feature "cerrar compra"
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(l10n.accept),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      await _closePurchase();
+    }
+  }
+
+  Future<void> _closePurchase() async {
+    try {
+      await api.updateStatus(widget.purchaseId, 'RECEIVED');
+      setGlobalSuccess('Compra marcada como recibida');
+      // Update local state if needed (e.g. disable form)
+      // For now just show success
+      // Automatically navigate back or refresh?
+      // Navigator.of(context).pop(); // Maybe?
+      
+      // Refresh to update status variable if we were tracking it (we aren't tracking status in this page explicitly yet)
+      _load();
     } catch (e) {
       setGlobalError(e.toString());
     }
@@ -214,40 +234,35 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
 
   List<Map<String, dynamic>> _getCattleForLot(String? lotId) {
     if (lotId == null || receptionData == null) return [];
-    
     final lots = _getLots();
     final lot = lots.firstWhere(
       (l) => l['id'] == lotId,
       orElse: () => {},
     );
-    
     if (lot.isEmpty) return [];
     return (lot['cattle'] as List<dynamic>).cast<Map<String, dynamic>>();
   }
 
-  List<Map<String, dynamic>> _getColors() {
+  List<String> _getColors() {
     if (receptionData == null) return [];
-    return (receptionData!['colors'] as List<dynamic>)
-        .cast<Map<String, dynamic>>();
+    return (receptionData!['colors'] as List?)?.map((e) => e.toString()).toList() ?? [];
   }
 
-  List<Map<String, dynamic>> _getCharacteristics() {
+  List<String> _getCharacteristics() {
     if (receptionData == null) return [];
-    return (receptionData!['characteristics'] as List<dynamic>)
-        .cast<Map<String, dynamic>>();
+    return (receptionData!['characteristics'] as List?)?.map((e) => e.toString()).toList() ?? [];
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-
+    
     if (isLoading) {
       return FincaScaffold(
         title: l10n.purchaseReceptionTitle,
         body: const Center(child: CircularProgressIndicator()),
       );
     }
-
     if (receptionData == null) {
       return FincaScaffold(
         title: l10n.purchaseReceptionTitle,
@@ -263,12 +278,10 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
         ),
       );
     }
-
     final reception = receptionData!['reception'];
     final lots = _getLots();
     final unassignedCattle = _getUnassignedCattle();
     final selectedCattle = _getCattleForLot(selectedLotId);
-
     return BlocProvider(
       create: (context) => MassiveEventBloc(
         dataSource: MassiveEventPageDataSourceWeb(),
@@ -290,9 +303,16 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
             setGlobalError(msg);
           }
         },
-        child: FincaScaffold(
-          title: l10n.purchaseReceptionTitle,
-          body: CustomScrollView(
+        child: PopScope(
+          canPop: false,
+          onPopInvoked: (didPop) {
+            if (didPop) return;
+            // Return current reception stats 
+            Navigator.of(context).pop(receptionData?['reception']);
+          },
+          child: FincaScaffold(
+            title: l10n.purchaseReceptionTitle,
+            body: CustomScrollView(
             slivers: [
               // Top Section (Scrollable)
               SliverToBoxAdapter(
@@ -305,6 +325,24 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
                       MessageBanner.success(_globalSuccessMessage!),
                     if (_globalInfoMessage != null)
                       MessageBanner.info(_globalInfoMessage!),
+
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          FilledButton.icon(
+                            onPressed: () => _confirmClosePurchase(context),
+                            icon: const Icon(Icons.check_circle),
+                            label: Text(l10n.purchaseStatusReceived), // Or "Cerrar Compra" if localized
+                            style: FilledButton.styleFrom(
+                              backgroundColor: Colors.green,
+                              foregroundColor: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
 
               // Top Section: Purchase Info + Form + Event Config Panel
                     SizedBox(
@@ -326,6 +364,9 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
                                 },
                                 onInitialNumberChanged: (number) {
                                   setState(() => currentCattleNumber = number);
+                                },
+                                onError: (errorMsg) {
+                                  setGlobalError(errorMsg);
                                 },
                               ),
                               const SizedBox(height: 5),
@@ -369,14 +410,12 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
                   ],
                 ),
               ),
-
               // Bottom Section (Fills remaining space)
               SliverFillRemaining(
                 hasScrollBody: true,
                 child: Column(
                   children: [
                     const Divider(height: 1),
-
                     Flexible(
                       flex: unassignedCattle.isNotEmpty ? 6 : 1,
                       child: Row(
@@ -402,10 +441,8 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
                         ],
                       ),
                     ),
-
                     if (unassignedCattle.isNotEmpty) ...[
                       const Divider(height: 1),
-
                       // 👇 En vez de Expanded: Flexible + scroll interno
                       Flexible(
                         flex: 4,
@@ -419,64 +456,10 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
                   ],
                 ),
               ),
-
-
-
-              
-              /*SliverFillRemaining(
-                child: Column(
-                  children: [
-                    const Divider(height: 1),
-
-                    // Row 1: Lots + Cattle List with Events
-                    Expanded(
-                      flex: 5,
-                      child: Row(
-                        children: [
-                          // Left: Lots Table (40%)
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.4,
-                            child: LotsTable(
-                              lots: lots,
-                              selectedLotId: selectedLotId,
-                              onLotSelected: (lotId) {
-                                setState(() => selectedLotId = lotId);
-                              },
-                            ),
-                          ),
-
-                          const VerticalDivider(width: 1),
-
-                          // Right: Cattle List with Events (60%)
-                          Expanded(
-                            child: CattleListWithEvents(
-                              cattle: selectedCattle,
-                              availableLots: lots,
-                              onAssignLot: _assignLot,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    if (unassignedCattle.isNotEmpty) ...[
-                      const Divider(height: 1),
-
-                      // Row 2: Unassigned Cattle with conditional events
-                      Expanded(
-                        flex: 3,
-                        child: UnassignedCattleList(
-                          cattle: unassignedCattle,
-                          availableLots: lots,
-                          onAssignLot: _assignLot,
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ),*/
             ],
           ),
         ),
+      ),
       ),
     );
   }

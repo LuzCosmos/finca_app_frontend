@@ -12,6 +12,7 @@ import 'package:finca_app_frontend/modules/web/features/sales/widgets/provider_a
 import 'package:finca_app_frontend/modules/web/features/sales/widgets/weight_approval_dialog.dart';
 import 'package:finca_app_frontend/modules/web/features/sales/widgets/sale_confirmation_dialog.dart';
 import 'package:finca_app_frontend/modules/web/features/sales/services/cattle_validation_service.dart';
+import 'package:finca_app_frontend/modules/web/features/cattle/services/cattle_master_service.dart';
 import 'package:uuid/uuid.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -58,6 +59,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
   
   bool _isValidatingCattle = false;
   bool _trackerRemoved = false;
+  final _cattleService = CattleMasterService();
 
   @override
   void initState() {
@@ -432,7 +434,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
 
         // Navigate back to sales dashboard
         if (mounted) {
-          context.go('/sales');
+          context.push('/sales');
         }
       }
       
@@ -469,7 +471,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(l10n?.saleSavedSuccess ?? 'Sale created successfully!')),
           );
-          context.go('/sales');
+          context.push('/sales');
         } else if (state.status == SalesWebStatus.failure && state.error != null) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Error: ${state.error}')),
@@ -497,22 +499,6 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        // Header
-                        Row(
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.arrow_back),
-                              onPressed: () => context.go('/sales'),
-                            ),
-                            const SizedBox(width: 16),
-                            Text(
-                              l10n?.newSale ?? 'New Sale',
-                              style: Theme.of(context).textTheme.headlineSmall,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 32),
-
                         // Main Content - Responsive Layout
                         LayoutBuilder(
                           builder: (context, constraints) {
@@ -653,14 +639,14 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                   child: TextFormField(
                     controller: _pricePerKgController,
                     decoration: InputDecoration(
-                      labelText: l10n?.label_price_per_kg_required ?? 'Price / Kg *',
+                      labelText: l10n?.lot_pricePerKg,
                       border: const OutlineInputBorder(),
                       prefixText: '\$ ',
                     ),
                     keyboardType: const TextInputType.numberWithOptions(decimal: true),
                     onChanged: (_) => setState(() {}),
                     validator: (val) {
-                      if (val == null || val.isEmpty) return l10n?.fieldRequired ?? 'Required';
+                      if (val == null || val.trim().isEmpty) return null;
                       final num = double.tryParse(val);
                       if (num == null || num <= 0) return l10n?.error_invalid_price ?? 'Invalid price';
                       return null;
@@ -706,13 +692,73 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
               children: [
                 Expanded(
                   flex: 2,
-                  child: TextFormField(
-                    controller: _cattleIdController,
-                    decoration: InputDecoration(
-                      labelText: l10n!.cattle_number,
-                      border: const OutlineInputBorder(),
-                      hintText: l10n!.hint_enterScanId,
-                    ),
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      return RawAutocomplete<Map<String, dynamic>>(
+                        textEditingController: _cattleIdController,
+                        focusNode: FocusNode(),
+                        optionsBuilder: (TextEditingValue textEditingValue) async {
+                          if (textEditingValue.text.isEmpty) {
+                            return const Iterable<Map<String, dynamic>>.empty();
+                          }
+                          try {
+                            return await _cattleService.searchCattle(textEditingValue.text);
+                          } catch (e) {
+                            return const Iterable<Map<String, dynamic>>.empty();
+                          }
+                        },
+                        displayStringForOption: (option) => option['number'],
+                        onSelected: (Map<String, dynamic> selection) {
+                          // Controller is updated automatically by Autocomplete when using displayStringForOption
+                          // No extra action needed for now, user will click Add
+                        },
+                        fieldViewBuilder: (BuildContext context, TextEditingController textEditingController, FocusNode focusNode, VoidCallback onFieldSubmitted) {
+                          return TextFormField(
+                            controller: textEditingController,
+                            focusNode: focusNode,
+                            decoration: InputDecoration(
+                              labelText: l10n!.cattle_number,
+                              border: const OutlineInputBorder(),
+                              hintText: l10n!.hint_enterScanId,
+                            ),
+                            onFieldSubmitted: (String value) {
+                              onFieldSubmitted();
+                            },
+                          );
+                        },
+                        optionsViewBuilder: (BuildContext context, AutocompleteOnSelected<Map<String, dynamic>> onSelected, Iterable<Map<String, dynamic>> options) {
+                          return Align(
+                            alignment: Alignment.topLeft,
+                            child: Material(
+                              elevation: 4.0,
+                              child: SizedBox(
+                                width: constraints.maxWidth,
+                                child: ListView.builder(
+                                  padding: const EdgeInsets.all(8.0),
+                                  shrinkWrap: true,
+                                  itemCount: options.length,
+                                  itemBuilder: (BuildContext context, int index) {
+                                    final Map<String, dynamic> option = options.elementAt(index);
+                                    final device = option['device'];
+                                    String deviceText = '';
+                                    if (device != null) {
+                                      deviceText = ' / ${device['name'] ?? device['deveui'] ?? ''}';
+                                    }
+                                    return ListTile(
+                                      title: Text(option['number'] ?? ''),
+                                      subtitle: Text('${option['eartag'] ?? ''}$deviceText'),
+                                      onTap: () {
+                                        onSelected(option);
+                                      },
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    }
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -848,7 +894,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 OutlinedButton(
-                  onPressed: () => context.go('/sales'),
+                  onPressed: () => context.push('/sales'),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: cs.onPrimaryContainer, // texto/ícono
                     side: BorderSide(color: cs.onPrimaryContainer), // borde

@@ -77,4 +77,15 @@ class MassiveEventPageDataSourceWeb implements IMassiveEventPageDataSource {
       idMassiveEvent: idMassiveEvent,
     );
   }
+
+  @override
+  Future<void> updateSimpleEvent({
+    required SimpleEventModel simpleEvent,
+    required String endpoint,
+  }) async {
+    await MassiveEventApiService.updateSimpleEvent(
+      simpleEvent: simpleEvent,
+      endpoint: endpoint,
+    );
+  }
 }

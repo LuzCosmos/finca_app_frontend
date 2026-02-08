@@ -12,6 +12,7 @@ import 'package:finca_app_frontend/modules/web/features/purchase_reception/pages
 import 'package:finca_app_frontend/modules/web/features/cattle_purchase/pages/purchases_list_page.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/users/pages/users_list_page.dart';
+import 'package:finca_app_frontend/modules/web/features/cattle/pages/cattle_master_list_page.dart';
 
 // Conditional imports para data source específico de plataforma
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/data/massive_event_page_data_source_stub.dart'
@@ -71,6 +72,10 @@ final GoRouter appRouter = GoRouter(
         final id = state.pathParameters['purchaseId']!;
         return PurchaseReceptionPage(purchaseId: id);
       },
+    ),
+    GoRoute(
+      path: '/cattle',
+      builder: (context, state) => const CattleMasterListPage(),
     ),
     /*GoRoute(
       path: '/user/edit',
