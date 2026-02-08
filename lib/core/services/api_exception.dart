@@ -13,10 +13,8 @@ enum ApiExceptionCode {
   serverConnectionError,
   notFound,
   unprocessableEntity,
-  locked,
-}
+  locked;
 
-extension ApiExceptionCodeL10n on ApiExceptionCode {
   String asText(BuildContext context, {String? objectName}) {
     final l10n = AppLocalizations.of(context)!;
     switch (this) {
@@ -47,6 +45,13 @@ extension ApiExceptionCodeL10n on ApiExceptionCode {
       case ApiExceptionCode.locked:
         return l10n.error_locked;
     }
+  }
+
+  static ApiExceptionCode fromString(String value) {
+    return ApiExceptionCode.values.firstWhere(
+      (e) => e.name == value,
+      orElse: () => ApiExceptionCode.unknownError,
+    );
   }
 }
 

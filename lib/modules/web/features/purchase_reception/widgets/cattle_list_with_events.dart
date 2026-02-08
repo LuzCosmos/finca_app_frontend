@@ -54,14 +54,14 @@ class _CattleListWithEventsState extends State<CattleListWithEvents> {
                 // Table Header
                 Container(
                   color: Colors.grey.shade200,
-                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 2),
                   child: Row(
                     children: [
                       Expanded(
                         flex: 2,
                         child: Text(
                           l10n.cattleNumber,
-                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -69,7 +69,7 @@ class _CattleListWithEventsState extends State<CattleListWithEvents> {
                         flex: 2,
                         child: Text(
                           l10n.weightKg,
-                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -77,7 +77,7 @@ class _CattleListWithEventsState extends State<CattleListWithEvents> {
                         flex: 2,
                         child: Text(
                           l10n.eartag,
-                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -85,7 +85,7 @@ class _CattleListWithEventsState extends State<CattleListWithEvents> {
                         flex: 2,
                         child: Text(
                           l10n.trackerId,
-                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -93,7 +93,7 @@ class _CattleListWithEventsState extends State<CattleListWithEvents> {
                         flex: 2,
                         child: Text(
                           l10n.actions,
-                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -120,7 +120,6 @@ class _CattleListWithEventsState extends State<CattleListWithEvents> {
                           itemBuilder: (context, index) {
                             final cattle = widget.cattle[index];
                             final isSelected = selectedCattleId == cattle['id'];
-                            
                             return InkWell(
                               onTap: () {
                                 setState(() {
@@ -132,7 +131,7 @@ class _CattleListWithEventsState extends State<CattleListWithEvents> {
                                 color: isSelected 
                                     ? Theme.of(context).colorScheme.primary.withOpacity(0.1) 
                                     : null,
-                                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                                padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 2),
                                 child: Row(
                                   children: [
                                     Expanded(
@@ -155,7 +154,7 @@ class _CattleListWithEventsState extends State<CattleListWithEvents> {
                                       flex: 2,
                                       child: Text(
                                         cattle['eartag'] ?? '—',
-                                        style: const TextStyle(fontSize: 11),
+                                        style: const TextStyle(fontSize: 12),
                                         textAlign: TextAlign.center,
                                       ),
                                     ),
@@ -163,7 +162,7 @@ class _CattleListWithEventsState extends State<CattleListWithEvents> {
                                       flex: 2,
                                       child: Text(
                                         cattle['deviceName'] ?? '—',
-                                        style: const TextStyle(fontSize: 11),
+                                        style: const TextStyle(fontSize: 12),
                                         textAlign: TextAlign.center,
                                       ),
                                     ),
@@ -185,7 +184,7 @@ class _CattleListWithEventsState extends State<CattleListWithEvents> {
                                           icon: const Icon(Icons.playlist_add, size: 14),
                                           label: Text(
                                             l10n.assignLot,
-                                            style: const TextStyle(fontSize: 11),
+                                            style: const TextStyle(fontSize: 12),
                                           ),
                                           style: ElevatedButton.styleFrom(
                                             visualDensity: VisualDensity.compact,

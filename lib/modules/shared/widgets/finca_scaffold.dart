@@ -32,8 +32,16 @@ class FincaScaffold extends StatelessWidget {
                   return _buildLanguageSwitch(context, Theme.of(context), state);
                 },
               ),
-              if (isAuthenticated)
+              if (isAuthenticated) ...[
+                IconButton(
+                  icon: const Icon(Icons.home, color: Colors.white, size: 20),
+                  onPressed: () {
+                    context.go('/home');
+                  },
+                ),
                 _buildUserDropdown(context, Theme.of(context)),
+              ],
+                
             ],
           ),
           body: body,

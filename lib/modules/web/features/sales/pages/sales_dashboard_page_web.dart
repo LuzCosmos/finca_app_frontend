@@ -8,6 +8,8 @@ import 'package:finca_app_frontend/modules/web/data/sales/sales_data_source_web_
 import 'package:finca_app_frontend/modules/shared/widgets/finca_scaffold.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/models/sales_query_models.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/models/sale_model.dart';
+import 'package:finca_app_frontend/core/services/api_exception.dart';
+import 'package:finca_app_frontend/core/services/session_service.dart';
 
 class SaleDashboardPage extends StatelessWidget {
   const SaleDashboardPage({super.key});
@@ -33,6 +35,25 @@ class _SaleDashboardView extends StatefulWidget {
 class _SaleDashboardViewState extends State<_SaleDashboardView> {
   DateTime? _startDate;
   DateTime? _endDate;
+  bool canCreate = false;
+  bool canUpdate = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPermissions();
+  }
+
+  Future<void> _loadPermissions() async {
+    final create = await SessionService.hasActionPermission('COMMERCE', 'sales', 'create');
+    final update = await SessionService.hasActionPermission('COMMERCE', 'sales', 'update');
+    if (mounted) {
+      setState(() {
+        canCreate = create;
+        canUpdate = update;
+      });
+    }
+  }
 
   void _applyDateFilter() {
     if (_startDate == null || _endDate == null) return;
@@ -178,7 +199,6 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    
     return BlocListener<SalesWebBloc, SalesWebState>(
       listener: (context, state) {
         if (state.status == SalesWebStatus.failure && state.error != null) {
@@ -203,11 +223,11 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
                  children: [
                    const Icon(Icons.error_outline, size: 64, color: Colors.red),
                    const SizedBox(height: 16),
-                   Text('${l10n?.sales_errorLoading ?? 'Error loading sales'}: ${state.error}'),
+                   Text(ApiExceptionCode.fromString(state.error!).asText(context)),
                    const SizedBox(height: 16),
                    ElevatedButton(
                      onPressed: () => context.read<SalesWebBloc>().add(const LoadSalesWeb()),
-                     child: Text(l10n?.sales_retry ?? 'Retry'),
+                     child: Text(l10n!.sales_retry),
                    )
                  ],
                ));
@@ -246,14 +266,17 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
                       ),
                     const Spacer(),
                     // Add Sale Button
-                    ElevatedButton.icon(
-                      onPressed: () => context.push('/sales/create'),
-                      icon: const Icon(Icons.add),
-                      label: Text(l10n?.sales_addSale ?? 'Add Sale'),
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                      ),
-                    ),
+                    if (canCreate)
+                      ElevatedButton.icon(
+                        onPressed: () => context.push('/sales/create'),
+                        icon: const Icon(Icons.add),
+                        label: Text(l10n?.sales_addSale ?? 'Add Sale'),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                        ),
+                      )
+                    else
+                      const SizedBox.shrink(),
                   ],
                 ),
               ),
@@ -419,11 +442,12 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
                     onPressed: () => _showDetailsDialog(context, sale, l10n),
                     tooltip: l10n?.sales_viewDetails ?? 'View Details',
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.edit, size: 20),
-                    onPressed: () => _showEditDialog(context, sale, l10n),
-                    tooltip: l10n?.sales_edit ?? 'Edit',
-                  ),
+                  if (canUpdate)
+                    IconButton(
+                      icon: const Icon(Icons.edit, size: 20),
+                      onPressed: () => _showEditDialog(context, sale, l10n),
+                      tooltip: l10n?.sales_edit ?? 'Edit',
+                    ),
                 ],
               )
             ),
