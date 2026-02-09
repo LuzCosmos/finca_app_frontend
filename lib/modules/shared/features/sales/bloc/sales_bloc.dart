@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/data/sales_data_source.dart';
+import 'package:finca_app_frontend/modules/web/features/cattle_purchase/models/provider.dart';
 import 'sales_event.dart';
 import 'sales_state.dart';
 
@@ -21,8 +22,10 @@ class SalesBloc extends Bloc<SalesEvent, SalesState> {
     emit(SalesLoading());
     try {
       await dataSource.fetchCatalogs();
-      final buyers = await dataSource.getProviders('BUYER');
-      final transporters = await dataSource.getProviders('TRANSPORTER');
+      final buyers = await dataSource.getProviders(ProviderType.BUYER.name);
+      final transporters = await dataSource.getProviders(
+        ProviderType.TRANSPORTER.name,
+      );
       emit(SalesReady(buyers: buyers, transporters: transporters));
     } catch (e) {
       emit(SalesError(e.toString()));
@@ -33,13 +36,15 @@ class SalesBloc extends Bloc<SalesEvent, SalesState> {
     SearchCattleByNumber event,
     Emitter<SalesState> emit,
   ) async {
-    emit(SalesLoading()); // Or keep previous state? Better to have dedicated loading or stream.
+    emit(
+      SalesLoading(),
+    ); // Or keep previous state? Better to have dedicated loading or stream.
     // Ideally we shouldn't wipe out the form state (SalesReady).
-    // BLoC pattern for form usually maintains a complex state. 
+    // BLoC pattern for form usually maintains a complex state.
     // For simplicity, I'll emit specific state then return to Ready?
     // Or State should have `cattleSearchResult`.
     // I'll emit CattleSearchSuccess.
-    
+
     try {
       final cattle = await dataSource.getCattleByNumber(event.number);
       if (cattle != null) {
@@ -49,7 +54,7 @@ class SalesBloc extends Bloc<SalesEvent, SalesState> {
       }
       // Issue: Emitting SalesError here replaces SalesReady, so we lose buyers list.
       // This is a common pitfall. State should be "SalesState" with copyWith.
-      // But keeping it simple for now as requested. 
+      // But keeping it simple for now as requested.
       // The UI can listen to errors and not rebuild everything?
       // Or I should reload data?
       // I'll leave as is for now, user can refine State management.
@@ -75,13 +80,13 @@ class SalesBloc extends Bloc<SalesEvent, SalesState> {
     LoadUnsyncedSales event,
     Emitter<SalesState> emit,
   ) async {
-     emit(SalesLoading());
-     try {
-       final sales = await dataSource.getUnsyncedSales();
-       emit(UnsyncedSalesLoaded(sales));
-     } catch(e) {
-       emit(SalesError(e.toString()));
-     }
+    emit(SalesLoading());
+    try {
+      final sales = await dataSource.getUnsyncedSales();
+      emit(UnsyncedSalesLoaded(sales));
+    } catch (e) {
+      emit(SalesError(e.toString()));
+    }
   }
 
   Future<void> _onSyncSales(

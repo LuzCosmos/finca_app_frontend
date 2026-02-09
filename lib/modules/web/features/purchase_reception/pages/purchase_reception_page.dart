@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
-import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'package:finca_app_frontend/modules/web/features/purchase_reception/services/reception_api_service.dart';
 import 'package:finca_app_frontend/modules/shared/widgets/message_banner.dart';
 import 'package:finca_app_frontend/modules/shared/widgets/finca_scaffold.dart';
@@ -141,28 +139,28 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
   Future<void> _receiveCattle(Map<String, dynamic> cattleData) async {
     final l10n = AppLocalizations.of(context)!;
     // Let errors bubble up to form
-      await api.receiveOne(
-        receptionId: receptionData!['reception']['id'],
-        idPurchase: receptionData!['reception']['purchaseId'],
-        number: cattleData['number'],
-        receivedWeight: cattleData['receivedWeight'],
-        purchaseWeight: cattleData['purchaseWeight'],
-        purchasePrice: cattleData['purchasePrice'],
-        idLot: cattleData['idLot'],
-        hasHorn: cattleData['hasHorns'],
-        castrated: cattleData['isCastrated'],
-        color: cattleData['color'],
-        characteristics: cattleData['characteristics'],
-        eartag: cattleData['eartag'],
-        idDevice: cattleData['idDevice'],
-        idProvider: receptionData!['reception']['providerId'],
-        comments: cattleData['comments'],
-        gender:cattleData['gender'],
-        age:cattleData['age'],
-        idSimpleEvents: cattleData['idSimpleEvents'],
-      );
-      await _load();
-      setGlobalSuccess(l10n.receivedOk);
+    await api.receiveOne(
+      receptionId: receptionData!['reception']['id'],
+      idPurchase: receptionData!['reception']['purchaseId'],
+      number: cattleData['number'],
+      receivedWeight: cattleData['receivedWeight'],
+      purchaseWeight: cattleData['purchaseWeight'],
+      purchasePrice: cattleData['purchasePrice'],
+      idLot: cattleData['idLot'],
+      hasHorn: cattleData['hasHorns'],
+      castrated: cattleData['isCastrated'],
+      color: cattleData['color'],
+      characteristics: cattleData['characteristics'],
+      eartag: cattleData['eartag'],
+      idDevice: cattleData['idDevice'],
+      idProvider: receptionData!['reception']['providerId'],
+      comments: cattleData['comments'],
+      gender: cattleData['gender'],
+      age: cattleData['age'],
+      idSimpleEvents: cattleData['idSimpleEvents'],
+    );
+    await _load();
+    setGlobalSuccess(l10n.receivedOk);
   }
 
   Future<void> _assignLot(String cattleId, String lotId) async {
@@ -212,7 +210,6 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
       // For now just show success
       // Automatically navigate back or refresh?
       // Navigator.of(context).pop(); // Maybe?
-      
       // Refresh to update status variable if we were tracking it (we aren't tracking status in this page explicitly yet)
       _load();
     } catch (e) {
@@ -256,7 +253,6 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
     if (isLoading) {
       return FincaScaffold(
         title: l10n.purchaseReceptionTitle,
@@ -283,9 +279,9 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
     final unassignedCattle = _getUnassignedCattle();
     final selectedCattle = _getCattleForLot(selectedLotId);
     return BlocProvider(
-      create: (context) => MassiveEventBloc(
-        dataSource: MassiveEventPageDataSourceWeb(),
-      ),
+      create:
+          (context) =>
+              MassiveEventBloc(dataSource: MassiveEventPageDataSourceWeb()),
       child: BlocListener<MassiveEventBloc, MassiveEventState>(
         listener: (context, state) {
           if (state is MassiveEventSuccess) {
@@ -305,161 +301,190 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
         },
         child: PopScope(
           canPop: false,
-          onPopInvoked: (didPop) {
+          onPopInvokedWithResult: (didPop, result) {
             if (didPop) return;
-            // Return current reception stats 
+            // Return current reception stats
             Navigator.of(context).pop(receptionData?['reception']);
           },
           child: FincaScaffold(
             title: l10n.purchaseReceptionTitle,
             body: CustomScrollView(
-            slivers: [
-              // Top Section (Scrollable)
-              SliverToBoxAdapter(
-                child: Column(
-                  children: [
-                    // Global messages
-                    if (_globalErrorMessage != null)
-                      MessageBanner.error(_globalErrorMessage!),
-                    if (_globalSuccessMessage != null)
-                      MessageBanner.success(_globalSuccessMessage!),
-                    if (_globalInfoMessage != null)
-                      MessageBanner.info(_globalInfoMessage!),
-
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          FilledButton.icon(
-                            onPressed: () => _confirmClosePurchase(context),
-                            icon: const Icon(Icons.check_circle),
-                            label: Text(l10n.purchaseStatusReceived), // Or "Cerrar Compra" if localized
-                            style: FilledButton.styleFrom(
-                              backgroundColor: Colors.green,
-                              foregroundColor: Colors.white,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-              // Top Section: Purchase Info + Form + Event Config Panel
-                    SizedBox(
-                  height: 450,
-                  child: Row(
+              slivers: [
+                // Top Section (Scrollable)
+                SliverToBoxAdapter(
+                  child: Column(
                     children: [
-                      Expanded(
-                        flex: 2,
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              PurchaseInfoDisplay(
-                                providerName: reception['purchaseProviderName'] ?? '—',
-                                purchaseDate: reception['purchaseDate']?.substring(0, 10) ?? '—',
-                                receptionDate: receptionDate,
-                                initialCattleNumber: currentCattleNumber.isEmpty ? null : currentCattleNumber,
-                                onReceptionDateChanged: (date) {
-                                  setState(() => receptionDate = date);
-                                },
-                                onInitialNumberChanged: (number) {
-                                  setState(() => currentCattleNumber = number);
-                                },
-                                onError: (errorMsg) {
-                                  setGlobalError(errorMsg);
-                                },
+                      // Global messages
+                      if (_globalErrorMessage != null)
+                        MessageBanner.error(_globalErrorMessage!),
+                      if (_globalSuccessMessage != null)
+                        MessageBanner.success(_globalSuccessMessage!),
+                      if (_globalInfoMessage != null)
+                        MessageBanner.info(_globalInfoMessage!),
+
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0,
+                          vertical: 8.0,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            FilledButton.icon(
+                              onPressed: () => _confirmClosePurchase(context),
+                              icon: const Icon(Icons.check_circle),
+                              label: Text(
+                                l10n.purchaseStatusReceived,
+                              ), // Or "Cerrar Compra" if localized
+                              style: FilledButton.styleFrom(
+                                backgroundColor: Colors.green,
+                                foregroundColor: Colors.white,
                               ),
-                              const SizedBox(height: 5),
-                              ReceiveCattleForm(
-                                currentNumber: currentCattleNumber,
-                                availableLots: lots,
-                                colors: _getColors(),
-                                characteristics: _getCharacteristics(),
-                                activeEvents: simpleEvents.where((e) => e.isActive).toList(),
-                                onSubmit: _receiveCattle,
-                                onNumberChanged: (number) {
-                                  setState(() => currentCattleNumber = number);
-                                },
-                                onError: setGlobalError,
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
-                      const VerticalDivider(width: 1),
-                      Expanded(
-                        flex: 1,
-                        child: EventConfigPanel(
-                          key: const ValueKey('eventConfigPanel_reception'),
-                          isWide: true,
-                          eventDate: receptionDate ?? DateTime.now(),
-                          simpleEvents: simpleEvents,
-                          idMassiveEvent: idMassiveEvent,
-                          onMassiveEventCreated: (newId) {
-                            setidMassiveEvent(newId);
-                          },
-                          showError: setGlobalError,
-                          showSuccess: setGlobalSuccess,
-                          showInfo: setGlobalInfo,
-                          onEventsChanged: setEvents,
+
+                      // Top Section: Purchase Info + Form + Event Config Panel
+                      SizedBox(
+                        height: 450,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              flex: 2,
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  children: [
+                                    PurchaseInfoDisplay(
+                                      providerName:
+                                          reception['purchaseProviderName'] ?? '—',
+                                      purchaseDate:
+                                          reception['purchaseDate']?.substring(0, 10) ?? '—',
+                                      receptionDate: receptionDate,
+                                      initialCattleNumber:
+                                          currentCattleNumber.isEmpty
+                                              ? null
+                                              : currentCattleNumber,
+                                      onReceptionDateChanged: (date) {
+                                        setState(() => receptionDate = date);
+                                      },
+                                      onInitialNumberChanged: (number) {
+                                        setState(
+                                          () => currentCattleNumber = number,
+                                        );
+                                      },
+                                      onError: (errorMsg) {
+                                        setGlobalError(errorMsg);
+                                      },
+                                    ),
+                                    if (receptionData!['reception']['status'] != 'RECEIVED' &&
+                                        receptionData!['reception']['receivedCattleCount'] < receptionData!['reception']['purchaseCattleCount']) ...[
+                                      const SizedBox(height: 5),
+                                      ReceiveCattleForm(
+                                        currentNumber: currentCattleNumber,
+                                        availableLots: lots,
+                                        colors: _getColors(),
+                                        characteristics: _getCharacteristics(),
+                                        activeEvents:
+                                            simpleEvents
+                                                .where((e) => e.isActive)
+                                                .toList(),
+                                        onSubmit: _receiveCattle,
+                                        onNumberChanged: (number) {
+                                          setState(
+                                            () => currentCattleNumber = number,
+                                          );
+                                        },
+                                        onError: setGlobalError,
+                                      ),
+                                    ],
+                                    if (receptionData!['reception']['receivedCattleCount'] >= receptionData!['reception']['purchaseCattleCount']) ...[
+                                      const SizedBox(height: 5),
+                                      Text(
+                                        l10n.allPurchasedCattleReceived,
+                                        style: Theme.of(context).textTheme.titleMedium,
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const VerticalDivider(width: 1),
+                            Expanded(
+                              flex: 1,
+                              child: EventConfigPanel(
+                                key: const ValueKey(
+                                  'eventConfigPanel_reception',
+                                ),
+                                isWide: true,
+                                eventDate: receptionDate ?? DateTime.now(),
+                                simpleEvents: simpleEvents,
+                                idMassiveEvent: idMassiveEvent,
+                                onMassiveEventCreated: (newId) {
+                                  setidMassiveEvent(newId);
+                                },
+                                showError: setGlobalError,
+                                showSuccess: setGlobalSuccess,
+                                showInfo: setGlobalInfo,
+                                onEventsChanged: setEvents,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
                   ),
-                    ),
-                  ],
                 ),
-              ),
-              // Bottom Section (Fills remaining space)
-              SliverFillRemaining(
-                hasScrollBody: true,
-                child: Column(
-                  children: [
-                    const Divider(height: 1),
-                    Flexible(
-                      flex: unassignedCattle.isNotEmpty ? 6 : 1,
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.4,
-                            child: LotsTable(
-                              lots: lots,
-                              selectedLotId: selectedLotId,
-                              onLotSelected: (lotId) {
-                                setState(() => selectedLotId = lotId);
-                              },
-                            ),
-                          ),
-                          const VerticalDivider(width: 1),
-                          Expanded(
-                            child: CattleListWithEvents(
-                              cattle: selectedCattle,
-                              availableLots: lots,
-                              onAssignLot: _assignLot,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    if (unassignedCattle.isNotEmpty) ...[
+                // Bottom Section (Fills remaining space)
+                SliverFillRemaining(
+                  hasScrollBody: true,
+                  child: Column(
+                    children: [
                       const Divider(height: 1),
-                      // 👇 En vez de Expanded: Flexible + scroll interno
                       Flexible(
-                        flex: 4,
-                        child: UnassignedCattleList(
-                          cattle: unassignedCattle,
-                          availableLots: lots,
-                          onAssignLot: _assignLot,
+                        flex: unassignedCattle.isNotEmpty ? 6 : 1,
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.4,
+                              child: LotsTable(
+                                lots: lots,
+                                selectedLotId: selectedLotId,
+                                onLotSelected: (lotId) {
+                                  setState(() => selectedLotId = lotId);
+                                },
+                              ),
+                            ),
+                            const VerticalDivider(width: 1),
+                            Expanded(
+                              child: CattleListWithEvents(
+                                cattle: selectedCattle,
+                                availableLots: lots,
+                                onAssignLot: _assignLot,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
+                      if (unassignedCattle.isNotEmpty) ...[
+                        const Divider(height: 1),
+                        // 👇 En vez de Expanded: Flexible + scroll interno
+                        Flexible(
+                          flex: 4,
+                          child: UnassignedCattleList(
+                            cattle: unassignedCattle,
+                            availableLots: lots,
+                            onAssignLot: _assignLot,
+                          ),
+                        ),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
       ),
     );
   }

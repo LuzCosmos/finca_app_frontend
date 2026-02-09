@@ -157,12 +157,19 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
                   label: Text(l10n.save),
                 ),
               ),
+
               const SizedBox(height: 5),
-              Text(
-                l10n.provider,
-                style: Theme.of(
-                  context,
-                ).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
+
+              /// Purchase Date
+              Row(
+                children: [
+                  Text('${l10n.purchase_date}: '),
+                  TextButton.icon(
+                    icon: const Icon(Icons.calendar_today),
+                    label: Text(DateFormat('yyyy-MM-dd').format(_selectedDate)),
+                    onPressed: _selectDate,
+                  ),
+                ],
               ),
               const SizedBox(height: 5),
 
@@ -194,19 +201,7 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
                   });
                 },
               ),
-              const SizedBox(height: 5),
-
-              /// Purchase Date
-              Row(
-                children: [
-                  Text('${l10n.purchase_date}: '),
-                  TextButton.icon(
-                    icon: const Icon(Icons.calendar_today),
-                    label: Text(DateFormat('yyyy-MM-dd').format(_selectedDate)),
-                    onPressed: _selectDate,
-                  ),
-                ],
-              ),
+              
               const SizedBox(height: 10),
 
               /// Lots

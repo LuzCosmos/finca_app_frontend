@@ -413,18 +413,18 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
         ),
         columns: [
           DataColumn(
-            label: Text(l10n?.sales_date ?? 'Date'), 
+            label: Text(l10n!.sales_date), 
             onSort: (idx, asc) => _onSort(context, 'transactionDate', asc)
           ),
-          DataColumn(label: Text(l10n?.sales_buyer ?? 'Buyer')),
-          DataColumn(label: Text(l10n?.sales_items ?? 'Items'), numeric: true),
-          DataColumn(label: Text(l10n?.sales_weight ?? 'Weight (kg)'), numeric: true),
+          DataColumn(label: Text(l10n!.sales_buyer)),
+          DataColumn(label: Text(l10n!.sales_items), numeric: true),
+          DataColumn(label: Text(l10n!.sales_weight), numeric: true),
           DataColumn(
-            label: Text(l10n?.sales_amount ?? 'Amount'),
+            label: Text(l10n!.sales_amount),
             numeric: true,
             onSort: (idx, asc) => _onSort(context, 'totalAmount', asc)
           ),
-          DataColumn(label: Text(l10n?.sales_actions ?? 'Actions')),
+          DataColumn(label: Text(l10n!.sales_actions)),
         ],
         rows: sales.map((sale) {
           return DataRow(cells: [
@@ -440,13 +440,13 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
                   IconButton(
                     icon: const Icon(Icons.visibility, size: 20),
                     onPressed: () => _showDetailsDialog(context, sale, l10n),
-                    tooltip: l10n?.sales_viewDetails ?? 'View Details',
+                    tooltip: l10n!.sales_viewDetails,
                   ),
                   if (canUpdate)
                     IconButton(
                       icon: const Icon(Icons.edit, size: 20),
                       onPressed: () => _showEditDialog(context, sale, l10n),
-                      tooltip: l10n?.sales_edit ?? 'Edit',
+                      tooltip: l10n!.sales_edit,
                     ),
                 ],
               )

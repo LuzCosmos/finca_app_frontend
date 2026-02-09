@@ -8,6 +8,7 @@ import 'package:finca_app_frontend/modules/web/data/sales/sales_data_source_web_
 import 'package:finca_app_frontend/modules/shared/widgets/finca_scaffold.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/models/sale_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/models/sale_detail_model.dart';
+import 'package:finca_app_frontend/modules/web/features/cattle_purchase/models/provider.dart';
 import 'package:finca_app_frontend/modules/web/features/sales/widgets/provider_autocomplete_field.dart';
 import 'package:finca_app_frontend/modules/web/features/sales/widgets/weight_approval_dialog.dart';
 import 'package:finca_app_frontend/modules/web/features/sales/widgets/sale_confirmation_dialog.dart';
@@ -17,7 +18,7 @@ import 'package:uuid/uuid.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class CreateSalePage extends StatelessWidget {
- const CreateSalePage({super.key});
+  const CreateSalePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -486,8 +487,8 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
               return const Center(child: CircularProgressIndicator());
             }
 
-            final buyers = state.providers?.where((p) => p['type'] == 'BUYER').toList() ?? [];
-            final transporters = state.providers?.where((p) => p['type'] == 'TRANSPORTER').toList() ?? [];
+            final buyers = state.providers?.where((p) => p['type'] == ProviderType.BUYER.name).toList() ?? [];
+            final transporters = state.providers?.where((p) => p['type'] == ProviderType.TRANSPORTER.name).toList() ?? [];
 
             return SingleChildScrollView(
               padding: const EdgeInsets.all(24),
@@ -587,8 +588,8 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
 
             // Buyer Autocomplete (replaces dropdown)
             ProviderAutocompleteField(
-              label: l10n?.label_buyer_required ?? 'Buyer *',
-              providerType: 'BUYER',
+              label: l10n!.label_buyer_required,
+              providerType: ProviderType.BUYER.name,
               onChanged: (id, name) => setState(() {
                 _selectedBuyerId = id;
                 _selectedBuyerName = name;
@@ -599,8 +600,8 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
 
             // Transporter Autocomplete (replaces dropdown)
             ProviderAutocompleteField(
-              label: l10n?.label_transporter_optional ?? 'Transporter (Optional)',
-              providerType: 'TRANSPORTER',
+              label: l10n!.label_transporter_optional,
+              providerType: ProviderType.TRANSPORTER.name,
               onChanged: (id, name) => setState(() {
                 _selectedTransporterId = id;
                 _selectedTransporterName = name;
