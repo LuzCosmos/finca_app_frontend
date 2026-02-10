@@ -106,7 +106,7 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
     super.dispose();
   }
 
-  void _resetForm() {
+  /*void _resetForm() {
     _weightController.clear();
     _ageController.clear();
     _commentsController.clear();
@@ -121,7 +121,7 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
       _selectedGender = CattleGender.MALE;
       _selectedDeviceId = null; // Clear selected device
     });
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -756,7 +756,6 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
               : _commentsController.text.trim(),
       'idSimpleEvents': widget.activeEvents.map((e) => e.id).toList(),
     };
-
     try {
       await widget.onSubmit(cattleData);
       //_resetForm();

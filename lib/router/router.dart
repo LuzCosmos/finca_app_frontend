@@ -31,12 +31,12 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/purchases',
       name: 'purchasesList',
-      builder: (_, __) => const PurchasesListPage(),
+      builder: (_, _) => const PurchasesListPage(),
     ),
     GoRoute(
       path: '/purchases/pending',
       name: 'purchasesPending',
-      builder: (_, __) => const PurchasesListPage(initialStatusFilter: 'open'),
+      builder: (_, _) => const PurchasesListPage(initialStatusFilter: 'open'),
     ),
 
     GoRoute(
@@ -61,10 +61,7 @@ final GoRouter appRouter = GoRouter(
         );
       },
     ),
-    GoRoute(
-      path: '/users',
-      builder: (context, state) => const UsersListPage(),
-    ),
+    GoRoute(path: '/users', builder: (context, state) => const UsersListPage()),
     GoRoute(
       path: '/purchase/reception/:purchaseId',
       name: 'purchaseReception',

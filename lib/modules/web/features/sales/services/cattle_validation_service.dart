@@ -1,20 +1,21 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 
 /// Cattle Validation Service
-/// 
+///
 /// Handles cattle validation and weight management API calls
 class CattleValidationService {
   /// Validate cattle by number
   /// Returns cattle data if valid and ACTIVE
   /// Throws exception with user-friendly message if invalid
-  static Future<Map<String, dynamic>> validateCattleByNumber(String number) async {
+  static Future<Map<String, dynamic>> validateCattleByNumber(
+    String number,
+  ) async {
     final token = await SessionService.getToken();
     final baseUrl = BasicApiService.baseUrl;
-    
+
     final response = await http.get(
       Uri.parse('$baseUrl/cattle/validate-number/$number'),
       headers: {'Authorization': 'Bearer $token'},
@@ -25,7 +26,7 @@ class CattleValidationService {
     } else if (response.statusCode == 400) {
       // Cattle validation failed (not found, not ACTIVE, etc.)
       final error = json.decode(response.body);
-      throw Exception(error['message'] ?? 'Cattle validation failed');
+      throw Exception(error['message']);
     } else {
       throw Exception('Failed to validate cattle');
     }
@@ -40,7 +41,7 @@ class CattleValidationService {
   }) async {
     final token = await SessionService.getToken();
     final baseUrl = BasicApiService.baseUrl;
-    
+
     final response = await http.post(
       Uri.parse('$baseUrl/cattle/$cattleId/weight-history'),
       headers: {
@@ -66,7 +67,7 @@ class CattleValidationService {
   }) async {
     final token = await SessionService.getToken();
     final baseUrl = BasicApiService.baseUrl;
-    
+
     final response = await http.put(
       Uri.parse('$baseUrl/cattle/$cattleId/weight'),
       headers: {
@@ -88,17 +89,14 @@ class CattleValidationService {
   }) async {
     final token = await SessionService.getToken();
     final baseUrl = BasicApiService.baseUrl;
-    
+
     final response = await http.put(
       Uri.parse('$baseUrl/cattle/bulk-status'),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
       },
-      body: json.encode({
-        'cattleIds': cattleIds,
-        'status': status,
-      }),
+      body: json.encode({'cattleIds': cattleIds, 'status': status}),
     );
 
     if (response.statusCode == 200) {

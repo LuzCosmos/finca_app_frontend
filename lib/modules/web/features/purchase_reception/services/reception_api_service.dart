@@ -236,10 +236,6 @@ class ReceptionApiService {
 
     if (response.statusCode >= 400) {
       BasicApiService.manageNotSuccessResponseCode(response);
-      throw ApiException(
-        'serverError',
-        'Error updating status: ${response.body}',
-      );
     }
   }
 }

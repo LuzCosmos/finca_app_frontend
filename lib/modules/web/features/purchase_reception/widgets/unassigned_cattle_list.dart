@@ -27,13 +27,14 @@ class _UnassignedCattleListState extends State<UnassignedCattleList> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
-    final selectedCattle = selectedCattleId != null
-        ? widget.cattle.firstWhere(
-            (c) => c['id'] == selectedCattleId,
-            orElse: () => {},
-          )
-        : null;
+
+    final selectedCattle =
+        selectedCattleId != null
+            ? widget.cattle.firstWhere(
+              (c) => c['id'] == selectedCattleId,
+              orElse: () => {},
+            )
+            : null;
 
     return Card(
       child: Row(
@@ -48,16 +49,19 @@ class _UnassignedCattleListState extends State<UnassignedCattleList> {
                   child: Text(
                     l10n.unassignedCattle,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 const Divider(height: 1),
-                
+
                 // Table Header
                 Container(
                   color: Colors.grey.shade200,
-                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 4,
+                  ),
                   child: Row(
                     children: [
                       Expanded(
@@ -72,7 +76,10 @@ class _UnassignedCattleListState extends State<UnassignedCattleList> {
                         flex: 2,
                         child: Text(
                           l10n.weightKg,
-                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                          ),
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -80,7 +87,10 @@ class _UnassignedCattleListState extends State<UnassignedCattleList> {
                         flex: 2,
                         child: Text(
                           l10n.eartag,
-                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                          ),
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -88,7 +98,10 @@ class _UnassignedCattleListState extends State<UnassignedCattleList> {
                         flex: 2,
                         child: Text(
                           l10n.trackerId,
-                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                          ),
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -96,7 +109,10 @@ class _UnassignedCattleListState extends State<UnassignedCattleList> {
                         flex: 2,
                         child: Text(
                           l10n.actions,
-                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                          ),
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -104,113 +120,142 @@ class _UnassignedCattleListState extends State<UnassignedCattleList> {
                   ),
                 ),
                 const Divider(height: 1),
-                
+
                 Expanded(
-                  child: widget.cattle.isEmpty
-                      ? Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Text(
-                              l10n.noAnimals,
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  child:
+                      widget.cattle.isEmpty
+                          ? Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Text(
+                                l10n.noAnimals,
+                                style: TextStyle(
+                                  color:
+                                      Theme.of(
+                                        context,
+                                      ).colorScheme.onSurfaceVariant,
+                                ),
                               ),
                             ),
-                          ),
-                        )
-                      : ListView.builder(
-                          itemCount: widget.cattle.length,
-                          itemBuilder: (context, index) {
-                            final animal = widget.cattle[index];
-                            final isSelected = selectedCattleId == animal['id'];
-                            
-                            return InkWell(
-                              onTap: () {
-                                setState(() {
-                                  selectedCattleId = isSelected ? null : animal['id'];
-                                });
-                                widget.onCattleSelected?.call(selectedCattleId);
-                              },
-                              child: Container(
-                                color: isSelected 
-                                    ? Theme.of(context).colorScheme.primary.withOpacity(0.1) 
-                                    : null,
-                                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      flex: 2,
-                                      child: Text(
-                                        animal['number'] ?? '—',
-                                        style: const TextStyle(fontSize: 12),
-                                        textAlign: TextAlign.center,
+                          )
+                          : ListView.builder(
+                            itemCount: widget.cattle.length,
+                            itemBuilder: (context, index) {
+                              final animal = widget.cattle[index];
+                              final isSelected =
+                                  selectedCattleId == animal['id'];
+
+                              return InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    selectedCattleId =
+                                        isSelected ? null : animal['id'];
+                                  });
+                                  widget.onCattleSelected?.call(
+                                    selectedCattleId,
+                                  );
+                                },
+                                child: Container(
+                                  color:
+                                      isSelected
+                                          ? Theme.of(context)
+                                              .colorScheme
+                                              .primary
+                                              .withValues(alpha: 0.1)
+                                          : null,
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 8,
+                                    horizontal: 4,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        flex: 2,
+                                        child: Text(
+                                          animal['number'] ?? '—',
+                                          style: const TextStyle(fontSize: 12),
+                                          textAlign: TextAlign.center,
+                                        ),
                                       ),
-                                    ),
-                                    Expanded(
-                                      flex: 2,
-                                      child: Text(
-                                        '${animal['receivedWeight'] ?? '—'} kg',
-                                        style: const TextStyle(fontSize: 12),
-                                        textAlign: TextAlign.center,
+                                      Expanded(
+                                        flex: 2,
+                                        child: Text(
+                                          '${animal['receivedWeight'] ?? '—'} kg',
+                                          style: const TextStyle(fontSize: 12),
+                                          textAlign: TextAlign.center,
+                                        ),
                                       ),
-                                    ),
-                                    Expanded(
-                                      flex: 2,
-                                      child: Text(
-                                        animal['eartag'] ?? '—',
-                                        style: const TextStyle(fontSize: 11),
-                                        textAlign: TextAlign.center,
+                                      Expanded(
+                                        flex: 2,
+                                        child: Text(
+                                          animal['eartag'] ?? '—',
+                                          style: const TextStyle(fontSize: 11),
+                                          textAlign: TextAlign.center,
+                                        ),
                                       ),
-                                    ),
-                                    Expanded(
-                                      flex: 2,
-                                      child: Text(
-                                        animal['deviceName'] ?? '—',
-                                        style: const TextStyle(fontSize: 11),
-                                        textAlign: TextAlign.center,
+                                      Expanded(
+                                        flex: 2,
+                                        child: Text(
+                                          animal['deviceName'] ?? '—',
+                                          style: const TextStyle(fontSize: 11),
+                                          textAlign: TextAlign.center,
+                                        ),
                                       ),
-                                    ),
-                                    Expanded(
-                                      flex: 2,
-                                      child: Center(
-                                        child: ElevatedButton.icon(
-                                          onPressed: () async {
-                                            await showDialog(
-                                              context: context,
-                                              builder: (context) => AssignLotDialog(
-                                                availableLots: widget.availableLots,
-                                                onAssign: (lotId) {
-                                                  widget.onAssignLot(animal['id'], lotId);
-                                                },
+                                      Expanded(
+                                        flex: 2,
+                                        child: Center(
+                                          child: ElevatedButton.icon(
+                                            onPressed: () async {
+                                              await showDialog(
+                                                context: context,
+                                                builder:
+                                                    (
+                                                      context,
+                                                    ) => AssignLotDialog(
+                                                      availableLots:
+                                                          widget.availableLots,
+                                                      onAssign: (lotId) {
+                                                        widget.onAssignLot(
+                                                          animal['id'],
+                                                          lotId,
+                                                        );
+                                                      },
+                                                    ),
+                                              );
+                                            },
+                                            icon: const Icon(
+                                              Icons.playlist_add,
+                                              size: 14,
+                                            ),
+                                            label: Text(
+                                              l10n.assignLot,
+                                              style: const TextStyle(
+                                                fontSize: 11,
                                               ),
-                                            );
-                                          },
-                                          icon: const Icon(Icons.playlist_add, size: 14),
-                                          label: Text(
-                                            l10n.assignLot,
-                                            style: const TextStyle(fontSize: 11),
-                                          ),
-                                          style: ElevatedButton.styleFrom(
-                                            visualDensity: VisualDensity.compact,
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 6,
-                                              vertical: 2,
+                                            ),
+                                            style: ElevatedButton.styleFrom(
+                                              visualDensity:
+                                                  VisualDensity.compact,
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 6,
+                                                    vertical: 2,
+                                                  ),
                                             ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            );
-                          },
-                        ),
+                              );
+                            },
+                          ),
                 ),
               ],
             ),
           ),
-          
+
           // Right: Events display (only if cattle selected)
           if (selectedCattleId != null && selectedCattle != null) ...[
             const VerticalDivider(width: 1),
@@ -223,14 +268,12 @@ class _UnassignedCattleListState extends State<UnassignedCattleList> {
                     child: Text(
                       l10n.eventsApplied,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                   const Divider(height: 1),
-                  Expanded(
-                    child: _buildEventsDisplay(selectedCattle, l10n),
-                  ),
+                  Expanded(child: _buildEventsDisplay(selectedCattle, l10n)),
                 ],
               ),
             ),
@@ -240,9 +283,12 @@ class _UnassignedCattleListState extends State<UnassignedCattleList> {
     );
   }
 
-  Widget _buildEventsDisplay(Map<String, dynamic> cattle, AppLocalizations l10n) {
+  Widget _buildEventsDisplay(
+    Map<String, dynamic> cattle,
+    AppLocalizations l10n,
+  ) {
     final events = (cattle['appliedEvents'] as List<dynamic>?) ?? [];
-    
+
     if (events.isEmpty) {
       return Center(
         child: Padding(
@@ -263,7 +309,7 @@ class _UnassignedCattleListState extends State<UnassignedCattleList> {
       itemCount: events.length,
       itemBuilder: (context, index) {
         final event = events[index] as Map<String, dynamic>;
-        final data = event['data'] as Map<String, dynamic>?; 
+        final data = event['data'] as Map<String, dynamic>?;
         return Card(
           margin: const EdgeInsets.only(bottom: 8.0),
           child: Padding(
@@ -298,16 +344,19 @@ class _UnassignedCattleListState extends State<UnassignedCattleList> {
     );
   }
 
-  List<Widget> _buildMedicationInfo(Map<String, dynamic> data, AppLocalizations l10n) {
+  List<Widget> _buildMedicationInfo(
+    Map<String, dynamic> data,
+    AppLocalizations l10n,
+  ) {
     var firstLine = '';
-    if (data['dosage'] != null){
+    if (data['dosage'] != null) {
       firstLine = '${l10n.medicationDosage}: ${data['dosage']}';
     }
-    if (data['route'] != null){
+    if (data['route'] != null) {
       firstLine += '; ${l10n.medicationRoute}: ${data['route']}';
     }
     var secondLine = '';
-    if (data['lot'] != null){
+    if (data['lot'] != null) {
       secondLine = '${l10n.medicationLot}: ${data['lot']}';
     }
     return [
@@ -315,17 +364,18 @@ class _UnassignedCattleListState extends State<UnassignedCattleList> {
         data['medicationName'] ?? 'Medication',
         style: const TextStyle(fontWeight: FontWeight.bold),
       ),
-      Text(firstLine,
-      style: const TextStyle(fontSize: 13),),
-      Text(secondLine,
-      style: const TextStyle(fontSize: 13),),
+      Text(firstLine, style: const TextStyle(fontSize: 13)),
+      Text(secondLine, style: const TextStyle(fontSize: 13)),
     ];
   }
 
-  List<Widget> _buildBrandInfo(Map<String, dynamic> data, AppLocalizations l10n) {
+  List<Widget> _buildBrandInfo(
+    Map<String, dynamic> data,
+    AppLocalizations l10n,
+  ) {
     return [
       Text(
-        l10n.eventTypeBrand + ': ${data['brandName'] ?? 'Brand'}',
+        '${l10n.eventTypeBrand}: ${data['brandName'] ?? 'Brand'}',
         style: const TextStyle(fontWeight: FontWeight.bold),
       ),
     ];
