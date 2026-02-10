@@ -299,7 +299,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: cattle.length,
-              separatorBuilder: (_, __) => const Divider(height: 1),
+              separatorBuilder: (_, _) => const Divider(height: 1),
               itemBuilder: (context, index) {
                 final item = cattle[index];
                 return Padding(
@@ -599,10 +599,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              l10n.sale_info,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
+            Text(l10n.sale_info, style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 24),
 
             // Transaction Date

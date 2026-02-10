@@ -88,7 +88,7 @@ class _EventDetailFormState extends State<EventDetailForm> {
             mainAxisSize: MainAxisSize.min,
             children: [
               DropdownButtonFormField<String>(
-                value: selectedType,
+                initialValue: selectedType,
                 onChanged: (value) {
                   if (value == null) return;
                   setState(() => selectedType = value);
@@ -142,7 +142,7 @@ class _EventDetailFormState extends State<EventDetailForm> {
               ],
               if (selectedType == SimpleEventType.brand.name) ...[
                 DropdownButtonFormField<BrandModel>(
-                  value: selectedBrandObject,
+                  initialValue: selectedBrandObject,
                   onChanged:
                       (value) => setState(() => selectedBrandObject = value),
                   items:

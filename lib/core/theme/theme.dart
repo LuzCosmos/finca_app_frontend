@@ -35,9 +35,6 @@ class AppTheme {
 
       surface: const Color(0xFFF6FAF8),
       onSurface: const Color(0xFF1E2D26),
-
-      background: const Color(0xFFF6FAF8),
-      onBackground: const Color(0xFF1E2D26),
     ),
 
     appBarTheme: const AppBarTheme(

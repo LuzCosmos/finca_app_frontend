@@ -132,7 +132,7 @@ class LotsTable extends StatelessWidget {
                         isSelected
                             ? Theme.of(
                               context,
-                            ).colorScheme.primary.withOpacity(0.1)
+                            ).colorScheme.primary.withValues(alpha: 0.1)
                             : null,
                     padding: const EdgeInsets.symmetric(
                       vertical: 8,
