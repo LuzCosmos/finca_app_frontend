@@ -14,7 +14,6 @@ class SimpleEventLocal extends Table {
   @override
   Set<Column> get primaryKey => {id};
 
-  @override
   List<Set<Column<Object>>> get indexes => [
     {idMassiveEvent},
   ];

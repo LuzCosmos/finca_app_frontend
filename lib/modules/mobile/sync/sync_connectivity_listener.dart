@@ -8,7 +8,7 @@ import 'package:finca_app_frontend/platform/detectors/platform_detector.dart';
 class SyncConnectivityListener {
   final SyncBloc syncBloc;
   final String idTenant;
-  StreamSubscription<ConnectivityResult>? _subscription;
+  StreamSubscription<List<ConnectivityResult>>? _subscription;
 
   SyncConnectivityListener({required this.syncBloc, required this.idTenant});
 
@@ -16,9 +16,11 @@ class SyncConnectivityListener {
     // 👉 Sólo escuchar en móviles, no en web
     if (PlatformDetector.isMobile()) {
       _subscription = Connectivity().onConnectivityChanged.listen((
-        ConnectivityResult result,
+        List<ConnectivityResult> results,
       ) {
-        if (result != ConnectivityResult.none) {
+        final hasConnection = results.isNotEmpty &&
+            results.last != ConnectivityResult.none;
+        if (hasConnection) {
           // Tenemos conexión: dispara sincronización
           debugPrint(
             '[SyncConnectivityListener] Conexión detectada, sincronizando...',

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 
 /// Weight Approval Dialog
-/// 
+///
 /// Shown when cattle weight is below minimum weight config
 /// Allows user to Approve (use for sale) or Reject (exclude from sale)
 class WeightApprovalDialog extends StatelessWidget {
@@ -19,14 +19,14 @@ class WeightApprovalDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return AlertDialog(
       title: Row(
         children: [
           Icon(Icons.warning_amber, color: Colors.orange, size: 28),
           const SizedBox(width: 12),
-          Text(l10n?.cattle_weightUnderMin ?? 'Weight Below Minimum'),
+          Text(l10n.cattle_weightUnderMin),
         ],
       ),
       content: Column(
@@ -34,8 +34,10 @@ class WeightApprovalDialog extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            (l10n?.cattle_weightUnderMinMessage(measuredWeight, minWeight))
-                .toString(),
+            (l10n.cattle_weightUnderMinMessage(
+              measuredWeight,
+              minWeight,
+            )).toString(),
             style: Theme.of(context).textTheme.bodyLarge,
           ),
           const SizedBox(height: 16),
@@ -52,7 +54,10 @@ class WeightApprovalDialog extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('${AppLocalizations.of(context)!.cattleNumber}:', style: const TextStyle(fontWeight: FontWeight.bold)),
+                    Text(
+                      '${AppLocalizations.of(context)!.cattleNumber}:',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
                     Text(cattleNumber),
                   ],
                 ),
@@ -60,15 +65,26 @@ class WeightApprovalDialog extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('${AppLocalizations.of(context)!.label_measuredWeight}:', style: const TextStyle(fontWeight: FontWeight.bold)),
-                    Text('${measuredWeight.toStringAsFixed(2)} kg', 
-                      style: const TextStyle(color: Colors.orange, fontWeight: FontWeight.bold)),
+                    Text(
+                      '${AppLocalizations.of(context)!.label_measuredWeight}:',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      '${measuredWeight.toStringAsFixed(2)} kg',
+                      style: const TextStyle(
+                        color: Colors.orange,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('${AppLocalizations.of(context)!.label_minimumWeight}:', style: const TextStyle(fontWeight: FontWeight.bold)),
+                    Text(
+                      '${AppLocalizations.of(context)!.label_minimumWeight}:',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
                     Text('${minWeight.toStringAsFixed(2)} kg'),
                   ],
                 ),
@@ -77,7 +93,7 @@ class WeightApprovalDialog extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            l10n?.cattle_approveQuestion ?? 'Do you want to approve or reject this cattle?',
+            l10n.cattle_approveQuestion,
             style: Theme.of(context).textTheme.titleMedium,
           ),
         ],
@@ -86,7 +102,7 @@ class WeightApprovalDialog extends StatelessWidget {
         OutlinedButton.icon(
           onPressed: () => Navigator.of(context).pop(false), // Reject
           icon: const Icon(Icons.cancel, color: Colors.red),
-          label: Text(l10n?.cattle_reject ?? 'Reject'),
+          label: Text(l10n.cattle_reject),
           style: OutlinedButton.styleFrom(
             foregroundColor: Colors.red,
             side: const BorderSide(color: Colors.red),
@@ -95,7 +111,7 @@ class WeightApprovalDialog extends StatelessWidget {
         ElevatedButton.icon(
           onPressed: () => Navigator.of(context).pop(true), // Approve
           icon: const Icon(Icons.check_circle),
-          label: Text(l10n?.cattle_approve ?? 'Approve'),
+          label: Text(l10n.cattle_approve),
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.green,
             foregroundColor: Colors.white,
@@ -107,7 +123,7 @@ class WeightApprovalDialog extends StatelessWidget {
 }
 
 /// Validation Error Dialog
-/// 
+///
 /// Shows when cattle validation fails (not found, not ACTIVE, etc.)
 class CattleValidationErrorDialog extends StatelessWidget {
   final String cattleNumber;
@@ -121,23 +137,26 @@ class CattleValidationErrorDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return AlertDialog(
       title: Row(
         children: [
           Icon(Icons.error, color: Colors.red, size: 28),
           const SizedBox(width: 12),
-           Icon(Icons.error, color: Colors.red, size: 28),
-           const SizedBox(width: 12),
-           Text(l10n?.cattle_validation_invalid ?? 'Invalid Cattle'),
+          Icon(Icons.error, color: Colors.red, size: 28),
+          const SizedBox(width: 12),
+          Text(l10n.cattle_validation_invalid),
         ],
       ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('${AppLocalizations.of(context)!.cattleNumber} #$cattleNumber', style: const TextStyle(fontWeight: FontWeight.bold)),
+          Text(
+            '${AppLocalizations.of(context)!.cattleNumber} #$cattleNumber',
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
           const SizedBox(height: 12),
           Text(errorMessage, style: Theme.of(context).textTheme.bodyLarge),
         ],
@@ -145,7 +164,7 @@ class CattleValidationErrorDialog extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Text(l10n?.sales_cancel ?? 'Close'),
+          child: Text(l10n.sales_cancel),
         ),
       ],
     );

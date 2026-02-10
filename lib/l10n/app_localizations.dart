@@ -2066,6 +2066,18 @@ abstract class AppLocalizations {
   /// **'Total Cattle'**
   String get label_totalCattle;
 
+  /// No description provided for @allPurchasedCattleReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'All purchased cattle have been received'**
+  String get allPurchasedCattleReceived;
+
+  /// No description provided for @lotAssignedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Lot assigned successfully'**
+  String get lotAssignedSuccessfully;
+
   /// No description provided for @error_enterCattleNumberWeight.
   ///
   /// In en, this message translates to:

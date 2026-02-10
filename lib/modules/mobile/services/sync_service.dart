@@ -42,7 +42,7 @@ class SyncService {
     required String endpointPath,
   }) async {
     try {
-      final token = await getToken();
+      //final token = await getToken();
       final all = await fetchAll();
       final pending = all.where(isUnsynced).toList();
       if (pending.isEmpty) {
@@ -109,7 +109,7 @@ class SyncService {
 
   Future<SyncResult> syncMassiveEvents(String idTenant) async {
     try {
-      final token = await getToken();
+      //final token = await getToken();
       final allMassive = await massiveEventRepository.getAll();
       final unsyncedMassive =
           allMassive.where((m) => m.isSynced == false).toList();

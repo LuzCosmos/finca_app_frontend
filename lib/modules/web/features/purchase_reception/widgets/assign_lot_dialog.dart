@@ -27,17 +27,18 @@ class _AssignLotDialogState extends State<AssignLotDialog> {
       content: SizedBox(
         width: 300,
         child: DropdownButtonFormField<String>(
-          value: selectedLotId,
+          initialValue: selectedLotId,
           decoration: InputDecoration(
             labelText: l10n.selectLot,
             border: const OutlineInputBorder(),
           ),
-          items: widget.availableLots.map((lot) {
-            return DropdownMenuItem<String>(
-              value: lot['id'] as String,
-              child: Text('${l10n.lot} ${lot['lotNumber']}'),
-            );
-          }).toList(),
+          items:
+              widget.availableLots.map((lot) {
+                return DropdownMenuItem<String>(
+                  value: lot['id'] as String,
+                  child: Text('${l10n.lot} ${lot['lotNumber']}'),
+                );
+              }).toList(),
           onChanged: (value) {
             setState(() {
               selectedLotId = value;
@@ -51,12 +52,13 @@ class _AssignLotDialogState extends State<AssignLotDialog> {
           child: Text(l10n.cancel),
         ),
         FilledButton(
-          onPressed: selectedLotId != null
-              ? () {
-                  widget.onAssign(selectedLotId!);
-                  Navigator.of(context).pop();
-                }
-              : null,
+          onPressed:
+              selectedLotId != null
+                  ? () {
+                    widget.onAssign(selectedLotId!);
+                    Navigator.of(context).pop();
+                  }
+                  : null,
           child: Text(l10n.assignLot),
         ),
       ],

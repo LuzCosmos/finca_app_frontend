@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/devices/models/device_model.dart';
-import 'package:finca_app_frontend/core/services/api_exception.dart';
 
 class DeviceApiService {
   // Assuming the search endpoint is shared/accessible. Currently it is under 'purchase-receptions'.
@@ -17,13 +16,15 @@ class DeviceApiService {
   // Wait, `BasicApiService.baseUrl` usually points to `/api`.
   // The reception service appended `/purchase-receptions`.
   // I should probably make this service generic enough or point to the correct endpoint.
-  
-  static final String _baseUrl = '${BasicApiService.baseUrl}';
+
+  static final String _baseUrl = BasicApiService.baseUrl;
 
   static Future<List<DeviceModel>> searchDevices(String query) async {
     final token = await BasicApiService.getToken();
     // Using the same endpoint as ReceptionApiService for now to ensure exact same behavior
-    final url = Uri.parse('$_baseUrl/purchase-receptions/search-devices/by-query?q=$query');
+    final url = Uri.parse(
+      '$_baseUrl/purchase-receptions/search-devices/by-query?q=$query',
+    );
 
     final response = await http.get(
       url,
@@ -38,7 +39,6 @@ class DeviceApiService {
       return body.map((dynamic item) => DeviceModel.fromJson(item)).toList();
     } else {
       BasicApiService.manageNotSuccessResponseCode(response);
-      return []; 
     }
   }
 }

@@ -4,8 +4,6 @@ import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/bloc/sales_bloc.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/bloc/sales_event.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/bloc/sales_state.dart';
-import 'package:finca_app_frontend/modules/shared/features/sales/models/sale_model.dart';
-import 'package:uuid/uuid.dart';
 
 class CreateSalePage extends StatefulWidget {
   const CreateSalePage({super.key});
@@ -40,33 +38,33 @@ class _CreateSalePageState extends State<CreateSalePage> {
         listener: (context, state) {
           if (state is SaleSavedSuccess) {
             Navigator.pop(context);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(l10n.saleSavedSuccess)),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(l10n.saleSavedSuccess)));
           }
           if (state is SalesError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.message)));
           }
           if (state is CattleSearchSuccess) {
-             ScaffoldMessenger.of(context).showSnackBar(
-               SnackBar(content: Text(l10n.cattleFoundPending)),
-             );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(l10n.cattleFoundPending)));
           }
         },
         builder: (context, state) {
           if (state is SalesLoading) {
             return const Center(child: CircularProgressIndicator());
           }
-          // Assuming SalesReady stores the lists. 
+          // Assuming SalesReady stores the lists.
           // Note: If state changes to e.g. CattleSearchSuccess, we might lose lists if not carried over.
-          // For this MVP, I'll access lists if state is SalesReady, otherwise empty? 
+          // For this MVP, I'll access lists if state is SalesReady, otherwise empty?
           // Ideally Bloc State should hold lists always.
-          
+
           List<dynamic> buyers = [];
           List<dynamic> transporters = [];
-          
+
           if (state is SalesReady) {
             buyers = state.buyers;
             transporters = state.transporters;
@@ -83,21 +81,32 @@ class _CreateSalePageState extends State<CreateSalePage> {
                   const SizedBox(height: 16),
                   DropdownButtonFormField<String>(
                     decoration: InputDecoration(labelText: l10n.sales_buyer),
-                    value: _selectedBuyerId,
-                    items: buyers.map<DropdownMenuItem<String>>((b) {
-                      return DropdownMenuItem(value: b.id, child: Text(b.name));
-                    }).toList(),
+                    initialValue: _selectedBuyerId,
+                    items:
+                        buyers.map<DropdownMenuItem<String>>((b) {
+                          return DropdownMenuItem(
+                            value: b.id,
+                            child: Text(b.name),
+                          );
+                        }).toList(),
                     onChanged: (val) => setState(() => _selectedBuyerId = val),
                     validator: (val) => val == null ? l10n.fieldRequired : null,
                   ),
                   const SizedBox(height: 16),
                   DropdownButtonFormField<String>(
-                    decoration: InputDecoration(labelText: l10n.provider_transporter),
-                    value: _selectedTransporterId,
-                    items: transporters.map<DropdownMenuItem<String>>((t) {
-                      return DropdownMenuItem(value: t.id, child: Text(t.name));
-                    }).toList(),
-                    onChanged: (val) => setState(() => _selectedTransporterId = val),
+                    decoration: InputDecoration(
+                      labelText: l10n.provider_transporter,
+                    ),
+                    initialValue: _selectedTransporterId,
+                    items:
+                        transporters.map<DropdownMenuItem<String>>((t) {
+                          return DropdownMenuItem(
+                            value: t.id,
+                            child: Text(t.name),
+                          );
+                        }).toList(),
+                    onChanged:
+                        (val) => setState(() => _selectedTransporterId = val),
                   ),
                   const SizedBox(height: 16),
                   Row(
@@ -105,7 +114,9 @@ class _CreateSalePageState extends State<CreateSalePage> {
                       Expanded(
                         child: TextFormField(
                           controller: _minWeightController,
-                          decoration: InputDecoration(labelText: l10n.minWeightKg),
+                          decoration: InputDecoration(
+                            labelText: l10n.minWeightKg,
+                          ),
                           keyboardType: TextInputType.number,
                         ),
                       ),
@@ -113,49 +124,67 @@ class _CreateSalePageState extends State<CreateSalePage> {
                       Expanded(
                         child: TextFormField(
                           controller: _priceController,
-                          decoration: InputDecoration(labelText: l10n.lot_pricePerKg),
+                          decoration: InputDecoration(
+                            labelText: l10n.lot_pricePerKg,
+                          ),
                           keyboardType: TextInputType.number,
-                          validator: (val) => val == null || val.isEmpty ? l10n.fieldRequired : null,
+                          validator:
+                              (val) =>
+                                  val == null || val.isEmpty
+                                      ? l10n.fieldRequired
+                                      : null,
                         ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 24),
-                  Text(l10n.sales_animals, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  Text(
+                    l10n.sales_animals,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   Row(
                     children: [
                       Expanded(
                         child: TextFormField(
                           controller: _cattleSearchController,
-                          decoration: InputDecoration(labelText: l10n.scanEnterNumber),
+                          decoration: InputDecoration(
+                            labelText: l10n.scanEnterNumber,
+                          ),
                         ),
                       ),
                       IconButton(
                         icon: const Icon(Icons.search),
                         onPressed: () {
                           if (_cattleSearchController.text.isNotEmpty) {
-                            context.read<SalesBloc>().add(SearchCattleByNumber(_cattleSearchController.text));
+                            context.read<SalesBloc>().add(
+                              SearchCattleByNumber(
+                                _cattleSearchController.text,
+                              ),
+                            );
                           }
                         },
-                      )
+                      ),
                     ],
                   ),
+
                   // List of added cattle would go here...
-                  
                   const SizedBox(height: 32),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-                         if (_formKey.currentState!.validate()) {
-                           // Construct SaleModel
-                           // double totalAmt = ...
-                           // context.read<SalesBloc>().add(SaveSaleTransaction(model));
-                         }
+                        if (_formKey.currentState!.validate()) {
+                          // Construct SaleModel
+                          // double totalAmt = ...
+                          // context.read<SalesBloc>().add(SaveSaleTransaction(model));
+                        }
                       },
                       child: Text(l10n.sales_save),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
@@ -183,7 +212,7 @@ class _CreateSalePageState extends State<CreateSalePage> {
       ),
     );
   }
-  
+
   @override
   void dispose() {
     _minWeightController.dispose();

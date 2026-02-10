@@ -1,12 +1,10 @@
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/shared/features/brands/models/brand_model.dart';
-import 'package:finca_app_frontend/modules/shared/features/brands/services/brand_api_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/bloc/massive_event_bloc.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_type.dart';
 import 'package:finca_app_frontend/modules/shared/features/brands/widgets/create_brand_dialog.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
-import 'package:finca_app_frontend/core/utils/logger.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EventDetailForm extends StatefulWidget {
@@ -88,7 +86,7 @@ class _EventDetailFormState extends State<EventDetailForm> {
             mainAxisSize: MainAxisSize.min,
             children: [
               DropdownButtonFormField<String>(
-                value: selectedType,
+                initialValue: selectedType,
                 onChanged: (value) {
                   if (value == null) return;
                   setState(() => selectedType = value);
@@ -142,7 +140,7 @@ class _EventDetailFormState extends State<EventDetailForm> {
               ],
               if (selectedType == SimpleEventType.brand.name) ...[
                 DropdownButtonFormField<BrandModel>(
-                  value: selectedBrandObject,
+                  initialValue: selectedBrandObject,
                   onChanged:
                       (value) => setState(() => selectedBrandObject = value),
                   items:
@@ -166,7 +164,7 @@ class _EventDetailFormState extends State<EventDetailForm> {
                     child: Center(
                       child: Image.memory(
                         base64Decode(
-                          selectedBrandObject!.imageBase64!.split(',').last,
+                          selectedBrandObject!.imageBase64.split(',').last,
                         ),
                         fit: BoxFit.contain,
                       ),

@@ -156,8 +156,8 @@ class LotsSectionState extends State<LotsSection> {
         _HeaderCell(label: l10n.lot_origin, width: 120),
         _HeaderCell(label: l10n.lot_gender, width: 70),
         _HeaderCell(label: l10n.lot_cattleCount, width: 40),
-        _HeaderCell(label: l10n.lot_avgWeight, width: 70),
         _HeaderCell(label: l10n.lot_totalWeight, width: 60),
+        _HeaderCell(label: l10n.lot_avgWeight, width: 70),
         _HeaderCell(label: l10n.lot_pricePerKg, width: 70),
         _HeaderCell(label: l10n.lot_pricePerHead, width: 90),
         _HeaderCell(label: l10n.lot_totalValue, width: 90),
@@ -185,11 +185,11 @@ class LotsSectionState extends State<LotsSection> {
       children: [
         Row(
           children: [
-            const _HeaderCell(label: '', width: 248),
+            const _HeaderCell(label: '', width: 184),
             _HeaderCell(label: summaryAverageTitle, width: 70),
             const _HeaderCell(label: '', width: 40),
-            _ValueCell(value: numberFormat.format(avgWeight), width: 70),
             const _HeaderCell(label: '', width: 60),
+            _ValueCell(value: numberFormat.format(avgWeight), width: 70),
             _ValueCell(value: numberFormat.format(avgPrice), width: 70),
             const _HeaderCell(label: '', width: 90),
             const _HeaderCell(label: '', width: 90),
@@ -198,11 +198,11 @@ class LotsSectionState extends State<LotsSection> {
         ),
         Row(
           children: [
-            const _HeaderCell(label: '', width: 248),
+            const _HeaderCell(label: '', width: 184),
             _HeaderCell(label: summaryTotalTitle, width: 70),
             _ValueCell(value: numberFormat.format(totalCattle), width: 40),
-            const _HeaderCell(label: '', width: 70),
             _ValueCell(value: numberFormat.format(totalWeight), width: 60),
+            const _HeaderCell(label: '', width: 70),
             const _HeaderCell(label: '', width: 70),
             const _HeaderCell(label: '', width: 90),
             //_ValueCell(value: numberFormat.format(totalValue), width: 90),
