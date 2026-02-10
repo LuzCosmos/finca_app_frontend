@@ -1,3 +1,4 @@
+import 'package:finca_app_frontend/modules/web/features/cattle_purchase/models/purchase_status.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
@@ -106,9 +107,13 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
           idMassiveEvent = massEvent['id'];
           final simpleEventsList = massEvent['simpleEvents'] as List<dynamic>?;
           if (simpleEventsList != null) {
-            simpleEvents = simpleEventsList
-                .map((e) => SimpleEventModel.fromJson(e as Map<String, dynamic>))
-                .toList();
+            simpleEvents =
+                simpleEventsList
+                    .map(
+                      (e) =>
+                          SimpleEventModel.fromJson(e as Map<String, dynamic>),
+                    )
+                    .toList();
           }
         }
         // Load reception date if it exists
@@ -119,7 +124,8 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
         // Set default selected lot (first lot if available)
         final lots = _getLots();
         // Set default selected lot (first lot if available), but preserve selection if valid
-        if (selectedLotId != null && !lots.any((l) => l['id'] == selectedLotId)) {
+        if (selectedLotId != null &&
+            !lots.any((l) => l['id'] == selectedLotId)) {
           selectedLotId = null;
         }
         if (selectedLotId == null && lots.isNotEmpty) {
@@ -164,6 +170,7 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
   }
 
   Future<void> _assignLot(String cattleId, String lotId) async {
+    final l10n = AppLocalizations.of(context)!; 
     try {
       await api.reassignLot(
         purchaseId: widget.purchaseId,
@@ -171,7 +178,7 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
         lotId: lotId,
       );
       await _load();
-      setGlobalSuccess('Lot assigned successfully');
+      setGlobalSuccess(l10n.lotAssignedSuccessfully);
     } catch (e) {
       setGlobalError(e.toString());
     }
@@ -181,20 +188,25 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
     final l10n = AppLocalizations.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.purchaseStatusReceived), // "Received" or "Close Purchase"
-        content: const Text('¿Estás seguro de marcar esta compra como recibida?'), // Localize if possible, hardcoded for now as user requested feature "cerrar compra"
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(l10n.cancel),
+      builder:
+          (context) => AlertDialog(
+            title: Text(
+              l10n.purchaseStatusReceived,
+            ), // "Received" or "Close Purchase"
+            content: const Text(
+              '¿Estás seguro de marcar esta compra como recibida?',
+            ), // Localize if possible, hardcoded for now as user requested feature "cerrar compra"
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text(l10n.cancel),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: Text(l10n.accept),
+              ),
+            ],
           ),
-          FilledButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text(l10n.accept),
-          ),
-        ],
-      ),
     );
 
     if (confirmed == true) {
@@ -232,22 +244,25 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
   List<Map<String, dynamic>> _getCattleForLot(String? lotId) {
     if (lotId == null || receptionData == null) return [];
     final lots = _getLots();
-    final lot = lots.firstWhere(
-      (l) => l['id'] == lotId,
-      orElse: () => {},
-    );
+    final lot = lots.firstWhere((l) => l['id'] == lotId, orElse: () => {});
     if (lot.isEmpty) return [];
     return (lot['cattle'] as List<dynamic>).cast<Map<String, dynamic>>();
   }
 
   List<String> _getColors() {
     if (receptionData == null) return [];
-    return (receptionData!['colors'] as List?)?.map((e) => e.toString()).toList() ?? [];
+    return (receptionData!['colors'] as List?)
+            ?.map((e) => e.toString())
+            .toList() ??
+        [];
   }
 
   List<String> _getCharacteristics() {
     if (receptionData == null) return [];
-    return (receptionData!['characteristics'] as List?)?.map((e) => e.toString()).toList() ?? [];
+    return (receptionData!['characteristics'] as List?)
+            ?.map((e) => e.toString())
+            .toList() ??
+        [];
   }
 
   @override
@@ -321,29 +336,33 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
                         MessageBanner.success(_globalSuccessMessage!),
                       if (_globalInfoMessage != null)
                         MessageBanner.info(_globalInfoMessage!),
-
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16.0,
-                          vertical: 8.0,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            FilledButton.icon(
-                              onPressed: () => _confirmClosePurchase(context),
-                              icon: const Icon(Icons.check_circle),
-                              label: Text(
-                                l10n.purchaseStatusReceived,
-                              ), // Or "Cerrar Compra" if localized
-                              style: FilledButton.styleFrom(
-                                backgroundColor: Colors.green,
-                                foregroundColor: Colors.white,
+                      if (receptionData!['reception']['purchaseStatus'] ==
+                              PurchaseStatus.open.name &&
+                          receptionData!['reception']['receivedCattleCount'] ==
+                              receptionData!['reception']['purchaseCattleCount']) ...[
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16.0,
+                            vertical: 8.0,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              FilledButton.icon(
+                                onPressed: () => _confirmClosePurchase(context),
+                                icon: const Icon(Icons.check_circle),
+                                label: Text(
+                                  l10n.purchaseStatusReceived,
+                                ), // Or "Cerrar Compra" if localized
+                                style: FilledButton.styleFrom(
+                                  backgroundColor: Colors.green,
+                                  foregroundColor: Colors.white,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
+                      ],
 
                       // Top Section: Purchase Info + Form + Event Config Panel
                       SizedBox(
@@ -377,8 +396,10 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
                                         setGlobalError(errorMsg);
                                       },
                                     ),
-                                    if (receptionData!['reception']['status'] != 'RECEIVED' &&
-                                        receptionData!['reception']['receivedCattleCount'] < receptionData!['reception']['purchaseCattleCount']) ...[
+                                    if (receptionData!['reception']['purchaseStatus'] ==
+                                            PurchaseStatus.open.name &&
+                                        receptionData!['reception']['receivedCattleCount'] <
+                                            receptionData!['reception']['purchaseCattleCount']) ...[
                                       const SizedBox(height: 5),
                                       ReceiveCattleForm(
                                         currentNumber: currentCattleNumber,
@@ -398,11 +419,48 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
                                         onError: setGlobalError,
                                       ),
                                     ],
-                                    if (receptionData!['reception']['receivedCattleCount'] >= receptionData!['reception']['purchaseCattleCount']) ...[
-                                      const SizedBox(height: 5),
-                                      Text(
-                                        l10n.allPurchasedCattleReceived,
-                                        style: Theme.of(context).textTheme.titleMedium,
+                                    if (receptionData!['reception']['receivedCattleCount'] >=
+                                        receptionData!['reception']['purchaseCattleCount']) ...[
+                                      const SizedBox(height: 8),
+                                      Container(
+                                        width: double.infinity,
+                                        padding: const EdgeInsets.all(12),
+                                        decoration: BoxDecoration(
+                                          color: Colors.green.withValues(
+                                            alpha: 0.08,
+                                          ),
+                                          border: Border.all(
+                                            color: Colors.green.withValues(
+                                              alpha: 0.4,
+                                            ),
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.check_circle,
+                                              color: Colors.green.shade700,
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Expanded(
+                                              child: Text(
+                                                l10n.allPurchasedCattleReceived,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyMedium
+                                                    ?.copyWith(
+                                                      color:
+                                                          Colors.green.shade800,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                    ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ],
                                   ],

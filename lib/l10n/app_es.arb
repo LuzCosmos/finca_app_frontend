@@ -414,6 +414,7 @@
   "label_totalCattle": "Total Reses",
 
   "allPurchasedCattleReceived": "Todos los animales comprados han sido recibidos",
+  "lotAssignedSuccessfully": "Lote asignado exitosamente",
 
   "error_enterCattleNumberWeight": "Por favor ingrese el número de ganado y el peso",
   "error_enterValidWeight": "Por favor ingrese un peso válido",

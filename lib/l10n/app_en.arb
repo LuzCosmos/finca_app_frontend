@@ -438,6 +438,7 @@
   "label_totalCattle": "Total Cattle",
 
   "allPurchasedCattleReceived": "All purchased cattle have been received",
+  "lotAssignedSuccessfully": "Lot assigned successfully",
 
   "error_enterCattleNumberWeight": "Please enter cattle number and weight",
   "error_enterValidWeight": "Please enter a valid weight",

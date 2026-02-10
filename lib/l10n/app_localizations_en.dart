@@ -1071,6 +1071,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'All purchased cattle have been received';
 
   @override
+  String get lotAssignedSuccessfully => 'Lot assigned successfully';
+
+  @override
   String get error_enterCattleNumberWeight =>
       'Please enter cattle number and weight';
 
