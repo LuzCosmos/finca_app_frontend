@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:finca_app_frontend/core/utils/date_time_helper.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/web/features/purchase_reception/widgets/assign_lot_dialog.dart';
 
@@ -282,7 +283,7 @@ class _UnassignedCattleListState extends State<UnassignedCattleList> {
                 if (event['appliedAt'] != null) ...[
                   const SizedBox(height: 4),
                   Text(
-                    DateTime.parse(event['appliedAt']).toString().substring(0, 16),
+                    DateTimeHelper.formatLocalDateTime(event['appliedAt']),
                     style: TextStyle(
                       fontSize: 11,
                       color: Theme.of(context).colorScheme.onSurfaceVariant,

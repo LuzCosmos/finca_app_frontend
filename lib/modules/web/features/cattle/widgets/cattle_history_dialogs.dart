@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:finca_app_frontend/core/utils/date_time_helper.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/web/features/cattle/services/cattle_master_service.dart';
 import 'package:finca_app_frontend/modules/web/features/cattle/widgets/add_medication_dialog.dart';
@@ -26,9 +26,7 @@ class WeightHistoryDialog extends StatelessWidget {
               separatorBuilder: (ctx, i) => const Divider(),
               itemBuilder: (ctx, i) {
                 final item = history[i];
-                final dateStr = item['date'] != null 
-                    ? DateFormat('yyyy-MM-dd').format(DateTime.parse(item['date']))
-                    : '-';
+                final dateStr = DateTimeHelper.formatLocalDate(item['date']);
                 final weight = item['weight']?.toString() ?? '-';
                 
                 return ListTile(
@@ -126,9 +124,9 @@ class _MedicationHistoryDialogState extends State<MedicationHistoryDialog> {
               separatorBuilder: (ctx, i) => const Divider(),
               itemBuilder: (ctx, i) {
                 final item = _history[i];
-                final dateStr = item['appliedAt'] != null 
-                    ? DateFormat('yyyy-MM-dd HH:mm').format(DateTime.parse(item['appliedAt']))
-                    : '-';
+                final dateStr = DateTimeHelper.formatLocalDateTime(
+                  item['appliedAt'],
+                );
                 final product = item['medicationName'] ?? '-';
                 final dosage = item['dosage'] ?? '-';
                 final route = item['route'] ?? '-';
