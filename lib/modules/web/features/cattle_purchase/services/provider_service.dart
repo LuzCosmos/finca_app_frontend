@@ -3,9 +3,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/modules/web/features/cattle_purchase/models/provider.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
-import 'package:finca_app_frontend/core/utils/logger.dart';
 import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 
 class ProviderService {
@@ -48,7 +46,7 @@ class ProviderService {
   Future<ProviderModel> create({
     required String name,
     required String nit,
-    required String type
+    required String type,
   }) async {
     final token = await SessionService.getToken();
     final url = Uri.parse(baseUrl);

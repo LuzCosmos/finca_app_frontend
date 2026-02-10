@@ -10,7 +10,6 @@ import 'package:finca_app_frontend/modules/shared/features/massiveEvent/bloc/mas
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/bloc/massive_event_state.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/animal_simple_event_table_row_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_model.dart';
-import 'package:finca_app_frontend/modules/shared/features/massiveEvent/services/massive_event_api_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/widgets/event_config_panel.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/widgets/animal_entry_form.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/widgets/processed_animals_table.dart';

@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import '../models/sale_model.dart';
-import '../models/sale_detail_model.dart';
 
 abstract class SalesEvent extends Equatable {
   const SalesEvent();
@@ -17,7 +16,6 @@ class SearchCattleByNumber extends SalesEvent {
   @override
   List<Object?> get props => [number];
 }
-
 
 class SaveSaleTransaction extends SalesEvent {
   final SaleModel sale;

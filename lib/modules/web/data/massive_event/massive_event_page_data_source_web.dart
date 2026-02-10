@@ -6,7 +6,6 @@ import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/a
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/massive_event_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/services/massive_event_api_service.dart';
-import 'package:finca_app_frontend/core/utils/logger.dart';
 
 class MassiveEventPageDataSourceWeb implements IMassiveEventPageDataSource {
   @override

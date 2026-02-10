@@ -186,7 +186,7 @@ class LotInputState extends State<LotInput> {
         ),
         _buildCell(_originController, '', width: 120),
         _buildDropdownCell(
-          width: 85,
+          width: 70,
           value: _selectedGender,
           items: CattleGender.values,
           onChanged: (value) {
@@ -211,7 +211,6 @@ class LotInputState extends State<LotInput> {
           ),
           customRegex: RegexPatterns.permissivePositiveInteger,
         ),
-        _buildReadOnlyCell(_avgWeightController, '', width: 70),
         _buildCell(
           _totalWeightController,
           '',
@@ -224,6 +223,7 @@ class LotInputState extends State<LotInput> {
           ),
           customRegex: RegexPatterns.permissivePositiveDecimalTwoDigits,
         ),
+        _buildReadOnlyCell(_avgWeightController, '', width: 70),
         _buildCell(
           _pricePerKgController,
           '',

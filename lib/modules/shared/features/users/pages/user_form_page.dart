@@ -63,7 +63,7 @@ class _UserFormPageState extends State<UserFormPage> {
       setState(() {
         _availableRoles = roles;
         _loadingRoles = false;
-        
+
         if (widget.user != null && widget.user!.roles.isNotEmpty) {
           // Preselect role if editing
           // Assumes single role selection for now as per "roleIds" array request but dropdown implies separate handling
@@ -71,18 +71,21 @@ class _UserFormPageState extends State<UserFormPage> {
           // I will support single role selection in UI for now, sending array of 1 ID.
           final userRoleId = widget.user!.roles.first.id;
           try {
-             _selectedRole = roles.firstWhere((r) => r.id == userRoleId);
+            _selectedRole = roles.firstWhere((r) => r.id == userRoleId);
           } catch (_) {}
         }
       });
     } on ApiException catch (e) {
       if (mounted) {
         final code = ApiExceptionCode.values.firstWhere(
-           (el) => el.name == (e.code),
-           orElse: () => ApiExceptionCode.unknownError,
+          (el) => el.name == (e.code),
+          orElse: () => ApiExceptionCode.unknownError,
         );
         setState(() {
-          _error = code.asText(context, objectName: AppLocalizations.of(context)!.role); // roles or generic?
+          _error = code.asText(
+            context,
+            objectName: AppLocalizations.of(context)!.role,
+          ); // roles or generic?
           _loadingRoles = false;
         });
       }
@@ -100,7 +103,7 @@ class _UserFormPageState extends State<UserFormPage> {
     if (!_formKey.currentState!.validate()) return;
 
     if (_selectedRole == null) {
-      setState(() => _error = AppLocalizations.of(context)!.fieldRequired); 
+      setState(() => _error = AppLocalizations.of(context)!.fieldRequired);
       return;
     }
 
@@ -124,10 +127,12 @@ class _UserFormPageState extends State<UserFormPage> {
         data['password'] = _passwordCtrl.text;
         await _api.create(data);
         if (mounted) {
-           ScaffoldMessenger.of(context).showSnackBar(
-             SnackBar(content: Text(AppLocalizations.of(context)!.userCreatedSuccess)),
-           );
-           Navigator.pop(context, true);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(AppLocalizations.of(context)!.userCreatedSuccess),
+            ),
+          );
+          Navigator.pop(context, true);
         }
       } else {
         // Update
@@ -136,19 +141,24 @@ class _UserFormPageState extends State<UserFormPage> {
         }
         await _api.update(widget.user!.id, data);
         if (mounted) {
-           ScaffoldMessenger.of(context).showSnackBar(
-             SnackBar(content: Text(AppLocalizations.of(context)!.userUpdatedSuccess)),
-           );
-           Navigator.pop(context, true);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(AppLocalizations.of(context)!.userUpdatedSuccess),
+            ),
+          );
+          Navigator.pop(context, true);
         }
       }
     } on ApiException catch (e) {
       if (mounted) {
         final code = ApiExceptionCode.values.firstWhere(
-           (el) => el.name == (e.code),
-           orElse: () => ApiExceptionCode.unknownError,
+          (el) => el.name == (e.code),
+          orElse: () => ApiExceptionCode.unknownError,
         );
-        final errorText = code.asText(context, objectName: AppLocalizations.of(context)!.users);
+        final errorText = code.asText(
+          context,
+          objectName: AppLocalizations.of(context)!.users,
+        );
         setState(() => _error = errorText);
       }
       print('User form error: $e'); // Log to console
@@ -176,18 +186,19 @@ class _UserFormPageState extends State<UserFormPage> {
             children: [
               if (_error != null) MessageBanner.error(_error!),
               const SizedBox(height: 16),
-              
+
               TextFormField(
                 controller: _usernameCtrl,
                 decoration: InputDecoration(labelText: t.username),
                 validator: (v) {
                   if (v == null || v.isEmpty) return t.fieldRequired;
-                  if (v.length < 5 || v.length > 50) return t.user_usernameLengthError;
+                  if (v.length < 5 || v.length > 50)
+                    return t.user_usernameLengthError;
                   return null;
                 },
               ),
               const SizedBox(height: 16),
-              
+
               TextFormField(
                 controller: _firstNameCtrl,
                 decoration: InputDecoration(labelText: t.firstName),
@@ -198,7 +209,7 @@ class _UserFormPageState extends State<UserFormPage> {
                 },
               ),
               const SizedBox(height: 16),
-              
+
               TextFormField(
                 controller: _lastNameCtrl,
                 decoration: InputDecoration(labelText: t.lastName),
@@ -217,7 +228,8 @@ class _UserFormPageState extends State<UserFormPage> {
                 validator: (v) {
                   if (v == null || v.isEmpty) return t.fieldRequired;
                   // Basic email validation
-                  if (!v.contains('@') || !v.contains('.')) return 'Invalid email';
+                  if (!v.contains('@') || !v.contains('.'))
+                    return 'Invalid email';
                   return null;
                 },
               ),
@@ -227,14 +239,12 @@ class _UserFormPageState extends State<UserFormPage> {
                 const Center(child: CircularProgressIndicator())
               else
                 DropdownButtonFormField<RoleModel>(
-                  value: _selectedRole,
+                  initialValue: _selectedRole,
                   decoration: InputDecoration(labelText: t.role),
-                  items: _availableRoles.map((r) {
-                    return DropdownMenuItem(
-                      value: r,
-                      child: Text(r.name),
-                    );
-                  }).toList(),
+                  items:
+                      _availableRoles.map((r) {
+                        return DropdownMenuItem(value: r, child: Text(r.name));
+                      }).toList(),
                   onChanged: (v) => setState(() => _selectedRole = v),
                   validator: (v) => v == null ? t.fieldRequired : null,
                 ),
@@ -247,7 +257,8 @@ class _UserFormPageState extends State<UserFormPage> {
                   obscureText: true,
                   validator: (v) {
                     if (v == null || v.isEmpty) return t.fieldRequired;
-                    if (v.length < 8 || v.length > 50) return t.user_passwordLengthError;
+                    if (v.length < 8 || v.length > 50)
+                      return t.user_passwordLengthError;
                     return null;
                   },
                 ),
@@ -257,15 +268,17 @@ class _UserFormPageState extends State<UserFormPage> {
                   decoration: InputDecoration(labelText: t.confirmPassword),
                   obscureText: true,
                   validator: (v) {
-                     if (v != _passwordCtrl.text) return t.passwordMismatch;
-                     return null;
+                    if (v != _passwordCtrl.text) return t.passwordMismatch;
+                    return null;
                   },
                 ),
               ],
               if (isEditing) ...[
                 TextFormField(
                   controller: _passwordCtrl,
-                  decoration: InputDecoration(labelText: '${t.password} (${t.optional})'),
+                  decoration: InputDecoration(
+                    labelText: '${t.password} (${t.optional})',
+                  ),
                   obscureText: true,
                   onChanged: (_) => setState(() {}),
                 ),
@@ -276,20 +289,21 @@ class _UserFormPageState extends State<UserFormPage> {
                     decoration: InputDecoration(labelText: t.confirmPassword),
                     obscureText: true,
                     validator: (v) {
-                       if (v != _passwordCtrl.text) return t.passwordMismatch;
-                       return null;
+                      if (v != _passwordCtrl.text) return t.passwordMismatch;
+                      return null;
                     },
                   ),
                   const SizedBox(height: 16),
                 ],
               ],
-              
+
               const SizedBox(height: 24),
               FilledButton(
                 onPressed: _saving ? null : _save,
-                child: _saving 
-                  ? const CircularProgressIndicator(color: Colors.white)
-                  : Text(t.save),
+                child:
+                    _saving
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : Text(t.save),
               ),
             ],
           ),

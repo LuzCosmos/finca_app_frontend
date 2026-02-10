@@ -1,7 +1,5 @@
 import 'package:finca_app_frontend/core/data/database/repositories/simple_event_repository.dart';
 import 'package:finca_app_frontend/core/data/database/repositories/massive_event_repository.dart';
-import 'package:finca_app_frontend/core/data/mappers/simple_event_model_mapper.dart';
-import 'package:finca_app_frontend/core/services/network_service.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/brands/models/brand_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/brands/services/brand_api_service.dart';
@@ -139,7 +137,7 @@ class MassiveEventPageDataSourceMobile implements IMassiveEventPageDataSource {
       idMassiveEvent: idMassiveEvent,
     );
   }
-  
+
   @override
   Future<void> updateSimpleEvent({
     required SimpleEventModel simpleEvent,

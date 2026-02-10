@@ -1,12 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/animal_simple_event_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_model.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/massive_event_model.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
-import 'package:finca_app_frontend/core/utils/logger.dart';
 import 'dart:io';
 import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 
@@ -213,10 +211,7 @@ class MassiveEventApiService {
         throw Exception('⚠️ data inválido para SimpleEvent: $e');
       }
     }
-    final payload = {
-      "data": decodedJson,
-      "isActive": simpleEvent.isActive,
-    };
+    final payload = {"data": decodedJson, "isActive": simpleEvent.isActive};
     var response;
     try {
       response = await http.put(
@@ -245,11 +240,12 @@ class MassiveEventApiService {
         final simpleEventSaved = SimpleEventModel.fromJson(data);
         return simpleEventSaved;
       } catch (e) {
-        throw Exception('⚠️ Respuesta JSON inválida al actualizar SimpleEvent: $e');
+        throw Exception(
+          '⚠️ Respuesta JSON inválida al actualizar SimpleEvent: $e',
+        );
       }
     } else {
       BasicApiService.manageNotSuccessResponseCode(response);
-      throw ApiException('unknownError', 'Error desconocido al actualizar SimpleEvent');
     }
   }
 }

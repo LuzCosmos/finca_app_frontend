@@ -1,8 +1,7 @@
+import 'package:finca_app_frontend/modules/web/features/cattle_purchase/models/purchase_status.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
-import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'package:finca_app_frontend/modules/web/features/purchase_reception/services/reception_api_service.dart';
 import 'package:finca_app_frontend/modules/shared/widgets/message_banner.dart';
 import 'package:finca_app_frontend/modules/shared/widgets/finca_scaffold.dart';
@@ -108,9 +107,13 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
           idMassiveEvent = massEvent['id'];
           final simpleEventsList = massEvent['simpleEvents'] as List<dynamic>?;
           if (simpleEventsList != null) {
-            simpleEvents = simpleEventsList
-                .map((e) => SimpleEventModel.fromJson(e as Map<String, dynamic>))
-                .toList();
+            simpleEvents =
+                simpleEventsList
+                    .map(
+                      (e) =>
+                          SimpleEventModel.fromJson(e as Map<String, dynamic>),
+                    )
+                    .toList();
           }
         }
         // Load reception date if it exists
@@ -121,7 +124,8 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
         // Set default selected lot (first lot if available)
         final lots = _getLots();
         // Set default selected lot (first lot if available), but preserve selection if valid
-        if (selectedLotId != null && !lots.any((l) => l['id'] == selectedLotId)) {
+        if (selectedLotId != null &&
+            !lots.any((l) => l['id'] == selectedLotId)) {
           selectedLotId = null;
         }
         if (selectedLotId == null && lots.isNotEmpty) {
@@ -141,31 +145,32 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
   Future<void> _receiveCattle(Map<String, dynamic> cattleData) async {
     final l10n = AppLocalizations.of(context)!;
     // Let errors bubble up to form
-      await api.receiveOne(
-        receptionId: receptionData!['reception']['id'],
-        idPurchase: receptionData!['reception']['purchaseId'],
-        number: cattleData['number'],
-        receivedWeight: cattleData['receivedWeight'],
-        purchaseWeight: cattleData['purchaseWeight'],
-        purchasePrice: cattleData['purchasePrice'],
-        idLot: cattleData['idLot'],
-        hasHorn: cattleData['hasHorns'],
-        castrated: cattleData['isCastrated'],
-        color: cattleData['color'],
-        characteristics: cattleData['characteristics'],
-        eartag: cattleData['eartag'],
-        idDevice: cattleData['idDevice'],
-        idProvider: receptionData!['reception']['providerId'],
-        comments: cattleData['comments'],
-        gender:cattleData['gender'],
-        age:cattleData['age'],
-        idSimpleEvents: cattleData['idSimpleEvents'],
-      );
-      await _load();
-      setGlobalSuccess(l10n.receivedOk);
+    await api.receiveOne(
+      receptionId: receptionData!['reception']['id'],
+      idPurchase: receptionData!['reception']['purchaseId'],
+      number: cattleData['number'],
+      receivedWeight: cattleData['receivedWeight'],
+      purchaseWeight: cattleData['purchaseWeight'],
+      purchasePrice: cattleData['purchasePrice'],
+      idLot: cattleData['idLot'],
+      hasHorn: cattleData['hasHorns'],
+      castrated: cattleData['isCastrated'],
+      color: cattleData['color'],
+      characteristics: cattleData['characteristics'],
+      eartag: cattleData['eartag'],
+      idDevice: cattleData['idDevice'],
+      idProvider: receptionData!['reception']['providerId'],
+      comments: cattleData['comments'],
+      gender: cattleData['gender'],
+      age: cattleData['age'],
+      idSimpleEvents: cattleData['idSimpleEvents'],
+    );
+    await _load();
+    setGlobalSuccess(l10n.receivedOk);
   }
 
   Future<void> _assignLot(String cattleId, String lotId) async {
+    final l10n = AppLocalizations.of(context)!; 
     try {
       await api.reassignLot(
         purchaseId: widget.purchaseId,
@@ -173,7 +178,7 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
         lotId: lotId,
       );
       await _load();
-      setGlobalSuccess('Lot assigned successfully');
+      setGlobalSuccess(l10n.lotAssignedSuccessfully);
     } catch (e) {
       setGlobalError(e.toString());
     }
@@ -183,20 +188,25 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
     final l10n = AppLocalizations.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.purchaseStatusReceived), // "Received" or "Close Purchase"
-        content: const Text('¿Estás seguro de marcar esta compra como recibida?'), // Localize if possible, hardcoded for now as user requested feature "cerrar compra"
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(l10n.cancel),
+      builder:
+          (context) => AlertDialog(
+            title: Text(
+              l10n.purchaseStatusReceived,
+            ), // "Received" or "Close Purchase"
+            content: const Text(
+              '¿Estás seguro de marcar esta compra como recibida?',
+            ), // Localize if possible, hardcoded for now as user requested feature "cerrar compra"
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text(l10n.cancel),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: Text(l10n.accept),
+              ),
+            ],
           ),
-          FilledButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text(l10n.accept),
-          ),
-        ],
-      ),
     );
 
     if (confirmed == true) {
@@ -212,7 +222,6 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
       // For now just show success
       // Automatically navigate back or refresh?
       // Navigator.of(context).pop(); // Maybe?
-      
       // Refresh to update status variable if we were tracking it (we aren't tracking status in this page explicitly yet)
       _load();
     } catch (e) {
@@ -235,28 +244,30 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
   List<Map<String, dynamic>> _getCattleForLot(String? lotId) {
     if (lotId == null || receptionData == null) return [];
     final lots = _getLots();
-    final lot = lots.firstWhere(
-      (l) => l['id'] == lotId,
-      orElse: () => {},
-    );
+    final lot = lots.firstWhere((l) => l['id'] == lotId, orElse: () => {});
     if (lot.isEmpty) return [];
     return (lot['cattle'] as List<dynamic>).cast<Map<String, dynamic>>();
   }
 
   List<String> _getColors() {
     if (receptionData == null) return [];
-    return (receptionData!['colors'] as List?)?.map((e) => e.toString()).toList() ?? [];
+    return (receptionData!['colors'] as List?)
+            ?.map((e) => e.toString())
+            .toList() ??
+        [];
   }
 
   List<String> _getCharacteristics() {
     if (receptionData == null) return [];
-    return (receptionData!['characteristics'] as List?)?.map((e) => e.toString()).toList() ?? [];
+    return (receptionData!['characteristics'] as List?)
+            ?.map((e) => e.toString())
+            .toList() ??
+        [];
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
     if (isLoading) {
       return FincaScaffold(
         title: l10n.purchaseReceptionTitle,
@@ -283,9 +294,9 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
     final unassignedCattle = _getUnassignedCattle();
     final selectedCattle = _getCattleForLot(selectedLotId);
     return BlocProvider(
-      create: (context) => MassiveEventBloc(
-        dataSource: MassiveEventPageDataSourceWeb(),
-      ),
+      create:
+          (context) =>
+              MassiveEventBloc(dataSource: MassiveEventPageDataSourceWeb()),
       child: BlocListener<MassiveEventBloc, MassiveEventState>(
         listener: (context, state) {
           if (state is MassiveEventSuccess) {
@@ -305,161 +316,233 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
         },
         child: PopScope(
           canPop: false,
-          onPopInvoked: (didPop) {
+          onPopInvokedWithResult: (didPop, result) {
             if (didPop) return;
-            // Return current reception stats 
+            // Return current reception stats
             Navigator.of(context).pop(receptionData?['reception']);
           },
           child: FincaScaffold(
             title: l10n.purchaseReceptionTitle,
             body: CustomScrollView(
-            slivers: [
-              // Top Section (Scrollable)
-              SliverToBoxAdapter(
-                child: Column(
-                  children: [
-                    // Global messages
-                    if (_globalErrorMessage != null)
-                      MessageBanner.error(_globalErrorMessage!),
-                    if (_globalSuccessMessage != null)
-                      MessageBanner.success(_globalSuccessMessage!),
-                    if (_globalInfoMessage != null)
-                      MessageBanner.info(_globalInfoMessage!),
-
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          FilledButton.icon(
-                            onPressed: () => _confirmClosePurchase(context),
-                            icon: const Icon(Icons.check_circle),
-                            label: Text(l10n.purchaseStatusReceived), // Or "Cerrar Compra" if localized
-                            style: FilledButton.styleFrom(
-                              backgroundColor: Colors.green,
-                              foregroundColor: Colors.white,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-              // Top Section: Purchase Info + Form + Event Config Panel
-                    SizedBox(
-                  height: 450,
-                  child: Row(
+              slivers: [
+                // Top Section (Scrollable)
+                SliverToBoxAdapter(
+                  child: Column(
                     children: [
-                      Expanded(
-                        flex: 2,
-                        child: SingleChildScrollView(
-                          child: Column(
+                      // Global messages
+                      if (_globalErrorMessage != null)
+                        MessageBanner.error(_globalErrorMessage!),
+                      if (_globalSuccessMessage != null)
+                        MessageBanner.success(_globalSuccessMessage!),
+                      if (_globalInfoMessage != null)
+                        MessageBanner.info(_globalInfoMessage!),
+                      if (receptionData!['reception']['purchaseStatus'] ==
+                              PurchaseStatus.open.name &&
+                          receptionData!['reception']['receivedCattleCount'] ==
+                              receptionData!['reception']['purchaseCattleCount']) ...[
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16.0,
+                            vertical: 8.0,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              PurchaseInfoDisplay(
-                                providerName: reception['purchaseProviderName'] ?? '—',
-                                purchaseDate: reception['purchaseDate']?.substring(0, 10) ?? '—',
-                                receptionDate: receptionDate,
-                                initialCattleNumber: currentCattleNumber.isEmpty ? null : currentCattleNumber,
-                                onReceptionDateChanged: (date) {
-                                  setState(() => receptionDate = date);
-                                },
-                                onInitialNumberChanged: (number) {
-                                  setState(() => currentCattleNumber = number);
-                                },
-                                onError: (errorMsg) {
-                                  setGlobalError(errorMsg);
-                                },
-                              ),
-                              const SizedBox(height: 5),
-                              ReceiveCattleForm(
-                                currentNumber: currentCattleNumber,
-                                availableLots: lots,
-                                colors: _getColors(),
-                                characteristics: _getCharacteristics(),
-                                activeEvents: simpleEvents.where((e) => e.isActive).toList(),
-                                onSubmit: _receiveCattle,
-                                onNumberChanged: (number) {
-                                  setState(() => currentCattleNumber = number);
-                                },
-                                onError: setGlobalError,
+                              FilledButton.icon(
+                                onPressed: () => _confirmClosePurchase(context),
+                                icon: const Icon(Icons.check_circle),
+                                label: Text(
+                                  l10n.purchaseStatusReceived,
+                                ), // Or "Cerrar Compra" if localized
+                                style: FilledButton.styleFrom(
+                                  backgroundColor: Colors.green,
+                                  foregroundColor: Colors.white,
+                                ),
                               ),
                             ],
                           ),
                         ),
-                      ),
-                      const VerticalDivider(width: 1),
-                      Expanded(
-                        flex: 1,
-                        child: EventConfigPanel(
-                          key: const ValueKey('eventConfigPanel_reception'),
-                          isWide: true,
-                          eventDate: receptionDate ?? DateTime.now(),
-                          simpleEvents: simpleEvents,
-                          idMassiveEvent: idMassiveEvent,
-                          onMassiveEventCreated: (newId) {
-                            setidMassiveEvent(newId);
-                          },
-                          showError: setGlobalError,
-                          showSuccess: setGlobalSuccess,
-                          showInfo: setGlobalInfo,
-                          onEventsChanged: setEvents,
+                      ],
+
+                      // Top Section: Purchase Info + Form + Event Config Panel
+                      SizedBox(
+                        height: 450,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              flex: 2,
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  children: [
+                                    PurchaseInfoDisplay(
+                                      providerName:
+                                          reception['purchaseProviderName'] ?? '—',
+                                      purchaseDate:
+                                          reception['purchaseDate']?.substring(0, 10) ?? '—',
+                                      receptionDate: receptionDate,
+                                      initialCattleNumber:
+                                          currentCattleNumber.isEmpty
+                                              ? null
+                                              : currentCattleNumber,
+                                      onReceptionDateChanged: (date) {
+                                        setState(() => receptionDate = date);
+                                      },
+                                      onInitialNumberChanged: (number) {
+                                        setState(
+                                          () => currentCattleNumber = number,
+                                        );
+                                      },
+                                      onError: (errorMsg) {
+                                        setGlobalError(errorMsg);
+                                      },
+                                    ),
+                                    if (receptionData!['reception']['purchaseStatus'] ==
+                                            PurchaseStatus.open.name &&
+                                        receptionData!['reception']['receivedCattleCount'] <
+                                            receptionData!['reception']['purchaseCattleCount']) ...[
+                                      const SizedBox(height: 5),
+                                      ReceiveCattleForm(
+                                        currentNumber: currentCattleNumber,
+                                        availableLots: lots,
+                                        colors: _getColors(),
+                                        characteristics: _getCharacteristics(),
+                                        activeEvents:
+                                            simpleEvents
+                                                .where((e) => e.isActive)
+                                                .toList(),
+                                        onSubmit: _receiveCattle,
+                                        onNumberChanged: (number) {
+                                          setState(
+                                            () => currentCattleNumber = number,
+                                          );
+                                        },
+                                        onError: setGlobalError,
+                                      ),
+                                    ],
+                                    if (receptionData!['reception']['receivedCattleCount'] >=
+                                        receptionData!['reception']['purchaseCattleCount']) ...[
+                                      const SizedBox(height: 8),
+                                      Container(
+                                        width: double.infinity,
+                                        padding: const EdgeInsets.all(12),
+                                        decoration: BoxDecoration(
+                                          color: Colors.green.withValues(
+                                            alpha: 0.08,
+                                          ),
+                                          border: Border.all(
+                                            color: Colors.green.withValues(
+                                              alpha: 0.4,
+                                            ),
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.check_circle,
+                                              color: Colors.green.shade700,
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Expanded(
+                                              child: Text(
+                                                l10n.allPurchasedCattleReceived,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyMedium
+                                                    ?.copyWith(
+                                                      color:
+                                                          Colors.green.shade800,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                    ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const VerticalDivider(width: 1),
+                            Expanded(
+                              flex: 1,
+                              child: EventConfigPanel(
+                                key: const ValueKey(
+                                  'eventConfigPanel_reception',
+                                ),
+                                isWide: true,
+                                eventDate: receptionDate ?? DateTime.now(),
+                                simpleEvents: simpleEvents,
+                                idMassiveEvent: idMassiveEvent,
+                                onMassiveEventCreated: (newId) {
+                                  setidMassiveEvent(newId);
+                                },
+                                showError: setGlobalError,
+                                showSuccess: setGlobalSuccess,
+                                showInfo: setGlobalInfo,
+                                onEventsChanged: setEvents,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
                   ),
-                    ),
-                  ],
                 ),
-              ),
-              // Bottom Section (Fills remaining space)
-              SliverFillRemaining(
-                hasScrollBody: true,
-                child: Column(
-                  children: [
-                    const Divider(height: 1),
-                    Flexible(
-                      flex: unassignedCattle.isNotEmpty ? 6 : 1,
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.4,
-                            child: LotsTable(
-                              lots: lots,
-                              selectedLotId: selectedLotId,
-                              onLotSelected: (lotId) {
-                                setState(() => selectedLotId = lotId);
-                              },
-                            ),
-                          ),
-                          const VerticalDivider(width: 1),
-                          Expanded(
-                            child: CattleListWithEvents(
-                              cattle: selectedCattle,
-                              availableLots: lots,
-                              onAssignLot: _assignLot,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    if (unassignedCattle.isNotEmpty) ...[
+                // Bottom Section (Fills remaining space)
+                SliverFillRemaining(
+                  hasScrollBody: true,
+                  child: Column(
+                    children: [
                       const Divider(height: 1),
-                      // 👇 En vez de Expanded: Flexible + scroll interno
                       Flexible(
-                        flex: 4,
-                        child: UnassignedCattleList(
-                          cattle: unassignedCattle,
-                          availableLots: lots,
-                          onAssignLot: _assignLot,
+                        flex: unassignedCattle.isNotEmpty ? 6 : 1,
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.4,
+                              child: LotsTable(
+                                lots: lots,
+                                selectedLotId: selectedLotId,
+                                onLotSelected: (lotId) {
+                                  setState(() => selectedLotId = lotId);
+                                },
+                              ),
+                            ),
+                            const VerticalDivider(width: 1),
+                            Expanded(
+                              child: CattleListWithEvents(
+                                cattle: selectedCattle,
+                                availableLots: lots,
+                                onAssignLot: _assignLot,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
+                      if (unassignedCattle.isNotEmpty) ...[
+                        const Divider(height: 1),
+                        // 👇 En vez de Expanded: Flexible + scroll interno
+                        Flexible(
+                          flex: 4,
+                          child: UnassignedCattleList(
+                            cattle: unassignedCattle,
+                            availableLots: lots,
+                            onAssignLot: _assignLot,
+                          ),
+                        ),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
       ),
     );
   }

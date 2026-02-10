@@ -45,7 +45,7 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
   final _commentsController = TextEditingController();
   final _eartagController = TextEditingController();
   final _trackerController = TextEditingController();
-  
+
   Timer? _debounce;
   Timer? _numberDebounce;
   Timer? _eartagDebounce;
@@ -56,7 +56,8 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
 
   List<DeviceModel> _deviceOptions = [];
   bool _deviceLoading = false;
-  Completer<List<DeviceModel>>? _lastCompleter; // Track last completer to prevent hangs
+  Completer<List<DeviceModel>>?
+  _lastCompleter; // Track last completer to prevent hangs
   final ReceptionApiService _apiService = ReceptionApiService();
   String? _selectedDeviceId; // Store the selected device ID
   String? _lastSelectedName; // To track if text matches selection
@@ -74,7 +75,8 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
     super.initState();
     _numberController = TextEditingController(text: widget.currentNumber);
     _trackerController.addListener(() {
-      if (_selectedDeviceId != null && _trackerController.text != _lastSelectedName) {
+      if (_selectedDeviceId != null &&
+          _trackerController.text != _lastSelectedName) {
         setState(() {
           _selectedDeviceId = null;
         });
@@ -106,7 +108,7 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
     super.dispose();
   }
 
-  void _resetForm() {
+  /*void _resetForm() {
     _weightController.clear();
     _ageController.clear();
     _commentsController.clear();
@@ -121,7 +123,7 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
       _selectedGender = CattleGender.MALE;
       _selectedDeviceId = null; // Clear selected device
     });
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -149,7 +151,6 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                 runSpacing: 12,
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
-
                   // Cattle Number
                   SizedBox(
                     width: 125,
@@ -159,16 +160,19 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                         labelText: l10n.cattle_number,
                         border: const OutlineInputBorder(),
                         errorText: _numberExternalError,
-                        suffixIcon: _isValidatingNumber
-                            ? const Padding(
-                                padding: EdgeInsets.all(12.0),
-                                child: SizedBox(
-                                  width: 16,
-                                  height: 16,
-                                  child: CircularProgressIndicator(strokeWidth: 2),
-                                ),
-                              )
-                            : null,
+                        suffixIcon:
+                            _isValidatingNumber
+                                ? const Padding(
+                                  padding: EdgeInsets.all(12.0),
+                                  child: SizedBox(
+                                    width: 16,
+                                    height: 16,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
+                                  ),
+                                )
+                                : null,
                       ),
                       validator: (v) {
                         if (v == null || v.trim().isEmpty) {
@@ -181,10 +185,14 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                       },
                       onChanged: (value) {
                         widget.onNumberChanged(value);
-                        if (_numberDebounce?.isActive ?? false) _numberDebounce!.cancel();
-                        _numberDebounce = Timer(const Duration(milliseconds: 500), () {
-                          _checkNumberExists(value);
-                        });
+                        if (_numberDebounce?.isActive ?? false)
+                          _numberDebounce!.cancel();
+                        _numberDebounce = Timer(
+                          const Duration(milliseconds: 500),
+                          () {
+                            _checkNumberExists(value);
+                          },
+                        );
                       },
                     ),
                   ),
@@ -193,7 +201,7 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                   SizedBox(
                     width: 145,
                     child: DropdownButtonFormField<String>(
-                      value: selectedLotId,
+                      initialValue: selectedLotId,
                       decoration: InputDecoration(
                         labelText: l10n.lot,
                         border: const OutlineInputBorder(),
@@ -256,7 +264,7 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                     ),
                   ),
 
-                    // Is Castrated Checkbox
+                  // Is Castrated Checkbox
                   SizedBox(
                     width: 125,
                     child: CheckboxListTile(
@@ -302,7 +310,7 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                   SizedBox(
                     width: 120,
                     child: DropdownButtonFormField<CattleGender>(
-                      value: _selectedGender,
+                      initialValue: _selectedGender,
                       decoration: InputDecoration(
                         labelText: l10n.gender,
                         border: const OutlineInputBorder(),
@@ -326,25 +334,22 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                   SizedBox(
                     width: 180,
                     child: DropdownButtonFormField<String>(
-                      value: selectedColorId,
-                      decoration: InputDecoration(
-                        labelText: l10n.color,
-                      ),
-                      validator: (value) => value == null ? l10n.fieldRequired : null,
+                      initialValue: selectedColorId,
+                      decoration: InputDecoration(labelText: l10n.color),
+                      validator:
+                          (value) => value == null ? l10n.fieldRequired : null,
                       items: [
                         DropdownMenuItem<String>(
                           value: null,
                           child: const Text('—'),
                         ),
-                        ...widget.colors.map(
-                          (color) {
-                            final enumVal = CattleColor.fromString(color);
-                            return DropdownMenuItem<String>(
-                              value: color,
-                              child: Text(enumVal.localizedName(context)),
-                            );
-                          },
-                        ),
+                        ...widget.colors.map((color) {
+                          final enumVal = CattleColor.fromString(color);
+                          return DropdownMenuItem<String>(
+                            value: color,
+                            child: Text(enumVal.localizedName(context)),
+                          );
+                        }),
                       ],
                       onChanged: (value) {
                         setState(() => selectedColorId = value);
@@ -363,7 +368,6 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                     ),
                   ),
 
-
                   // Eartag
                   SizedBox(
                     width: 180,
@@ -373,28 +377,35 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                         labelText: l10n.eartag,
                         border: const OutlineInputBorder(),
                         errorText: _eartagExternalError,
-                        suffixIcon: _isValidatingEartag
-                            ? const Padding(
-                                padding: EdgeInsets.all(12.0),
-                                child: SizedBox(
-                                  width: 16,
-                                  height: 16,
-                                  child: CircularProgressIndicator(strokeWidth: 2),
-                                ),
-                              )
-                            : null,
+                        suffixIcon:
+                            _isValidatingEartag
+                                ? const Padding(
+                                  padding: EdgeInsets.all(12.0),
+                                  child: SizedBox(
+                                    width: 16,
+                                    height: 16,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
+                                  ),
+                                )
+                                : null,
                       ),
                       validator: (v) {
-                         if (_eartagExternalError != null) {
+                        if (_eartagExternalError != null) {
                           return _eartagExternalError;
                         }
                         return null;
                       },
                       onChanged: (value) {
-                        if (_eartagDebounce?.isActive ?? false) _eartagDebounce!.cancel();
-                        _eartagDebounce = Timer(const Duration(milliseconds: 500), () {
-                          _checkEartagExists(value);
-                        });
+                        if (_eartagDebounce?.isActive ?? false)
+                          _eartagDebounce!.cancel();
+                        _eartagDebounce = Timer(
+                          const Duration(milliseconds: 500),
+                          () {
+                            _checkEartagExists(value);
+                          },
+                        );
                       },
                     ),
                   ),
@@ -403,48 +414,70 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                   SizedBox(
                     width: 200,
                     child: RawAutocomplete<DeviceModel>(
-
                       textEditingController: _trackerController,
                       optionsBuilder: (TextEditingValue textEditingValue) {
                         // Cancel previous completer if it exists and hasn't completed
-                        if (_lastCompleter != null && !_lastCompleter!.isCompleted) {
-                          _lastCompleter!.complete(const Iterable<DeviceModel>.empty().toList());
+                        if (_lastCompleter != null &&
+                            !_lastCompleter!.isCompleted) {
+                          _lastCompleter!.complete(
+                            const Iterable<DeviceModel>.empty().toList(),
+                          );
                         }
 
-                        final Completer<List<DeviceModel>> completer = Completer();
+                        final Completer<List<DeviceModel>> completer =
+                            Completer();
                         _lastCompleter = completer;
 
                         if (textEditingValue.text.length < 3) {
                           if (_deviceOptions.isNotEmpty) {
                             setState(() => _deviceOptions = []);
                           }
-                          completer.complete(const Iterable<DeviceModel>.empty().toList());
+                          completer.complete(
+                            const Iterable<DeviceModel>.empty().toList(),
+                          );
                           return completer.future;
                         }
-                        
+
                         // Debounce search
                         if (_debounce?.isActive ?? false) _debounce!.cancel();
-                        
-                         _debounce = Timer(const Duration(milliseconds: 500), () async {
-                           if (!mounted) return;
-                           setState(() => _deviceLoading = true);
-                           try {
-                             final results = await DeviceApiService.searchDevices(textEditingValue.text);
-                             setState(() => _deviceOptions = results);
-                             if (!completer.isCompleted) completer.complete(results);
-                           } catch (e) {
-                             print('DEBUG: API error: $e');
-                             setState(() => _deviceOptions = []);
-                             if (!completer.isCompleted) completer.complete(const Iterable<DeviceModel>.empty().toList());
-                           } finally {
-                             if (mounted) setState(() => _deviceLoading = false);
-                           }
-                        });
-                        
+
+                        _debounce = Timer(
+                          const Duration(milliseconds: 500),
+                          () async {
+                            if (!mounted) return;
+                            setState(() => _deviceLoading = true);
+                            try {
+                              final results =
+                                  await DeviceApiService.searchDevices(
+                                    textEditingValue.text,
+                                  );
+                              setState(() => _deviceOptions = results);
+                              if (!completer.isCompleted)
+                                completer.complete(results);
+                            } catch (e) {
+                              print('DEBUG: API error: $e');
+                              setState(() => _deviceOptions = []);
+                              if (!completer.isCompleted)
+                                completer.complete(
+                                  const Iterable<DeviceModel>.empty().toList(),
+                                );
+                            } finally {
+                              if (mounted)
+                                setState(() => _deviceLoading = false);
+                            }
+                          },
+                        );
+
                         return completer.future;
                       },
-                      displayStringForOption: (DeviceModel option) => option.name,
-                      fieldViewBuilder: (context, controller, focusNode, onFieldSubmitted) {
+                      displayStringForOption:
+                          (DeviceModel option) => option.name,
+                      fieldViewBuilder: (
+                        context,
+                        controller,
+                        focusNode,
+                        onFieldSubmitted,
+                      ) {
                         return TextFormField(
                           controller: controller,
                           focusNode: focusNode,
@@ -453,22 +486,34 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                           },
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           validator: (value) {
-                             if (value != null && value.isNotEmpty && _selectedDeviceId == null) {
-                               if (_deviceOptions.isEmpty) return l10n.trackerNotFound;
-                               return l10n.trackerNotSelected;
-                             }
-                             return null;
+                            if (value != null &&
+                                value.isNotEmpty &&
+                                _selectedDeviceId == null) {
+                              if (_deviceOptions.isEmpty)
+                                return l10n.trackerNotFound;
+                              return l10n.trackerNotSelected;
+                            }
+                            return null;
                           },
                           decoration: InputDecoration(
-                            labelText: l10n.trackerLabel, // using existing label key or new one
-                            hintText: l10n.searchTracker, // We'll try to use the key if it exists
+                            labelText:
+                                l10n.trackerLabel, // using existing label key or new one
+                            hintText:
+                                l10n.searchTracker, // We'll try to use the key if it exists
                             border: const OutlineInputBorder(),
-                            suffixIcon: _deviceLoading 
-                                ? const Padding(
-                                    padding: EdgeInsets.all(12.0),
-                                    child: SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)),
-                                  ) 
-                                : null,
+                            suffixIcon:
+                                _deviceLoading
+                                    ? const Padding(
+                                      padding: EdgeInsets.all(12.0),
+                                      child: SizedBox(
+                                        width: 16,
+                                        height: 16,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                        ),
+                                      ),
+                                    )
+                                    : null,
                           ),
                         );
                       },
@@ -478,23 +523,39 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                           child: Material(
                             elevation: 4.0,
                             child: ConstrainedBox(
-                              constraints: const BoxConstraints(maxHeight: 200, maxWidth: 300),
+                              constraints: const BoxConstraints(
+                                maxHeight: 200,
+                                maxWidth: 300,
+                              ),
                               child: ListView.builder(
                                 padding: EdgeInsets.zero,
                                 shrinkWrap: true,
                                 itemCount: options.length,
                                 itemBuilder: (BuildContext context, int index) {
-                                  final DeviceModel option = options.elementAt(index);
+                                  final DeviceModel option = options.elementAt(
+                                    index,
+                                  );
                                   return Builder(
                                     builder: (BuildContext context) {
-                                      final bool highlight = AutocompleteHighlightedOption.of(context) == index;
+                                      final bool highlight =
+                                          AutocompleteHighlightedOption.of(
+                                            context,
+                                          ) ==
+                                          index;
                                       if (highlight) {
-                                        SchedulerBinding.instance.addPostFrameCallback((Duration timeStamp) {
-                                          Scrollable.ensureVisible(context, alignment: 0.5);
-                                        });
+                                        SchedulerBinding.instance
+                                            .addPostFrameCallback((
+                                              Duration timeStamp,
+                                            ) {
+                                              Scrollable.ensureVisible(
+                                                context,
+                                                alignment: 0.5,
+                                              );
+                                            });
                                       }
                                       return Container(
-                                        color: highlight ? Colors.grey[300] : null,
+                                        color:
+                                            highlight ? Colors.grey[300] : null,
                                         child: ListTile(
                                           title: Text(option.name),
                                           subtitle: Text(option.deveui),
@@ -510,13 +571,13 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                         );
                       },
                       onSelected: (DeviceModel selection) {
-                         setState(() {
-                             _selectedDeviceId = selection.id;
-                             _lastSelectedName = selection.name;
-                             _trackerController.text = selection.name;
-                             // Clear suggestions if needed or handle focus
-                         });
-                         // Close the options view typically handled by the widget
+                        setState(() {
+                          _selectedDeviceId = selection.id;
+                          _lastSelectedName = selection.name;
+                          _trackerController.text = selection.name;
+                          // Clear suggestions if needed or handle focus
+                        });
+                        // Close the options view typically handled by the widget
                       },
                     ),
                   ),
@@ -576,7 +637,7 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
 
   Future<void> _checkEartagExists(String val) async {
     final l10n = AppLocalizations.of(context)!;
-     if (val.isEmpty) {
+    if (val.isEmpty) {
       if (_eartagExternalError != null) {
         setState(() => _eartagExternalError = null);
       }
@@ -591,7 +652,7 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
         setState(() => _eartagExternalError = null);
       }
     } catch (e) {
-       widget.onError?.call(e.toString());
+      widget.onError?.call(e.toString());
     } finally {
       if (mounted) {
         setState(() => _isValidatingEartag = false);
@@ -624,17 +685,36 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                           onChanged: (value) {
                             setDialogState(() {
                               if (value == true) {
-                                final category = enumVal?.getCategory() ?? 'OTHER';
-                    
-                                if (['HEAD', 'BELLY', 'LEGS', 'FEET','SPOTS', 'PATTERN'].contains(category)) {
-                                  tempSelected.removeWhere((id) => 
-                                    CattleCharacteristic.fromString(id)?.getCategory() == category
+                                final category =
+                                    enumVal?.getCategory() ?? 'OTHER';
+
+                                if ([
+                                  'HEAD',
+                                  'BELLY',
+                                  'LEGS',
+                                  'FEET',
+                                  'SPOTS',
+                                  'PATTERN',
+                                ].contains(category)) {
+                                  tempSelected.removeWhere(
+                                    (id) =>
+                                        CattleCharacteristic.fromString(
+                                          id,
+                                        )?.getCategory() ==
+                                        category,
                                   );
                                 } else if (category == 'HALF_HEAD') {
-                                  final currentHalfHeads = tempSelected.where((id) => 
-                                    CattleCharacteristic.fromString(id)?.getCategory() == 'HALF_HEAD'
-                                  ).toList();
-                                  
+                                  final currentHalfHeads =
+                                      tempSelected
+                                          .where(
+                                            (id) =>
+                                                CattleCharacteristic.fromString(
+                                                  id,
+                                                )?.getCategory() ==
+                                                'HALF_HEAD',
+                                          )
+                                          .toList();
+
                                   if (currentHalfHeads.length >= 2) {
                                     // Remove the first one (FIFO)
                                     tempSelected.remove(currentHalfHeads.first);
@@ -756,16 +836,15 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
               : _commentsController.text.trim(),
       'idSimpleEvents': widget.activeEvents.map((e) => e.id).toList(),
     };
-
     try {
       await widget.onSubmit(cattleData);
       //_resetForm();
     } on ApiException catch (e) {
-       if (e.code == 'conflictError' && e.message.contains('Eartag')) {
-          widget.onError?.call(e.message);
-       } else {
-         widget.onError?.call(e.message);
-       }
+      if (e.code == 'conflictError' && e.message.contains('Eartag')) {
+        widget.onError?.call(e.message);
+      } else {
+        widget.onError?.call(e.message);
+      }
     } catch (e) {
       widget.onError?.call(e.toString());
     }

@@ -65,8 +65,16 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
   }
 
   Future<void> _checkPermissions() async {
-    final hasCreatePerm = await SessionService.hasActionPermission('COMMERCE', 'purchases', 'create');
-    final hasUpdatePerm = await SessionService.hasActionPermission('RECEPTION', 'receptions', 'update');
+    final hasCreatePerm = await SessionService.hasActionPermission(
+      'COMMERCE',
+      'purchases',
+      'create',
+    );
+    final hasUpdatePerm = await SessionService.hasActionPermission(
+      'RECEPTION',
+      'receptions',
+      'update',
+    );
     if (mounted) {
       setState(() {
         _canCreatePurchase = hasCreatePerm;
@@ -120,7 +128,7 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
       });
     } on ApiException catch (e) {
       final code = ApiExceptionCode.values.firstWhere(
-        (el) => el.name == (e.code ?? ''),
+        (el) => el.name == (e.code),
         orElse: () => ApiExceptionCode.unknownError, // <- Fallback seguro
       );
 
@@ -241,97 +249,203 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
             // tabla
             Expanded(
               child:
-                _loading
-                  ? const Center(child: CircularProgressIndicator())
-                  : Card(
-                    child: _items.isEmpty
-                      ? Center(child: Text(t.noPurchasesFound))
-                      : SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: DataTable(
-                            columns: [
-                              DataColumn(label: Text(t.purchase_date)),
-                              DataColumn(label: Text(t.provider)),
-                              DataColumn(label: Text(t.purchase_totalWeightKg)),
-                              DataColumn(label: Text(t.purchase_totalCattle)),
-                              DataColumn(label: Text(t.receivedCattle)),
-                              DataColumn(label: Text(t.colStatus)),
-                              const DataColumn(label: SizedBox()),
-                            ],
-                            rows: _items.map((p) => DataRow(
-                              cells: [
-                                DataCell(Text(fmt.format(p.purchaseDate))),
-                                DataCell(Text(p.providerName ?? '-')),
-                                DataCell(Text(p.totalWeight.toStringAsFixed(1))),
-                                DataCell(Text('${p.totalCattle}')),
-                                DataCell(Text('${p.receivedCattle}')),
-                                DataCell(
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                    decoration: BoxDecoration(
-                                      color: p.status == PurchaseStatus.open ? Colors.green.withOpacity(0.1) : Colors.grey.withOpacity(0.1),
-                                      borderRadius: BorderRadius.circular(4),
-                                      border: Border.all(color: p.status == PurchaseStatus.open ? Colors.green : Colors.grey),
-                                    ),
-                                    child: Text(
-                                      p.status == PurchaseStatus.open ? t.purchaseStatusOpen : t.purchaseStatusReceived,
-                                      style: TextStyle(
-                                        color: p.status == PurchaseStatus.open ? Colors.green[800] : Colors.grey[800],
-                                        fontWeight: FontWeight.bold,
+                  _loading
+                      ? const Center(child: CircularProgressIndicator())
+                      : Card(
+                        child:
+                            _items.isEmpty
+                                ? Center(child: Text(t.noPurchasesFound))
+                                : SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: DataTable(
+                                    columns: [
+                                      DataColumn(label: Text(t.purchase_date)),
+                                      DataColumn(label: Text(t.provider)),
+                                      DataColumn(
+                                        label: Text(t.purchase_totalWeightKg),
                                       ),
-                                    ),
+                                      DataColumn(
+                                        label: Text(t.purchase_totalCattle),
+                                      ),
+                                      DataColumn(label: Text(t.receivedCattle)),
+                                      DataColumn(label: Text(t.colStatus)),
+                                      const DataColumn(label: SizedBox()),
+                                    ],
+                                    rows:
+                                        _items
+                                            .map(
+                                              (p) => DataRow(
+                                                cells: [
+                                                  DataCell(
+                                                    Text(
+                                                      fmt.format(
+                                                        p.purchaseDate,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  DataCell(
+                                                    Text(p.providerName ?? '-'),
+                                                  ),
+                                                  DataCell(
+                                                    Text(
+                                                      p.totalWeight
+                                                          .toStringAsFixed(1),
+                                                    ),
+                                                  ),
+                                                  DataCell(
+                                                    Text('${p.totalCattle}'),
+                                                  ),
+                                                  DataCell(
+                                                    Text('${p.receivedCattle}'),
+                                                  ),
+                                                  DataCell(
+                                                    Container(
+                                                      padding:
+                                                          const EdgeInsets.symmetric(
+                                                            horizontal: 8,
+                                                            vertical: 4,
+                                                          ),
+                                                      decoration: BoxDecoration(
+                                                        color:
+                                                            p.status ==
+                                                                    PurchaseStatus
+                                                                        .open
+                                                                ? Colors.green
+                                                                    .withValues(
+                                                                      alpha:
+                                                                          0.1,
+                                                                    )
+                                                                : Colors.grey
+                                                                    .withValues(
+                                                                      alpha:
+                                                                          0.1,
+                                                                    ),
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              4,
+                                                            ),
+                                                        border: Border.all(
+                                                          color:
+                                                              p.status ==
+                                                                      PurchaseStatus
+                                                                          .open
+                                                                  ? Colors.green
+                                                                  : Colors.grey,
+                                                        ),
+                                                      ),
+                                                      child: Text(
+                                                        p.status ==
+                                                                PurchaseStatus
+                                                                    .open
+                                                            ? t.purchaseStatusOpen
+                                                            : t.purchaseStatusReceived,
+                                                        style: TextStyle(
+                                                          color:
+                                                              p.status ==
+                                                                      PurchaseStatus
+                                                                          .open
+                                                                  ? Colors
+                                                                      .green[800]
+                                                                  : Colors
+                                                                      .grey[800],
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+
+                                                  DataCell(
+                                                    Align(
+                                                      alignment:
+                                                          Alignment.centerRight,
+                                                      child:
+                                                          _canUpdateReception
+                                                              ? IconButton(
+                                                                tooltip:
+                                                                    t.home_reception,
+                                                                icon: const Icon(
+                                                                  Icons
+                                                                      .exit_to_app,
+                                                                ),
+                                                                onPressed: () async {
+                                                                  final result =
+                                                                      await context
+                                                                          .push(
+                                                                            '/purchase/reception/${p.id}',
+                                                                          );
+                                                                  if (result !=
+                                                                          null &&
+                                                                      result
+                                                                          is Map<
+                                                                            String,
+                                                                            dynamic
+                                                                          > &&
+                                                                      mounted) {
+                                                                    final updatedReception =
+                                                                        result;
+                                                                    final purchaseId =
+                                                                        updatedReception['purchaseId']
+                                                                            as String?;
+                                                                    if (purchaseId ==
+                                                                        p.id) {
+                                                                      setState(() {
+                                                                        final index = _items.indexWhere(
+                                                                          (i) =>
+                                                                              i.id ==
+                                                                              purchaseId,
+                                                                        );
+                                                                        if (index !=
+                                                                            -1) {
+                                                                          final oldItem =
+                                                                              _items[index];
+                                                                          final receivedCattle =
+                                                                              (updatedReception['receivedCattleCount'] ??
+                                                                                      0)
+                                                                                  as int;
+                                                                          final receivedWeight =
+                                                                              double.tryParse(
+                                                                                '${updatedReception['receivedTotalWeight'] ?? 0}',
+                                                                              ) ??
+                                                                              0.0;
+                                                                          // Only update received stats, keep total purchased stats same
+                                                                          final newItem = PurchaseListItemModel(
+                                                                            id:
+                                                                                oldItem.id,
+                                                                            purchaseDate:
+                                                                                oldItem.purchaseDate,
+                                                                            providerName:
+                                                                                oldItem.providerName,
+                                                                            totalCattle:
+                                                                                oldItem.totalCattle,
+                                                                            totalWeight:
+                                                                                oldItem.totalWeight,
+                                                                            receivedCattle:
+                                                                                receivedCattle,
+                                                                            receivedWeight:
+                                                                                receivedWeight,
+                                                                            status:
+                                                                                oldItem.status, // Keep status until refresh
+                                                                          );
+                                                                          _items[index] =
+                                                                              newItem;
+                                                                        }
+                                                                      });
+                                                                    }
+                                                                    _load(); // Reload to get potential status change
+                                                                  }
+                                                                },
+                                                              )
+                                                              : null,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            )
+                                            .toList(),
                                   ),
                                 ),
-                               
-                                DataCell(
-                                  Align(
-                                    alignment: Alignment.centerRight,
-                                    child: _canUpdateReception
-                                        ? IconButton(
-                                        tooltip: t.home_reception,
-                                        icon: const Icon(Icons.exit_to_app),
-                                        onPressed: () async {
-                                          final result = await context.push(
-                                            '/purchase/reception/${p.id}',
-                                          );
-                                          if (result != null && result is Map<String, dynamic> && mounted) {
-                                            final updatedReception = result;
-                                            final purchaseId = updatedReception['purchaseId'] as String?;
-                                            if (purchaseId == p.id) {
-                                              setState(() {
-                                                final index = _items.indexWhere((i) => i.id == purchaseId);
-                                                if (index != -1) {
-                                                  final oldItem = _items[index];
-                                                  final receivedCattle = (updatedReception['receivedCattleCount'] ?? 0) as int;
-                                                  final receivedWeight = double.tryParse('${updatedReception['receivedTotalWeight'] ?? 0}') ?? 0.0;
-                                                  // Only update received stats, keep total purchased stats same
-                                                  final newItem = PurchaseListItemModel(
-                                                    id: oldItem.id,
-                                                    purchaseDate: oldItem.purchaseDate,
-                                                    providerName: oldItem.providerName,
-                                                    totalCattle: oldItem.totalCattle,
-                                                    totalWeight: oldItem.totalWeight,
-                                                    receivedCattle: receivedCattle,
-                                                    receivedWeight: receivedWeight,
-                                                    status: oldItem.status, // Keep status until refresh 
-                                                  );
-                                                  _items[index] = newItem;
-                                                }
-                                              });
-                                            }    
-                                            _load(); // Reload to get potential status change
-                                          }
-                                        },
-                                        ) : null,
-                                    ),
-                                  ),
-                              ],
-                            ),
-                            )
-                            .toList(),
-                          ),
                       ),
-                  ),
             ),
             const SizedBox(height: 8),
 

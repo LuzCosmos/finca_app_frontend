@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/devices/models/device_model.dart';
@@ -28,7 +26,6 @@ class ReceptionApiService {
       return body.map((dynamic item) => DeviceModel.fromJson(item)).toList();
     } else {
       BasicApiService.manageNotSuccessResponseCode(response);
-      return []; // unreachable
     }
   }
 
@@ -41,12 +38,11 @@ class ReceptionApiService {
         'Content-Type': 'application/json',
       },
     );
-     if (response.statusCode == 200) {
+    if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       return data['exists'] as bool;
     } else {
       BasicApiService.manageNotSuccessResponseCode(response);
-      throw ApiException('serverError', 'Error checking number existence');
     }
   }
 
@@ -59,12 +55,11 @@ class ReceptionApiService {
         'Content-Type': 'application/json',
       },
     );
-     if (response.statusCode == 200) {
+    if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       return data['exists'] as bool;
     } else {
       BasicApiService.manageNotSuccessResponseCode(response);
-       throw ApiException('serverError', 'Error checking eartag existence');
     }
   }
 
@@ -161,7 +156,7 @@ class ReceptionApiService {
       },
       body: jsonEncode(body),
     );
-    if  (r.statusCode == 201 || r.statusCode == 200) {
+    if (r.statusCode == 201 || r.statusCode == 200) {
       final responseBody = jsonDecode(r.body) as Map<String, dynamic>;
       return responseBody;
     }
@@ -170,9 +165,7 @@ class ReceptionApiService {
     }
 
     throw Exception('Unexpected status code: ${r.statusCode}');
-    
   }
-
 
   Future<void> reassignLot({
     required String purchaseId,
@@ -229,7 +222,9 @@ class ReceptionApiService {
 
   Future<void> updateStatus(String purchaseId, String status) async {
     final token = await BasicApiService.getToken();
-    final url = Uri.parse('${BasicApiService.baseUrl}/purchase-receptions/purchase-status/$purchaseId');
+    final url = Uri.parse(
+      '${BasicApiService.baseUrl}/purchase-receptions/purchase-status/$purchaseId',
+    );
     final response = await http.patch(
       url,
       headers: {
@@ -241,7 +236,6 @@ class ReceptionApiService {
 
     if (response.statusCode >= 400) {
       BasicApiService.manageNotSuccessResponseCode(response);
-      throw ApiException('serverError', 'Error updating status: ${response.body}');
     }
   }
 }
