@@ -14,6 +14,7 @@ class HomePage extends StatelessWidget {
 
     return FincaScaffold(
       title: l10n.home_title,
+      showHomeButton: false,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Center(

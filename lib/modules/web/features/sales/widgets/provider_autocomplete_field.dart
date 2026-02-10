@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 import 'package:finca_app_frontend/modules/web/features/cattle_purchase/models/provider.dart';
 
@@ -91,8 +90,8 @@ class _ProviderAutocompleteFieldState extends State<ProviderAutocompleteField> {
   }
 
   Future<List<Map<String, dynamic>>> _searchProviders(String name) async {
-    final token = await SessionService.getToken();
-    final baseUrl = BasicApiService.baseUrl;
+    final token = await BasicApiService.getToken();
+    final baseUrl = BasicApiService.getApiBaseUrl();
 
     final response = await http.get(
       Uri.parse(
@@ -331,8 +330,8 @@ class _CreateProviderDialogState extends State<CreateProviderDialog> {
     setState(() => _isCreating = true);
 
     try {
-      final token = await SessionService.getToken();
-      final baseUrl = BasicApiService.baseUrl;
+      final token = await BasicApiService.getToken();
+      final baseUrl = BasicApiService.getApiBaseUrl();
 
       final response = await http.post(
         Uri.parse('$baseUrl/providers'),

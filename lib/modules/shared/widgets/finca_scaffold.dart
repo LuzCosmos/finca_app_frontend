@@ -9,8 +9,14 @@ import 'package:finca_app_frontend/core/services/session_service.dart';
 class FincaScaffold extends StatelessWidget {
   final Widget body;
   final String? title;
+  final bool showHomeButton;
 
-  const FincaScaffold({super.key, required this.body, this.title});
+  const FincaScaffold({
+    super.key,
+    required this.body,
+    this.title,
+    this.showHomeButton = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -33,12 +39,14 @@ class FincaScaffold extends StatelessWidget {
                 },
               ),
               if (isAuthenticated) ...[
-                IconButton(
-                  icon: const Icon(Icons.home, color: Colors.white, size: 20),
-                  onPressed: () {
-                    context.go('/home');
-                  },
-                ),
+                if (showHomeButton) ...[
+                  IconButton(
+                    icon: const Icon(Icons.home, color: Colors.white, size: 20),
+                    onPressed: () {
+                      context.go('/home');
+                    },
+                  ),
+                ],
                 _buildUserDropdown(context, Theme.of(context)),
               ],
                 

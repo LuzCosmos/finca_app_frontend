@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/data/sales_data_source.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/models/sale_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/models/sales_query_models.dart';
@@ -9,7 +8,7 @@ import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
 
 class SalesDataSourceWeb implements ISalesDataSource {
-  final String baseUrl = BasicApiService.baseUrl;
+  final String baseUrl = BasicApiService.getApiBaseUrl();
   @override
   Future<void> fetchCatalogs() async {
     // No-op for web if we fetch on demand, or implement caching if needed.
@@ -124,13 +123,10 @@ class SalesDataSourceWeb implements ISalesDataSource {
 
   @override
   Future<void> updateSale(String id, Map<String, dynamic> updates) async {
-    final baseUrl = BasicApiService.baseUrl;
+    final baseUrl = BasicApiService.getApiBaseUrl();
     if (baseUrl.isEmpty) throw Exception('API_URL is not configured');
 
-    final token = await SessionService.getToken();
-    if (token == null || token.isEmpty) {
-      throw Exception('No session found. Please login.');
-    }
+    final token = await BasicApiService.getToken();
 
     final res = await http.put(
       Uri.parse('$baseUrl/sales/$id'),

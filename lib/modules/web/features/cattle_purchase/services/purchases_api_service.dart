@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 import 'package:finca_app_frontend/modules/web/features/cattle_purchase/models/purchase_list_item.dart';
@@ -21,14 +20,14 @@ class PurchasesPageResult {
 }
 
 class PurchasesApiService {
-  final String baseUrl = '${BasicApiService.baseUrl}/purchases';
+  final String baseUrl = '${BasicApiService.getApiBaseUrl()}/purchases';
 
   Future<void> createPurchase({
     required String idProvider,
     required DateTime purchaseDate,
     required List<Map<String, dynamic>> lots,
   }) async {
-    final token = await SessionService.getToken();
+    final token = await BasicApiService.getToken();
     final url = Uri.parse(baseUrl);
 
     final body = jsonEncode({
@@ -73,7 +72,7 @@ class PurchasesApiService {
     String? provider,
     String status = 'all', // 'all'|'open'|'received'
   }) async {
-    final token = await SessionService.getToken();
+    final token = await BasicApiService.getToken();
     final uri = Uri.parse(baseUrl).replace(
       queryParameters: {
         'page': '$page',

@@ -37,7 +37,7 @@ class LotModel {
     return isValidFields && isValid;
   }
 
-  setIsValid(bool isValid) {
+  void setIsValid(bool isValid) {
     this.isValid = isValid;
   }
 }

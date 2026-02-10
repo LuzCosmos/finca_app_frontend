@@ -13,7 +13,7 @@ class CattlePageResult {
 }
 
 class CattleMasterService {
-  final String baseUrl = BasicApiService.baseUrl;
+  final String baseUrl = BasicApiService.getApiBaseUrl();
 
   /// Fetch all cattle for the tenant (paged)
   Future<CattlePageResult> getCattleList({int page = 1, int limit = 10}) async {
@@ -21,8 +21,6 @@ class CattleMasterService {
     final url = Uri.parse(
       '$baseUrl/cattle',
     ).replace(queryParameters: {'page': '$page', 'limit': '$limit'});
-
-    print('Fetching cattle from: $url');
     var response;
     try {
       response = await http.get(

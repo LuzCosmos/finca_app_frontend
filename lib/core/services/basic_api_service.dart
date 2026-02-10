@@ -7,7 +7,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class BasicApiService {
-  static String get baseUrl {
+  static String getApiBaseUrl() {
     if (kIsWeb) {
       if (js.context.hasProperty('ENV')) {
         print('BasicApiService: check ENV property...');

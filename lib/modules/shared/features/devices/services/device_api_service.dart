@@ -17,7 +17,7 @@ class DeviceApiService {
   // The reception service appended `/purchase-receptions`.
   // I should probably make this service generic enough or point to the correct endpoint.
 
-  static final String _baseUrl = BasicApiService.baseUrl;
+  static final String _baseUrl = BasicApiService.getApiBaseUrl();
 
   static Future<List<DeviceModel>> searchDevices(String query) async {
     final token = await BasicApiService.getToken();
