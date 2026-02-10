@@ -95,8 +95,7 @@ class FincaScaffold extends StatelessWidget {
   }
 
   Widget _buildUserDropdown(BuildContext context, ThemeData theme) {
-    final l10n = AppLocalizations.of(context);
-    if (l10n == null) return const SizedBox.shrink();
+    final l10n = AppLocalizations.of(context)!;
     
     return PopupMenuButton<String>(
       icon: const Icon(Icons.person, color: Colors.white, size: 20),

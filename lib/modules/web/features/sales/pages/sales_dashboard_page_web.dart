@@ -117,7 +117,7 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
   void _showEditDialog(
     BuildContext context,
     SaleModel sale,
-    AppLocalizations? l10n,
+    AppLocalizations l10n,
   ) {
     final noteController = TextEditingController(text: sale.notes);
     final formKey = GlobalKey<FormState>();
@@ -126,19 +126,19 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: Text(l10n!.sales_editSale),
+          title: Text(l10n.sales_editSale),
           content: Form(
             key: formKey,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  '${l10n!.sales_transactionDate}: ${DateFormat('yyyy-MM-dd').format(sale.transactionDate)}',
+                  '${l10n.sales_transactionDate}: ${DateFormat('yyyy-MM-dd').format(sale.transactionDate)}',
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: noteController,
-                  decoration: InputDecoration(labelText: l10n!.sales_notes),
+                  decoration: InputDecoration(labelText: l10n.sales_notes),
                   maxLines: 3,
                 ),
               ],
@@ -147,7 +147,7 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(dialogContext),
-              child: Text(l10n!.sales_cancel),
+              child: Text(l10n.sales_cancel),
             ),
             ElevatedButton(
               onPressed: () {
@@ -161,7 +161,7 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
                   Navigator.pop(dialogContext);
                 }
               },
-              child: Text(l10n!.sales_save),
+              child: Text(l10n.sales_save),
             ),
           ],
         );
@@ -172,14 +172,14 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
   void _showDetailsDialog(
     BuildContext context,
     SaleModel sale,
-    AppLocalizations? l10n,
+    AppLocalizations l10n,
   ) {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
           title: Text(
-            '${l10n!.sales_saleDetails} - ${DateFormat('yyyy-MM-dd').format(sale.transactionDate)}',
+            '${l10n.sales_saleDetails} - ${DateFormat('yyyy-MM-dd').format(sale.transactionDate)}',
           ),
           content: SizedBox(
             width: double.maxFinite,
@@ -189,37 +189,37 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    '${l10n!.sales_buyer}: ${_getBuyerName(sale)}',
+                    '${l10n.sales_buyer}: ${_getBuyerName(sale)}',
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    '${l10n!.sales_totalAmount}: ${NumberFormat.currency(symbol: '\$').format(sale.totalAmount)}',
+                    '${l10n.sales_totalAmount}: ${NumberFormat.currency(symbol: '\$').format(sale.totalAmount)}',
                   ),
-                  Text('${l10n!.sales_totalWeight}: ${sale.totalWeight} kg'),
-                  Text('${l10n!.sales_animals}: ${sale.totalCount}'),
+                  Text('${l10n.sales_totalWeight}: ${sale.totalWeight} kg'),
+                  Text('${l10n.sales_animals}: ${sale.totalCount}'),
                   if (sale.notes != null && sale.notes!.isNotEmpty) ...[
                     const SizedBox(height: 8),
                     Text(
-                      '${l10n!.sales_notes}:',
+                      '${l10n.sales_notes}:',
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     Text(sale.notes!),
                   ],
                   const SizedBox(height: 16),
                   Text(
-                    l10n!.sales_cattleList,
+                    l10n.sales_cattleList,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
                     ),
                   ),
                   const Divider(),
-                  if (sale.details.isEmpty) Text(l10n!.sales_noDetails),
+                  if (sale.details.isEmpty) Text(l10n.sales_noDetails),
                   ...sale.details.map(
                     (detail) => ListTile(
-                      title: Text('${l10n!.cattle}# ${detail.cattleNumber}'),
+                      title: Text('${l10n.cattle}# ${detail.cattleNumber}'),
                       subtitle: Text(
-                        '${l10n!.sales_weight}: ${detail.measuredWeight} kg | ${l10n!.sales_price}: ${NumberFormat.currency(symbol: '\$').format(detail.calculatedPrice)}',
+                        '${l10n.sales_weight}: ${detail.measuredWeight} kg | ${l10n.sales_price}: ${NumberFormat.currency(symbol: '\$').format(detail.calculatedPrice)}',
                       ),
                     ),
                   ),
@@ -230,7 +230,7 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text(l10n!.sales_close),
+              child: Text(l10n.sales_close),
             ),
           ],
         );
@@ -240,7 +240,7 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
     return BlocListener<SalesWebBloc, SalesWebState>(
       listener: (context, state) {
         if (state.status == SalesWebStatus.failure && state.error != null) {
@@ -255,7 +255,7 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
         }
       },
       child: FincaScaffold(
-        title: l10n!.sales_title,
+        title: l10n.sales_title,
         body: BlocBuilder<SalesWebBloc, SalesWebState>(
           builder: (context, state) {
             if (state.status == SalesWebStatus.initial ||
@@ -284,7 +284,7 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
                           () => context.read<SalesWebBloc>().add(
                             const LoadSalesWeb(),
                           ),
-                      child: Text(l10n!.sales_retry),
+                      child: Text(l10n.sales_retry),
                     ),
                   ],
                 ),
@@ -311,7 +311,7 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
                         label: Text(
                           _startDate != null && _endDate != null
                               ? '${DateFormat('MMM d').format(_startDate!)} - ${DateFormat('MMM d').format(_endDate!)}'
-                              : l10n!.sales_dateRange,
+                              : l10n.sales_dateRange,
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -320,7 +320,7 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
                         IconButton(
                           onPressed: _clearFilters,
                           icon: const Icon(Icons.clear),
-                          tooltip: l10n!.sales_clearFilters,
+                          tooltip: l10n.sales_clearFilters,
                         ),
                       const Spacer(),
                       // Add Sale Button
@@ -328,7 +328,7 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
                         ElevatedButton.icon(
                           onPressed: () => context.push('/sales/create'),
                           icon: const Icon(Icons.add),
-                          label: Text(l10n!.sales_addSale),
+                          label: Text(l10n.sales_addSale),
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 24,
@@ -351,7 +351,7 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
                   child: Row(
                     children: [
                       Text(
-                        l10n!.sales_rowsPerPage,
+                        l10n.sales_rowsPerPage,
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                       const SizedBox(width: 8),
@@ -383,7 +383,7 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
                             () => context.read<SalesWebBloc>().add(
                               const LoadSalesWeb(),
                             ),
-                        tooltip: l10n!.sales_refresh,
+                        tooltip: l10n.sales_refresh,
                       ),
                       if (state.status == SalesWebStatus.loading)
                         const SizedBox(
@@ -433,7 +433,7 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '${l10n!.sales_showing} ${query.skip + 1}-${query.skip + sales.length} ${l10n!.sales_of} $total',
+                          '${l10n.sales_showing} ${query.skip + 1}-${query.skip + sales.length} ${l10n.sales_of} $total',
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                         Row(
@@ -451,10 +451,10 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
                                         ),
                                       )
                                       : null,
-                              tooltip: l10n!.sales_previousPage,
+                              tooltip: l10n.sales_previousPage,
                             ),
                             Text(
-                              '${l10n!.sales_page} ${(query.skip / query.take).floor() + 1} ${l10n!.sales_of} ${(total / query.take).ceil() > 0 ? (total / query.take).ceil() : 1}',
+                              '${l10n.sales_page} ${(query.skip / query.take).floor() + 1} ${l10n.sales_of} ${(total / query.take).ceil() > 0 ? (total / query.take).ceil() : 1}',
                               style: Theme.of(context).textTheme.bodyMedium,
                             ),
                             IconButton(
@@ -470,7 +470,7 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
                                         ),
                                       )
                                       : null,
-                              tooltip: l10n!.sales_nextPage,
+                              tooltip: l10n.sales_nextPage,
                             ),
                           ],
                         ),
@@ -485,7 +485,7 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
     );
   }
 
-  Widget _buildEmptyState(BuildContext context, AppLocalizations? l10n) {
+  Widget _buildEmptyState(BuildContext context, AppLocalizations l10n) {
     final hasFilters = _startDate != null || _endDate != null;
 
     return Center(
@@ -501,14 +501,14 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
           ),
           const SizedBox(height: 16),
           Text(
-            hasFilters ? (l10n!.sales_noDataFiltered) : (l10n!.sales_noData),
+            hasFilters ? (l10n.sales_noDataFiltered) : (l10n.sales_noData),
             style: Theme.of(context).textTheme.titleLarge,
           ),
           const SizedBox(height: 8),
           Text(
             hasFilters
-                ? (l10n!.sales_tryAdjustFilters)
-                : (l10n!.sales_createFirstSale),
+                ? (l10n.sales_tryAdjustFilters)
+                : (l10n.sales_createFirstSale),
             style: Theme.of(context).textTheme.bodyMedium,
           ),
           const SizedBox(height: 24),
@@ -519,7 +519,7 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
                     : () => context.push('/sales/create'),
             icon: Icon(hasFilters ? Icons.clear : Icons.add),
             label: Text(
-              hasFilters ? (l10n!.sales_clearFilters) : (l10n!.sales_addSale),
+              hasFilters ? (l10n.sales_clearFilters) : (l10n.sales_addSale),
             ),
           ),
         ],
@@ -531,7 +531,7 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
     BuildContext context,
     List<SaleModel> sales,
     SalesQuery query,
-    AppLocalizations? l10n,
+    AppLocalizations l10n,
   ) {
     return Card(
       child: DataTable(
@@ -542,18 +542,18 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
         ),
         columns: [
           DataColumn(
-            label: Text(l10n!.sales_date),
+            label: Text(l10n.sales_date),
             onSort: (idx, asc) => _onSort(context, 'transactionDate', asc),
           ),
-          DataColumn(label: Text(l10n!.sales_buyer)),
-          DataColumn(label: Text(l10n!.sales_items), numeric: true),
-          DataColumn(label: Text(l10n!.sales_weight), numeric: true),
+          DataColumn(label: Text(l10n.sales_buyer)),
+          DataColumn(label: Text(l10n.sales_items), numeric: true),
+          DataColumn(label: Text(l10n.sales_weight), numeric: true),
           DataColumn(
-            label: Text(l10n!.sales_amount),
+            label: Text(l10n.sales_amount),
             numeric: true,
             onSort: (idx, asc) => _onSort(context, 'totalAmount', asc),
           ),
-          DataColumn(label: Text(l10n!.sales_actions)),
+          DataColumn(label: Text(l10n.sales_actions)),
         ],
         rows:
             sales.map((sale) {
@@ -582,14 +582,14 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
                           icon: const Icon(Icons.visibility, size: 20),
                           onPressed:
                               () => _showDetailsDialog(context, sale, l10n),
-                          tooltip: l10n!.sales_viewDetails,
+                          tooltip: l10n.sales_viewDetails,
                         ),
                         if (canUpdate)
                           IconButton(
                             icon: const Icon(Icons.edit, size: 20),
                             onPressed:
                                 () => _showEditDialog(context, sale, l10n),
-                            tooltip: l10n!.sales_edit,
+                            tooltip: l10n.sales_edit,
                           ),
                       ],
                     ),

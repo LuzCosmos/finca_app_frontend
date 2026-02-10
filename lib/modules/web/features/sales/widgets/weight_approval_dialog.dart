@@ -19,14 +19,14 @@ class WeightApprovalDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return AlertDialog(
       title: Row(
         children: [
           Icon(Icons.warning_amber, color: Colors.orange, size: 28),
           const SizedBox(width: 12),
-          Text(l10n!.cattle_weightUnderMin),
+          Text(l10n.cattle_weightUnderMin),
         ],
       ),
       content: Column(
@@ -34,7 +34,7 @@ class WeightApprovalDialog extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            (l10n?.cattle_weightUnderMinMessage(
+            (l10n.cattle_weightUnderMinMessage(
               measuredWeight,
               minWeight,
             )).toString(),
@@ -93,7 +93,7 @@ class WeightApprovalDialog extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            l10n!.cattle_approveQuestion,
+            l10n.cattle_approveQuestion,
             style: Theme.of(context).textTheme.titleMedium,
           ),
         ],
@@ -102,7 +102,7 @@ class WeightApprovalDialog extends StatelessWidget {
         OutlinedButton.icon(
           onPressed: () => Navigator.of(context).pop(false), // Reject
           icon: const Icon(Icons.cancel, color: Colors.red),
-          label: Text(l10n!.cattle_reject),
+          label: Text(l10n.cattle_reject),
           style: OutlinedButton.styleFrom(
             foregroundColor: Colors.red,
             side: const BorderSide(color: Colors.red),
@@ -111,7 +111,7 @@ class WeightApprovalDialog extends StatelessWidget {
         ElevatedButton.icon(
           onPressed: () => Navigator.of(context).pop(true), // Approve
           icon: const Icon(Icons.check_circle),
-          label: Text(l10n!.cattle_approve),
+          label: Text(l10n.cattle_approve),
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.green,
             foregroundColor: Colors.white,
@@ -137,7 +137,7 @@ class CattleValidationErrorDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return AlertDialog(
       title: Row(
@@ -146,7 +146,7 @@ class CattleValidationErrorDialog extends StatelessWidget {
           const SizedBox(width: 12),
           Icon(Icons.error, color: Colors.red, size: 28),
           const SizedBox(width: 12),
-          Text(l10n!.cattle_validation_invalid),
+          Text(l10n.cattle_validation_invalid),
         ],
       ),
       content: Column(
@@ -164,7 +164,7 @@ class CattleValidationErrorDialog extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Text(l10n!.sales_cancel),
+          child: Text(l10n.sales_cancel),
         ),
       ],
     );

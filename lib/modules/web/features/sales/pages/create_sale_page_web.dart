@@ -113,14 +113,14 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
       _approvedCattle.fold(0, (sum, item) => sum + item.calculatedPrice);
 
   Future<void> _addCattle() async {
-    final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final cattleNumber = _cattleIdController.text.trim();
     final weightText = _cattleWeightController.text.trim();
 
     // Validate inputs
     if (cattleNumber.isEmpty || weightText.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n!.error_enterCattleNumberWeight)),
+        SnackBar(content: Text(l10n.error_enterCattleNumberWeight)),
       );
       return;
     }
@@ -129,7 +129,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
     if (weight == null || weight <= 0) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(l10n!.error_enterValidWeight)));
+      ).showSnackBar(SnackBar(content: Text(l10n.error_enterValidWeight)));
       return;
     }
 
@@ -167,7 +167,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
 
         isApproved = approved;
         if (!approved) {
-          rejectionReason = l10n!.cattle_rejectionReason;
+          rejectionReason = l10n.cattle_rejectionReason;
         }
       }
 
@@ -245,7 +245,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
     required Function(int) onRemove,
     bool showRejectionReason = false,
   }) {
-    final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: color.withValues(alpha: 0.3), width: 2),
@@ -309,7 +309,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                       Expanded(
                         flex: 2,
                         child: Text(
-                          '${l10n!.cattle} #${item.cattleNumber}',
+                          '${l10n.cattle} #${item.cattleNumber}',
                           style: const TextStyle(fontWeight: FontWeight.w500),
                         ),
                       ),
@@ -350,7 +350,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
   }
 
   Future<void> _submitSale() async {
-    final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     if (!_formKey.currentState!.validate()) {
       return;
@@ -360,7 +360,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
     if (_approvedCattle.isEmpty) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(l10n!.error_addApprovedCattle)));
+      ).showSnackBar(SnackBar(content: Text(l10n.error_addApprovedCattle)));
       return;
     }
 
@@ -395,7 +395,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                 ),
               ),
               const SizedBox(width: 16),
-              Text(l10n!.sale_creating),
+              Text(l10n.sale_creating),
             ],
           ),
           duration: const Duration(
@@ -447,7 +447,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
               children: [
                 Icon(Icons.check_circle, color: Colors.white),
                 const SizedBox(width: 12),
-                Text(l10n!.sale_created),
+                Text(l10n.sale_created),
               ],
             ),
             backgroundColor: Colors.green,
@@ -472,7 +472,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
               children: [
                 Icon(Icons.error, color: Colors.white),
                 const SizedBox(width: 12),
-                Expanded(child: Text(l10n!.sale_createError)),
+                Expanded(child: Text(l10n.sale_createError)),
               ],
             ),
             backgroundColor: Colors.red,
@@ -485,14 +485,14 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return BlocListener<SalesWebBloc, SalesWebState>(
       listener: (context, state) {
         if (state.status == SalesWebStatus.saleCreated) {
           ScaffoldMessenger.of(
             context,
-          ).showSnackBar(SnackBar(content: Text(l10n!.saleSavedSuccess)));
+          ).showSnackBar(SnackBar(content: Text(l10n.saleSavedSuccess)));
           context.push('/sales');
         } else if (state.status == SalesWebStatus.failure &&
             state.error != null) {
@@ -502,7 +502,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
         }
       },
       child: FincaScaffold(
-        title: l10n!.home_sale,
+        title: l10n.home_sale,
         body: BlocBuilder<SalesWebBloc, SalesWebState>(
           builder: (context, state) {
             if (state.status == SalesWebStatus.loading &&
@@ -592,7 +592,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
     List buyers,
     List transporters,
   ) {
-    final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(24),
@@ -600,7 +600,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              l10n!.sale_info,
+              l10n.sale_info,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 24),
@@ -620,7 +620,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
               },
               child: InputDecorator(
                 decoration: InputDecoration(
-                  labelText: l10n!.sales_transactionDate,
+                  labelText: l10n.sales_transactionDate,
                   suffixIcon: const Icon(Icons.calendar_today),
                   border: const OutlineInputBorder(),
                 ),
@@ -631,7 +631,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
 
             // Buyer Autocomplete (replaces dropdown)
             ProviderAutocompleteField(
-              label: l10n!.label_buyer_required,
+              label: l10n.label_buyer_required,
               providerType: ProviderType.BUYER.name,
               onChanged:
                   (id, name) => setState(() {
@@ -640,13 +640,13 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
               validator:
                   (val) =>
                       _selectedBuyerId == null
-                          ? (l10n!.error_buyer_required)
+                          ? (l10n.error_buyer_required)
                           : null,
             ),
             const SizedBox(height: 16),
             // Transporter Autocomplete (replaces dropdown)
             ProviderAutocompleteField(
-              label: l10n!.label_transporter_optional,
+              label: l10n.label_transporter_optional,
               providerType: ProviderType.TRANSPORTER.name,
               onChanged:
                   (id, name) => setState(() {
@@ -656,7 +656,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
             const SizedBox(height: 24),
 
             Text(
-              l10n!.pricing_config,
+              l10n.pricing_config,
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 16),
@@ -668,7 +668,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                   child: TextFormField(
                     controller: _minWeightController,
                     decoration: InputDecoration(
-                      labelText: l10n!.minWeightKg,
+                      labelText: l10n.minWeightKg,
                       border: const OutlineInputBorder(),
                     ),
                     keyboardType: const TextInputType.numberWithOptions(
@@ -677,11 +677,11 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                     onChanged: (_) => setState(() {}),
                     validator: (val) {
                       if (val == null || val.isEmpty) {
-                        return l10n!.fieldRequired;
+                        return l10n.fieldRequired;
                       }
                       final num = double.tryParse(val);
                       if (num == null || num < 0) {
-                        return l10n!.error_invalid_number;
+                        return l10n.error_invalid_number;
                       }
                       return null;
                     },
@@ -692,7 +692,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                   child: TextFormField(
                     controller: _pricePerKgController,
                     decoration: InputDecoration(
-                      labelText: l10n?.lot_pricePerKg,
+                      labelText: l10n.lot_pricePerKg,
                       border: const OutlineInputBorder(),
                       prefixText: '\$ ',
                     ),
@@ -704,7 +704,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                       if (val == null || val.trim().isEmpty) return null;
                       final num = double.tryParse(val);
                       if (num == null || num <= 0) {
-                        return l10n!.error_invalid_price;
+                        return l10n.error_invalid_price;
                       }
                       return null;
                     },
@@ -718,7 +718,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
             TextFormField(
               controller: _notesController,
               decoration: InputDecoration(
-                labelText: l10n!.label_notes_optional,
+                labelText: l10n.label_notes_optional,
                 border: const OutlineInputBorder(),
               ),
               maxLines: 3,
@@ -730,7 +730,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
   }
 
   Widget _buildCattleSection(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Card(
       child: Padding(
@@ -739,7 +739,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              l10n!.label_cattle_management,
+              l10n.label_cattle_management,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 24),
@@ -783,9 +783,9 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                             controller: textEditingController,
                             focusNode: focusNode,
                             decoration: InputDecoration(
-                              labelText: l10n!.cattle_number,
+                              labelText: l10n.cattle_number,
                               border: const OutlineInputBorder(),
-                              hintText: l10n!.hint_enterScanId,
+                              hintText: l10n.hint_enterScanId,
                             ),
                             onFieldSubmitted: (String value) {
                               onFieldSubmitted();
@@ -844,7 +844,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                   child: TextFormField(
                     controller: _cattleWeightController,
                     decoration: InputDecoration(
-                      labelText: l10n!.weightKg,
+                      labelText: l10n.weightKg,
                       border: const OutlineInputBorder(),
                     ),
                     keyboardType: const TextInputType.numberWithOptions(
@@ -871,8 +871,8 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                           : const Icon(Icons.add),
                   label: Text(
                     _isValidatingCattle
-                        ? (l10n!.label_validating)
-                        : (l10n!.cattle_addButton),
+                        ? (l10n.label_validating)
+                        : (l10n.cattle_addButton),
                   ),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
@@ -886,7 +886,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
 
             // Tracker Removed Checkbox
             CheckboxListTile(
-              title: Text(l10n!.tracker_removed),
+              title: Text(l10n.tracker_removed),
               value: _trackerRemoved,
               onChanged:
                   (val) => setState(() => _trackerRemoved = val ?? false),
@@ -899,7 +899,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
               Padding(
                 padding: const EdgeInsets.only(top: 8),
                 child: Text(
-                  l10n!.warning_set_min_weight,
+                  l10n.warning_set_min_weight,
                   style: TextStyle(color: Colors.orange.shade700, fontSize: 12),
                 ),
               ),
@@ -909,11 +909,11 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
             // Approved Cattle Section
             _buildCattleListSection(
               context,
-              title: l10n!.cattle_approved_title,
+              title: l10n.cattle_approved_title,
               count: _approvedCattle.length,
               cattle: _approvedCattle,
               isEmpty: _approvedCattle.isEmpty,
-              emptyMessage: l10n!.cattle_noApproved,
+              emptyMessage: l10n.cattle_noApproved,
               color: Colors.green,
               onRemove: _removeApprovedCattle,
             ),
@@ -924,7 +924,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
             if (_rejectedCattle.isNotEmpty)
               _buildCattleListSection(
                 context,
-                title: l10n!.cattle_rejected_title,
+                title: l10n.cattle_rejected_title,
                 count: _rejectedCattle.length,
                 cattle: _rejectedCattle,
                 isEmpty: false,
@@ -940,7 +940,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
   }
 
   Widget _buildSummarySection(BuildContext context, SalesWebState state) {
-    final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final cs = Theme.of(context).colorScheme;
 
     return Card(
@@ -951,7 +951,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              l10n!.label_summary,
+              l10n.label_summary,
               style: Theme.of(
                 context,
               ).textTheme.titleLarge?.copyWith(color: cs.onPrimaryContainer),
@@ -962,7 +962,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
               children: [
                 _buildSummaryItem(
                   context,
-                  l10n!.label_totalCattle,
+                  l10n.label_totalCattle,
                   _totalCount.toString(),
                   FontAwesomeIcons.cow,
                   // si tu _buildSummaryItem acepta color:
@@ -970,14 +970,14 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                 ),
                 _buildSummaryItem(
                   context,
-                  l10n!.sales_totalWeight,
+                  l10n.sales_totalWeight,
                   '${_totalWeight.toStringAsFixed(2)} kg',
                   Icons.scale,
                   // color: cs.onPrimaryContainer,
                 ),
                 _buildSummaryItem(
                   context,
-                  l10n!.sales_totalAmount,
+                  l10n.sales_totalAmount,
                   '\$${_totalAmount.toStringAsFixed(2)}',
                   Icons.attach_money,
                   // color: cs.onPrimaryContainer,
@@ -998,7 +998,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                       vertical: 16,
                     ),
                   ),
-                  child: Text(l10n!.sales_cancel),
+                  child: Text(l10n.sales_cancel),
                 ),
                 const SizedBox(width: 8),
                 ElevatedButton(
@@ -1026,7 +1026,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                               ),
                             ),
                           )
-                          : Text(l10n!.create),
+                          : Text(l10n.create),
                 ),
               ],
             ),
