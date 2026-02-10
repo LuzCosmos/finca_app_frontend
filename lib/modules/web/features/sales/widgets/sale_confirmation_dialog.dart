@@ -228,10 +228,10 @@ class SaleConfirmationDialog extends StatelessWidget {
       actions: [
         OutlinedButton(
           onPressed: () => Navigator.of(context).pop(false),
-          child: Text(l10n.sales_cancel),
           style: OutlinedButton.styleFrom(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
           ),
+          child: Text(l10n.sales_cancel),
         ),
         ElevatedButton.icon(
           onPressed: () => Navigator.of(context).pop(true),

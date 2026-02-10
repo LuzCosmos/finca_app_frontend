@@ -541,5 +541,6 @@
   "route": "Route",
   "appliedBy": "Applied by",
   "addMedication": "Add Medication",
-  "date": "Date"
+  "date": "Date",
+  "invalidEmail": "Invalid email address"
 }

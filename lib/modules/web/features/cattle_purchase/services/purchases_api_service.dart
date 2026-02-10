@@ -100,7 +100,7 @@ class PurchasesApiService {
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
       final decoded = jsonDecode(res.body);
-      debugPrint('Purchases list response: $decoded');
+      //debugPrint('Purchases list response: $decoded');
       if (decoded is! Map<String, dynamic>) {
         throw ApiException(
           'readingObjectError',
@@ -129,11 +129,11 @@ class PurchasesApiService {
         outHasMore,
         items,
       );
-      debugPrint(
+      /*debugPrint(
         'PurchasesPageResult(page: ${result.page}, limit: ${result.limit}, '
         'total: ${result.total}, hasMore: ${result.hasMore}, '
         'items: ${result.items.length})',
-      );
+      );*/
       return result;
     } else {
       BasicApiService.manageNotSuccessResponseCode(res);

@@ -331,9 +331,8 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                                 if (!mounted) return;
                                 setState(() => _animalLoading = true);
                                 try {
-                                  final results = await _cattleService.searchCattle(
-                                    query,
-                                  );
+                                  final results = await _cattleService
+                                      .searchCattle(query);
                                   if (!mounted) return;
                                   setState(() => _animalOptions = results);
                                   if (!completer.isCompleted) {
@@ -344,7 +343,9 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                                   setState(() => _animalOptions = []);
                                   if (!completer.isCompleted) {
                                     completer.complete(
-                                      const Iterable<Map<String, dynamic>>.empty()
+                                      const Iterable<
+                                            Map<String, dynamic>
+                                          >.empty()
                                           .toList(),
                                     );
                                   }
@@ -358,7 +359,8 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
 
                             return completer.future;
                           },
-                          displayStringForOption: (option) => option['number'] ?? '',
+                          displayStringForOption:
+                              (option) => option['number'] ?? '',
                           onSelected: (selection) {
                             _animalNumberController.text =
                                 selection['number']?.toString() ?? '';
@@ -390,7 +392,9 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                                 ),
                                 labelText: l10n.animalNumberLabel,
                                 labelStyle: const TextStyle(fontSize: 11),
-                                floatingLabelStyle: const TextStyle(fontSize: 11),
+                                floatingLabelStyle: const TextStyle(
+                                  fontSize: 11,
+                                ),
                                 suffixIcon:
                                     _animalLoading
                                         ? const Padding(
@@ -531,9 +535,9 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                                 return completer.future;
                               }
 
-                              if (_debounce?.isActive ?? false)
+                              if (_debounce?.isActive ?? false) {
                                 _debounce!.cancel();
-
+                              }
                               _debounce = Timer(
                                 const Duration(milliseconds: 500),
                                 () async {
@@ -545,18 +549,21 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                                           textEditingValue.text,
                                         );
                                     setState(() => _deviceOptions = results);
-                                    if (!completer.isCompleted)
+                                    if (!completer.isCompleted) {
                                       completer.complete(results);
+                                    }
                                   } catch (e) {
                                     setState(() => _deviceOptions = []);
-                                    if (!completer.isCompleted)
+                                    if (!completer.isCompleted) {
                                       completer.complete(
                                         const Iterable<DeviceModel>.empty()
                                             .toList(),
                                       );
+                                    }
                                   } finally {
-                                    if (mounted)
+                                    if (mounted) {
                                       setState(() => _deviceLoading = false);
+                                    }
                                   }
                                 },
                               );
@@ -594,8 +601,9 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                                     // but _deviceOptions logic here might be tricky if debounce is running.
                                     // Using the same logic as ReceiveCattleForm usually works well enough.
                                     // Assuming l10n.trackerNotFound and l10n.trackerNotSelected exist.
-                                    if (_deviceOptions.isEmpty)
+                                    if (_deviceOptions.isEmpty) {
                                       return l10n.trackerNotFound;
+                                    }
                                     return l10n.trackerNotSelected;
                                   }
                                   return null;

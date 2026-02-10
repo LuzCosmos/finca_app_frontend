@@ -132,7 +132,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
       final errorText = code.asText(context, objectName: t.cattle);
       _showError(errorText);
       if (code == ApiExceptionCode.unknownError && e.code != 'unknownError') {
-        print('ApiException code desconocido: ${e.code}');
+        debugPrint('ApiException code desconocido: ${e.code}');
       }
       if (isLoading) setState(() => isLoading = false);
     } catch (e) {
@@ -473,7 +473,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                       ? null
                       : (newValue) {
                         if (newValue != null) {
-                          debugPrint('Gender changed to $newValue');
+                          // debugPrint('Gender changed to $newValue');
                           rendererContext.stateManager.changeCellValue(
                             rendererContext.cell,
                             newValue,
@@ -720,9 +720,9 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                       history: history,
                       service: _service,
                       onAdded: (newRecord) {
-                        debugPrint(
+                        /*debugPrint(
                           'Adding new medication record to grid: $newRecord',
-                        );
+                        );*/
                         try {
                           final row = stateManager.rows.firstWhere(
                             (r) => r.key == ctx.row.key,
@@ -740,9 +740,9 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                               callOnChangedEvent: false,
                               force: true,
                             );
-                            debugPrint(
+                            /*debugPrint(
                               'Grid cell updated. New history length: ${currentHistory.length}',
-                            );
+                            );*/
                           } else {
                             debugPrint(
                               'Could not find row by key to update medication history',
@@ -824,30 +824,33 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                         },
                         onChanged: (event) async {
                           final rowId = event.row.cells['id']!.value.toString();
-                          debugPrint(
+                          /*debugPrint(
                             'onChanged triggered for rowId: $rowId, field: ${event.column.field}, value: ${event.value}',
-                          );
+                          );*/
                           if (rowId.isEmpty || rowId == 'New') {
-                            debugPrint('Skipping save for new/empty row');
+                            //debugPrint('Skipping save for new/empty row');
                             return;
                           }
                           String field = event.column.field;
                           dynamic value = event.value;
-                          if (field == 'hasHorn')
+                          if (field == 'hasHorn') {
                             value = value.toString() == 'true';
+                          }
+
                           if (field == 'isCastrated') {
                             field = 'castrated';
                             value = value.toString() == 'true';
                           }
-                          if (field == 'characteristicsIds')
+                          if (field == 'characteristicsIds') {
                             field = 'characteristics';
+                          }
                           if ([
                             'tracker',
                             'characteristics',
                             'idDevice',
-                          ].contains(field))
+                          ].contains(field)) {
                             return;
-
+                          }
                           // Validation for lastWeight,receivedWeight
                           if (field == 'lastWeight' ||
                               field == 'receivedWeight') {
@@ -886,9 +889,9 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                                     if (updatedData.containsKey(
                                       'weightHistory',
                                     )) {
-                                      debugPrint(
-                                        'Updating weight history for row ${rowId}: ${updatedData['weightHistory'].length} items',
-                                      );
+                                      /*debugPrint(
+                                        'Updating weight history for row $rowId: ${updatedData['weightHistory'].length} items',
+                                      );*/
                                       stateManager.changeCellValue(
                                         row.cells['weightHistory']!,
                                         updatedData['weightHistory'],
@@ -899,9 +902,9 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                                     if (updatedData.containsKey(
                                       'medicationHistory',
                                     )) {
-                                      debugPrint(
-                                        'Updating medication history for row ${rowId}: ${updatedData['medicationHistory'].length} items',
-                                      );
+                                      /*debugPrint(
+                                        'Updating medication history for row $rowId: ${updatedData['medicationHistory'].length} items',
+                                      );*/
                                       stateManager.changeCellValue(
                                         row.cells['medicationHistory']!,
                                         updatedData['medicationHistory'],

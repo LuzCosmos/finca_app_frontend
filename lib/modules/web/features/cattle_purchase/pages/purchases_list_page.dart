@@ -478,9 +478,7 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
                     ),
                   ],
                 ),
-                Text(
-                  '${t.page} $_page / $_pageCount   (${_total} ${t.results})',
-                ),
+                Text('${t.page} $_page / $_pageCount   ($_total ${t.results})'),
                 Row(
                   children: [
                     IconButton(

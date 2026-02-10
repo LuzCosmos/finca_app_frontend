@@ -374,7 +374,7 @@ class _CattleListWithEventsState extends State<CattleListWithEvents> {
   ) {
     return [
       Text(
-        l10n.eventTypeBrand + ': ${data['brandName'] ?? 'Brand'}',
+        '${l10n.eventTypeBrand}: ${data['brandName'] ?? 'Brand'}',
         style: const TextStyle(fontWeight: FontWeight.bold),
       ),
     ];

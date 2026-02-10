@@ -40,7 +40,6 @@ class CattleMasterService {
       }
       throw ApiException('readingObjectError', 'Error al listar ganado: $e');
     }
-    debugPrint('Response status: ${response.statusCode}');
     if (response.statusCode == 200) {
       final decoded = jsonDecode(response.body);
       // Fallback si el backend aún devuelve lista plana (durante migración)
@@ -100,7 +99,7 @@ class CattleMasterService {
       }
     } catch (e) {
       if (e is ApiException) {
-        throw e;
+        rethrow;
       }
       throw ApiException('readingObjectError', 'Error al listar colores: $e');
     }
@@ -148,7 +147,7 @@ class CattleMasterService {
       }
     } catch (e) {
       if (e is ApiException) {
-        throw e;
+        rethrow;
       }
       throw ApiException(
         'readingObjectError',
@@ -165,7 +164,6 @@ class CattleMasterService {
   ) async {
     final token = await BasicApiService.getToken();
     final url = Uri.parse('$baseUrl/cattle/$id');
-    debugPrint('Updating cattle $id with data: $data');
     var response;
     try {
       response = await http.patch(
@@ -201,7 +199,6 @@ class CattleMasterService {
   ) async {
     final token = await BasicApiService.getToken();
     final url = Uri.parse('$baseUrl/cattle/$id/medication');
-    debugPrint('Adding medication to cattle $id with data: $data');
     var response;
     try {
       response = await http.post(
@@ -263,7 +260,9 @@ class CattleMasterService {
         BasicApiService.manageNotSuccessResponseCode(response);
       }
     } catch (e) {
-      if (e is ApiException) throw e;
+      if (e is ApiException) {
+        rethrow;
+      }
       throw ApiException('readingObjectError', 'Error searching cattle: $e');
     }
   }

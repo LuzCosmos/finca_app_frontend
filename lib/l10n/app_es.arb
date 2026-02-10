@@ -516,5 +516,6 @@
   "route": "Vía",
   "appliedBy": "Aplicado por",
   "addMedication": "Agregar Medicación",
-  "date": "Fecha"
+  "date": "Fecha",
+  "invalidEmail": "Correo electrónico inválido"
 }

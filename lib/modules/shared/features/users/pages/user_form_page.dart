@@ -229,8 +229,9 @@ class _UserFormPageState extends State<UserFormPage> {
                 validator: (v) {
                   if (v == null || v.isEmpty) return t.fieldRequired;
                   // Basic email validation
-                  if (!v.contains('@') || !v.contains('.'))
-                    return 'Invalid email';
+                  if (!v.contains('@') || !v.contains('.')) {
+                    return t.invalidEmail;
+                  }
                   return null;
                 },
               ),
@@ -258,8 +259,9 @@ class _UserFormPageState extends State<UserFormPage> {
                   obscureText: true,
                   validator: (v) {
                     if (v == null || v.isEmpty) return t.fieldRequired;
-                    if (v.length < 8 || v.length > 50)
+                    if (v.length < 8 || v.length > 50) {
                       return t.user_passwordLengthError;
+                    }
                     return null;
                   },
                 ),

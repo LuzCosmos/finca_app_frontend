@@ -1377,4 +1377,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get date => 'Fecha';
+
+  @override
+  String get invalidEmail => 'Correo electrónico inválido';
 }

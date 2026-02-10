@@ -185,8 +185,9 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                       },
                       onChanged: (value) {
                         widget.onNumberChanged(value);
-                        if (_numberDebounce?.isActive ?? false)
+                        if (_numberDebounce?.isActive ?? false) {
                           _numberDebounce!.cancel();
+                        }
                         _numberDebounce = Timer(
                           const Duration(milliseconds: 500),
                           () {
@@ -398,8 +399,9 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                         return null;
                       },
                       onChanged: (value) {
-                        if (_eartagDebounce?.isActive ?? false)
+                        if (_eartagDebounce?.isActive ?? false) {
                           _eartagDebounce!.cancel();
+                        }
                         _eartagDebounce = Timer(
                           const Duration(milliseconds: 500),
                           () {
@@ -452,18 +454,21 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                                     textEditingValue.text,
                                   );
                               setState(() => _deviceOptions = results);
-                              if (!completer.isCompleted)
+                              if (!completer.isCompleted) {
                                 completer.complete(results);
+                              }
                             } catch (e) {
                               debugPrint('DEBUG: API error: $e');
                               setState(() => _deviceOptions = []);
-                              if (!completer.isCompleted)
+                              if (!completer.isCompleted) {
                                 completer.complete(
                                   const Iterable<DeviceModel>.empty().toList(),
                                 );
+                              }
                             } finally {
-                              if (mounted)
+                              if (mounted) {
                                 setState(() => _deviceLoading = false);
+                              }
                             }
                           },
                         );
@@ -489,8 +494,9 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                             if (value != null &&
                                 value.isNotEmpty &&
                                 _selectedDeviceId == null) {
-                              if (_deviceOptions.isEmpty)
+                              if (_deviceOptions.isEmpty) {
                                 return l10n.trackerNotFound;
+                              }
                               return l10n.trackerNotSelected;
                             }
                             return null;
@@ -755,12 +761,10 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
 
   void _submitForm() async {
     // Clear previous server errors
-    debugPrint('DEBUG: Submit button clicked. Checking validation...');
     if (!_formKey.currentState!.validate()) {
       debugPrint('DEBUG: Validation failed');
       return;
     }
-    debugPrint('DEBUG: Validation passed');
     double? purchaseWeight = 0;
     double? purchasePrice = 0;
     debugPrint('DEBUG: selectedLotId: $selectedLotId');
@@ -771,7 +775,6 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
             var rawTotalWeight = lot['totalWeight'];
             var rawTotalCount = lot['purchasedCattleCount'];
             var rawPricePerKg = lot['pricePerKg'];
-
             num totalPurchaseWeight =
                 rawTotalWeight is String
                     ? double.parse(rawTotalWeight)
@@ -784,11 +787,6 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                 rawPricePerKg is String
                     ? double.parse(rawPricePerKg)
                     : (rawPricePerKg as num? ?? 0);
-
-            debugPrint(
-              'DEBUG: totalPurchaseWeight: $totalPurchaseWeight, totalPurchaseCount: $totalPurchaseCount, pricePerKg: $pricePerKg',
-            );
-
             double averagePurchaseWeight = 0;
             if (totalPurchaseCount != 0) {
               averagePurchaseWeight =
@@ -800,10 +798,6 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
             );
             purchasePrice = double.parse(
               (averagePurchaseWeight * pricePerKg).toStringAsFixed(2),
-            );
-
-            debugPrint(
-              'DEBUG: Calculated purchaseWeight: $purchaseWeight, purchasePrice: $purchasePrice',
             );
           } catch (e) {
             debugPrint('ERROR calculating purchase data: $e');
