@@ -138,11 +138,11 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
       // (opcional) Log para cazar códigos desconocidos:
       if (code == ApiExceptionCode.unknownError && e.code != 'unknownError') {
         // ignore: avoid_print
-        print('ApiException code desconocido: ${e.code}');
+        debugPrint('ApiException code desconocido: ${e.code}');
       }
     } catch (e) {
       setState(() => _error = e.toString());
-      print(e);
+      debugPrint(e.toString());
     } finally {
       setState(() => _loading = false);
     }

@@ -72,10 +72,10 @@ class _UsersListPageState extends State<UsersListPage> {
       );
       final errorText = code.asText(context, objectName: AppLocalizations.of(context)!.users);
       setState(() => _error = errorText);
-      print('Users error: $e'); // Log to console as requested
+      debugPrint('Users error: $e');
     } catch (e) {
       setState(() => _error = e.toString());
-      print(e);
+      debugPrint('Users unexpected error: $e');
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -122,14 +122,14 @@ class _UsersListPageState extends State<UsersListPage> {
                 SnackBar(content: Text(errorText), backgroundColor: Colors.red),
             );
          }
-         print('Delete user error: $e');
+         debugPrint('Delete user error: $e');
       } catch (e) {
         if (mounted) {
            ScaffoldMessenger.of(context).showSnackBar(
              SnackBar(content: Text(e.toString()), backgroundColor: Colors.red),
            );
         }
-        print(e);
+        debugPrint('Delete user unexpected error: $e');
       }
     }
   }

@@ -89,13 +89,13 @@ class _UserFormPageState extends State<UserFormPage> {
           _loadingRoles = false;
         });
       }
-      print('Load roles error: $e');
+      debugPrint('Load roles error: $e');
     } catch (e) {
       setState(() {
         _error = e.toString();
         _loadingRoles = false;
       });
-      print(e);
+      debugPrint(e.toString());
     }
   }
 
@@ -161,10 +161,10 @@ class _UserFormPageState extends State<UserFormPage> {
         );
         setState(() => _error = errorText);
       }
-      print('User form error: $e'); // Log to console
+      debugPrint('User form error: $e'); // Log to console
     } catch (e) {
       setState(() => _error = e.toString());
-      print(e);
+      debugPrint(e.toString());
     } finally {
       if (mounted) setState(() => _saving = false);
     }
@@ -192,8 +192,9 @@ class _UserFormPageState extends State<UserFormPage> {
                 decoration: InputDecoration(labelText: t.username),
                 validator: (v) {
                   if (v == null || v.isEmpty) return t.fieldRequired;
-                  if (v.length < 5 || v.length > 50)
+                  if (v.length < 5 || v.length > 50) {
                     return t.user_usernameLengthError;
+                  }
                   return null;
                 },
               ),

@@ -455,7 +455,7 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                               if (!completer.isCompleted)
                                 completer.complete(results);
                             } catch (e) {
-                              print('DEBUG: API error: $e');
+                              debugPrint('DEBUG: API error: $e');
                               setState(() => _deviceOptions = []);
                               if (!completer.isCompleted)
                                 completer.complete(
@@ -755,15 +755,15 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
 
   void _submitForm() async {
     // Clear previous server errors
-    print('DEBUG: Submit button clicked. Checking validation...');
+    debugPrint('DEBUG: Submit button clicked. Checking validation...');
     if (!_formKey.currentState!.validate()) {
-      print('DEBUG: Validation failed');
+      debugPrint('DEBUG: Validation failed');
       return;
     }
-    print('DEBUG: Validation passed');
+    debugPrint('DEBUG: Validation passed');
     double? purchaseWeight = 0;
     double? purchasePrice = 0;
-    print('DEBUG: selectedLotId: $selectedLotId');
+    debugPrint('DEBUG: selectedLotId: $selectedLotId');
     if (selectedLotId != null) {
       for (var lot in widget.availableLots) {
         if (lot['id'] == selectedLotId) {
@@ -785,7 +785,7 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                     ? double.parse(rawPricePerKg)
                     : (rawPricePerKg as num? ?? 0);
 
-            print(
+            debugPrint(
               'DEBUG: totalPurchaseWeight: $totalPurchaseWeight, totalPurchaseCount: $totalPurchaseCount, pricePerKg: $pricePerKg',
             );
 
@@ -802,11 +802,11 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
               (averagePurchaseWeight * pricePerKg).toStringAsFixed(2),
             );
 
-            print(
+            debugPrint(
               'DEBUG: Calculated purchaseWeight: $purchaseWeight, purchasePrice: $purchasePrice',
             );
           } catch (e) {
-            print('ERROR calculating purchase data: $e');
+            debugPrint('ERROR calculating purchase data: $e');
           }
         }
       }

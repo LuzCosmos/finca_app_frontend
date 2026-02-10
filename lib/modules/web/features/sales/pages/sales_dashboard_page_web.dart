@@ -264,7 +264,7 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
               return const Center(child: CircularProgressIndicator());
             }
             if (state.error != null && state.sales == null) {
-              print(state.error);
+              debugPrint(state.error);
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,

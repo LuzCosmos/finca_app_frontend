@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
+import 'package:flutter/foundation.dart';
 
 class CattlePageResult {
   final int page, limit, total;
@@ -39,7 +40,7 @@ class CattleMasterService {
       }
       throw ApiException('readingObjectError', 'Error al listar ganado: $e');
     }
-    print('Response status: ${response.statusCode}');
+    debugPrint('Response status: ${response.statusCode}');
     if (response.statusCode == 200) {
       final decoded = jsonDecode(response.body);
       // Fallback si el backend aún devuelve lista plana (durante migración)
@@ -90,7 +91,9 @@ class CattleMasterService {
         if (body is List) {
           return body.cast<String>();
         } else {
-          print('Error: /color-characteristics/color returned non-list: $body');
+          debugPrint(
+            'Error: /color-characteristics/color returned non-list: $body',
+          );
         }
       } else {
         BasicApiService.manageNotSuccessResponseCode(response);
@@ -136,7 +139,7 @@ class CattleMasterService {
         if (body is List) {
           return body.cast<String>();
         } else {
-          print(
+          debugPrint(
             'Error: /color-characteristics/characteristic returned non-list: $body',
           );
         }
@@ -162,7 +165,7 @@ class CattleMasterService {
   ) async {
     final token = await BasicApiService.getToken();
     final url = Uri.parse('$baseUrl/cattle/$id');
-    print('Updating cattle $id with data: $data');
+    debugPrint('Updating cattle $id with data: $data');
     var response;
     try {
       response = await http.patch(
@@ -198,7 +201,7 @@ class CattleMasterService {
   ) async {
     final token = await BasicApiService.getToken();
     final url = Uri.parse('$baseUrl/cattle/$id/medication');
-    print('Adding medication to cattle $id with data: $data');
+    debugPrint('Adding medication to cattle $id with data: $data');
     var response;
     try {
       response = await http.post(

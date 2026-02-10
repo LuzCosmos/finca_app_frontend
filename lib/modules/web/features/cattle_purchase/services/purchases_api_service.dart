@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'package:finca_app_frontend/core/services/basic_api_service.dart';
@@ -99,7 +100,7 @@ class PurchasesApiService {
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
       final decoded = jsonDecode(res.body);
-      print(decoded);
+      debugPrint('Purchases list response: $decoded');
       if (decoded is! Map<String, dynamic>) {
         throw ApiException(
           'readingObjectError',
@@ -128,7 +129,11 @@ class PurchasesApiService {
         outHasMore,
         items,
       );
-      print(result);
+      debugPrint(
+        'PurchasesPageResult(page: ${result.page}, limit: ${result.limit}, '
+        'total: ${result.total}, hasMore: ${result.hasMore}, '
+        'items: ${result.items.length})',
+      );
       return result;
     } else {
       BasicApiService.manageNotSuccessResponseCode(res);
