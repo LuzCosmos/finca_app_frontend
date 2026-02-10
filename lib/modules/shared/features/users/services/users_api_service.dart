@@ -43,7 +43,10 @@ class UsersApiService {
       res = await http.get(uri, headers: {'Authorization': 'Bearer $token'});
     } catch (e) {
       if (e is SocketException || e is http.ClientException) {
-         throw ApiException(ApiExceptionCode.serverConnectionError.name, e.toString());
+        throw ApiException(
+          ApiExceptionCode.serverConnectionError.name,
+          e.toString(),
+        );
       }
       throw ApiException(ApiExceptionCode.unknownError.name, e.toString());
     }
@@ -62,21 +65,22 @@ class UsersApiService {
       );
     } else {
       BasicApiService.manageNotSuccessResponseCode(res);
-      // Fallback in case verifyResponse doesn't throw
-      throw ApiException(ApiExceptionCode.unknownError.name);
     }
   }
 
   Future<List<RoleModel>> getRoles() async {
     final token = await SessionService.getToken();
     final uri = Uri.parse('$baseUrl/roles');
-    
+
     late http.Response res;
     try {
       res = await http.get(uri, headers: {'Authorization': 'Bearer $token'});
     } catch (e) {
       if (e is SocketException || e is http.ClientException) {
-         throw ApiException(ApiExceptionCode.serverConnectionError.name, e.toString());
+        throw ApiException(
+          ApiExceptionCode.serverConnectionError.name,
+          e.toString(),
+        );
       }
       throw ApiException(ApiExceptionCode.unknownError.name, e.toString());
     }
@@ -86,19 +90,20 @@ class UsersApiService {
       return decoded.map((e) => RoleModel.fromJson(e)).toList();
     } else {
       BasicApiService.manageNotSuccessResponseCode(res);
-      throw ApiException(ApiExceptionCode.unknownError.name);
     }
   }
 
   Future<void> create(Map<String, dynamic> data) async {
     final token = await SessionService.getToken();
     final uri = Uri.parse(baseUrl);
-    
+
     // Ensure roleIds is a list of strings
-    if (data['roleIds'] is List && (data['roleIds'] as List).isNotEmpty && data['roleIds'][0] is String) {
-       // already OK
+    if (data['roleIds'] is List &&
+        (data['roleIds'] as List).isNotEmpty &&
+        data['roleIds'][0] is String) {
+      // already OK
     } else if (data['roleIds'] is List) {
-       // if for some reason it's not string list, but should be handled by caller
+      // if for some reason it's not string list, but should be handled by caller
     }
 
     late http.Response res;
@@ -113,7 +118,10 @@ class UsersApiService {
       );
     } catch (e) {
       if (e is SocketException || e is http.ClientException) {
-         throw ApiException(ApiExceptionCode.serverConnectionError.name, e.toString());
+        throw ApiException(
+          ApiExceptionCode.serverConnectionError.name,
+          e.toString(),
+        );
       }
       throw ApiException(ApiExceptionCode.savingObjectError.name, e.toString());
     }
@@ -138,10 +146,13 @@ class UsersApiService {
         body: jsonEncode(data),
       );
     } catch (e) {
-       if (e is SocketException || e is http.ClientException) {
-         throw ApiException(ApiExceptionCode.serverConnectionError.name, e.toString());
+      if (e is SocketException || e is http.ClientException) {
+        throw ApiException(
+          ApiExceptionCode.serverConnectionError.name,
+          e.toString(),
+        );
       }
-       throw ApiException(ApiExceptionCode.savingObjectError.name, e.toString());
+      throw ApiException(ApiExceptionCode.savingObjectError.name, e.toString());
     }
 
     if (res.statusCode != 200) {
@@ -155,15 +166,15 @@ class UsersApiService {
 
     late http.Response res;
     try {
-      res = await http.delete(
-        uri,
-        headers: {'Authorization': 'Bearer $token'},
-      );
+      res = await http.delete(uri, headers: {'Authorization': 'Bearer $token'});
     } catch (e) {
-       if (e is SocketException || e is http.ClientException) {
-         throw ApiException(ApiExceptionCode.serverConnectionError.name, e.toString());
+      if (e is SocketException || e is http.ClientException) {
+        throw ApiException(
+          ApiExceptionCode.serverConnectionError.name,
+          e.toString(),
+        );
       }
-       throw ApiException(ApiExceptionCode.unknownError.name, e.toString());
+      throw ApiException(ApiExceptionCode.unknownError.name, e.toString());
     }
 
     if (res.statusCode != 200) {
@@ -171,4 +182,3 @@ class UsersApiService {
     }
   }
 }
-

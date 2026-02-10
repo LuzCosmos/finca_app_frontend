@@ -246,10 +246,6 @@ class MassiveEventApiService {
       }
     } else {
       BasicApiService.manageNotSuccessResponseCode(response);
-      throw ApiException(
-        'unknownError',
-        'Error desconocido al actualizar SimpleEvent',
-      );
     }
   }
 }

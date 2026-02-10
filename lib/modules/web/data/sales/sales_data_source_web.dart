@@ -125,10 +125,12 @@ class SalesDataSourceWeb implements ISalesDataSource {
   @override
   Future<void> updateSale(String id, Map<String, dynamic> updates) async {
     final baseUrl = BasicApiService.baseUrl;
-    if (baseUrl == null) throw Exception('API_URL is not configured');
+    if (baseUrl.isEmpty) throw Exception('API_URL is not configured');
 
     final token = await SessionService.getToken();
-    if (token == null) throw Exception('No session found. Please login.');
+    if (token == null || token.isEmpty) {
+      throw Exception('No session found. Please login.');
+    }
 
     final res = await http.put(
       Uri.parse('$baseUrl/sales/$id'),

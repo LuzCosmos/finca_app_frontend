@@ -86,7 +86,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
   }
 
   Future<void> _loadData() async {
-    if (_gridKey == null || rows.isEmpty) {
+    if (_gridKey.toString().isEmpty || rows.isEmpty) {
       setState(() => isLoading = true);
     } else {
       try {
@@ -126,7 +126,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
     } on ApiException catch (e) {
       final t = AppLocalizations.of(context)!;
       final code = ApiExceptionCode.values.firstWhere(
-        (el) => el.name == (e.code ?? ''),
+        (el) => el.name == (e.code),
         orElse: () => ApiExceptionCode.unknownError,
       );
       final errorText = code.asText(context, objectName: t.cattle);
@@ -375,7 +375,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                         final newNames = result['names'] as List<String>;
                         debugPrint('Dialog result received. IDs: $newIds');
                         // Find the row
-                        PlutoRow? activeRow;
+                        PlutoRow activeRow;
                         try {
                           activeRow = stateManager.rows.firstWhere(
                             (r) => r.key == rowKey,
@@ -384,48 +384,44 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                           debugPrint('Could not find row with key $rowKey: $e');
                           return;
                         }
-                        if (activeRow != null) {
-                          final rowId = activeRow.cells['id']?.value.toString();
-                          if (rowId != null &&
-                              rowId != 'New' &&
-                              rowId.isNotEmpty) {
-                            debugPrint("Saving to DB for row $rowId");
-                            try {
-                              // Manual API call to avoid triggering onChanged with List value
-                              await _service.updateCattle(rowId, {
-                                'characteristics': newIds,
-                              });
-                              if (mounted) {
-                                // Update hidden value directly
-                                activeRow!.cells['characteristicsIds']!.value =
-                                    newIds;
-                                // Update visible text manually
-                                activeRow!
-                                    .cells['characteristics']!
-                                    .value = newNames.join(', ');
-                                // Force grid refresh
-                                stateManager
-                                    .notifyListeners(); // Notify PlutoGrid to rebuild
-                                setState(
-                                  () {},
-                                ); // Trigger local widget rebuild just in case
-                                _showSuccess('Saved');
-                              }
-                            } catch (e) {
-                              debugPrint("Error saving characteristics: $e");
-                              if (mounted) {
-                                _showError('Error saving: $e');
-                              }
+                        final rowId =
+                            activeRow.cells['id']?.value.toString() ?? '';
+                        if (rowId != 'New' && rowId.isNotEmpty) {
+                          debugPrint("Saving to DB for row $rowId");
+                          try {
+                            // Manual API call to avoid triggering onChanged with List value
+                            await _service.updateCattle(rowId, {
+                              'characteristics': newIds,
+                            });
+                            if (mounted) {
+                              // Update hidden value directly
+                              activeRow.cells['characteristicsIds']!.value =
+                                  newIds;
+                              // Update visible text manually
+                              activeRow
+                                  .cells['characteristics']!
+                                  .value = newNames.join(', ');
+                              // Force grid refresh
+                              stateManager
+                                  .notifyListeners(); // Notify PlutoGrid to rebuild
+                              setState(
+                                () {},
+                              ); // Trigger local widget rebuild just in case
+                              _showSuccess('Saved');
                             }
-                          } else {
-                            // For new rows not yet saved to DB, just update local state
-                            activeRow.cells['characteristicsIds']!.value =
-                                newIds;
-                            stateManager.changeCellValue(
-                              activeRow.cells['characteristics']!,
-                              newNames.join(', '),
-                            );
+                          } catch (e) {
+                            debugPrint("Error saving characteristics: $e");
+                            if (mounted) {
+                              _showError('Error saving: $e');
+                            }
                           }
+                        } else {
+                          // For new rows not yet saved to DB, just update local state
+                          activeRow.cells['characteristicsIds']!.value = newIds;
+                          stateManager.changeCellValue(
+                            activeRow.cells['characteristics']!,
+                            newNames.join(', '),
+                          );
                         }
                       }
                     },
@@ -528,75 +524,68 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                           return;
                         }
 
-                        if (activeRow != null) {
-                          final rowId = activeRow.cells['id']?.value.toString();
+                        final rowId =
+                            activeRow.cells['id']?.value.toString() ?? '';
 
-                          if (result == 'remove') {
-                            // Logic to remove tracker
-                            if (rowId != null &&
-                                rowId != 'New' &&
-                                rowId.isNotEmpty) {
-                              try {
-                                await _service.updateCattle(rowId, {
-                                  'idDevice': null,
-                                });
-                                if (mounted) {
-                                  activeRow.cells['tracker']!.value = '';
-                                  activeRow.cells['idDevice']!.value = '';
-                                  stateManager.notifyListeners();
-                                  setState(() {});
-                                  _showSuccess('Removed');
-                                }
-                              } catch (e) {
-                                if (mounted) _showError('Error: $e');
+                        if (result == 'remove') {
+                          // Logic to remove tracker
+                          if (rowId != 'New' && rowId.isNotEmpty) {
+                            try {
+                              await _service.updateCattle(rowId, {
+                                'idDevice': null,
+                              });
+                              if (mounted) {
+                                activeRow.cells['tracker']!.value = '';
+                                activeRow.cells['idDevice']!.value = '';
+                                stateManager.notifyListeners();
+                                setState(() {});
+                                _showSuccess('Removed');
                               }
-                            } else {
-                              // For new rows
-                              activeRow.cells['tracker']!.value = '';
-                              activeRow.cells['idDevice']!.value = '';
+                            } catch (e) {
+                              if (mounted) _showError('Error: $e');
                             }
-                          } else if (result is DeviceModel) {
-                            // Logic to add tracker (existing)
-                            if (rowId != null &&
-                                rowId != 'New' &&
-                                rowId.isNotEmpty) {
-                              try {
-                                await _service.updateCattle(rowId, {
-                                  'idDevice': result.id,
-                                });
-                                if (mounted) {
-                                  // Find any other row that has this device attached and clear it
-                                  try {
-                                    final oldOwnerRow = stateManager.rows
-                                        .firstWhere(
-                                          (r) =>
-                                              r.key != rowKey &&
-                                              r.cells['idDevice']?.value ==
-                                                  result.id,
-                                        );
-                                    oldOwnerRow.cells['tracker']!.value = '';
-                                    oldOwnerRow.cells['idDevice']!.value = '';
-                                  } catch (e) {
-                                    // No previous owner found
-                                  }
-                                  activeRow.cells['tracker']!.value =
-                                      result.name;
-                                  activeRow.cells['idDevice']!.value =
-                                      result.id;
-                                  stateManager.notifyListeners();
-                                  setState(() {});
-                                  _showSuccess('Saved');
+                          } else {
+                            // For new rows
+                            activeRow.cells['tracker']!.value = '';
+                            activeRow.cells['idDevice']!.value = '';
+                          }
+                        } else if (result is DeviceModel) {
+                          // Logic to add tracker (existing)
+                          if (rowId != 'New' && rowId.isNotEmpty) {
+                            try {
+                              await _service.updateCattle(rowId, {
+                                'idDevice': result.id,
+                              });
+                              if (mounted) {
+                                // Find any other row that has this device attached and clear it
+                                try {
+                                  final oldOwnerRow = stateManager.rows
+                                      .firstWhere(
+                                        (r) =>
+                                            r.key != rowKey &&
+                                            r.cells['idDevice']?.value ==
+                                                result.id,
+                                      );
+                                  oldOwnerRow.cells['tracker']!.value = '';
+                                  oldOwnerRow.cells['idDevice']!.value = '';
+                                } catch (e) {
+                                  // No previous owner found
                                 }
-                              } catch (e) {
-                                if (mounted) _showError('Error: $e');
+                                activeRow.cells['tracker']!.value = result.name;
+                                activeRow.cells['idDevice']!.value = result.id;
+                                stateManager.notifyListeners();
+                                setState(() {});
+                                _showSuccess('Saved');
                               }
-                            } else {
-                              activeRow.cells['tracker']!.value = result.name;
-                              stateManager.changeCellValue(
-                                activeRow.cells['idDevice']!,
-                                result.id,
-                              );
+                            } catch (e) {
+                              if (mounted) _showError('Error: $e');
                             }
+                          } else {
+                            activeRow.cells['tracker']!.value = result.name;
+                            stateManager.changeCellValue(
+                              activeRow.cells['idDevice']!,
+                              result.id,
+                            );
                           }
                         }
                       }
@@ -932,7 +921,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                           } on ApiException catch (e) {
                             if (mounted) {
                               final code = ApiExceptionCode.values.firstWhere(
-                                (el) => el.name == (e.code ?? ''),
+                                (el) => el.name == (e.code),
                                 orElse: () => ApiExceptionCode.unknownError,
                               );
                               if (code == ApiExceptionCode.conflictError) {

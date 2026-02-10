@@ -126,7 +126,7 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
               String? error = ApiExceptionCode.values
                   .firstWhere((el) => el.name == e.code)
                   .asText(context);
-              if (error != null) {
+              if (error.isNotEmpty) {
                 widget.showError(error);
               }
             }

@@ -128,7 +128,7 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
       });
     } on ApiException catch (e) {
       final code = ApiExceptionCode.values.firstWhere(
-        (el) => el.name == (e.code ?? ''),
+        (el) => el.name == (e.code),
         orElse: () => ApiExceptionCode.unknownError, // <- Fallback seguro
       );
 

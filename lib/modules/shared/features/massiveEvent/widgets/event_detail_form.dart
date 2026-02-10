@@ -164,7 +164,7 @@ class _EventDetailFormState extends State<EventDetailForm> {
                     child: Center(
                       child: Image.memory(
                         base64Decode(
-                          selectedBrandObject!.imageBase64!.split(',').last,
+                          selectedBrandObject!.imageBase64.split(',').last,
                         ),
                         fit: BoxFit.contain,
                       ),
