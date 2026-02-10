@@ -1,12 +1,10 @@
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/shared/features/brands/models/brand_model.dart';
-import 'package:finca_app_frontend/modules/shared/features/brands/services/brand_api_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/bloc/massive_event_bloc.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_type.dart';
 import 'package:finca_app_frontend/modules/shared/features/brands/widgets/create_brand_dialog.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
-import 'package:finca_app_frontend/core/utils/logger.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EventDetailForm extends StatefulWidget {

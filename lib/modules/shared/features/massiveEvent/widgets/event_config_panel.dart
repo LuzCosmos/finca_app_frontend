@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:finca_app_frontend/core/utils/logger.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/bloc/massive_event_bloc.dart';
@@ -76,9 +75,11 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
       widget.showError(null);
       final massiveBloc = context.read<MassiveEventBloc>();
       final activeEventTypes = activeDetails.map((e) => e.type).toList();
-      if (widget.key != null && 
-          widget.key is ValueKey<String> && 
-          (widget.key as ValueKey<String>).value.contains('eventConfigPanel_reception')) {
+      if (widget.key != null &&
+          widget.key is ValueKey<String> &&
+          (widget.key as ValueKey<String>).value.contains(
+            'eventConfigPanel_reception',
+          )) {
         activeEventTypes.add(SimpleEventType.weight);
         activeEventTypes.add(SimpleEventType.tracker);
         activeEventTypes.add(SimpleEventType.eartag);
@@ -146,8 +147,11 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
       allDetails[idx] = allDetails[idx].copyWith(isActive: false);
       widget.onEventsChanged(allDetails);
       var endpoint = 'simple-events';
-      if (widget.key != null && widget.key is ValueKey<String> && 
-        (widget.key as ValueKey<String>).value.contains('eventConfigPanel_reception')) {
+      if (widget.key != null &&
+          widget.key is ValueKey<String> &&
+          (widget.key as ValueKey<String>).value.contains(
+            'eventConfigPanel_reception',
+          )) {
         endpoint = 'purchase-receptions/update-simple-event';
       }
       await context.read<MassiveEventBloc>().dataSource.updateSimpleEvent(
@@ -166,8 +170,11 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
       final l10n = AppLocalizations.of(context)!;
       widget.showInfo(l10n.reactivatedInfo(detail.type.asText(context)));
       var endpoint = 'simple-events';
-      if (widget.key != null && widget.key is ValueKey<String> && 
-        (widget.key as ValueKey<String>).value.contains('eventConfigPanel_reception')) {
+      if (widget.key != null &&
+          widget.key is ValueKey<String> &&
+          (widget.key as ValueKey<String>).value.contains(
+            'eventConfigPanel_reception',
+          )) {
         endpoint = 'purchase-receptions/update-simple-event';
       }
       await context.read<MassiveEventBloc>().dataSource.updateSimpleEvent(

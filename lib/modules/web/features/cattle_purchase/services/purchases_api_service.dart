@@ -1,11 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'package:finca_app_frontend/core/services/basic_api_service.dart';
-import 'package:finca_app_frontend/core/utils/logger.dart';
 import 'package:finca_app_frontend/modules/web/features/cattle_purchase/models/purchase_list_item.dart';
 
 class PurchasesPageResult {
@@ -104,7 +102,10 @@ class PurchasesApiService {
       final decoded = jsonDecode(res.body);
       print(decoded);
       if (decoded is! Map<String, dynamic>) {
-        throw ApiException('readingObjectError', 'Formato de respuesta no soportado');
+        throw ApiException(
+          'readingObjectError',
+          'Formato de respuesta no soportado',
+        );
       }
       final rawList = (decoded['items'] as List? ?? const []);
       final items =

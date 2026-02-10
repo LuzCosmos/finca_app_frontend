@@ -4,8 +4,6 @@ import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/bloc/sales_bloc.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/bloc/sales_event.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/bloc/sales_state.dart';
-import 'package:finca_app_frontend/modules/shared/features/sales/models/sale_model.dart';
-import 'package:uuid/uuid.dart';
 
 class CreateSalePage extends StatefulWidget {
   const CreateSalePage({super.key});

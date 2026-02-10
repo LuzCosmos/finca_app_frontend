@@ -4,7 +4,6 @@ import 'dart:typed_data';
 import 'package:mime/mime.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:finca_app_frontend/core/utils/logger.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/shared/features/brands/models/brand_model.dart';

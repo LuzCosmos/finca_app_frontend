@@ -1,12 +1,9 @@
-import 'package:finca_app_frontend/core/services/session_service.dart';
-import 'package:finca_app_frontend/modules/shared/features/brands/models/brand_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/massive_event_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/data/massive_event_page_data_source.dart';
 import 'massive_event_event.dart';
 import 'massive_event_state.dart';
-import 'package:finca_app_frontend/core/utils/logger.dart';
 
 class MassiveEventBloc extends Bloc<MassiveEventEvent, MassiveEventState> {
   final IMassiveEventPageDataSource dataSource;

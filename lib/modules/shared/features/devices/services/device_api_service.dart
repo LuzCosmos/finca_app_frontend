@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/devices/models/device_model.dart';
-import 'package:finca_app_frontend/core/services/api_exception.dart';
 
 class DeviceApiService {
   // Assuming the search endpoint is shared/accessible. Currently it is under 'purchase-receptions'.
