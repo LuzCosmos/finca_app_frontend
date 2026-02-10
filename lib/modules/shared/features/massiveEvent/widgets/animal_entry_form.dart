@@ -15,6 +15,7 @@ import 'dart:async';
 import 'package:flutter/scheduler.dart';
 import 'package:finca_app_frontend/modules/shared/features/devices/models/device_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/devices/services/device_api_service.dart';
+import 'package:finca_app_frontend/modules/web/features/cattle/services/cattle_master_service.dart';
 
 class AnimalEntryForm extends StatefulWidget {
   final String? idMassiveEvent;
@@ -51,10 +52,13 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
 
   // Autocomplete state
   Timer? _debounce;
+  Timer? _animalDebounce;
+  final _cattleService = CattleMasterService();
+  List<Map<String, dynamic>> _animalOptions = [];
+  bool _animalLoading = false;
   List<DeviceModel> _deviceOptions = [];
   bool _deviceLoading = false;
   String? _selectedDeviceId;
-  String? _lastSelectedName;
 
   @override
   void initState() {
@@ -74,6 +78,8 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
 
   @override
   void dispose() {
+    _animalDebounce?.cancel();
+    _debounce?.cancel();
     _animalNumberController.dispose();
     _weightController.dispose();
     _trackerController.dispose();
@@ -293,29 +299,162 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
               Row(
                 children: [
                   Expanded(
-                    child: TextFormField(
-                      controller: _animalNumberController,
-                      style: const TextStyle(fontSize: 13),
-                      keyboardType: TextInputType.number,
-                      validator: Validator.validateNotEmpty(
-                        l10n.fieldRequired,
-                        RegexPatterns.positiveIntegerNoZero,
-                      ),
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      decoration: InputDecoration(
-                        isDense: true,
-                        contentPadding: const EdgeInsets.symmetric(
-                          vertical: 6,
-                          horizontal: 8,
-                        ),
-                        labelText: l10n.animalNumberLabel,
-                        labelStyle: const TextStyle(
-                          fontSize: 11,
-                        ), // Label cuando flota abajo
-                        floatingLabelStyle: const TextStyle(
-                          fontSize: 11,
-                        ), // Label cuando flota arriba
-                      ),
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        return RawAutocomplete<Map<String, dynamic>>(
+                          textEditingController: _animalNumberController,
+                          optionsBuilder: (
+                            TextEditingValue textEditingValue,
+                          ) async {
+                            final query = textEditingValue.text.trim();
+                            final completer =
+                                Completer<List<Map<String, dynamic>>>();
+
+                            if (query.isEmpty) {
+                              if (_animalOptions.isNotEmpty) {
+                                setState(() => _animalOptions = []);
+                              }
+                              completer.complete(
+                                const Iterable<Map<String, dynamic>>.empty()
+                                    .toList(),
+                              );
+                              return completer.future;
+                            }
+
+                            if (_animalDebounce?.isActive ?? false) {
+                              _animalDebounce!.cancel();
+                            }
+
+                            _animalDebounce = Timer(
+                              const Duration(milliseconds: 350),
+                              () async {
+                                if (!mounted) return;
+                                setState(() => _animalLoading = true);
+                                try {
+                                  final results = await _cattleService.searchCattle(
+                                    query,
+                                  );
+                                  if (!mounted) return;
+                                  setState(() => _animalOptions = results);
+                                  if (!completer.isCompleted) {
+                                    completer.complete(results);
+                                  }
+                                } catch (_) {
+                                  if (!mounted) return;
+                                  setState(() => _animalOptions = []);
+                                  if (!completer.isCompleted) {
+                                    completer.complete(
+                                      const Iterable<Map<String, dynamic>>.empty()
+                                          .toList(),
+                                    );
+                                  }
+                                } finally {
+                                  if (mounted) {
+                                    setState(() => _animalLoading = false);
+                                  }
+                                }
+                              },
+                            );
+
+                            return completer.future;
+                          },
+                          displayStringForOption: (option) => option['number'] ?? '',
+                          onSelected: (selection) {
+                            _animalNumberController.text =
+                                selection['number']?.toString() ?? '';
+                          },
+                          fieldViewBuilder: (
+                            context,
+                            controller,
+                            focusNode,
+                            onFieldSubmitted,
+                          ) {
+                            return TextFormField(
+                              controller: controller,
+                              focusNode: focusNode,
+                              style: const TextStyle(fontSize: 13),
+                              keyboardType: TextInputType.number,
+                              validator: Validator.validateNotEmpty(
+                                l10n.fieldRequired,
+                                RegexPatterns.positiveIntegerNoZero,
+                              ),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                              onFieldSubmitted: (_) => onFieldSubmitted(),
+                              decoration: InputDecoration(
+                                isDense: true,
+                                contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 6,
+                                  horizontal: 8,
+                                ),
+                                labelText: l10n.animalNumberLabel,
+                                labelStyle: const TextStyle(fontSize: 11),
+                                floatingLabelStyle: const TextStyle(fontSize: 11),
+                                suffixIcon:
+                                    _animalLoading
+                                        ? const Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                          child: SizedBox(
+                                            width: 12,
+                                            height: 12,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2,
+                                            ),
+                                          ),
+                                        )
+                                        : null,
+                              ),
+                            );
+                          },
+                          optionsViewBuilder: (context, onSelected, options) {
+                            return Align(
+                              alignment: Alignment.topLeft,
+                              child: Material(
+                                elevation: 4.0,
+                                child: ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                    maxHeight: 220,
+                                    maxWidth: constraints.maxWidth,
+                                  ),
+                                  child: ListView.builder(
+                                    padding: EdgeInsets.zero,
+                                    shrinkWrap: true,
+                                    itemCount: options.length,
+                                    itemBuilder: (context, index) {
+                                      final option = options.elementAt(index);
+                                      final device = option['device'];
+                                      final deviceText =
+                                          device != null
+                                              ? (device['name'] ??
+                                                  device['deveui'] ??
+                                                  '')
+                                              : '';
+                                      return ListTile(
+                                        dense: true,
+                                        title: Text(
+                                          option['number']?.toString() ?? '',
+                                          style: const TextStyle(fontSize: 13),
+                                        ),
+                                        subtitle:
+                                            deviceText.isEmpty
+                                                ? null
+                                                : Text(
+                                                  deviceText,
+                                                  style: const TextStyle(
+                                                    fontSize: 11,
+                                                  ),
+                                                ),
+                                        onTap: () => onSelected(option),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -559,7 +698,6 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                             onSelected: (DeviceModel selection) {
                               setState(() {
                                 _selectedDeviceId = selection.id;
-                                _lastSelectedName = selection.name;
                                 _trackerController.text = selection.name;
                               });
                             },
