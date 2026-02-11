@@ -148,6 +148,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
       String? rejectionReason;
 
       if (weight < minWeight && minWeight > 0) {
+        if (!mounted) return;
         // Show approval dialog
         final approved = await showDialog<bool>(
           context: context,
@@ -159,6 +160,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
               ),
         );
 
+        if (!mounted) return;
         if (approved == null) {
           // User dismissed dialog
           setState(() => _isValidatingCattle = false);
@@ -199,29 +201,32 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
       );
 
       // 6. Add to appropriate list
-      setState(() {
-        if (isApproved) {
-          _approvedCattle.add(cattleDetail);
-        } else {
-          _rejectedCattle.add(cattleDetail);
-        }
-        _cattleIdController.clear();
-        _cattleWeightController.clear();
-        _trackerRemoved = false;
-        _isValidatingCattle = false;
-      });
+      if (mounted) {
+        setState(() {
+          if (isApproved) {
+            _approvedCattle.add(cattleDetail);
+          } else {
+            _rejectedCattle.add(cattleDetail);
+          }
+          _cattleIdController.clear();
+          _cattleWeightController.clear();
+          _trackerRemoved = false;
+          _isValidatingCattle = false;
+        });
+      }
     } catch (e) {
-      setState(() => _isValidatingCattle = false);
-
-      // Show validation error dialog
-      await showDialog(
-        context: context,
-        builder:
-            (context) => CattleValidationErrorDialog(
-              cattleNumber: cattleNumber,
-              errorMessage: e.toString().replaceAll('Exception: ', ''),
-            ),
-      );
+      if (mounted) {
+        setState(() => _isValidatingCattle = false);
+        // Show validation error dialog
+        await showDialog(
+          context: context,
+          builder:
+              (context) => CattleValidationErrorDialog(
+                cattleNumber: cattleNumber,
+                errorMessage: e.toString().replaceAll('Exception: ', ''),
+              ),
+        );
+      }
     }
   }
 
@@ -867,9 +872,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                           )
                           : const Icon(Icons.add),
                   label: Text(
-                    _isValidatingCattle
-                        ? (l10n.label_validating)
-                        : (l10n.add),
+                    _isValidatingCattle ? (l10n.label_validating) : (l10n.add),
                   ),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(

@@ -124,17 +124,19 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
         }
       }
     } on ApiException catch (e) {
-      final t = AppLocalizations.of(context)!;
       final code = ApiExceptionCode.values.firstWhere(
         (el) => el.name == (e.code),
         orElse: () => ApiExceptionCode.unknownError,
       );
-      final errorText = code.asText(context, objectName: t.cattle);
-      _showError(errorText);
+      if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
+        final errorText = code.asText(context, objectName: l10n.cattle);
+        _showError(errorText);
+      }
       if (code == ApiExceptionCode.unknownError && e.code != 'unknownError') {
         debugPrint('ApiException code desconocido: ${e.code}');
       }
-      if (isLoading) setState(() => isLoading = false);
+      if (mounted && isLoading) setState(() => isLoading = false);
     } catch (e) {
       debugPrint('Error loading cattle data: $e');
       if (mounted) {

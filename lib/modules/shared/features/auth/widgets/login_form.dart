@@ -49,6 +49,7 @@ class _LoginFormState extends State<LoginForm> {
       );
       widget.onLoginSuccess(result);
     } catch (e) {
+      if (!mounted) return;
       final l10n = AppLocalizations.of(context)!;
 
       String errorMessage;
@@ -99,10 +100,7 @@ class _LoginFormState extends State<LoginForm> {
           const SizedBox(height: 20),
           loading
               ? const CircularProgressIndicator()
-              : ElevatedButton(
-                onPressed: _submit,
-                child: Text(l10n.login),
-              ),
+              : ElevatedButton(onPressed: _submit, child: Text(l10n.login)),
         ],
       ),
     );

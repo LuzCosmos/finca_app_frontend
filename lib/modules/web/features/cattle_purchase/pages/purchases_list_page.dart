@@ -120,20 +120,24 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
                 : _providerCtrl.text.trim(),
         status: _status,
       );
-      setState(() {
-        _items = res.items;
-        _total = res.total;
-        if (_items.isEmpty) _info = l10n.noPurchasesFound;
-        _showEmptyInfo = _items.isEmpty;
-      });
+      if (mounted) {
+        setState(() {
+          _items = res.items;
+          _total = res.total;
+          if (_items.isEmpty) _info = l10n.noPurchasesFound;
+          _showEmptyInfo = _items.isEmpty;
+        });
+      }
     } on ApiException catch (e) {
       final code = ApiExceptionCode.values.firstWhere(
         (el) => el.name == (e.code),
         orElse: () => ApiExceptionCode.unknownError, // <- Fallback seguro
       );
 
-      final errorText = code.asText(context, objectName: l10n.cattlePurchase);
-      setState(() => _error = errorText);
+      if (mounted) {
+        final errorText = code.asText(context, objectName: l10n.cattlePurchase);
+        setState(() => _error = errorText);
+      }
 
       // (opcional) Log para cazar códigos desconocidos:
       if (code == ApiExceptionCode.unknownError && e.code != 'unknownError') {
@@ -141,10 +145,10 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
         debugPrint('ApiException code desconocido: ${e.code}');
       }
     } catch (e) {
-      setState(() => _error = e.toString());
+      if (mounted) setState(() => _error = e.toString());
       debugPrint(e.toString());
     } finally {
-      setState(() => _loading = false);
+      if (mounted) setState(() => _loading = false);
     }
   }
 

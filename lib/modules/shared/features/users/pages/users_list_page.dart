@@ -61,20 +61,24 @@ class _UsersListPageState extends State<UsersListPage> {
         username: _usernameCtrl.text.trim().isEmpty ? null : _usernameCtrl.text.trim(),
         lastName: _lastNameCtrl.text.trim().isEmpty ? null : _lastNameCtrl.text.trim(),
       );
-      setState(() {
-        _items = res.items;
-        _total = res.total;
-      });
+      if (mounted) {
+        setState(() {
+          _items = res.items;
+          _total = res.total;
+        });
+      }
     } on ApiException catch (e) {
        final code = ApiExceptionCode.values.firstWhere(
         (el) => el.name == (e.code),
         orElse: () => ApiExceptionCode.unknownError,
       );
-      final errorText = code.asText(context, objectName: AppLocalizations.of(context)!.users);
-      setState(() => _error = errorText);
+      if (mounted) {
+        final errorText = code.asText(context, objectName: AppLocalizations.of(context)!.users);
+        setState(() => _error = errorText);
+      }
       debugPrint('Users error: $e');
     } catch (e) {
-      setState(() => _error = e.toString());
+      if (mounted) setState(() => _error = e.toString());
       debugPrint('Users unexpected error: $e');
     } finally {
       if (mounted) setState(() => _loading = false);
