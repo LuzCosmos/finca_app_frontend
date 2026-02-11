@@ -114,7 +114,7 @@ class _PurchaseInfoDisplayState extends State<PurchaseInfoDisplay> {
             Row(
               children: [
                 Text(
-                  '${l10n.providerName}: ',
+                  '${l10n.provider}: ',
                   style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                 ),
                 Expanded(
@@ -131,7 +131,7 @@ class _PurchaseInfoDisplayState extends State<PurchaseInfoDisplay> {
             Row(
               children: [
                 Text(
-                  '${l10n.purchase_date}: ',
+                  '${l10n.dateSomething(l10n.purchase)}: ',
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 Text(widget.purchaseDate),

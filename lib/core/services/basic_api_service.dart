@@ -7,20 +7,28 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class BasicApiService {
-  static String get baseUrl {
+  static String _baseUrl = '';
+
+  static void setBaseUrl(String baseUrl) {
+    _baseUrl = baseUrl;
+  }
+
+  static String getApiBaseUrl() {
+    if (_baseUrl.isNotEmpty) {
+      return _baseUrl;
+    }
     if (kIsWeb) {
       if (js.context.hasProperty('ENV')) {
-        print('BasicApiService: check ENV property...');
         final env = js.context['ENV'];
         // Verify if it is a JsObject (standard valid case)
         if (env is js.JsObject) {
           if (env.hasProperty('API_BASE_URL')) {
             final val = env['API_BASE_URL'];
-            print('BasicApiService: ENV.API_BASE_URL found: $val');
             if (val != null &&
                 val.toString().toLowerCase() != 'null' &&
                 val.toString().trim().isNotEmpty) {
-              return val.toString();
+              setBaseUrl(val.toString());
+              return _baseUrl;
             }
           } else {
             print(
@@ -36,7 +44,8 @@ class BasicApiService {
             if (val != null &&
                 val.toString().toLowerCase() != 'null' &&
                 val.toString().trim().isNotEmpty) {
-              return val.toString();
+              setBaseUrl(val.toString());
+              return _baseUrl;
             }
           } catch (e) {
             print('BasicApiService: dynamic read failed: $e');
@@ -47,7 +56,8 @@ class BasicApiService {
       }
     }
     // Fallback a dotenv (Development local o Mobile)
-    return dotenv.env['API_BASE_URL'] ?? '/api/v1';
+    setBaseUrl(dotenv.env['API_BASE_URL'] ?? '/api/v1');
+    return _baseUrl;
   }
 
   static Future<String> getToken() async {
@@ -60,6 +70,14 @@ class BasicApiService {
 
   static Never manageNotSuccessResponseCode(Response response) {
     if (response.statusCode == 400) {
+      final body = jsonDecode(response.body);
+      final message = body['message'] ?? 'Bad request';
+      if (message.isNotEmpty && message == 'cattleIsNotActive') {
+        throw ApiException(
+          ApiExceptionCode.cattleIsNotActive.name,
+          'Cattle is not Active',
+        );
+      }
       throw ApiException(ApiExceptionCode.badRequest.name, 'Invalid data');
     } else if (response.statusCode == 401) {
       throw ApiException(ApiExceptionCode.unauthorized.name, 'Unauthorized');

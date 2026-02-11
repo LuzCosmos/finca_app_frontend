@@ -15,7 +15,10 @@ class SaleDashboardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => SalesBloc(dataSource: createSalesDataSource())..add(LoadUnsyncedSales()),
+      create:
+          (context) =>
+              SalesBloc(dataSource: createSalesDataSource())
+                ..add(LoadUnsyncedSales()),
       child: const SaleDashboardView(),
     );
   }
@@ -36,7 +39,7 @@ class SaleDashboardView extends StatelessWidget {
             onPressed: () {
               context.read<SalesBloc>().add(SyncSalesTransaction());
             },
-          )
+          ),
         ],
       ),
       body: BlocBuilder<SalesBloc, SalesState>(
@@ -45,20 +48,27 @@ class SaleDashboardView extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
           if (state is UnsyncedSalesLoaded) {
-             if (state.sales.isEmpty) {
-               return Center(child: Text(l10n.noOfflineSales));
-             }
-             return ListView.builder(
-               itemCount: state.sales.length,
-               itemBuilder: (context, index) {
-                 final sale = state.sales[index];
-                 return ListTile(
-                   title: Text(l10n.saleWithDate(sale.transactionDate.toString())),
-                   subtitle: Text(l10n.totalWithAmount(sale.totalAmount.toString())),
-                   trailing: const Icon(Icons.sync_problem, color: Colors.orange),
-                 );
-               },
-             );
+            if (state.sales.isEmpty) {
+              return Center(child: Text(l10n.noOfflineSales));
+            }
+            return ListView.builder(
+              itemCount: state.sales.length,
+              itemBuilder: (context, index) {
+                final sale = state.sales[index];
+                return ListTile(
+                  title: Text(
+                    l10n.saleWithDate(sale.transactionDate.toString()),
+                  ),
+                  subtitle: Text(
+                    l10n.totalWithAmount(sale.totalAmount.toString()),
+                  ),
+                  trailing: const Icon(
+                    Icons.sync_problem,
+                    color: Colors.orange,
+                  ),
+                );
+              },
+            );
           }
           return const SizedBox.shrink();
         },
@@ -68,12 +78,20 @@ class SaleDashboardView extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-               builder: (_) => BlocProvider(
-                 create: (_) => SalesBloc(dataSource: createSalesDataSource()), // New Bloc for Form
-                 child: const CreateSalePage(),
-               )
+              builder:
+                  (_) => BlocProvider(
+                    create:
+                        (_) => SalesBloc(
+                          dataSource: createSalesDataSource(),
+                        ), // New Bloc for Form
+                    child: const CreateSalePage(),
+                  ),
             ),
-          ).then((_) => context.read<SalesBloc>().add(LoadUnsyncedSales())); // Refresh list on return
+          ).then((_) {
+            if (context.mounted) {
+              context.read<SalesBloc>().add(LoadUnsyncedSales());
+            }
+          }); // Refresh list on return
         },
         child: const Icon(Icons.add),
       ),

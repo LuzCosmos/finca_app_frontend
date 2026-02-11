@@ -217,7 +217,7 @@ class _MassiveEventPageState extends State<MassiveEventPage> {
         }
       },
       child: FincaScaffold(
-        title: l10n.home_massiveEvent,
+        title: l10n.massiveEvent,
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -239,7 +239,7 @@ class _MassiveEventPageState extends State<MassiveEventPage> {
                   Expanded(
                     child: Row(
                       children: [
-                        Text(l10n.eventDate),
+                        Text(l10n.dateSomething(l10n.event)),
                         const SizedBox(width: 8),
                         TextButton.icon(
                           icon: const Icon(Icons.calendar_today),
@@ -262,7 +262,7 @@ class _MassiveEventPageState extends State<MassiveEventPage> {
                               ? null
                               : _closeMassiveEvent,
                       icon: const Icon(Icons.task_rounded),
-                      label: Text(l10n.eventFinish),
+                      label: Text(l10n.finish),
                     ),
                 ],
               ),

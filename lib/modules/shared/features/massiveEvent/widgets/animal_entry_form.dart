@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:finca_app_frontend/modules/shared/enums/cattle_enums.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -279,7 +280,7 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    l10n.addAnimalTitle,
+                    l10n.cattle,
                     style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
@@ -292,7 +293,7 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                             ? null
                             : _applyAnimalSimpleEvent,
                     icon: const Icon(Icons.save),
-                    label: Text(l10n.applyButton),
+                    label: Text(l10n.apply),
                   ),
                 ],
               ),
@@ -300,7 +301,8 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                 children: [
                   Expanded(
                     child: LayoutBuilder(
-                      builder: (context, constraints) {
+                      builder: (layoutContext, constraints) {
+                        final layoutL10n = AppLocalizations.of(layoutContext)!;
                         return RawAutocomplete<Map<String, dynamic>>(
                           textEditingController: _animalNumberController,
                           optionsBuilder: (
@@ -331,9 +333,8 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                                 if (!mounted) return;
                                 setState(() => _animalLoading = true);
                                 try {
-                                  final results = await _cattleService.searchCattle(
-                                    query,
-                                  );
+                                  final results = await _cattleService
+                                      .searchCattle(query);
                                   if (!mounted) return;
                                   setState(() => _animalOptions = results);
                                   if (!completer.isCompleted) {
@@ -344,7 +345,9 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                                   setState(() => _animalOptions = []);
                                   if (!completer.isCompleted) {
                                     completer.complete(
-                                      const Iterable<Map<String, dynamic>>.empty()
+                                      const Iterable<
+                                            Map<String, dynamic>
+                                          >.empty()
                                           .toList(),
                                     );
                                   }
@@ -358,7 +361,8 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
 
                             return completer.future;
                           },
-                          displayStringForOption: (option) => option['number'] ?? '',
+                          displayStringForOption:
+                              (option) => option['number'] ?? '',
                           onSelected: (selection) {
                             _animalNumberController.text =
                                 selection['number']?.toString() ?? '';
@@ -375,7 +379,7 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                               style: const TextStyle(fontSize: 13),
                               keyboardType: TextInputType.number,
                               validator: Validator.validateNotEmpty(
-                                l10n.fieldRequired,
+                                layoutL10n.fieldRequired,
                                 RegexPatterns.positiveIntegerNoZero,
                               ),
                               inputFormatters: [
@@ -388,9 +392,11 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                                   vertical: 6,
                                   horizontal: 8,
                                 ),
-                                labelText: l10n.animalNumberLabel,
+                                labelText: layoutL10n.animalNumber,
                                 labelStyle: const TextStyle(fontSize: 11),
-                                floatingLabelStyle: const TextStyle(fontSize: 11),
+                                floatingLabelStyle: const TextStyle(
+                                  fontSize: 11,
+                                ),
                                 suffixIcon:
                                     _animalLoading
                                         ? const Padding(
@@ -421,7 +427,7 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                                     padding: EdgeInsets.zero,
                                     shrinkWrap: true,
                                     itemCount: options.length,
-                                    itemBuilder: (context, index) {
+                                    itemBuilder: (itemContext, index) {
                                       final option = options.elementAt(index);
                                       final device = option['device'];
                                       final deviceText =
@@ -430,21 +436,25 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                                                   device['deveui'] ??
                                                   '')
                                               : '';
+                                      final colorValue = option['color'];
+                                      final colorText = colorValue != null
+                                          ? CattleColor.fromString(colorValue.toString())
+                                              .localizedName(itemContext)
+                                          : '';
                                       return ListTile(
                                         dense: true,
                                         title: Text(
-                                          option['number']?.toString() ?? '',
+                                          '${option['number']?.toString() ?? ''}${option['eartag'] != null ? ' / ${option['eartag']}' : ''}${deviceText.isNotEmpty ? ' / $deviceText' : ''}',
                                           style: const TextStyle(fontSize: 13),
                                         ),
-                                        subtitle:
-                                            deviceText.isEmpty
-                                                ? null
-                                                : Text(
-                                                  deviceText,
-                                                  style: const TextStyle(
-                                                    fontSize: 11,
-                                                  ),
+                                        subtitle: colorText.isNotEmpty
+                                            ? Text(
+                                                '${layoutL10n.color}: $colorText / ${layoutL10n.castrated}: ${option['castrated'] == true ? layoutL10n.yes : layoutL10n.no} / ${layoutL10n.hasHorns}: ${option['hasHorn'] == true ? layoutL10n.yes : layoutL10n.no}',
+                                                style: const TextStyle(
+                                                  fontSize: 11,
                                                 ),
+                                              )
+                                            : null,
                                         onTap: () => onSelected(option),
                                       );
                                     },
@@ -493,7 +503,7 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                             vertical: 6,
                             horizontal: 8,
                           ), // Controla la altura
-                          labelText: l10n.weightLabel,
+                          labelText: l10n.weightKg,
                           labelStyle: const TextStyle(
                             fontSize: 11,
                           ), // Label cuando flota abajo
@@ -531,9 +541,9 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                                 return completer.future;
                               }
 
-                              if (_debounce?.isActive ?? false)
+                              if (_debounce?.isActive ?? false) {
                                 _debounce!.cancel();
-
+                              }
                               _debounce = Timer(
                                 const Duration(milliseconds: 500),
                                 () async {
@@ -545,18 +555,21 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                                           textEditingValue.text,
                                         );
                                     setState(() => _deviceOptions = results);
-                                    if (!completer.isCompleted)
+                                    if (!completer.isCompleted) {
                                       completer.complete(results);
+                                    }
                                   } catch (e) {
                                     setState(() => _deviceOptions = []);
-                                    if (!completer.isCompleted)
+                                    if (!completer.isCompleted) {
                                       completer.complete(
                                         const Iterable<DeviceModel>.empty()
                                             .toList(),
                                       );
+                                    }
                                   } finally {
-                                    if (mounted)
+                                    if (mounted) {
                                       setState(() => _deviceLoading = false);
+                                    }
                                   }
                                 },
                               );
@@ -594,8 +607,9 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                                     // but _deviceOptions logic here might be tricky if debounce is running.
                                     // Using the same logic as ReceiveCattleForm usually works well enough.
                                     // Assuming l10n.trackerNotFound and l10n.trackerNotSelected exist.
-                                    if (_deviceOptions.isEmpty)
+                                    if (_deviceOptions.isEmpty) {
                                       return l10n.trackerNotFound;
+                                    }
                                     return l10n.trackerNotSelected;
                                   }
                                   return null;
@@ -606,7 +620,7 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                                     vertical: 6,
                                     horizontal: 8,
                                   ),
-                                  labelText: l10n.trackerLabel,
+                                  labelText: l10n.tracker,
                                   labelStyle: const TextStyle(fontSize: 11),
                                   floatingLabelStyle: const TextStyle(
                                     fontSize: 11,
@@ -720,7 +734,7 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                             vertical: 6,
                             horizontal: 8,
                           ), // Controla la altura
-                          labelText: l10n.eartagLabel,
+                          labelText: l10n.eartag,
                           labelStyle: const TextStyle(
                             fontSize: 11,
                           ), // Label cuando flota abajo

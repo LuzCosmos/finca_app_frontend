@@ -103,7 +103,8 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
             idMassiveEvent: widget.idMassiveEvent,
           );
           try {
-            final dataSource = context.read<MassiveEventBloc>().dataSource;
+            if (!mounted) return;
+            final dataSource = massiveBloc.dataSource;
             if (widget.idMassiveEvent == null) {
               var masEv = MassiveEventModel.create(
                 eventDate: widget.eventDate!,
@@ -112,6 +113,7 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
               final newMassiveEvent = await dataSource.saveMassiveEvent(
                 massiveEvent: masEv,
               );
+              if (!mounted) return;
               newSimpleEvent = newMassiveEvent.simpleEvents.first;
               widget.onMassiveEventCreated(newMassiveEvent.id);
             } else {
@@ -119,6 +121,7 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
                 simpleEvent: newSimpleEvent,
               );
             }
+            if (!mounted) return;
             final allDetails = [...widget.simpleEvents, newSimpleEvent];
             widget.onEventsChanged(allDetails);
           } on ApiException catch (e) {
@@ -154,7 +157,8 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
           )) {
         endpoint = 'purchase-receptions/update-simple-event';
       }
-      await context.read<MassiveEventBloc>().dataSource.updateSimpleEvent(
+      final dataSource = context.read<MassiveEventBloc>().dataSource;
+      await dataSource.updateSimpleEvent(
         simpleEvent: allDetails[idx],
         endpoint: endpoint,
       );
@@ -177,7 +181,8 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
           )) {
         endpoint = 'purchase-receptions/update-simple-event';
       }
-      await context.read<MassiveEventBloc>().dataSource.updateSimpleEvent(
+      final dataSource = context.read<MassiveEventBloc>().dataSource;
+      await dataSource.updateSimpleEvent(
         simpleEvent: allDetails[idx],
         endpoint: endpoint,
       );
@@ -251,7 +256,7 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
           ElevatedButton.icon(
             onPressed: _openAddEventDialog,
             icon: const Icon(Icons.add),
-            label: Text(l10n.addEventDetail),
+            label: Text(l10n.addSomething(l10n.event)),
           ),
           const SizedBox(height: 8),
           Expanded(
@@ -479,8 +484,8 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
       final dosage = data['dosage'] ?? '';
       final lot = data['lot'] ?? '';
       return [
-        '${l10n.medicationDosage}: $dosage',
-        '${l10n.medicationRoute}: $route',
+        '${l10n.dosage}: $dosage',
+        '${l10n.route}: $route',
         '${l10n.medicationLot}: $lot',
       ].where((part) => part.toString().trim().isNotEmpty).join('; ');
     }

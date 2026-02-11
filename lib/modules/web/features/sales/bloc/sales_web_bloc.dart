@@ -34,8 +34,6 @@ class UpdateSaleWeb extends SalesWebEvent {
   const UpdateSaleWeb({required this.id, required this.updates});
 }
 
-
-
 // State
 enum SalesWebStatus { initial, loading, success, failure, saleCreated }
 
@@ -49,12 +47,12 @@ class SalesWebState extends Equatable {
   const SalesWebState({
     this.status = SalesWebStatus.initial,
     this.sales,
-    this.query = const SalesQuery_Defaults(), 
+    this.query = const SalesQueryDefaults(),
     this.error,
     this.providers,
   });
   // Note: Const default constructor for SalesQuery
-  
+
   SalesWebState copyWith({
     SalesWebStatus? status,
     PaginatedSales? sales,
@@ -75,10 +73,9 @@ class SalesWebState extends Equatable {
   List<Object?> get props => [status, sales, query, error, providers];
 }
 
-class SalesQuery_Defaults extends SalesQuery {
-  const SalesQuery_Defaults() : super();
+class SalesQueryDefaults extends SalesQuery {
+  const SalesQueryDefaults() : super();
 }
-
 
 // Bloc
 class SalesWebBloc extends Bloc<SalesWebEvent, SalesWebState> {
@@ -91,16 +88,21 @@ class SalesWebBloc extends Bloc<SalesWebEvent, SalesWebState> {
     on<UpdateSaleWeb>(_onUpdateSale);
   }
 
-  Future<void> _onLoadSales(LoadSalesWeb event, Emitter<SalesWebState> emit) async {
+  Future<void> _onLoadSales(
+    LoadSalesWeb event,
+    Emitter<SalesWebState> emit,
+  ) async {
     emit(state.copyWith(status: SalesWebStatus.loading));
     try {
       final query = event.query ?? state.query;
       final result = await dataSource.getSales(query);
-      emit(state.copyWith(
-        status: SalesWebStatus.success,
-        sales: result,
-        query: query,
-      ));
+      emit(
+        state.copyWith(
+          status: SalesWebStatus.success,
+          sales: result,
+          query: query,
+        ),
+      );
     } on ApiException catch (e) {
       emit(state.copyWith(status: SalesWebStatus.failure, error: e.code));
     } catch (e) {
@@ -108,22 +110,35 @@ class SalesWebBloc extends Bloc<SalesWebEvent, SalesWebState> {
     }
   }
 
-  Future<void> _onLoadProviders(LoadProvidersEvent event, Emitter<SalesWebState> emit) async {
+  Future<void> _onLoadProviders(
+    LoadProvidersEvent event,
+    Emitter<SalesWebState> emit,
+  ) async {
     emit(state.copyWith(status: SalesWebStatus.loading));
     try {
       final providers = await dataSource.getProviders('');
-      emit(state.copyWith(
-        status: SalesWebStatus.success,
-        providers: providers.map((p) => p as Map<String, dynamic>).toList(),
-      ));
+      emit(
+        state.copyWith(
+          status: SalesWebStatus.success,
+          providers: providers.map((p) => p as Map<String, dynamic>).toList(),
+        ),
+      );
     } on ApiException catch (e) {
       emit(state.copyWith(status: SalesWebStatus.failure, error: e.code));
     } catch (e) {
-      emit(state.copyWith(status: SalesWebStatus.failure, error: 'Failed to load providers: $e'));
+      emit(
+        state.copyWith(
+          status: SalesWebStatus.failure,
+          error: 'Failed to load providers: $e',
+        ),
+      );
     }
   }
 
-  Future<void> _onCreateSale(CreateSaleEvent event, Emitter<SalesWebState> emit) async {
+  Future<void> _onCreateSale(
+    CreateSaleEvent event,
+    Emitter<SalesWebState> emit,
+  ) async {
     emit(state.copyWith(status: SalesWebStatus.loading));
     try {
       await dataSource.saveSale(event.sale);
@@ -131,11 +146,19 @@ class SalesWebBloc extends Bloc<SalesWebEvent, SalesWebState> {
     } on ApiException catch (e) {
       emit(state.copyWith(status: SalesWebStatus.failure, error: e.code));
     } catch (e) {
-      emit(state.copyWith(status: SalesWebStatus.failure, error: 'Failed to create sale: $e'));
+      emit(
+        state.copyWith(
+          status: SalesWebStatus.failure,
+          error: 'Failed to create sale: $e',
+        ),
+      );
     }
   }
 
-  Future<void> _onUpdateSale(UpdateSaleWeb event, Emitter<SalesWebState> emit) async {
+  Future<void> _onUpdateSale(
+    UpdateSaleWeb event,
+    Emitter<SalesWebState> emit,
+  ) async {
     // We don't set global loading, maybe just optimistic update or specific loading?
     // For simplicity, reload after update.
     emit(state.copyWith(status: SalesWebStatus.loading));
@@ -145,7 +168,12 @@ class SalesWebBloc extends Bloc<SalesWebEvent, SalesWebState> {
     } on ApiException catch (e) {
       emit(state.copyWith(status: SalesWebStatus.failure, error: e.code));
     } catch (e) {
-      emit(state.copyWith(status: SalesWebStatus.failure, error: "Update failed: $e"));
+      emit(
+        state.copyWith(
+          status: SalesWebStatus.failure,
+          error: "Update failed: $e",
+        ),
+      );
     }
   }
 }

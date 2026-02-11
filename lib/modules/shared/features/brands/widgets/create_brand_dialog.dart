@@ -83,15 +83,17 @@ class _CreateBrandDialogState extends State<CreateBrandDialog> {
     );
     Future.microtask(() async {
       try {
+        if (!mounted) return;
         final bloc = context.read<MassiveEventBloc>();
         final newBrand = await bloc.dataSource.saveBrand(brand: brand);
-        Navigator.pop(context, newBrand);
+        if (mounted) {
+          Navigator.pop(context, newBrand);
+        }
       } on ApiException catch (e) {
         setState(() {
           error = ApiExceptionCode.values
               .firstWhere((el) => el.name == e.code)
               .asText(context);
-          ;
           _showImageError = true;
         });
       } catch (e) {
@@ -116,7 +118,7 @@ class _CreateBrandDialogState extends State<CreateBrandDialog> {
           children: [
             TextFormField(
               controller: _brandNameController,
-              decoration: InputDecoration(labelText: l10n.brandName),
+              decoration: InputDecoration(labelText: l10n.name),
               validator:
                   (value) =>
                       value == null || value.trim().isEmpty

@@ -9,8 +9,14 @@ import 'package:finca_app_frontend/core/services/session_service.dart';
 class FincaScaffold extends StatelessWidget {
   final Widget body;
   final String? title;
+  final bool showHomeButton;
 
-  const FincaScaffold({super.key, required this.body, this.title});
+  const FincaScaffold({
+    super.key,
+    required this.body,
+    this.title,
+    this.showHomeButton = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -33,12 +39,14 @@ class FincaScaffold extends StatelessWidget {
                 },
               ),
               if (isAuthenticated) ...[
-                IconButton(
-                  icon: const Icon(Icons.home, color: Colors.white, size: 20),
-                  onPressed: () {
-                    context.go('/home');
-                  },
-                ),
+                if (showHomeButton) ...[
+                  IconButton(
+                    icon: const Icon(Icons.home, color: Colors.white, size: 20),
+                    onPressed: () {
+                      context.go('/home');
+                    },
+                  ),
+                ],
                 _buildUserDropdown(context, Theme.of(context)),
               ],
                 
@@ -119,7 +127,7 @@ class FincaScaffold extends StatelessWidget {
               const Icon(Icons.edit, color: Colors.white, size: 16),
               const SizedBox(width: 8),
               Text(
-                l10n.user_editUser,
+                l10n.editSomething(l10n.user),
                 style: const TextStyle(color: Colors.white, fontSize: 12),
               ),
             ],
@@ -132,7 +140,7 @@ class FincaScaffold extends StatelessWidget {
               const Icon(Icons.logout, color: Colors.white, size: 16),
               const SizedBox(width: 8),
               Text(
-                l10n.user_logout,
+                l10n.logout,
                 style: const TextStyle(color: Colors.white, fontSize: 12),
               ),
             ],

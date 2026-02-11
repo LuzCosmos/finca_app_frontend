@@ -16,6 +16,7 @@ import 'package:finca_app_frontend/modules/web/features/sales/services/cattle_va
 import 'package:finca_app_frontend/modules/web/features/cattle/services/cattle_master_service.dart';
 import 'package:uuid/uuid.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:finca_app_frontend/modules/shared/enums/cattle_enums.dart';
 
 class CreateSalePage extends StatelessWidget {
   const CreateSalePage({super.key});
@@ -148,6 +149,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
       String? rejectionReason;
 
       if (weight < minWeight && minWeight > 0) {
+        if (!mounted) return;
         // Show approval dialog
         final approved = await showDialog<bool>(
           context: context,
@@ -159,6 +161,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
               ),
         );
 
+        if (!mounted) return;
         if (approved == null) {
           // User dismissed dialog
           setState(() => _isValidatingCattle = false);
@@ -199,29 +202,32 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
       );
 
       // 6. Add to appropriate list
-      setState(() {
-        if (isApproved) {
-          _approvedCattle.add(cattleDetail);
-        } else {
-          _rejectedCattle.add(cattleDetail);
-        }
-        _cattleIdController.clear();
-        _cattleWeightController.clear();
-        _trackerRemoved = false;
-        _isValidatingCattle = false;
-      });
+      if (mounted) {
+        setState(() {
+          if (isApproved) {
+            _approvedCattle.add(cattleDetail);
+          } else {
+            _rejectedCattle.add(cattleDetail);
+          }
+          _cattleIdController.clear();
+          _cattleWeightController.clear();
+          _trackerRemoved = false;
+          _isValidatingCattle = false;
+        });
+      }
     } catch (e) {
-      setState(() => _isValidatingCattle = false);
-
-      // Show validation error dialog
-      await showDialog(
-        context: context,
-        builder:
-            (context) => CattleValidationErrorDialog(
-              cattleNumber: cattleNumber,
-              errorMessage: e.toString().replaceAll('Exception: ', ''),
-            ),
-      );
+      if (mounted) {
+        setState(() => _isValidatingCattle = false);
+        // Show validation error dialog
+        await showDialog(
+          context: context,
+          builder:
+              (context) => CattleValidationErrorDialog(
+                cattleNumber: cattleNumber,
+                errorMessage: e.toString().replaceAll('Exception: ', ''),
+              ),
+        );
+      }
     }
   }
 
@@ -502,7 +508,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
         }
       },
       child: FincaScaffold(
-        title: l10n.home_sale,
+        title: l10n.sale,
         body: BlocBuilder<SalesWebBloc, SalesWebState>(
           builder: (context, state) {
             if (state.status == SalesWebStatus.loading &&
@@ -689,7 +695,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                   child: TextFormField(
                     controller: _pricePerKgController,
                     decoration: InputDecoration(
-                      labelText: l10n.lot_pricePerKg,
+                      labelText: l10n.pricePerKg,
                       border: const OutlineInputBorder(),
                       prefixText: '\$ ',
                     ),
@@ -780,7 +786,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                             controller: textEditingController,
                             focusNode: focusNode,
                             decoration: InputDecoration(
-                              labelText: l10n.cattle_number,
+                              labelText: l10n.cattleNumber,
                               border: const OutlineInputBorder(),
                               hintText: l10n.hint_enterScanId,
                             ),
@@ -812,16 +818,29 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                                     final Map<String, dynamic> option = options
                                         .elementAt(index);
                                     final device = option['device'];
-                                    String deviceText = '';
-                                    if (device != null) {
-                                      deviceText =
-                                          ' / ${device['name'] ?? device['deveui'] ?? ''}';
-                                    }
+                                    final deviceText = device != null
+                                              ? (device['name'] ??
+                                                  device['deveui'] ??
+                                                  '')
+                                              : '';
+                                    final colorValue = option['color'];
+                                    final colorText = colorValue != null
+                                        ? CattleColor.fromString(colorValue.toString())
+                                            .localizedName(context)
+                                        : '';
                                     return ListTile(
-                                      title: Text(option['number'] ?? ''),
-                                      subtitle: Text(
-                                        '${option['eartag'] ?? ''}$deviceText',
-                                      ),
+                                      title: Text(
+                                          '${option['number']?.toString() ?? ''}${option['eartag'] != null ? ' / ${option['eartag']}' : ''}${deviceText.isNotEmpty ? ' / $deviceText' : ''}',
+                                          style: const TextStyle(fontSize: 13),
+                                        ),
+                                        subtitle: colorText.isNotEmpty
+                                            ? Text(
+                                                '${l10n.color}: $colorText / ${l10n.castrated}: ${option['castrated'] == true ? l10n.yes : l10n.no} / ${l10n.hasHorns}: ${option['hasHorn'] == true ? l10n.yes : l10n.no}',
+                                                style: const TextStyle(
+                                                  fontSize: 11,
+                                                ),
+                                              )
+                                            : null,
                                       onTap: () {
                                         onSelected(option);
                                       },
@@ -867,9 +886,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                           )
                           : const Icon(Icons.add),
                   label: Text(
-                    _isValidatingCattle
-                        ? (l10n.label_validating)
-                        : (l10n.cattle_addButton),
+                    _isValidatingCattle ? (l10n.label_validating) : (l10n.add),
                   ),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
@@ -967,7 +984,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                 ),
                 _buildSummaryItem(
                   context,
-                  l10n.sales_totalWeight,
+                  l10n.totalWeightKg,
                   '${_totalWeight.toStringAsFixed(2)} kg',
                   Icons.scale,
                   // color: cs.onPrimaryContainer,
@@ -995,7 +1012,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                       vertical: 16,
                     ),
                   ),
-                  child: Text(l10n.sales_cancel),
+                  child: Text(l10n.cancel),
                 ),
                 const SizedBox(width: 8),
                 ElevatedButton(

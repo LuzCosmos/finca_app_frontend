@@ -10,7 +10,7 @@ class LocaleBloc extends Bloc<LocaleEvent, LocaleState> {
     on<ChangeLanguage>(_onChangeLanguage);
   }
 
-  _onChangeLanguage(ChangeLanguage event, Emitter<LocaleState> emit) {
+  void _onChangeLanguage(ChangeLanguage event, Emitter<LocaleState> emit) {
     emit(LocaleChanged(language: event.selectedLanguage));
   }
 }

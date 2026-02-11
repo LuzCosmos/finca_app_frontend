@@ -124,17 +124,19 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
         }
       }
     } on ApiException catch (e) {
-      final t = AppLocalizations.of(context)!;
       final code = ApiExceptionCode.values.firstWhere(
         (el) => el.name == (e.code),
         orElse: () => ApiExceptionCode.unknownError,
       );
-      final errorText = code.asText(context, objectName: t.cattle);
-      _showError(errorText);
-      if (code == ApiExceptionCode.unknownError && e.code != 'unknownError') {
-        print('ApiException code desconocido: ${e.code}');
+      if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
+        final errorText = code.asText(context, objectName: l10n.cattle);
+        _showError(errorText);
       }
-      if (isLoading) setState(() => isLoading = false);
+      if (code == ApiExceptionCode.unknownError && e.code != 'unknownError') {
+        debugPrint('ApiException code desconocido: ${e.code}');
+      }
+      if (mounted && isLoading) setState(() => isLoading = false);
     } catch (e) {
       debugPrint('Error loading cattle data: $e');
       if (mounted) {
@@ -187,7 +189,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
         width: 0,
       ),
       PlutoColumn(
-        title: l10n.cattleNumber,
+        title: l10n.number,
         field: 'number',
         type: PlutoColumnType.text(),
         width: 90,
@@ -195,7 +197,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
         frozen: PlutoColumnFrozen.start,
       ),
       PlutoColumn(
-        title: l10n.colStatus,
+        title: l10n.status,
         field: 'status',
         type: PlutoColumnType.text(),
         enableEditingMode: _hasEditPermission,
@@ -238,7 +240,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
         },
       ),
       PlutoColumn(
-        title: l10n.colLastWeight,
+        title: l10n.lastWeightKg,
         field: 'lastWeight',
         type: PlutoColumnType.number(),
         width: 100,
@@ -252,7 +254,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
         enableEditingMode: _hasEditPermission,
       ),
       PlutoColumn(
-        title: l10n.colHorns,
+        title: l10n.horns,
         field: 'hasHorn',
         type: PlutoColumnType.text(),
         renderer: (rendererContext) {
@@ -273,7 +275,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
         width: 80,
       ),
       PlutoColumn(
-        title: l10n.colCastrated,
+        title: l10n.castrated,
         field: 'isCastrated',
         type: PlutoColumnType.text(),
         renderer: (rendererContext) {
@@ -295,7 +297,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
       ),
       // Dynamic Color Dropdown
       PlutoColumn(
-        title: l10n.colBrandColor,
+        title: l10n.color,
         field: 'color',
         type: PlutoColumnType.text(),
         enableEditingMode: _hasEditPermission,
@@ -341,7 +343,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
         },
       ),
       PlutoColumn(
-        title: l10n.colCharacteristics,
+        title: l10n.characteristics,
         field: 'characteristics',
         type: PlutoColumnType.text(),
         width: 150,
@@ -440,7 +442,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
         },
       ),
       PlutoColumn(
-        title: l10n.colGender,
+        title: l10n.gender,
         field: 'gender',
         type: PlutoColumnType.text(),
         enableEditingMode: _hasEditPermission,
@@ -473,7 +475,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                       ? null
                       : (newValue) {
                         if (newValue != null) {
-                          debugPrint('Gender changed to $newValue');
+                          // debugPrint('Gender changed to $newValue');
                           rendererContext.stateManager.changeCellValue(
                             rendererContext.cell,
                             newValue,
@@ -485,14 +487,14 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
         },
       ),
       PlutoColumn(
-        title: l10n.colAge,
+        title: l10n.age,
         field: 'age',
         type: PlutoColumnType.number(format: '#,##0.##'),
         width: 60,
         enableEditingMode: _hasEditPermission,
       ),
       PlutoColumn(
-        title: l10n.trackerLabel,
+        title: l10n.tracker,
         field: 'tracker',
         type: PlutoColumnType.text(),
         width: 170,
@@ -615,64 +617,63 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
         enableEditingMode: _hasEditPermission,
       ),
       PlutoColumn(
-        title: l10n.colComments,
+        title: l10n.comments,
         field: 'comments',
         type: PlutoColumnType.text(),
         width: 200,
         enableEditingMode: _hasEditPermission,
       ),
       PlutoColumn(
-        title: l10n.colPurchaseWeight,
+        title: l10n.purchaseWeightKg,
         field: 'purchaseWeight',
         type: PlutoColumnType.number(),
         width: 110,
         enableEditingMode: _hasEditPermission,
       ),
-      //PlutoColumn(title: l10n.colReceivedDate, field: 'receivedDate', type: PlutoColumnType.date(), width: 110),
       PlutoColumn(
-        title: l10n.colPurchasePrice,
+        title: l10n.purchasePrice,
         field: 'purchasePrice',
         type: PlutoColumnType.number(),
         width: 110,
         enableEditingMode: _hasEditPermission,
       ),
       PlutoColumn(
-        title: l10n.colPurchaseCommission,
+        title: l10n.purchaseCommission,
         field: 'purchaseCommission',
         type: PlutoColumnType.number(),
         width: 110,
         enableEditingMode: _hasEditPermission,
       ),
       PlutoColumn(
-        title: l10n.colReceivedAt,
+        title: l10n.receivedAt,
         field: 'receivedAt',
         type: PlutoColumnType.date(),
         width: 110,
         enableEditingMode: _hasEditPermission,
       ),
       PlutoColumn(
-        title: l10n.colReceivedWeight,
+        title: l10n.receivedWeightKg,
         field: 'receivedWeight',
         type: PlutoColumnType.number(),
         width: 100,
         enableEditingMode: _hasEditPermission,
       ),
       PlutoColumn(
-        title: l10n.colSaleWeight,
+        title: l10n.saleWeightKg,
         field: 'saleWeight',
         type: PlutoColumnType.number(),
         width: 110,
         enableEditingMode: _hasEditPermission,
       ),
       PlutoColumn(
-        title: l10n.colSalePrice,
+        title: l10n.salePrice,
         field: 'salePrice',
         type: PlutoColumnType.number(),
         width: 110,
         enableEditingMode: _hasEditPermission,
       ),
       PlutoColumn(
-        title: l10n.colWeightHistory,
+        title: l10n.weightHistory,
         field: 'weightHistory',
         type: PlutoColumnType.text(),
         enableEditingMode: false,
@@ -699,7 +700,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
         },
       ),
       PlutoColumn(
-        title: l10n.colMedicationHistory,
+        title: l10n.medicationHistory,
         field: 'medicationHistory',
         type: PlutoColumnType.text(),
         enableEditingMode: false,
@@ -720,9 +721,9 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                       history: history,
                       service: _service,
                       onAdded: (newRecord) {
-                        debugPrint(
+                        /*debugPrint(
                           'Adding new medication record to grid: $newRecord',
-                        );
+                        );*/
                         try {
                           final row = stateManager.rows.firstWhere(
                             (r) => r.key == ctx.row.key,
@@ -740,9 +741,9 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                               callOnChangedEvent: false,
                               force: true,
                             );
-                            debugPrint(
+                            /*debugPrint(
                               'Grid cell updated. New history length: ${currentHistory.length}',
-                            );
+                            );*/
                           } else {
                             debugPrint(
                               'Could not find row by key to update medication history',
@@ -797,7 +798,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
               child: ElevatedButton.icon(
                 onPressed: _addCattleRow,
                 icon: const Icon(Icons.add),
-                label: Text(l10n.addCattleRow),
+                label: Text(l10n.addSomething(l10n.cattle)),
               ),
             ),
             const SizedBox(height: 12),*/
@@ -824,30 +825,33 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                         },
                         onChanged: (event) async {
                           final rowId = event.row.cells['id']!.value.toString();
-                          debugPrint(
+                          /*debugPrint(
                             'onChanged triggered for rowId: $rowId, field: ${event.column.field}, value: ${event.value}',
-                          );
+                          );*/
                           if (rowId.isEmpty || rowId == 'New') {
-                            debugPrint('Skipping save for new/empty row');
+                            //debugPrint('Skipping save for new/empty row');
                             return;
                           }
                           String field = event.column.field;
                           dynamic value = event.value;
-                          if (field == 'hasHorn')
+                          if (field == 'hasHorn') {
                             value = value.toString() == 'true';
+                          }
+
                           if (field == 'isCastrated') {
                             field = 'castrated';
                             value = value.toString() == 'true';
                           }
-                          if (field == 'characteristicsIds')
+                          if (field == 'characteristicsIds') {
                             field = 'characteristics';
+                          }
                           if ([
                             'tracker',
                             'characteristics',
                             'idDevice',
-                          ].contains(field))
+                          ].contains(field)) {
                             return;
-
+                          }
                           // Validation for lastWeight,receivedWeight
                           if (field == 'lastWeight' ||
                               field == 'receivedWeight') {
@@ -886,9 +890,9 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                                     if (updatedData.containsKey(
                                       'weightHistory',
                                     )) {
-                                      debugPrint(
-                                        'Updating weight history for row ${rowId}: ${updatedData['weightHistory'].length} items',
-                                      );
+                                      /*debugPrint(
+                                        'Updating weight history for row $rowId: ${updatedData['weightHistory'].length} items',
+                                      );*/
                                       stateManager.changeCellValue(
                                         row.cells['weightHistory']!,
                                         updatedData['weightHistory'],
@@ -899,9 +903,9 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                                     if (updatedData.containsKey(
                                       'medicationHistory',
                                     )) {
-                                      debugPrint(
-                                        'Updating medication history for row ${rowId}: ${updatedData['medicationHistory'].length} items',
-                                      );
+                                      /*debugPrint(
+                                        'Updating medication history for row $rowId: ${updatedData['medicationHistory'].length} items',
+                                      );*/
                                       stateManager.changeCellValue(
                                         row.cells['medicationHistory']!,
                                         updatedData['medicationHistory'],
