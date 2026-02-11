@@ -261,7 +261,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get error_generic => 'Ha ocurrido un error inesperado.';
 
   @override
-  String get error_cattleIsNotActive => 'El ganado no está activo.';
+  String get error_cattleIsNotActive => 'La res no está activa.';
 
   @override
   String get noData => 'No hay datos disponibles';
