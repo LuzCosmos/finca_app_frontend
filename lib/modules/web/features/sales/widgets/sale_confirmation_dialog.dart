@@ -95,7 +95,7 @@ class SaleConfirmationDialog extends StatelessWidget {
                           Expanded(
                             flex: 2,
                             child: Text(
-                              l10n.cattle_number,
+                              l10n.cattleNumber,
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                               ),
@@ -111,7 +111,7 @@ class SaleConfirmationDialog extends StatelessWidget {
                           ),
                           Expanded(
                             child: Text(
-                              l10n.sales_price,
+                              l10n.price,
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                               ),
@@ -188,7 +188,7 @@ class SaleConfirmationDialog extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '${l10n.sales_totalWeight}:',
+                          '${l10n.totalWeightKg}:',
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         Text(
@@ -231,7 +231,7 @@ class SaleConfirmationDialog extends StatelessWidget {
           style: OutlinedButton.styleFrom(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
           ),
-          child: Text(l10n.sales_cancel),
+          child: Text(l10n.cancel),
         ),
         ElevatedButton.icon(
           onPressed: () => Navigator.of(context).pop(true),

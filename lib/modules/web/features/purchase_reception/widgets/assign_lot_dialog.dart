@@ -23,13 +23,13 @@ class _AssignLotDialogState extends State<AssignLotDialog> {
     final l10n = AppLocalizations.of(context)!;
 
     return AlertDialog(
-      title: Text(l10n.assignLotTitle),
+      title: Text(l10n.assignSomething(l10n.lot)),
       content: SizedBox(
         width: 300,
         child: DropdownButtonFormField<String>(
           initialValue: selectedLotId,
           decoration: InputDecoration(
-            labelText: l10n.selectLot,
+            labelText: l10n.selectSomething(l10n.lot),
             border: const OutlineInputBorder(),
           ),
           items:
@@ -59,7 +59,7 @@ class _AssignLotDialogState extends State<AssignLotDialog> {
                     Navigator.of(context).pop();
                   }
                   : null,
-          child: Text(l10n.assignLot),
+          child: Text(l10n.assignSomething(l10n.lot)),
         ),
       ],
     );

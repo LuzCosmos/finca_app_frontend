@@ -157,7 +157,7 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                     child: TextFormField(
                       controller: _numberController,
                       decoration: InputDecoration(
-                        labelText: l10n.cattle_number,
+                        labelText: l10n.cattleNumber,
                         border: const OutlineInputBorder(),
                         errorText: _numberExternalError,
                         suffixIcon:
@@ -503,7 +503,7 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                           },
                           decoration: InputDecoration(
                             labelText:
-                                l10n.trackerLabel, // using existing label key or new one
+                                l10n.tracker, // using existing label key or new one
                             hintText:
                                 l10n.searchTracker, // We'll try to use the key if it exists
                             border: const OutlineInputBorder(),

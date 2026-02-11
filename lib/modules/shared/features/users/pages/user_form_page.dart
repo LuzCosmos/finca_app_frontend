@@ -172,11 +172,11 @@ class _UserFormPageState extends State<UserFormPage> {
 
   @override
   Widget build(BuildContext context) {
-    final t = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
     final isEditing = widget.user != null;
 
     return FincaScaffold(
-      title: isEditing ? t.editUser : t.createUser,
+      title: isEditing ? l10n.editSomething(l10n.user) : l10n.createSomething(l10n.user),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Form(
@@ -189,11 +189,11 @@ class _UserFormPageState extends State<UserFormPage> {
 
               TextFormField(
                 controller: _usernameCtrl,
-                decoration: InputDecoration(labelText: t.username),
+                decoration: InputDecoration(labelText: l10n.username),
                 validator: (v) {
-                  if (v == null || v.isEmpty) return t.fieldRequired;
+                  if (v == null || v.isEmpty) return l10n.fieldRequired;
                   if (v.length < 5 || v.length > 50) {
-                    return t.user_usernameLengthError;
+                    return l10n.user_usernameLengthError;
                   }
                   return null;
                 },
@@ -202,10 +202,10 @@ class _UserFormPageState extends State<UserFormPage> {
 
               TextFormField(
                 controller: _firstNameCtrl,
-                decoration: InputDecoration(labelText: t.firstName),
+                decoration: InputDecoration(labelText: l10n.firstName),
                 validator: (v) {
-                  if (v == null || v.isEmpty) return t.fieldRequired;
-                  if (v.length > 50) return t.user_firstNameLengthError;
+                  if (v == null || v.isEmpty) return l10n.fieldRequired;
+                  if (v.length > 50) return l10n.user_firstNameLengthError;
                   return null;
                 },
               ),
@@ -213,10 +213,10 @@ class _UserFormPageState extends State<UserFormPage> {
 
               TextFormField(
                 controller: _lastNameCtrl,
-                decoration: InputDecoration(labelText: t.lastName),
+                decoration: InputDecoration(labelText: l10n.lastName),
                 validator: (v) {
-                  if (v == null || v.isEmpty) return t.fieldRequired;
-                  if (v.length > 50) return t.user_lastNameLengthError;
+                  if (v == null || v.isEmpty) return l10n.fieldRequired;
+                  if (v.length > 50) return l10n.user_lastNameLengthError;
                   return null;
                 },
               ),
@@ -224,13 +224,13 @@ class _UserFormPageState extends State<UserFormPage> {
 
               TextFormField(
                 controller: _emailCtrl,
-                decoration: InputDecoration(labelText: t.email),
+                decoration: InputDecoration(labelText: l10n.email),
                 keyboardType: TextInputType.emailAddress,
                 validator: (v) {
-                  if (v == null || v.isEmpty) return t.fieldRequired;
+                  if (v == null || v.isEmpty) return l10n.fieldRequired;
                   // Basic email validation
                   if (!v.contains('@') || !v.contains('.')) {
-                    return t.invalidEmail;
+                    return l10n.invalidEmail;
                   }
                   return null;
                 },
@@ -242,25 +242,25 @@ class _UserFormPageState extends State<UserFormPage> {
               else
                 DropdownButtonFormField<RoleModel>(
                   initialValue: _selectedRole,
-                  decoration: InputDecoration(labelText: t.role),
+                  decoration: InputDecoration(labelText: l10n.role),
                   items:
                       _availableRoles.map((r) {
                         return DropdownMenuItem(value: r, child: Text(r.name));
                       }).toList(),
                   onChanged: (v) => setState(() => _selectedRole = v),
-                  validator: (v) => v == null ? t.fieldRequired : null,
+                  validator: (v) => v == null ? l10n.fieldRequired : null,
                 ),
               const SizedBox(height: 16),
 
               if (!isEditing) ...[
                 TextFormField(
                   controller: _passwordCtrl,
-                  decoration: InputDecoration(labelText: t.password),
+                  decoration: InputDecoration(labelText: l10n.password),
                   obscureText: true,
                   validator: (v) {
-                    if (v == null || v.isEmpty) return t.fieldRequired;
+                    if (v == null || v.isEmpty) return l10n.fieldRequired;
                     if (v.length < 8 || v.length > 50) {
-                      return t.user_passwordLengthError;
+                      return l10n.user_passwordLengthError;
                     }
                     return null;
                   },
@@ -268,10 +268,10 @@ class _UserFormPageState extends State<UserFormPage> {
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _confirmPasswordCtrl,
-                  decoration: InputDecoration(labelText: t.confirmPassword),
+                  decoration: InputDecoration(labelText: l10n.confirmPassword),
                   obscureText: true,
                   validator: (v) {
-                    if (v != _passwordCtrl.text) return t.passwordMismatch;
+                    if (v != _passwordCtrl.text) return l10n.passwordMismatch;
                     return null;
                   },
                 ),
@@ -280,7 +280,7 @@ class _UserFormPageState extends State<UserFormPage> {
                 TextFormField(
                   controller: _passwordCtrl,
                   decoration: InputDecoration(
-                    labelText: '${t.password} (${t.optional})',
+                    labelText: '${l10n.password} (${l10n.optional})',
                   ),
                   obscureText: true,
                   onChanged: (_) => setState(() {}),
@@ -289,10 +289,10 @@ class _UserFormPageState extends State<UserFormPage> {
                 if (_passwordCtrl.text.isNotEmpty) ...[
                   TextFormField(
                     controller: _confirmPasswordCtrl,
-                    decoration: InputDecoration(labelText: t.confirmPassword),
+                    decoration: InputDecoration(labelText: l10n.confirmPassword),
                     obscureText: true,
                     validator: (v) {
-                      if (v != _passwordCtrl.text) return t.passwordMismatch;
+                      if (v != _passwordCtrl.text) return l10n.passwordMismatch;
                       return null;
                     },
                   ),
@@ -306,7 +306,7 @@ class _UserFormPageState extends State<UserFormPage> {
                 child:
                     _saving
                         ? const CircularProgressIndicator(color: Colors.white)
-                        : Text(t.save),
+                        : Text(l10n.save),
               ),
             ],
           ),

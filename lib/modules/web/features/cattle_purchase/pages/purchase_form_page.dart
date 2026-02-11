@@ -163,7 +163,7 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
               /// Purchase Date
               Row(
                 children: [
-                  Text('${l10n.purchase_date}: '),
+                  Text('${l10n.dateSomething(l10n.purchase)}: '),
                   TextButton.icon(
                     icon: const Icon(Icons.calendar_today),
                     label: Text(DateFormat('yyyy-MM-dd').format(_selectedDate)),

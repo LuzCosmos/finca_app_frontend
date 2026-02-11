@@ -45,7 +45,7 @@ class _TrackerEditDialogState extends State<TrackerEditDialog> {
     final l10n = AppLocalizations.of(context)!;
 
     return AlertDialog(
-      title: Text(l10n.trackerLabel), 
+      title: Text(l10n.tracker), 
       content: SizedBox(
         width: 300,
         child: Column(
@@ -149,7 +149,7 @@ class _TrackerEditDialogState extends State<TrackerEditDialog> {
         if (widget.initialValue != null && widget.initialValue!.isNotEmpty)
           TextButton(
             onPressed: () => Navigator.of(context).pop('remove'),
-            child: Text(l10n.cattle_remove, style: const TextStyle(color: Colors.red)),
+            child: Text(l10n.remove, style: const TextStyle(color: Colors.red)),
           ),
         TextButton(
           onPressed: () => Navigator.of(context).pop(),

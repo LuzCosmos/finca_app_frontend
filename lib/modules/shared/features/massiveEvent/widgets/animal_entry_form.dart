@@ -279,7 +279,7 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    l10n.addAnimalTitle,
+                    l10n.cattle,
                     style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
@@ -292,7 +292,7 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                             ? null
                             : _applyAnimalSimpleEvent,
                     icon: const Icon(Icons.save),
-                    label: Text(l10n.applyButton),
+                    label: Text(l10n.apply),
                   ),
                 ],
               ),
@@ -390,7 +390,7 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                                   vertical: 6,
                                   horizontal: 8,
                                 ),
-                                labelText: l10n.animalNumberLabel,
+                                labelText: l10n.animalNumber,
                                 labelStyle: const TextStyle(fontSize: 11),
                                 floatingLabelStyle: const TextStyle(
                                   fontSize: 11,
@@ -497,7 +497,7 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                             vertical: 6,
                             horizontal: 8,
                           ), // Controla la altura
-                          labelText: l10n.weightLabel,
+                          labelText: l10n.weightKg,
                           labelStyle: const TextStyle(
                             fontSize: 11,
                           ), // Label cuando flota abajo
@@ -614,7 +614,7 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                                     vertical: 6,
                                     horizontal: 8,
                                   ),
-                                  labelText: l10n.trackerLabel,
+                                  labelText: l10n.tracker,
                                   labelStyle: const TextStyle(fontSize: 11),
                                   floatingLabelStyle: const TextStyle(
                                     fontSize: 11,
@@ -728,7 +728,7 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                             vertical: 6,
                             horizontal: 8,
                           ), // Controla la altura
-                          labelText: l10n.eartagLabel,
+                          labelText: l10n.eartag,
                           labelStyle: const TextStyle(
                             fontSize: 11,
                           ), // Label cuando flota abajo

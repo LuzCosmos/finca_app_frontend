@@ -239,7 +239,7 @@ class LotInputState extends State<LotInput> {
         ),
         _buildCell(
           _pricePerHeadController,
-          '', //l10n.lot_pricePerHead, // agrega esta key a tu .arb
+          '', //l10n.pricePerHead, // agrega esta key a tu .arb
           width: 90,
           isNumeric: true,
           validator: Validator.validateNumericMandatory(

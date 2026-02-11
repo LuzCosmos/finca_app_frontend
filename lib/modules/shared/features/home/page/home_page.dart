@@ -26,30 +26,22 @@ class HomePage extends StatelessWidget {
               HomeOptionWithPermission(
                 module: "COMMERCE",
                 resource: "purchases",
-                title: l10n.home_purchase,
+                title: l10n.purchase,
                 icon: Icons.shopping_cart,
                 route: "/purchases",
               ),
               HomeOptionWithPermission(
                 module: "MASSIVE_EVENTS",
                 resource: "massive_events",
-                title: l10n.home_massiveEvent,
+                title: l10n.massiveEvent,
                 icon: CupertinoIcons.list_bullet,
                 route: "/massive-events/create",
                 forWebOnly: false,
               ),
-              /*HomeOptionWithPermission(
-                module: "RECEPTION",
-                resource: "receptions",
-                title: l10n.home_reception,
-                icon: Icons.shopping_cart_checkout,
-                route: "/purchases/pending",
-                forWebOnly: true,
-              ),*/
               HomeOptionWithPermission(
                 module: "COMMERCE",
                 resource: "sales",
-                title: l10n.home_sale,
+                title: l10n.sale,
                 icon: Icons.monetization_on,
                 route: "/sales",
                 forWebOnly: true,

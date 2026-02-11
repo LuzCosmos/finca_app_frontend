@@ -82,21 +82,21 @@ class _UsersListPageState extends State<UsersListPage> {
   }
 
   Future<void> _deleteUser(UserModel user) async {
-    final t = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(t.userDeleteConfirmTitle),
-        content: Text(t.userDeleteConfirmBody),
+        title: Text(l10n.userDeleteConfirmTitle),
+        content: Text(l10n.userDeleteConfirmBody),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: Text(t.cancel),
+            child: Text(l10n.cancel),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
             style: FilledButton.styleFrom(backgroundColor: Colors.red),
-            child: Text(t.deleteUser),
+            child: Text(l10n.deleteSomething(l10n.user)),
           ),
         ],
       ),
@@ -107,7 +107,7 @@ class _UsersListPageState extends State<UsersListPage> {
         await _api.delete(user.id);
          if (mounted) {
            ScaffoldMessenger.of(context).showSnackBar(
-             SnackBar(content: Text(t.userDeletedSuccess)),
+             SnackBar(content: Text(l10n.userDeletedSuccess)),
            );
            _load();
         }
@@ -117,7 +117,7 @@ class _UsersListPageState extends State<UsersListPage> {
                 (el) => el.name == (e.code),
                 orElse: () => ApiExceptionCode.unknownError,
             );
-            final errorText = code.asText(context, objectName: t.users);
+            final errorText = code.asText(context, objectName: l10n.users);
             ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text(errorText), backgroundColor: Colors.red),
             );
@@ -138,10 +138,10 @@ class _UsersListPageState extends State<UsersListPage> {
 
   @override
   Widget build(BuildContext context) {
-    final t = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
 
     return FincaScaffold(
-      title: t.usersList,
+      title: l10n.listSomething(l10n.users),
       body: Padding(
         padding: const EdgeInsets.all(12),
         child: Column(
@@ -160,7 +160,7 @@ class _UsersListPageState extends State<UsersListPage> {
                       });
                 },
                 icon: const Icon(Icons.add),
-                label: Text(t.createUser),
+                label: Text(l10n.createSomething(l10n.user)),
               ),
             ),
             const SizedBox(height: 8),
@@ -178,7 +178,7 @@ class _UsersListPageState extends State<UsersListPage> {
                       width: 200,
                       child: TextField(
                         controller: _usernameCtrl,
-                        decoration: InputDecoration(labelText: t.username),
+                        decoration: InputDecoration(labelText: l10n.username),
                         onSubmitted: (_) {
                           _page = 1;
                           _load();
@@ -189,7 +189,7 @@ class _UsersListPageState extends State<UsersListPage> {
                       width: 200,
                       child: TextField(
                         controller: _lastNameCtrl,
-                        decoration: InputDecoration(labelText: t.lastName),
+                        decoration: InputDecoration(labelText: l10n.lastName),
                         onSubmitted: (_) {
                           _page = 1;
                           _load();
@@ -202,7 +202,7 @@ class _UsersListPageState extends State<UsersListPage> {
                         _load();
                       },
                       icon: const Icon(Icons.search),
-                      label: Text(t.search), // Reuse search or refresh? 'search' key might exist, or use refresh icon
+                      label: Text(l10n.search), // Reuse search or refresh? 'search' key might exist, or use refresh icon
                     ),
                   ],
                 ),
@@ -217,15 +217,15 @@ class _UsersListPageState extends State<UsersListPage> {
                 ? const Center(child: CircularProgressIndicator())
                 : Card(
                   child: _items.isEmpty
-                    ? Center(child: Text(t.noUsersFound))
+                    ? Center(child: Text(l10n.noUsersFound))
                     : SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: DataTable(
                           columns: [
-                            DataColumn(label: Text(t.username)),
-                            DataColumn(label: Text(t.firstName)),
-                            DataColumn(label: Text(t.lastName)),
-                            DataColumn(label: Text(t.email)),
+                            DataColumn(label: Text(l10n.username)),
+                            DataColumn(label: Text(l10n.firstName)),
+                            DataColumn(label: Text(l10n.lastName)),
+                            DataColumn(label: Text(l10n.email)),
                             const DataColumn(label: SizedBox()),
                           ],
                           rows: _items.map((user) => DataRow(
@@ -240,7 +240,7 @@ class _UsersListPageState extends State<UsersListPage> {
                                   children: [
                                     IconButton(
                                       icon: const Icon(Icons.edit, color: Colors.blue),
-                                      tooltip: t.editUser,
+                                      tooltip: l10n.editSomething(l10n.user),
                                       onPressed: () {
                                          Navigator.of(context)
                                             .push(MaterialPageRoute(builder: (_) => UserFormPage(user: user)))
@@ -251,7 +251,7 @@ class _UsersListPageState extends State<UsersListPage> {
                                     ),
                                     IconButton(
                                       icon: const Icon(Icons.delete, color: Colors.red),
-                                      tooltip: t.deleteUser,
+                                      tooltip: l10n.deleteSomething(l10n.user),
                                       onPressed: () => _deleteUser(user),
                                     ),
                                   ],
@@ -272,7 +272,7 @@ class _UsersListPageState extends State<UsersListPage> {
                children: [
                  Row(
                    children: [
-                     Text(t.rowsPerPage),
+                     Text(l10n.rowsPerPage),
                      const SizedBox(width: 8),
                      DropdownButton<int>(
                        value: _allowedPageSizes.contains(_limit) ? _limit : 10,
@@ -288,7 +288,7 @@ class _UsersListPageState extends State<UsersListPage> {
                      ),
                    ],
                  ),
-                 Text('${t.page} $_page / $_pageCount ($_total ${t.results})'),
+                 Text('${l10n.page} $_page / $_pageCount ($_total ${l10n.results})'),
                  Row(
                    children: [
                      IconButton(

@@ -33,7 +33,7 @@ class _CreateSalePageState extends State<CreateSalePage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.newSale)),
+      appBar: AppBar(title: Text(l10n.createSomething(l10n.sale))),
       body: BlocConsumer<SalesBloc, SalesState>(
         listener: (context, state) {
           if (state is SaleSavedSuccess) {
@@ -80,7 +80,7 @@ class _CreateSalePageState extends State<CreateSalePage> {
                   _buildDatePicker(context),
                   const SizedBox(height: 16),
                   DropdownButtonFormField<String>(
-                    decoration: InputDecoration(labelText: l10n.sales_buyer),
+                    decoration: InputDecoration(labelText: l10n.buyer),
                     initialValue: _selectedBuyerId,
                     items:
                         buyers.map<DropdownMenuItem<String>>((b) {
@@ -94,9 +94,7 @@ class _CreateSalePageState extends State<CreateSalePage> {
                   ),
                   const SizedBox(height: 16),
                   DropdownButtonFormField<String>(
-                    decoration: InputDecoration(
-                      labelText: l10n.provider_transporter,
-                    ),
+                    decoration: InputDecoration(labelText: l10n.transporter),
                     initialValue: _selectedTransporterId,
                     items:
                         transporters.map<DropdownMenuItem<String>>((t) {
@@ -125,7 +123,7 @@ class _CreateSalePageState extends State<CreateSalePage> {
                         child: TextFormField(
                           controller: _priceController,
                           decoration: InputDecoration(
-                            labelText: l10n.lot_pricePerKg,
+                            labelText: l10n.pricePerKg,
                           ),
                           keyboardType: TextInputType.number,
                           validator:
@@ -139,7 +137,7 @@ class _CreateSalePageState extends State<CreateSalePage> {
                   ),
                   const SizedBox(height: 24),
                   Text(
-                    l10n.sales_animals,
+                    l10n.animals,
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -182,7 +180,7 @@ class _CreateSalePageState extends State<CreateSalePage> {
                           // context.read<SalesBloc>().add(SaveSaleTransaction(model));
                         }
                       },
-                      child: Text(l10n.sales_save),
+                      child: Text(l10n.save),
                     ),
                   ),
                 ],

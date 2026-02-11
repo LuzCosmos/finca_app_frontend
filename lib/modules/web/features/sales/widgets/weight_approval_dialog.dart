@@ -82,7 +82,7 @@ class WeightApprovalDialog extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '${AppLocalizations.of(context)!.label_minimumWeight}:',
+                      '${l10n.minWeightKg}:',
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     Text('${minWeight.toStringAsFixed(2)} kg'),
@@ -102,7 +102,7 @@ class WeightApprovalDialog extends StatelessWidget {
         OutlinedButton.icon(
           onPressed: () => Navigator.of(context).pop(false), // Reject
           icon: const Icon(Icons.cancel, color: Colors.red),
-          label: Text(l10n.cattle_reject),
+          label: Text(l10n.reject),
           style: OutlinedButton.styleFrom(
             foregroundColor: Colors.red,
             side: const BorderSide(color: Colors.red),
@@ -111,7 +111,7 @@ class WeightApprovalDialog extends StatelessWidget {
         ElevatedButton.icon(
           onPressed: () => Navigator.of(context).pop(true), // Approve
           icon: const Icon(Icons.check_circle),
-          label: Text(l10n.cattle_approve),
+          label: Text(l10n.approve),
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.green,
             foregroundColor: Colors.white,
@@ -164,7 +164,7 @@ class CattleValidationErrorDialog extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Text(l10n.sales_cancel),
+          child: Text(l10n.cancel),
         ),
       ],
     );

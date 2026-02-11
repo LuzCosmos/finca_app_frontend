@@ -159,9 +159,9 @@ class _ProviderAutocompleteFieldState extends State<ProviderAutocompleteField> {
     final l10n = AppLocalizations.of(context)!;
     var providerTypeLabel = '';
     if (widget.providerType == ProviderType.BUYER.name) {
-      providerTypeLabel = l10n.provider_buyer;
+      providerTypeLabel = l10n.buyer;
     } else if (widget.providerType == ProviderType.TRANSPORTER.name) {
-      providerTypeLabel = l10n.provider_transporter;
+      providerTypeLabel = l10n.transporter;
     } else if (widget.providerType == ProviderType.PROVIDER.name) {
       providerTypeLabel = l10n.provider;
     }
@@ -223,9 +223,7 @@ class _ProviderAutocompleteFieldState extends State<ProviderAutocompleteField> {
                             Icons.add_circle,
                             color: Colors.green,
                           ),
-                          title: Text(
-                            '${l10n.provider_createNew} $providerTypeLabel',
-                          ),
+                          title: Text(l10n.createNewSomething(providerTypeLabel)),
                           onTap: () {
                             _focusNode.unfocus();
                             _showCreateDialog();
@@ -238,7 +236,7 @@ class _ProviderAutocompleteFieldState extends State<ProviderAutocompleteField> {
                               (provider) => ListTile(
                                 title: Text(provider['name']),
                                 subtitle: Text(
-                                  '${l10n.provider_nit}: ${provider['nit']}',
+                                  '${l10n.nit}: ${provider['nit']}',
                                 ),
                                 onTap:
                                     () => _selectProvider(
@@ -253,9 +251,7 @@ class _ProviderAutocompleteFieldState extends State<ProviderAutocompleteField> {
                                 Icons.add_circle,
                                 color: Colors.green,
                               ),
-                              title: Text(
-                                '${l10n.provider_createNew} $providerTypeLabel',
-                              ),
+                              title: Text(l10n.createNewSomething(providerTypeLabel)),
                               onTap: () {
                                 _focusNode.unfocus();
                                 _showCreateDialog();
@@ -315,9 +311,9 @@ class _CreateProviderDialogState extends State<CreateProviderDialog> {
     final l10n = AppLocalizations.of(context)!;
     var providerTypeLabel = '';
     if (widget.providerType == ProviderType.BUYER.name) {
-      providerTypeLabel = l10n.provider_buyer;
+      providerTypeLabel = l10n.buyer;
     } else if (widget.providerType == ProviderType.TRANSPORTER.name) {
-      providerTypeLabel = l10n.provider_transporter;
+      providerTypeLabel = l10n.transporter;
     } else if (widget.providerType == ProviderType.PROVIDER.name) {
       providerTypeLabel = l10n.provider;
     }
@@ -396,7 +392,7 @@ class _CreateProviderDialogState extends State<CreateProviderDialog> {
     final providerTypeLabel = _providerTypeLabel;
 
     return AlertDialog(
-      title: Text('${l10n.provider_createNew} $providerTypeLabel'),
+      title: Text(l10n.createNewSomething(providerTypeLabel)),
       content: SizedBox(
         width: 500,
         child: Form(
@@ -430,7 +426,7 @@ class _CreateProviderDialogState extends State<CreateProviderDialog> {
                 TextFormField(
                   controller: _nitController,
                   decoration: InputDecoration(
-                    labelText: '${l10n.provider_nit} *',
+                    labelText: '${l10n.nit} *',
                     border: const OutlineInputBorder(),
                   ),
                   validator: (val) {
@@ -449,7 +445,7 @@ class _CreateProviderDialogState extends State<CreateProviderDialog> {
                 TextFormField(
                   controller: _addressController,
                   decoration: InputDecoration(
-                    labelText: l10n.provider_address,
+                    labelText: l10n.address,
                     border: const OutlineInputBorder(),
                   ),
                 ),
@@ -457,7 +453,7 @@ class _CreateProviderDialogState extends State<CreateProviderDialog> {
 
                 // Contact Section
                 Text(
-                  l10n.provider_contactPersonName,
+                  l10n.contactPersonName,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 const SizedBox(height: 12),
@@ -465,7 +461,7 @@ class _CreateProviderDialogState extends State<CreateProviderDialog> {
                 TextFormField(
                   controller: _contactNameController,
                   decoration: InputDecoration(
-                    labelText: l10n.provider_contactPersonName,
+                    labelText: l10n.contactPersonName,
                     border: const OutlineInputBorder(),
                   ),
                 ),
@@ -474,7 +470,7 @@ class _CreateProviderDialogState extends State<CreateProviderDialog> {
                 TextFormField(
                   controller: _phone1Controller,
                   decoration: InputDecoration(
-                    labelText: l10n.provider_phone1,
+                    labelText: l10n.phone1,
                     border: const OutlineInputBorder(),
                   ),
                   keyboardType: TextInputType.phone,
@@ -484,7 +480,7 @@ class _CreateProviderDialogState extends State<CreateProviderDialog> {
                 TextFormField(
                   controller: _phone2Controller,
                   decoration: InputDecoration(
-                    labelText: l10n.provider_phone2,
+                    labelText: l10n.phone2,
                     border: const OutlineInputBorder(),
                   ),
                   keyboardType: TextInputType.phone,
@@ -494,7 +490,7 @@ class _CreateProviderDialogState extends State<CreateProviderDialog> {
                 TextFormField(
                   controller: _emailController,
                   decoration: InputDecoration(
-                    labelText: l10n.provider_email,
+                    labelText: l10n.email,
                     border: const OutlineInputBorder(),
                   ),
                   keyboardType: TextInputType.emailAddress,
@@ -507,7 +503,7 @@ class _CreateProviderDialogState extends State<CreateProviderDialog> {
       actions: [
         TextButton(
           onPressed: _isCreating ? null : () => Navigator.of(context).pop(),
-          child: Text(l10n.sales_cancel),
+          child: Text(l10n.cancel),
         ),
         ElevatedButton(
           onPressed: _isCreating ? null : _createProvider,

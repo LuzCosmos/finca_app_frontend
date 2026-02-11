@@ -187,7 +187,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
         width: 0,
       ),
       PlutoColumn(
-        title: l10n.cattleNumber,
+        title: l10n.number,
         field: 'number',
         type: PlutoColumnType.text(),
         width: 90,
@@ -195,7 +195,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
         frozen: PlutoColumnFrozen.start,
       ),
       PlutoColumn(
-        title: l10n.colStatus,
+        title: l10n.status,
         field: 'status',
         type: PlutoColumnType.text(),
         enableEditingMode: _hasEditPermission,
@@ -238,7 +238,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
         },
       ),
       PlutoColumn(
-        title: l10n.colLastWeight,
+        title: l10n.lastWeightKg,
         field: 'lastWeight',
         type: PlutoColumnType.number(),
         width: 100,
@@ -252,7 +252,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
         enableEditingMode: _hasEditPermission,
       ),
       PlutoColumn(
-        title: l10n.colHorns,
+        title: l10n.horns,
         field: 'hasHorn',
         type: PlutoColumnType.text(),
         renderer: (rendererContext) {
@@ -273,7 +273,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
         width: 80,
       ),
       PlutoColumn(
-        title: l10n.colCastrated,
+        title: l10n.castrated,
         field: 'isCastrated',
         type: PlutoColumnType.text(),
         renderer: (rendererContext) {
@@ -295,7 +295,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
       ),
       // Dynamic Color Dropdown
       PlutoColumn(
-        title: l10n.colBrandColor,
+        title: l10n.color,
         field: 'color',
         type: PlutoColumnType.text(),
         enableEditingMode: _hasEditPermission,
@@ -341,7 +341,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
         },
       ),
       PlutoColumn(
-        title: l10n.colCharacteristics,
+        title: l10n.characteristics,
         field: 'characteristics',
         type: PlutoColumnType.text(),
         width: 150,
@@ -440,7 +440,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
         },
       ),
       PlutoColumn(
-        title: l10n.colGender,
+        title: l10n.gender,
         field: 'gender',
         type: PlutoColumnType.text(),
         enableEditingMode: _hasEditPermission,
@@ -485,14 +485,14 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
         },
       ),
       PlutoColumn(
-        title: l10n.colAge,
+        title: l10n.age,
         field: 'age',
         type: PlutoColumnType.number(format: '#,##0.##'),
         width: 60,
         enableEditingMode: _hasEditPermission,
       ),
       PlutoColumn(
-        title: l10n.trackerLabel,
+        title: l10n.tracker,
         field: 'tracker',
         type: PlutoColumnType.text(),
         width: 170,
@@ -615,64 +615,63 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
         enableEditingMode: _hasEditPermission,
       ),
       PlutoColumn(
-        title: l10n.colComments,
+        title: l10n.comments,
         field: 'comments',
         type: PlutoColumnType.text(),
         width: 200,
         enableEditingMode: _hasEditPermission,
       ),
       PlutoColumn(
-        title: l10n.colPurchaseWeight,
+        title: l10n.purchaseWeightKg,
         field: 'purchaseWeight',
         type: PlutoColumnType.number(),
         width: 110,
         enableEditingMode: _hasEditPermission,
       ),
-      //PlutoColumn(title: l10n.colReceivedDate, field: 'receivedDate', type: PlutoColumnType.date(), width: 110),
       PlutoColumn(
-        title: l10n.colPurchasePrice,
+        title: l10n.purchasePrice,
         field: 'purchasePrice',
         type: PlutoColumnType.number(),
         width: 110,
         enableEditingMode: _hasEditPermission,
       ),
       PlutoColumn(
-        title: l10n.colPurchaseCommission,
+        title: l10n.purchaseCommission,
         field: 'purchaseCommission',
         type: PlutoColumnType.number(),
         width: 110,
         enableEditingMode: _hasEditPermission,
       ),
       PlutoColumn(
-        title: l10n.colReceivedAt,
+        title: l10n.receivedAt,
         field: 'receivedAt',
         type: PlutoColumnType.date(),
         width: 110,
         enableEditingMode: _hasEditPermission,
       ),
       PlutoColumn(
-        title: l10n.colReceivedWeight,
+        title: l10n.receivedWeightKg,
         field: 'receivedWeight',
         type: PlutoColumnType.number(),
         width: 100,
         enableEditingMode: _hasEditPermission,
       ),
       PlutoColumn(
-        title: l10n.colSaleWeight,
+        title: l10n.saleWeightKg,
         field: 'saleWeight',
         type: PlutoColumnType.number(),
         width: 110,
         enableEditingMode: _hasEditPermission,
       ),
       PlutoColumn(
-        title: l10n.colSalePrice,
+        title: l10n.salePrice,
         field: 'salePrice',
         type: PlutoColumnType.number(),
         width: 110,
         enableEditingMode: _hasEditPermission,
       ),
       PlutoColumn(
-        title: l10n.colWeightHistory,
+        title: l10n.weightHistory,
         field: 'weightHistory',
         type: PlutoColumnType.text(),
         enableEditingMode: false,
@@ -699,7 +698,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
         },
       ),
       PlutoColumn(
-        title: l10n.colMedicationHistory,
+        title: l10n.medicationHistory,
         field: 'medicationHistory',
         type: PlutoColumnType.text(),
         enableEditingMode: false,
@@ -797,7 +796,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
               child: ElevatedButton.icon(
                 onPressed: _addCattleRow,
                 icon: const Icon(Icons.add),
-                label: Text(l10n.addCattleRow),
+                label: Text(l10n.addSomething(l10n.cattle)),
               ),
             ),
             const SizedBox(height: 12),*/

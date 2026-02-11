@@ -115,7 +115,7 @@ class _CreateBrandDialogState extends State<CreateBrandDialog> {
           children: [
             TextFormField(
               controller: _brandNameController,
-              decoration: InputDecoration(labelText: l10n.brandName),
+              decoration: InputDecoration(labelText: l10n.name),
               validator:
                   (value) =>
                       value == null || value.trim().isEmpty

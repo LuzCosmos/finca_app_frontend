@@ -15,7 +15,7 @@ class WeightHistoryDialog extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     
     return AlertDialog(
-      title: Text('#$cattleNumber - ${l10n.colWeightHistory}'),
+      title: Text('#$cattleNumber - ${l10n.weightHistory}'),
       content: SizedBox(
         width: 400,
         height: 400,
@@ -106,10 +106,10 @@ class _MedicationHistoryDialogState extends State<MedicationHistoryDialog> {
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text('#${widget.cattleNumber} - ${l10n.colMedicationHistory}'),
+          Text('#${widget.cattleNumber} - ${l10n.medicationHistory}'),
           IconButton(
             icon: const Icon(Icons.add),
-            tooltip: l10n.addMedication,
+            tooltip: l10n.addSomething(l10n.medication),
             onPressed: _addMedication,
           ),
         ],

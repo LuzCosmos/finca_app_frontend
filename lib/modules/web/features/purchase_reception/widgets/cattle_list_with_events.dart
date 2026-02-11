@@ -64,7 +64,7 @@ class _CattleListWithEventsState extends State<CattleListWithEvents> {
                       Expanded(
                         flex: 2,
                         child: Text(
-                          l10n.cattleNumber,
+                          l10n.number,
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 13,
@@ -97,7 +97,7 @@ class _CattleListWithEventsState extends State<CattleListWithEvents> {
                       Expanded(
                         flex: 2,
                         child: Text(
-                          l10n.trackerId,
+                          l10n.tracker,
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 13,
@@ -227,7 +227,7 @@ class _CattleListWithEventsState extends State<CattleListWithEvents> {
                                               size: 14,
                                             ),
                                             label: Text(
-                                              l10n.assignLot,
+                                              l10n.assignSomething(l10n.lot),
                                               style: const TextStyle(
                                                 fontSize: 12,
                                               ),
@@ -349,10 +349,10 @@ class _CattleListWithEventsState extends State<CattleListWithEvents> {
   ) {
     var firstLine = '';
     if (data['dosage'] != null) {
-      firstLine = '${l10n.medicationDosage}: ${data['dosage']}';
+      firstLine = '${l10n.dosage}: ${data['dosage']}';
     }
     if (data['route'] != null) {
-      firstLine += '; ${l10n.medicationRoute}: ${data['route']}';
+      firstLine += '; ${l10n.route}: ${data['route']}';
     }
     var secondLine = '';
     if (data['lot'] != null) {

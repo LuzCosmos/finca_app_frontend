@@ -502,7 +502,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
         }
       },
       child: FincaScaffold(
-        title: l10n.home_sale,
+        title: l10n.sale,
         body: BlocBuilder<SalesWebBloc, SalesWebState>(
           builder: (context, state) {
             if (state.status == SalesWebStatus.loading &&
@@ -689,7 +689,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                   child: TextFormField(
                     controller: _pricePerKgController,
                     decoration: InputDecoration(
-                      labelText: l10n.lot_pricePerKg,
+                      labelText: l10n.pricePerKg,
                       border: const OutlineInputBorder(),
                       prefixText: '\$ ',
                     ),
@@ -780,7 +780,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                             controller: textEditingController,
                             focusNode: focusNode,
                             decoration: InputDecoration(
-                              labelText: l10n.cattle_number,
+                              labelText: l10n.cattleNumber,
                               border: const OutlineInputBorder(),
                               hintText: l10n.hint_enterScanId,
                             ),
@@ -869,7 +869,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                   label: Text(
                     _isValidatingCattle
                         ? (l10n.label_validating)
-                        : (l10n.cattle_addButton),
+                        : (l10n.add),
                   ),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
@@ -967,7 +967,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                 ),
                 _buildSummaryItem(
                   context,
-                  l10n.sales_totalWeight,
+                  l10n.totalWeightKg,
                   '${_totalWeight.toStringAsFixed(2)} kg',
                   Icons.scale,
                   // color: cs.onPrimaryContainer,
@@ -995,7 +995,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                       vertical: 16,
                     ),
                   ),
-                  child: Text(l10n.sales_cancel),
+                  child: Text(l10n.cancel),
                 ),
                 const SizedBox(width: 8),
                 ElevatedButton(

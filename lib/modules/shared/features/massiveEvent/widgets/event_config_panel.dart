@@ -251,7 +251,7 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
           ElevatedButton.icon(
             onPressed: _openAddEventDialog,
             icon: const Icon(Icons.add),
-            label: Text(l10n.addEventDetail),
+            label: Text(l10n.addSomething(l10n.event)),
           ),
           const SizedBox(height: 8),
           Expanded(
@@ -479,8 +479,8 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
       final dosage = data['dosage'] ?? '';
       final lot = data['lot'] ?? '';
       return [
-        '${l10n.medicationDosage}: $dosage',
-        '${l10n.medicationRoute}: $route',
+        '${l10n.dosage}: $dosage',
+        '${l10n.route}: $route',
         '${l10n.medicationLot}: $lot',
       ].where((part) => part.toString().trim().isNotEmpty).join('; ');
     }

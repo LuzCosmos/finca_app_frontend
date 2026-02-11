@@ -78,7 +78,7 @@ class _EventDetailFormState extends State<EventDetailForm> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return AlertDialog(
-      title: Text(l10n.addEventDetail),
+      title: Text(l10n.addSomething(l10n.event)),
       content: SingleChildScrollView(
         child: Form(
           key: _formKey,
@@ -100,7 +100,7 @@ class _EventDetailFormState extends State<EventDetailForm> {
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _nameController,
-                  decoration: InputDecoration(labelText: l10n.medicationName),
+                  decoration: InputDecoration(labelText: l10n.name),
                   validator:
                       (value) =>
                           value == null || value.trim().isEmpty
@@ -110,7 +110,7 @@ class _EventDetailFormState extends State<EventDetailForm> {
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _dosageController,
-                  decoration: InputDecoration(labelText: l10n.medicationDosage),
+                  decoration: InputDecoration(labelText: l10n.dosage),
                   keyboardType: TextInputType.number,
                   validator:
                       (value) =>
@@ -120,7 +120,7 @@ class _EventDetailFormState extends State<EventDetailForm> {
                 ),
                 TextFormField(
                   controller: _routeController,
-                  decoration: InputDecoration(labelText: l10n.medicationRoute),
+                  decoration: InputDecoration(labelText: l10n.route),
                   validator:
                       (value) =>
                           value == null || value.trim().isEmpty
