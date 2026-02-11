@@ -124,7 +124,7 @@
   "error_generic": "Ha ocurrido un error inesperado.",
   "@error_generic": { "description": "Fallback para errores desconocidos." },
 
-  "error_cattleIsNotActive": "El ganado no está activo.",
+  "error_cattleIsNotActive": "La res no está activa.",
   "@error_cattleIsNotActive": { "description": "Error específico para cuando el ganado no está activo." },
 
   "noData": "No hay datos disponibles",
