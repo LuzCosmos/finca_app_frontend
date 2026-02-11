@@ -73,6 +73,7 @@
   "all": "All",
   "yes": "Yes",
   "no": "No",
+  "notApplied":"Not applied",
   "numberFormat":"#,##0.##",
   "numberFormat_country":"en_US",
 
@@ -123,6 +124,9 @@
   "error_generic": "An unexpected error has occurred.",
   "@error_generic": { "description": "Fallback for unknown errors." },
 
+  "error_cattleIsNotActive": "The cattle is not active.",
+  "@error_cattleIsNotActive": { "description": "Error when the cattle is not active." },
+
   "noData": "No data available",
   
   "noDataSomething": "No {object} data available",
@@ -137,13 +141,13 @@
   "home_title": "Home",
 
   "date": "Date",
-  "dateSomething": "Date of {object}",
+  "dateSomething": "{object} Date",
 
   "username": "Username",
   "user": "User",
   "users": "Users",
 
-  "listSomething": "List of {object}",
+  "listSomething": "{object} List",
   "cattle": "Cattle",
   "cattles": "Cattle",
   "animal": "Animal",
@@ -285,7 +289,9 @@
   "weightHistory": "Weight Hist.",
   "medicationHistory": "Medication Hist.",
 
-  "count":"Qty.",
+  "count":"Count",
+  "countSomething":"Count of {object}",
+  "countAdjetive":"{adjetive} Count",
   "price":"Price",
   "weightKg": "Weight (kg)",
   "totalWeightKg": "Total Weight (kg)",
@@ -361,8 +367,6 @@
   "noEventsApplied": "No applied events",
   "receivedCount": "Received",
   "purchasedCount": "Purchased",
-
-  "receivedCattle": "Qty. received",
 
   "sales_searchPlaceholder": "Search sales...",
   "sales_dateRange": "Date Range",

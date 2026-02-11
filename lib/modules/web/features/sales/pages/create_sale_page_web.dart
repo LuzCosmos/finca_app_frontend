@@ -16,6 +16,7 @@ import 'package:finca_app_frontend/modules/web/features/sales/services/cattle_va
 import 'package:finca_app_frontend/modules/web/features/cattle/services/cattle_master_service.dart';
 import 'package:uuid/uuid.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:finca_app_frontend/modules/shared/enums/cattle_enums.dart';
 
 class CreateSalePage extends StatelessWidget {
   const CreateSalePage({super.key});
@@ -817,16 +818,29 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                                     final Map<String, dynamic> option = options
                                         .elementAt(index);
                                     final device = option['device'];
-                                    String deviceText = '';
-                                    if (device != null) {
-                                      deviceText =
-                                          ' / ${device['name'] ?? device['deveui'] ?? ''}';
-                                    }
+                                    final deviceText = device != null
+                                              ? (device['name'] ??
+                                                  device['deveui'] ??
+                                                  '')
+                                              : '';
+                                    final colorValue = option['color'];
+                                    final colorText = colorValue != null
+                                        ? CattleColor.fromString(colorValue.toString())
+                                            .localizedName(context)
+                                        : '';
                                     return ListTile(
-                                      title: Text(option['number'] ?? ''),
-                                      subtitle: Text(
-                                        '${option['eartag'] ?? ''}$deviceText',
-                                      ),
+                                      title: Text(
+                                          '${option['number']?.toString() ?? ''}${option['eartag'] != null ? ' / ${option['eartag']}' : ''}${deviceText.isNotEmpty ? ' / $deviceText' : ''}',
+                                          style: const TextStyle(fontSize: 13),
+                                        ),
+                                        subtitle: colorText.isNotEmpty
+                                            ? Text(
+                                                '${l10n.color}: $colorText / ${l10n.castrated}: ${option['castrated'] == true ? l10n.yes : l10n.no} / ${l10n.hasHorns}: ${option['hasHorn'] == true ? l10n.yes : l10n.no}',
+                                                style: const TextStyle(
+                                                  fontSize: 11,
+                                                ),
+                                              )
+                                            : null,
                                       onTap: () {
                                         onSelected(option);
                                       },

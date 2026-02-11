@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:finca_app_frontend/modules/shared/enums/cattle_enums.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -300,7 +301,8 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                 children: [
                   Expanded(
                     child: LayoutBuilder(
-                      builder: (context, constraints) {
+                      builder: (layoutContext, constraints) {
+                        final layoutL10n = AppLocalizations.of(layoutContext)!;
                         return RawAutocomplete<Map<String, dynamic>>(
                           textEditingController: _animalNumberController,
                           optionsBuilder: (
@@ -377,7 +379,7 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                               style: const TextStyle(fontSize: 13),
                               keyboardType: TextInputType.number,
                               validator: Validator.validateNotEmpty(
-                                l10n.fieldRequired,
+                                layoutL10n.fieldRequired,
                                 RegexPatterns.positiveIntegerNoZero,
                               ),
                               inputFormatters: [
@@ -390,7 +392,7 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                                   vertical: 6,
                                   horizontal: 8,
                                 ),
-                                labelText: l10n.animalNumber,
+                                labelText: layoutL10n.animalNumber,
                                 labelStyle: const TextStyle(fontSize: 11),
                                 floatingLabelStyle: const TextStyle(
                                   fontSize: 11,
@@ -425,7 +427,7 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                                     padding: EdgeInsets.zero,
                                     shrinkWrap: true,
                                     itemCount: options.length,
-                                    itemBuilder: (context, index) {
+                                    itemBuilder: (itemContext, index) {
                                       final option = options.elementAt(index);
                                       final device = option['device'];
                                       final deviceText =
@@ -434,21 +436,25 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                                                   device['deveui'] ??
                                                   '')
                                               : '';
+                                      final colorValue = option['color'];
+                                      final colorText = colorValue != null
+                                          ? CattleColor.fromString(colorValue.toString())
+                                              .localizedName(itemContext)
+                                          : '';
                                       return ListTile(
                                         dense: true,
                                         title: Text(
-                                          option['number']?.toString() ?? '',
+                                          '${option['number']?.toString() ?? ''}${option['eartag'] != null ? ' / ${option['eartag']}' : ''}${deviceText.isNotEmpty ? ' / $deviceText' : ''}',
                                           style: const TextStyle(fontSize: 13),
                                         ),
-                                        subtitle:
-                                            deviceText.isEmpty
-                                                ? null
-                                                : Text(
-                                                  deviceText,
-                                                  style: const TextStyle(
-                                                    fontSize: 11,
-                                                  ),
+                                        subtitle: colorText.isNotEmpty
+                                            ? Text(
+                                                '${layoutL10n.color}: $colorText / ${layoutL10n.castrated}: ${option['castrated'] == true ? layoutL10n.yes : layoutL10n.no} / ${layoutL10n.hasHorns}: ${option['hasHorn'] == true ? layoutL10n.yes : layoutL10n.no}',
+                                                style: const TextStyle(
+                                                  fontSize: 11,
                                                 ),
+                                              )
+                                            : null,
                                         onTap: () => onSelected(option),
                                       );
                                     },

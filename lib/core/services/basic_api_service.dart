@@ -70,6 +70,14 @@ class BasicApiService {
 
   static Never manageNotSuccessResponseCode(Response response) {
     if (response.statusCode == 400) {
+      final body = jsonDecode(response.body);
+      final message = body['message'] ?? 'Bad request';
+      if (message.isNotEmpty && message == 'cattleIsNotActive') {
+        throw ApiException(
+          ApiExceptionCode.cattleIsNotActive.name,
+          'Cattle is not Active',
+        );
+      }
       throw ApiException(ApiExceptionCode.badRequest.name, 'Invalid data');
     } else if (response.statusCode == 401) {
       throw ApiException(ApiExceptionCode.unauthorized.name, 'Unauthorized');

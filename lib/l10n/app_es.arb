@@ -73,6 +73,7 @@
   "all": "Todas",
   "yes": "Si",
   "no": "No",
+  "notApplied":"No aplicado",
   "numberFormat":"#,##0.##",
   "numberFormat_country":"en_US",
 
@@ -122,6 +123,9 @@
 
   "error_generic": "Ha ocurrido un error inesperado.",
   "@error_generic": { "description": "Fallback para errores desconocidos." },
+
+  "error_cattleIsNotActive": "El ganado no está activo.",
+  "@error_cattleIsNotActive": { "description": "Error específico para cuando el ganado no está activo." },
 
   "noData": "No hay datos disponibles",
   
@@ -237,9 +241,9 @@
   "purchaseStatusOpen": "Abierta",
   "purchaseStatusReceived": "Recibida",
 
-  "received": "Recibido",
-  "purchased": "Comprado",
-  "sold": "Vendido",
+  "received": "Recibida",
+  "purchased": "Comprada",
+  "sold": "Vendida",
 
   "name": "Nombre",
   "firstName": "Nombre",
@@ -286,6 +290,8 @@
   "medicationHistory": "Hist. Medicamentos",
 
   "count":"Cant.",
+  "countSomething":"Cant. de {object}",
+  "countAdjetive":"Cant. {adjetive}", 
   "price":"Precio",
   "weightKg": "Peso (kg)",
   "totalWeightKg": "Peso Total (kg)",
@@ -361,8 +367,6 @@
   "noEventsApplied": "Sin eventos aplicados",
   "receivedCount": "Recibidos",
   "purchasedCount": "Comprados",
-
-  "receivedCattle": "Cant. recibida",
 
   "sales_searchPlaceholder": "Buscar ventas...",
   "sales_dateRange": "Rango de Fechas",

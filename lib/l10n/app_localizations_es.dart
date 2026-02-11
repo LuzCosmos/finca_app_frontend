@@ -194,6 +194,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get no => 'No';
 
   @override
+  String get notApplied => 'No aplicado';
+
+  @override
   String get numberFormat => '#,##0.##';
 
   @override
@@ -256,6 +259,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get error_generic => 'Ha ocurrido un error inesperado.';
+
+  @override
+  String get error_cattleIsNotActive => 'El ganado no está activo.';
 
   @override
   String get noData => 'No hay datos disponibles';
@@ -557,13 +563,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get purchaseStatusReceived => 'Recibida';
 
   @override
-  String get received => 'Recibido';
+  String get received => 'Recibida';
 
   @override
-  String get purchased => 'Comprado';
+  String get purchased => 'Comprada';
 
   @override
-  String get sold => 'Vendido';
+  String get sold => 'Vendida';
 
   @override
   String get name => 'Nombre';
@@ -690,6 +696,16 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get count => 'Cant.';
+
+  @override
+  String countSomething(Object object) {
+    return 'Cant. de $object';
+  }
+
+  @override
+  String countAdjetive(Object adjetive) {
+    return 'Cant. $adjetive';
+  }
 
   @override
   String get price => 'Precio';
@@ -858,9 +874,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get purchasedCount => 'Comprados';
-
-  @override
-  String get receivedCattle => 'Cant. recibida';
 
   @override
   String get sales_searchPlaceholder => 'Buscar ventas...';

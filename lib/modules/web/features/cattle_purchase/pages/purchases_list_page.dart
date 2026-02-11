@@ -271,7 +271,7 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
                                       DataColumn(
                                         label: Text(l10n.purchase_totalCattle),
                                       ),
-                                      DataColumn(label: Text(l10n.receivedCattle)),
+                                      DataColumn(label: Text(l10n.countAdjetive(l10n.received))),
                                       DataColumn(label: Text(l10n.status)),
                                       const DataColumn(label: SizedBox()),
                                     ],

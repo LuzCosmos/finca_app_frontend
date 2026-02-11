@@ -194,6 +194,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get no => 'No';
 
   @override
+  String get notApplied => 'Not applied';
+
+  @override
   String get numberFormat => '#,##0.##';
 
   @override
@@ -260,6 +263,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get error_generic => 'An unexpected error has occurred.';
 
   @override
+  String get error_cattleIsNotActive => 'The cattle is not active.';
+
+  @override
   String get noData => 'No data available';
 
   @override
@@ -286,7 +292,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String dateSomething(Object object) {
-    return 'Date of $object';
+    return '$object Date';
   }
 
   @override
@@ -300,7 +306,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String listSomething(Object object) {
-    return 'List of $object';
+    return '$object List';
   }
 
   @override
@@ -690,7 +696,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get medicationHistory => 'Medication Hist.';
 
   @override
-  String get count => 'Qty.';
+  String get count => 'Count';
+
+  @override
+  String countSomething(Object object) {
+    return 'Count of $object';
+  }
+
+  @override
+  String countAdjetive(Object adjetive) {
+    return '$adjetive Count';
+  }
 
   @override
   String get price => 'Price';
@@ -859,9 +875,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get purchasedCount => 'Purchased';
-
-  @override
-  String get receivedCattle => 'Qty. received';
 
   @override
   String get sales_searchPlaceholder => 'Search sales...';

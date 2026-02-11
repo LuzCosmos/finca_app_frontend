@@ -213,7 +213,7 @@ class _ProcessedAnimalsTableState extends State<ProcessedAnimalsTable> {
                         vertical: 3,
                         horizontal: 8,
                       ),
-                      child: Text(animalRow.castrated ? l10n.yes : l10n.no),
+                      child: Text(animalRow.castrated ? l10n.yes : l10n.notApplied),
                     ),
                   ),
                 if (widget.simpleEventTypes.contains(SimpleEventType.brand))

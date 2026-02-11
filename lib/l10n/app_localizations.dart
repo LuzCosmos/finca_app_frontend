@@ -428,6 +428,12 @@ abstract class AppLocalizations {
   /// **'No'**
   String get no;
 
+  /// No description provided for @notApplied.
+  ///
+  /// In en, this message translates to:
+  /// **'Not applied'**
+  String get notApplied;
+
   /// No description provided for @numberFormat.
   ///
   /// In en, this message translates to:
@@ -536,6 +542,12 @@ abstract class AppLocalizations {
   /// **'An unexpected error has occurred.'**
   String get error_generic;
 
+  /// Error when the cattle is not active.
+  ///
+  /// In en, this message translates to:
+  /// **'The cattle is not active.'**
+  String get error_cattleIsNotActive;
+
   /// No description provided for @noData.
   ///
   /// In en, this message translates to:
@@ -581,7 +593,7 @@ abstract class AppLocalizations {
   /// No description provided for @dateSomething.
   ///
   /// In en, this message translates to:
-  /// **'Date of {object}'**
+  /// **'{object} Date'**
   String dateSomething(Object object);
 
   /// No description provided for @username.
@@ -605,7 +617,7 @@ abstract class AppLocalizations {
   /// No description provided for @listSomething.
   ///
   /// In en, this message translates to:
-  /// **'List of {object}'**
+  /// **'{object} List'**
   String listSomething(Object object);
 
   /// No description provided for @cattle.
@@ -1379,8 +1391,20 @@ abstract class AppLocalizations {
   /// No description provided for @count.
   ///
   /// In en, this message translates to:
-  /// **'Qty.'**
+  /// **'Count'**
   String get count;
+
+  /// No description provided for @countSomething.
+  ///
+  /// In en, this message translates to:
+  /// **'Count of {object}'**
+  String countSomething(Object object);
+
+  /// No description provided for @countAdjetive.
+  ///
+  /// In en, this message translates to:
+  /// **'{adjetive} Count'**
+  String countAdjetive(Object adjetive);
 
   /// No description provided for @price.
   ///
@@ -1681,12 +1705,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Purchased'**
   String get purchasedCount;
-
-  /// No description provided for @receivedCattle.
-  ///
-  /// In en, this message translates to:
-  /// **'Qty. received'**
-  String get receivedCattle;
 
   /// No description provided for @sales_searchPlaceholder.
   ///
