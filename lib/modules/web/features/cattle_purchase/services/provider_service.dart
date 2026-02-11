@@ -1,16 +1,15 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/modules/web/features/cattle_purchase/models/provider.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 
 class ProviderService {
-  final String baseUrl = '${BasicApiService.baseUrl}/providers';
+  final String baseUrl = '${BasicApiService.getApiBaseUrl()}/providers';
 
   Future<List<ProviderModel>> searchByNit(String query) async {
-    final token = await SessionService.getToken();
+    final token = await BasicApiService.getToken();
     final url = Uri.parse('$baseUrl/search/by-nit?query=$query');
     var response;
     try {
@@ -48,7 +47,7 @@ class ProviderService {
     required String nit,
     required String type,
   }) async {
-    final token = await SessionService.getToken();
+    final token = await BasicApiService.getToken();
     final url = Uri.parse(baseUrl);
     var response;
     try {

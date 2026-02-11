@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 
 enum ApiExceptionCode {
   badRequest,
+  cattleIsNotActive,
   unauthorized,
   forbidden,
   conflictError,
@@ -20,6 +21,8 @@ enum ApiExceptionCode {
     switch (this) {
       case ApiExceptionCode.badRequest:
         return l10n.error_badRequest;
+      case ApiExceptionCode.cattleIsNotActive:
+        return l10n.error_cattleIsNotActive;
       case ApiExceptionCode.unauthorized:
         return l10n.error_unauthorized;
       case ApiExceptionCode.forbidden:

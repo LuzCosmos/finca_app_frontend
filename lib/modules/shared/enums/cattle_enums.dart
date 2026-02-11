@@ -38,13 +38,13 @@ enum CattleStatusEnum {
     final l10n = AppLocalizations.of(context)!;
     switch (this) {
       case CattleStatusEnum.ACTIVE:
-        return l10n.statusActive;
+        return l10n.cattleStatusActive;
       case CattleStatusEnum.DEAD:
-        return l10n.statusDead;
+        return l10n.cattleStatusDead;
       case CattleStatusEnum.SOLD:
-        return l10n.statusSold;
+        return l10n.cattleStatusSold;
       case CattleStatusEnum.LOST:
-        return l10n.statusLost;
+        return l10n.cattleStatusLost;
     }
   }
 

@@ -106,7 +106,7 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
       _error = _info = null;
       _showEmptyInfo = false;
     });
-    final t = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
     try {
       final fmt = DateFormat('yyyy-MM-dd');
       final res = await _api.list(
@@ -120,31 +120,35 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
                 : _providerCtrl.text.trim(),
         status: _status,
       );
-      setState(() {
-        _items = res.items;
-        _total = res.total;
-        if (_items.isEmpty) _info = t.noPurchasesFound;
-        _showEmptyInfo = _items.isEmpty;
-      });
+      if (mounted) {
+        setState(() {
+          _items = res.items;
+          _total = res.total;
+          if (_items.isEmpty) _info = l10n.noPurchasesFound;
+          _showEmptyInfo = _items.isEmpty;
+        });
+      }
     } on ApiException catch (e) {
       final code = ApiExceptionCode.values.firstWhere(
         (el) => el.name == (e.code),
         orElse: () => ApiExceptionCode.unknownError, // <- Fallback seguro
       );
 
-      final errorText = code.asText(context, objectName: t.cattlePurchase);
-      setState(() => _error = errorText);
+      if (mounted) {
+        final errorText = code.asText(context, objectName: l10n.cattlePurchase);
+        setState(() => _error = errorText);
+      }
 
       // (opcional) Log para cazar códigos desconocidos:
       if (code == ApiExceptionCode.unknownError && e.code != 'unknownError') {
         // ignore: avoid_print
-        print('ApiException code desconocido: ${e.code}');
+        debugPrint('ApiException code desconocido: ${e.code}');
       }
     } catch (e) {
-      setState(() => _error = e.toString());
-      print(e);
+      if (mounted) setState(() => _error = e.toString());
+      debugPrint(e.toString());
     } finally {
-      setState(() => _loading = false);
+      if (mounted) setState(() => _loading = false);
     }
   }
 
@@ -152,7 +156,7 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
 
   @override
   Widget build(BuildContext context) {
-    final t = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
     final fmt = DateFormat.yMMMd(Localizations.localeOf(context).toString());
     final allowedStatuses = const ['all', 'open', 'received'];
     if (!allowedStatuses.contains(_status)) {
@@ -160,7 +164,7 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
     }
     final labels = _statusLabels(context);
     return FincaScaffold(
-      title: t.cattlePurchase,
+      title: l10n.cattlePurchase,
       body: Padding(
         padding: const EdgeInsets.all(12),
         child: Column(
@@ -182,7 +186,7 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
                         .then((_) => _load());
                   },
                   icon: const Icon(Icons.add),
-                  label: Text(t.purchase_create),
+                  label: Text(l10n.createSomething(l10n.purchase)),
                 ),
               ),
             const SizedBox(height: 8),
@@ -196,17 +200,17 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
                   crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
                     _datePicker(
-                      t.from,
+                      l10n.from,
                       _from,
                       (d) => setState(() => _from = d),
                     ),
-                    _datePicker(t.to, _to, (d) => setState(() => _to = d)),
+                    _datePicker(l10n.to, _to, (d) => setState(() => _to = d)),
                     SizedBox(
                       width: 240,
                       child: TextField(
                         controller: _providerCtrl,
                         decoration: InputDecoration(
-                          labelText: t.provider,
+                          labelText: l10n.provider,
                           prefixIcon: const Icon(Icons.search),
                         ),
                         onSubmitted: (_) {
@@ -239,7 +243,7 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
                         _load();
                       },
                       icon: const Icon(Icons.refresh),
-                      label: Text(t.refresh),
+                      label: Text(l10n.refresh),
                     ),
                   ],
                 ),
@@ -254,21 +258,21 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
                       : Card(
                         child:
                             _items.isEmpty
-                                ? Center(child: Text(t.noPurchasesFound))
+                                ? Center(child: Text(l10n.noPurchasesFound))
                                 : SingleChildScrollView(
                                   scrollDirection: Axis.horizontal,
                                   child: DataTable(
                                     columns: [
-                                      DataColumn(label: Text(t.purchase_date)),
-                                      DataColumn(label: Text(t.provider)),
+                                      DataColumn(label: Text(l10n.dateSomething(l10n.purchase))),
+                                      DataColumn(label: Text(l10n.provider)),
                                       DataColumn(
-                                        label: Text(t.purchase_totalWeightKg),
+                                        label: Text(l10n.totalWeightKg),
                                       ),
                                       DataColumn(
-                                        label: Text(t.purchase_totalCattle),
+                                        label: Text(l10n.purchase_totalCattle),
                                       ),
-                                      DataColumn(label: Text(t.receivedCattle)),
-                                      DataColumn(label: Text(t.colStatus)),
+                                      DataColumn(label: Text(l10n.countAdjetive(l10n.received))),
+                                      DataColumn(label: Text(l10n.status)),
                                       const DataColumn(label: SizedBox()),
                                     ],
                                     rows:
@@ -337,8 +341,8 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
                                                         p.status ==
                                                                 PurchaseStatus
                                                                     .open
-                                                            ? t.purchaseStatusOpen
-                                                            : t.purchaseStatusReceived,
+                                                            ? l10n.purchaseStatusOpen
+                                                            : l10n.purchaseStatusReceived,
                                                         style: TextStyle(
                                                           color:
                                                               p.status ==
@@ -363,7 +367,7 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
                                                           _canUpdateReception
                                                               ? IconButton(
                                                                 tooltip:
-                                                                    t.home_reception,
+                                                                    l10n.reception,
                                                                 icon: const Icon(
                                                                   Icons
                                                                       .exit_to_app,
@@ -456,7 +460,7 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
                 // tamaño de página
                 Row(
                   children: [
-                    Text(t.rowsPerPage),
+                    Text(l10n.rowsPerPage),
                     const SizedBox(width: 8),
                     DropdownButton<int>(
                       value: _coerceLimit(_limit),
@@ -478,9 +482,7 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
                     ),
                   ],
                 ),
-                Text(
-                  '${t.page} $_page / $_pageCount   (${_total} ${t.results})',
-                ),
+                Text('${l10n.page} $_page / $_pageCount   ($_total ${l10n.results})'),
                 Row(
                   children: [
                     IconButton(
@@ -492,7 +494,7 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
                               }
                               : null,
                       icon: const Icon(Icons.chevron_left),
-                      tooltip: t.previous,
+                      tooltip: l10n.previous,
                     ),
                     IconButton(
                       onPressed:
@@ -503,7 +505,7 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
                               }
                               : null,
                       icon: const Icon(Icons.chevron_right),
-                      tooltip: t.next,
+                      tooltip: l10n.next,
                     ),
                   ],
                 ),

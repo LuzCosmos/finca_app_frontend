@@ -2,24 +2,18 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/animal_simple_event_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_model.dart';
-import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/massive_event_model.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'dart:io';
 import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 
 class MassiveEventApiService {
-  // Obtén baseUrl directo de dotenv (asegúrate de tener cargado dotenv antes de usar)
-  static get _baseUrl => BasicApiService.baseUrl;
-
   static Future<MassiveEventModel> createMassiveEvent({
     required MassiveEventModel massiveEvent,
     required String idTenant,
   }) async {
-    final token = await SessionService.getToken();
-    if (token == null || token.isEmpty) {
-      throw Exception('⚠️ No se encontró token de sesión');
-    }
+    final token = await BasicApiService.getToken();
+    final String baseUrl = BasicApiService.getApiBaseUrl();
     final payload = {
       "eventDate": massiveEvent.eventDate.toIso8601String(),
       "simpleEvents":
@@ -30,7 +24,7 @@ class MassiveEventApiService {
     var response;
     try {
       response = await http.post(
-        Uri.parse('$_baseUrl/massive-events'),
+        Uri.parse('$baseUrl/massive-events'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
@@ -75,10 +69,8 @@ class MassiveEventApiService {
     required String massiveEventServerId,
     required SimpleEventModel simpleEvent,
   }) async {
-    final token = await SessionService.getToken();
-    if (token == null || token.isEmpty) {
-      throw Exception('⚠️ No se encontró token de sesión');
-    }
+    final token = await BasicApiService.getToken();
+    final String baseUrl = BasicApiService.getApiBaseUrl();
     dynamic decodedJson;
     if (simpleEvent.data != null) {
       try {
@@ -95,7 +87,7 @@ class MassiveEventApiService {
     var response;
     try {
       response = await http.post(
-        Uri.parse('$_baseUrl/simple-events'),
+        Uri.parse('$baseUrl/simple-events'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
@@ -138,10 +130,8 @@ class MassiveEventApiService {
     required List<AnimalSimpleEventModel> animalSimpleEvents,
     required String cattleNumber,
   }) async {
-    final token = await SessionService.getToken();
-    if (token == null || token.isEmpty) {
-      throw Exception('⚠️ No se encontró token de sesión');
-    }
+    final token = await BasicApiService.getToken();
+    final String baseUrl = BasicApiService.getApiBaseUrl();
     final payload = {
       'applied': {
         "idMassiveEvent": animalSimpleEvents.first.idMassiveEvent,
@@ -152,7 +142,7 @@ class MassiveEventApiService {
       },
     };
     final response = await http.post(
-      Uri.parse('$_baseUrl/cattle/apply-events/$cattleNumber'),
+      Uri.parse('$baseUrl/cattle/apply-events/$cattleNumber'),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
@@ -183,8 +173,9 @@ class MassiveEventApiService {
     required String idMassiveEvent,
   }) async {
     final token = await BasicApiService.getToken();
+    final String baseUrl = BasicApiService.getApiBaseUrl();
     final response = await http.put(
-      Uri.parse('$_baseUrl/massive-events/close/$idMassiveEvent'),
+      Uri.parse('$baseUrl/massive-events/close/$idMassiveEvent'),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
@@ -199,10 +190,8 @@ class MassiveEventApiService {
     required SimpleEventModel simpleEvent,
     required String endpoint,
   }) async {
-    final token = await SessionService.getToken();
-    if (token == null || token.isEmpty) {
-      throw Exception('⚠️ No se encontró token de sesión');
-    }
+    final token = await BasicApiService.getToken();
+    final String baseUrl = BasicApiService.getApiBaseUrl();
     dynamic decodedJson;
     if (simpleEvent.data != null) {
       try {
@@ -215,7 +204,7 @@ class MassiveEventApiService {
     var response;
     try {
       response = await http.put(
-        Uri.parse('$_baseUrl/$endpoint/${simpleEvent.id}'),
+        Uri.parse('$baseUrl/$endpoint/${simpleEvent.id}'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',

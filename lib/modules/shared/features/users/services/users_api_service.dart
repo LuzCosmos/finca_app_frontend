@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 import '../models/user_model.dart';
@@ -20,7 +19,7 @@ class UsersPageResult {
 }
 
 class UsersApiService {
-  final String baseUrl = '${BasicApiService.baseUrl}/users';
+  final String baseUrl = '${BasicApiService.getApiBaseUrl()}/users';
 
   Future<UsersPageResult> list({
     required int page,
@@ -28,7 +27,7 @@ class UsersApiService {
     String? username,
     String? lastName,
   }) async {
-    final token = await SessionService.getToken();
+    final token = await BasicApiService.getToken();
     final uri = Uri.parse(baseUrl).replace(
       queryParameters: {
         'page': '$page',
@@ -69,7 +68,7 @@ class UsersApiService {
   }
 
   Future<List<RoleModel>> getRoles() async {
-    final token = await SessionService.getToken();
+    final token = await BasicApiService.getToken();
     final uri = Uri.parse('$baseUrl/roles');
 
     late http.Response res;
@@ -94,7 +93,7 @@ class UsersApiService {
   }
 
   Future<void> create(Map<String, dynamic> data) async {
-    final token = await SessionService.getToken();
+    final token = await BasicApiService.getToken();
     final uri = Uri.parse(baseUrl);
 
     // Ensure roleIds is a list of strings
@@ -132,7 +131,7 @@ class UsersApiService {
   }
 
   Future<void> update(String id, Map<String, dynamic> data) async {
-    final token = await SessionService.getToken();
+    final token = await BasicApiService.getToken();
     final uri = Uri.parse('$baseUrl/$id');
 
     late http.Response res;
@@ -161,7 +160,7 @@ class UsersApiService {
   }
 
   Future<void> delete(String id) async {
-    final token = await SessionService.getToken();
+    final token = await BasicApiService.getToken();
     final uri = Uri.parse('$baseUrl/$id');
 
     late http.Response res;

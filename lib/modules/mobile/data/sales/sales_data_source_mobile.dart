@@ -3,7 +3,6 @@ import 'package:finca_app_frontend/modules/shared/enums/cattle_enums.dart';
 import 'package:http/http.dart' as http;
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
-import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/core/data/database/app_database_mobile.dart';
 import 'package:finca_app_frontend/core/data/database/daos/cattle_dao.dart';
 import 'package:finca_app_frontend/core/data/database/daos/provider_dao.dart';
@@ -121,14 +120,8 @@ class SalesDataSourceMobile implements ISalesDataSource {
   Future<void> syncSales() async {
     final pendingSales = await getUnsyncedSales();
     if (pendingSales.isEmpty) return;
-
-    final baseUrl = BasicApiService.baseUrl;
-
-    final token = await SessionService.getToken();
-    if (token == null) {
-      throw Exception('No valid session');
-    }
-
+    final baseUrl = BasicApiService.getApiBaseUrl();
+    final token = await BasicApiService.getToken();
     for (final sale in pendingSales) {
       try {
         final payload = {
@@ -169,14 +162,10 @@ class SalesDataSourceMobile implements ISalesDataSource {
           await saleDao.markSaleAsSynced(sale.id);
         } else {
           // Log error or continue
-          debugPrint(
-            'Failed to sync sale ${sale.id}: ${response.body}',
-          );
+          debugPrint('Failed to sync sale ${sale.id}: ${response.body}');
         }
       } catch (e, stackTrace) {
-        debugPrint(
-          'Exception syncing sale ${sale.id}: $e\n$stackTrace',
-        );
+        debugPrint('Exception syncing sale ${sale.id}: $e\n$stackTrace');
         // continue to next
       }
     }
@@ -184,9 +173,8 @@ class SalesDataSourceMobile implements ISalesDataSource {
 
   @override
   Future<void> fetchCatalogs() async {
-    final baseUrl = BasicApiService.baseUrl;
-    final token = await SessionService.getToken();
-    if (token == null) return;
+    final baseUrl = BasicApiService.getApiBaseUrl();
+    final token = await BasicApiService.getToken();
 
     // Providers
     try {
@@ -247,12 +235,8 @@ class SalesDataSourceMobile implements ISalesDataSource {
 
   @override
   Future<PaginatedSales> getSales(SalesQuery query) async {
-    final baseUrl = BasicApiService.baseUrl;
-    final token = await SessionService.getToken();
-    if (token == null) {
-      // Offline fallback? Return empty for now.
-      return PaginatedSales(items: [], total: 0);
-    }
+    final baseUrl = BasicApiService.getApiBaseUrl();
+    final token = await BasicApiService.getToken();
 
     try {
       final uri = Uri.parse(
@@ -278,9 +262,8 @@ class SalesDataSourceMobile implements ISalesDataSource {
 
   @override
   Future<void> updateSale(String id, Map<String, dynamic> updates) async {
-    final baseUrl = BasicApiService.baseUrl;
-    final token = await SessionService.getToken();
-    if (token == null) throw Exception('Offline or No session');
+    final baseUrl = BasicApiService.getApiBaseUrl();
+    final token = await BasicApiService.getToken();
 
     final res = await http.put(
       Uri.parse('$baseUrl/sales/$id'),

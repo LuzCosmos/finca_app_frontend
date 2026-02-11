@@ -31,12 +31,10 @@ class HomeOptionWithPermission extends StatelessWidget {
           return const SizedBox();
         }
         if (!(snapshot.data ?? false)) {
-          print('HomeOptionWithPermission: Hidden $title due to missing permission ($module/$resource)');
           return const SizedBox();
         }
         if (forWebOnly && !PlatformService().isWeb()) {
-           print('HomeOptionWithPermission: Hidden $title due to platform constraint (Web only)');
-           return const SizedBox();
+          return const SizedBox();
         }
         return HomeOptionCard(
           title: title,

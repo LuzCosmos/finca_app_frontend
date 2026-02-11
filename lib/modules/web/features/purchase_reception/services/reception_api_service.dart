@@ -6,7 +6,8 @@ import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/devices/models/device_model.dart';
 
 class ReceptionApiService {
-  final String baseUrl = '${BasicApiService.baseUrl}/purchase-receptions';
+  final String baseUrl =
+      '${BasicApiService.getApiBaseUrl()}/purchase-receptions';
   ReceptionApiService();
 
   Future<List<DeviceModel>> searchDevices(String query) async {
@@ -223,7 +224,7 @@ class ReceptionApiService {
   Future<void> updateStatus(String purchaseId, String status) async {
     final token = await BasicApiService.getToken();
     final url = Uri.parse(
-      '${BasicApiService.baseUrl}/purchase-receptions/purchase-status/$purchaseId',
+      '${BasicApiService.getApiBaseUrl()}/purchase-receptions/purchase-status/$purchaseId',
     );
     final response = await http.patch(
       url,

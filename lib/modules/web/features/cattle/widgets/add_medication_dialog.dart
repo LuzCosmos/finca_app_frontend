@@ -76,7 +76,7 @@ class _AddMedicationDialogState extends State<AddMedicationDialog> {
     final l10n = AppLocalizations.of(context)!;
     
     return AlertDialog(
-      title: Text(l10n.addMedication),
+      title: Text(l10n.addSomething(l10n.medication)),
       content: SizedBox(
         width: 400,
         child: Form(
@@ -86,7 +86,7 @@ class _AddMedicationDialogState extends State<AddMedicationDialog> {
             children: [
               TextFormField(
                 controller: _nameController,
-                decoration: InputDecoration(labelText: l10n.medicationName),
+                decoration: InputDecoration(labelText: l10n.name),
                 validator: (v) => v?.isEmpty == true ? l10n.fieldRequired : null,
               ),
               const SizedBox(height: 16),

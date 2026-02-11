@@ -93,7 +93,7 @@ class LotsSectionState extends State<LotsSection> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              l10n.lotsTitle,
+              l10n.lots,
               style: Theme.of(
                 context,
               ).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
@@ -101,7 +101,7 @@ class LotsSectionState extends State<LotsSection> {
             ElevatedButton.icon(
               onPressed: _addLot,
               icon: const Icon(Icons.add),
-              label: Text(l10n.addLot),
+              label: Text(l10n.addSomething(l10n.lot)),
             ),
           ],
         ),
@@ -153,14 +153,14 @@ class LotsSectionState extends State<LotsSection> {
     return Row(
       children: [
         _HeaderCell(label: l10n.lot, width: 60),
-        _HeaderCell(label: l10n.lot_origin, width: 120),
-        _HeaderCell(label: l10n.lot_gender, width: 70),
-        _HeaderCell(label: l10n.lot_cattleCount, width: 40),
-        _HeaderCell(label: l10n.lot_totalWeight, width: 60),
-        _HeaderCell(label: l10n.lot_avgWeight, width: 70),
-        _HeaderCell(label: l10n.lot_pricePerKg, width: 70),
-        _HeaderCell(label: l10n.lot_pricePerHead, width: 90),
-        _HeaderCell(label: l10n.lot_totalValue, width: 90),
+        _HeaderCell(label: l10n.origin, width: 120),
+        _HeaderCell(label: l10n.gender, width: 70),
+        _HeaderCell(label: l10n.count, width: 40),
+        _HeaderCell(label: l10n.totalWeightKg, width: 60),
+        _HeaderCell(label: l10n.avgWeightKg, width: 70),
+        _HeaderCell(label: l10n.pricePerKg, width: 70),
+        _HeaderCell(label: l10n.pricePerHead, width: 90),
+        _HeaderCell(label: l10n.totalPrice, width: 90),
         SizedBox(width: 22), // Para el botón de eliminar
       ],
     );
@@ -179,8 +179,8 @@ class LotsSectionState extends State<LotsSection> {
       l10n.numberFormat,
       l10n.numberFormat_country,
     );
-    final summaryAverageTitle = l10n.lots_summaryAverageTitle;
-    final summaryTotalTitle = l10n.lots_summaryTotalTitle;
+    final summaryAverageTitle = l10n.average;
+    final summaryTotalTitle = l10n.total;
     return Column(
       children: [
         Row(

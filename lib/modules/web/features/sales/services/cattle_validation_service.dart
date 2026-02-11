@@ -1,6 +1,5 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 
 /// Cattle Validation Service
@@ -13,8 +12,8 @@ class CattleValidationService {
   static Future<Map<String, dynamic>> validateCattleByNumber(
     String number,
   ) async {
-    final token = await SessionService.getToken();
-    final baseUrl = BasicApiService.baseUrl;
+    final token = await BasicApiService.getToken();
+    final baseUrl = BasicApiService.getApiBaseUrl();
 
     final response = await http.get(
       Uri.parse('$baseUrl/cattle/validate-number/$number'),
@@ -39,8 +38,8 @@ class CattleValidationService {
     required DateTime measuredDate,
     String context = 'SALE',
   }) async {
-    final token = await SessionService.getToken();
-    final baseUrl = BasicApiService.baseUrl;
+    final token = await BasicApiService.getToken();
+    final baseUrl = BasicApiService.getApiBaseUrl();
 
     final response = await http.post(
       Uri.parse('$baseUrl/cattle/$cattleId/weight-history'),
@@ -65,8 +64,8 @@ class CattleValidationService {
     required String cattleId,
     required double weight,
   }) async {
-    final token = await SessionService.getToken();
-    final baseUrl = BasicApiService.baseUrl;
+    final token = await BasicApiService.getToken();
+    final baseUrl = BasicApiService.getApiBaseUrl();
 
     final response = await http.put(
       Uri.parse('$baseUrl/cattle/$cattleId/weight'),
@@ -87,8 +86,8 @@ class CattleValidationService {
     required List<String> cattleIds,
     required String status,
   }) async {
-    final token = await SessionService.getToken();
-    final baseUrl = BasicApiService.baseUrl;
+    final token = await BasicApiService.getToken();
+    final baseUrl = BasicApiService.getApiBaseUrl();
 
     final response = await http.put(
       Uri.parse('$baseUrl/cattle/bulk-status'),

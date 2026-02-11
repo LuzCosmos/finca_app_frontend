@@ -49,6 +49,7 @@ class _LoginFormState extends State<LoginForm> {
       );
       widget.onLoginSuccess(result);
     } catch (e) {
+      if (!mounted) return;
       final l10n = AppLocalizations.of(context)!;
 
       String errorMessage;
@@ -78,14 +79,14 @@ class _LoginFormState extends State<LoginForm> {
         children: [
           TextFormField(
             initialValue: '',
-            decoration: InputDecoration(labelText: l10n.login_username),
+            decoration: InputDecoration(labelText: l10n.username),
             onChanged: (val) => username = val,
             validator:
                 (val) => val!.isEmpty ? l10n.login_usernameRequired : null,
           ),
           TextFormField(
             initialValue: '',
-            decoration: InputDecoration(labelText: l10n.login_password),
+            decoration: InputDecoration(labelText: l10n.password),
             obscureText: true,
             onChanged: (val) => password = val,
             validator:
@@ -93,16 +94,13 @@ class _LoginFormState extends State<LoginForm> {
           ),
           TextFormField(
             initialValue: 'finca_alamos',
-            decoration: InputDecoration(labelText: l10n.login_company),
+            decoration: InputDecoration(labelText: l10n.company),
             onChanged: (val) => companyUsername = val,
           ),
           const SizedBox(height: 20),
           loading
               ? const CircularProgressIndicator()
-              : ElevatedButton(
-                onPressed: _submit,
-                child: Text(l10n.login_login),
-              ),
+              : ElevatedButton(onPressed: _submit, child: Text(l10n.login)),
         ],
       ),
     );

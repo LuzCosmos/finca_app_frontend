@@ -12,89 +12,189 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appTitle => 'Finca App';
 
   @override
-  String get users => 'Users';
+  String get create => 'Create';
 
   @override
-  String get usersList => 'Users List';
+  String createSomething(Object object) {
+    return 'Create $object';
+  }
 
   @override
-  String get createUser => 'Create User';
+  String createNewSomething(Object object) {
+    return 'Create new $object';
+  }
 
   @override
-  String get editUser => 'Edit User';
+  String get add => 'Add';
 
   @override
-  String get deleteUser => 'Delete User';
+  String addSomething(Object object) {
+    return 'Add $object';
+  }
 
   @override
-  String get userCreatedSuccess => 'User created successfully';
+  String get edit => 'Edit';
 
   @override
-  String get userUpdatedSuccess => 'User updated successfully';
+  String editSomething(Object object) {
+    return 'Edit $object';
+  }
 
   @override
-  String get userDeletedSuccess => 'User deleted successfully';
+  String get update => 'Update';
 
   @override
-  String get userDeleteConfirmTitle => 'Delete User';
+  String updateSomething(Object object) {
+    return 'Update $object';
+  }
 
   @override
-  String get userDeleteConfirmBody =>
-      'Are you sure you want to delete this user? This action cannot be undone.';
+  String get refresh => 'Refresh';
 
   @override
-  String get selectRole => 'Select Role';
+  String get delete => 'Delete';
 
   @override
-  String get role => 'Role';
+  String deleteSomething(Object object) {
+    return 'Delete $object';
+  }
 
   @override
-  String get confirmPassword => 'Confirm Password';
+  String get remove => 'Remove';
 
   @override
-  String get passwordMismatch => 'Passwords do not match';
-
-  @override
-  String get noUsersFound => 'No users found';
-
-  @override
-  String get firstName => 'First Name';
-
-  @override
-  String get lastName => 'Last Name';
-
-  @override
-  String get email => 'Email';
-
-  @override
-  String get username => 'Username';
-
-  @override
-  String get password => 'Password';
-
-  @override
-  String get search => 'Search';
-
-  @override
-  String get optional => 'Optional';
-
-  @override
-  String get fieldRequired => 'This field is mandatory';
-
-  @override
-  String get invalidValue => 'Invalid value.';
+  String removeSomething(Object object) {
+    return 'Remove $object';
+  }
 
   @override
   String get save => 'Save';
 
   @override
-  String get delete => 'Delete';
+  String saveSomething(Object object) {
+    return 'Save $object';
+  }
+
+  @override
+  String get select => 'Select';
+
+  @override
+  String selectSomething(Object object) {
+    return 'Select $object';
+  }
+
+  @override
+  String get assign => 'Assign';
+
+  @override
+  String assignSomething(Object object) {
+    return 'Assign $object';
+  }
+
+  @override
+  String get apply => 'Apply';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get finish => 'Finish';
+
+  @override
+  String get close => 'Close';
+
+  @override
+  String get accept => 'Accept';
+
+  @override
+  String get open => 'Open';
+
+  @override
+  String get view => 'View';
+
+  @override
+  String get search => 'Search';
+
+  @override
+  String get filter => 'Filter';
+
+  @override
+  String get receive => 'Receive';
+
+  @override
+  String get approve => 'Approve';
+
+  @override
+  String get reject => 'Reject';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String get sort => 'Sort';
+
+  @override
+  String get export => 'Export';
+
+  @override
+  String get import => 'Import';
+
+  @override
+  String get print => 'Print';
+
+  @override
+  String get download => 'Download';
+
+  @override
+  String get upload => 'Upload';
+
+  @override
+  String get optional => 'Optional';
+
+  @override
+  String get actions => 'Actions';
+
+  @override
+  String get from => 'From';
+
+  @override
+  String get to => 'To';
+
+  @override
+  String get l10n_of => 'of';
+
+  @override
+  String get page => 'Page';
+
+  @override
+  String get results => 'results';
+
+  @override
+  String get previous => 'Previous';
+
+  @override
+  String get next => 'Next';
+
+  @override
+  String get rowsPerPage => 'Rows per page';
+
+  @override
+  String get fieldRequired => 'This field is required.';
+
+  @override
+  String get invalidValue => 'Invalid value.';
+
+  @override
+  String get all => 'All';
 
   @override
   String get yes => 'Yes';
 
   @override
   String get no => 'No';
+
+  @override
+  String get notApplied => 'Not applied';
 
   @override
   String get numberFormat => '#,##0.##';
@@ -114,7 +214,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get error_badRequest =>
-      'The request is invalid. Please check the data and try again.';
+      'The request is not valid. Check the data and try again.';
 
   @override
   String get error_unauthorized =>
@@ -126,15 +226,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String error_notFound(Object object) {
-    return '$object not found.';
+    return '$object was not found.';
   }
 
   @override
   String get error_methodNotAllowed =>
-      'This action is not allowed at the moment.';
+      'This action is not allowed at this time.';
 
   @override
-  String get error_conflict => 'This item already exists.';
+  String get error_conflict => 'The record already exists.';
 
   @override
   String get error_preconditionFailed =>
@@ -142,305 +242,168 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get error_unprocessableEntity =>
-      'Some data is invalid. Please correct it and try again.';
+      'Some data is not valid. Please correct it and try again.';
 
   @override
   String get error_locked =>
-      'The resource is currently locked by another operation. Please try again later.';
+      'The resource is locked by another operation in progress. Try again later.';
 
   @override
   String get error_tooManyRequests =>
-      'You have made too many requests. Please try again later.';
+      'You have made too many requests. Try again later.';
 
   @override
   String get error_serverConnection =>
-      'Unable to connect to the server. Please check your internet connection or try again later.';
+      'Could not connect to the server. Check your internet connection or try again later.';
 
   @override
-  String get error_server => 'Internal server error. Please try again later.';
+  String get error_server => 'Internal server error. Try later.';
 
   @override
   String get error_generic => 'An unexpected error has occurred.';
 
   @override
-  String get error_eartagExist =>
-      'Eartag number already exists for another cattle.';
+  String get error_cattleIsNotActive => 'The cattle is not active.';
 
   @override
-  String get login_username => 'Username';
+  String get noData => 'No data available';
 
   @override
-  String get login_usernameRequired => 'Please enter your username';
+  String noDataSomething(Object object) {
+    return 'No $object data available';
+  }
 
   @override
-  String get login_password => 'Password';
+  String noDataFiltered(Object object) {
+    return 'No $object found with the current filters';
+  }
 
   @override
-  String get login_passwordRequired => 'Please enter your password';
+  String get tryAdjustFilters => 'Try adjusting your filters';
 
   @override
-  String get login_company => 'Company';
-
-  @override
-  String get login_login => 'Login';
-
-  @override
-  String get login_loginError => 'Login failed, please try again';
-
-  @override
-  String get login_invalidCredentials =>
-      'Incorrect credentials. Please try again.';
-
-  @override
-  String get login_unexpectedError =>
-      'An unexpected error occurred. Please try again later.';
+  String get clearFilters => 'Clear Filters';
 
   @override
   String get home_title => 'Home';
 
   @override
-  String get home_purchase => 'Purchase';
+  String get date => 'Date';
 
   @override
-  String get home_purchaseReception => 'Purchase Reception';
+  String dateSomething(Object object) {
+    return '$object Date';
+  }
 
   @override
-  String get home_massiveEvent => 'Massive Event';
+  String get username => 'Username';
 
   @override
-  String get home_sale => 'Sale';
+  String get user => 'User';
 
   @override
-  String get home_reception => 'Reception';
+  String get users => 'Users';
+
+  @override
+  String listSomething(Object object) {
+    return '$object List';
+  }
 
   @override
   String get cattle => 'Cattle';
 
   @override
-  String get purchase_date => 'Purchase Date';
+  String get cattles => 'Cattle';
 
   @override
-  String get purchase_dateRequired => 'You must select a purchase date.';
+  String get animal => 'Animal';
 
   @override
-  String get purchase_create => 'Create Purchase';
-
-  @override
-  String get purchase_saveSuccess => 'Purchase saved successfully.';
-
-  @override
-  String get purchase_saveError => 'Failed to save purchase.';
-
-  @override
-  String get cattlePurchase => 'Cattle Purchase';
-
-  @override
-  String get cp_error_noLots => 'At least one lot is required';
-
-  @override
-  String get cp_error_providerRequired => 'Please select or create a provider.';
-
-  @override
-  String get purchase_totalWeightKg => 'Total weight (Kg)';
-
-  @override
-  String get purchase_totalCattle => 'Total Cattle';
-
-  @override
-  String get noPurchasesFound => 'Purchase not found';
-
-  @override
-  String get purchaseStatusOpen => 'Open';
-
-  @override
-  String get purchaseStatusReceived => 'Received';
-
-  @override
-  String get provider => 'Provider';
-
-  @override
-  String get provider_nit => 'NIT';
-
-  @override
-  String get provider_create => 'Create Provider';
-
-  @override
-  String get provider_found => 'Provider found and loaded.';
-
-  @override
-  String get provider_willBeCreated =>
-      'New provider will be created with this NIT.';
-
-  @override
-  String get provider_nameIsRequired => 'Provider name is requested';
-
-  @override
-  String get provider_nitIsRequired => 'NIT is requested';
-
-  @override
-  String get provider_createdSuccessfully => 'Provider created successfully';
-
-  @override
-  String get provider_nitAlreadyExists =>
-      'A provider with this NIT already exists';
-
-  @override
-  String get provider_creationError => 'Error creating provider';
-
-  @override
-  String get lotsTitle => 'Lots';
+  String get animals => 'Animals';
 
   @override
   String get lot => 'Lot';
 
   @override
-  String get addLot => 'Add Lot';
+  String get lots => 'Lots';
 
   @override
-  String get removeLot => 'Remove lot';
+  String get withoutLot => 'Without lot';
 
   @override
-  String get lot_lotNumber => 'Lot number';
+  String get purchase => 'Purchase';
 
   @override
-  String get lot_origin => 'Origin';
+  String get purchases => 'Purchases';
 
   @override
-  String get lot_age => 'Age';
+  String get cattlePurchase => 'Cattle Purchase';
 
   @override
-  String get lot_gender => 'Gender';
+  String get massiveEvent => 'Massive Event';
 
   @override
-  String get lot_avgWeight => 'Avg. Weight (kg)';
+  String get massiveEvents => 'Massive Events';
 
   @override
-  String get lot_pricePerKg => 'Price per Kg';
+  String get event => 'Event';
 
   @override
-  String get lot_cattleCount => 'Count';
+  String get events => 'Events';
 
   @override
-  String get lot_totalWeight => 'Total Weight';
+  String get sale => 'Sale';
 
   @override
-  String get lot_totalValue => 'Total Value';
+  String get sales => 'Sales';
 
   @override
-  String get lot_pricePerHead => 'Avg. Price per Head';
+  String get role => 'Role';
 
   @override
-  String get lot_pricePerHeadRequired =>
-      'Please enter the average price per head.';
+  String get roles => 'Roles';
 
   @override
-  String get lot_pricePerHeadInvalid => 'Enter a valid average price per head.';
+  String get brand => 'Brand';
 
   @override
-  String get lot_numberRequired => 'Please enter the lot number.';
+  String get brands => 'Brands';
 
   @override
-  String get lot_duplicateLotNumber =>
-      'Two or more lots have the same lot number.';
+  String get provider => 'Provider';
 
   @override
-  String get lot_avgWeightRequired => 'Please enter the average weight (Kg).';
+  String get providers => 'Providers';
 
   @override
-  String get lot_avgWeightInvalid =>
-      'Enter a valid average weight, it must be greater than zero';
+  String get buyer => 'Buyer';
 
   @override
-  String get lot_pricePerKgRequired => 'Please enter the price per kilo';
+  String get buyers => 'Buyers';
 
   @override
-  String get lot_pricePerKgInvalid => 'Enter a valid price per kilo.';
+  String get transporter => 'Transporter';
 
   @override
-  String get lot_cattleCountRequired => 'Please enter the cattle count.';
+  String get transporters => 'Transporters';
 
   @override
-  String get lot_cattleCountInvalid =>
-      'Enter a valid cattle count, it must be greater than zero';
+  String get purchaseReception => 'Purchase Reception';
 
   @override
-  String get lot_totalWeightRequired => 'Please enter the total weight.';
+  String get reception => 'Reception';
 
   @override
-  String get lot_totalWeightInvalid => 'Enter a valid total weight';
+  String get cattleStatusActive => 'Active';
 
   @override
-  String get lot_countAvWeightPriceKgRequired =>
-      'Each lot must have cattle count, average weight and price per kg greater than zero.';
+  String get cattleStatusSold => 'Sold';
 
   @override
-  String get lots_summaryAverageTitle => 'Average';
+  String get cattleStatusDead => 'Dead';
 
   @override
-  String get lots_summaryTotalTitle => 'Total';
-
-  @override
-  String get addAnimalTitle => 'Add Animal';
-
-  @override
-  String get animalNumberLabel => 'Animal Number';
-
-  @override
-  String get weightLabel => 'Weight (kg)';
-
-  @override
-  String get trackerLabel => 'Tracker';
-
-  @override
-  String get eartagLabel => 'Eartag';
-
-  @override
-  String get applyButton => 'Apply';
-
-  @override
-  String get eventConfigTitle => 'Event Configuration';
-
-  @override
-  String get eventDate => 'Event Date';
-
-  @override
-  String get eventFinish => 'Finish';
-
-  @override
-  String get addEventDetail => 'Add Event';
-
-  @override
-  String get activeDetails => 'Active Events:';
-
-  @override
-  String get noActiveDetails => 'No active Events';
-
-  @override
-  String get deactivateTooltip => 'Deactivate';
-
-  @override
-  String get inactiveTitle => 'Inactive:';
-
-  @override
-  String get noInactive => 'No inactive Events';
-
-  @override
-  String get reactivateTooltip => 'Reactivate';
-
-  @override
-  String onlyOneType(Object type) {
-    return 'Only one event of type $type is allowed in this Massive Event.';
-  }
-
-  @override
-  String brandAlreadyExists(Object brand) {
-    return 'The brand \"$brand\" already exists in this Massive Event.';
-  }
-
-  @override
-  String reactivatedInfo(Object name) {
-    return '\"$name\" has been reactivated.';
-  }
+  String get cattleStatusLost => 'Lost';
 
   @override
   String get eventTypeWeight => 'Weight';
@@ -452,774 +415,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get eventTypeTracker => 'Assign Tracker';
 
   @override
-  String get eventTypeEartag => 'Put Eartag';
+  String get eventTypeEartag => 'Apply Eartag';
 
   @override
   String get eventTypeMedication => 'Medication';
 
   @override
-  String get eventTypeBrand => 'Brand Marking';
-
-  @override
-  String get medicationName => 'Name';
-
-  @override
-  String get medicationDosage => 'Dosage';
-
-  @override
-  String get medicationRoute => 'Application route';
-
-  @override
-  String get medicationLot => 'Manufacturing lot';
-
-  @override
-  String get selectBrand => 'Select a brand';
-
-  @override
-  String get createNewBrand => 'Create new brand';
-
-  @override
-  String get cancel => 'Cancel';
-
-  @override
-  String get accept => 'Accept';
-
-  @override
-  String get add => 'Add';
-
-  @override
-  String get createNewBrandTitle => 'Create New Brand';
-
-  @override
-  String get brandName => 'Name';
-
-  @override
-  String get selectImage => 'Select image';
-
-  @override
-  String get imageRequired => 'Image is required';
-
-  @override
-  String get create => 'Create';
-
-  @override
-  String get noAnimals => 'No animals added yet';
-
-  @override
-  String get tableAnimal => 'Animal';
-
-  @override
-  String get tableWeight => 'Weight';
-
-  @override
-  String get tableTracker => 'Tracker';
-
-  @override
-  String get tableEartag => 'Eartag';
-
-  @override
-  String get tableBrand => 'Brand';
-
-  @override
-  String get tableMedication => 'Medication';
-
-  @override
-  String get tableCastration => 'Castrated';
-
-  @override
-  String get tableSynced => 'Synced';
-
-  @override
-  String get simpleEventAdded => 'Detail successfully added';
-
-  @override
-  String get simpleEventError => 'An error occurred while adding detail';
-
-  @override
-  String simpleEventApplied(Object cattleNumber) {
-    return 'Active events applied to number $cattleNumber';
-  }
-
-  @override
-  String get applyAtLeastOneSimpleEvent => 'Apply at least one event.';
-
-  @override
-  String get eventsApplicationNotice =>
-      'All events have been applied. If any event appears unapplied, please make sure the required information is filled in.';
-
-  @override
-  String get error_noSimpleEventsApplied =>
-      'The massive event cannot be closed because no simple events have been applied to any animal.';
-
-  @override
-  String get error_massiveEventAlreadyClosed =>
-      'This massive event is already closed and cannot be modified.';
-
-  @override
-  String get event_finishSuccess =>
-      'The massive event was successfully finished.';
-
-  @override
-  String get purchaseReceptionTitle => 'Purchase Reception';
-
-  @override
-  String get purchaseBatchesTitle => 'Purchase Lots';
-
-  @override
-  String get withoutLot => 'No lot';
-
-  @override
-  String get cattleOfSelection => 'Selected cattle';
-
-  @override
-  String get simpleEventsTitle => 'Simple events';
-
-  @override
-  String get selectAnimalHint => 'Select an animal to view its events';
-
-  @override
-  String get appliedEvents => 'Applied';
-
-  @override
-  String get availableEvents => 'Available';
-
-  @override
-  String get assignLot => 'Assign lot';
-
-  @override
-  String get receivedOk => 'Cattle received';
-
-  @override
-  String get cattleNumber => 'Number';
-
-  @override
-  String get weightKg => 'Weight (kg)';
-
-  @override
-  String get color => 'Color';
-
-  @override
-  String get characteristics => 'Characteristics';
-
-  @override
-  String get eartag => 'Eartag';
-
-  @override
-  String get trackerId => 'Tracker';
-
-  @override
-  String get addCattle => 'Add animal';
-
-  @override
-  String get cattle_exists_error => 'Number already exists (Active/Lost)';
-
-  @override
-  String get eartag_exists_error => 'Eartag already exists (Active/Lost)';
-
-  @override
-  String cattleCountLabel(num count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count head',
-      one: '1 head',
-      zero: '0 head',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String purchaseCountLabel(num count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count head',
-      one: '1 head',
-      zero: '0 head',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get receptionDate => 'Reception Date';
-
-  @override
-  String get initialCattleNumber => 'Initial Cattle Number';
-
-  @override
-  String get numberInUse => 'This number is already in use';
-
-  @override
-  String get hasHorns => 'Has Horns';
-
-  @override
-  String get age => 'Age';
+  String get eventTypeBrand => 'Branding';
 
   @override
   String get gender => 'Gender';
 
   @override
-  String get isCastrated => 'Is Castrated';
+  String get genderMale => 'Male';
 
   @override
-  String get comments => 'Comments';
+  String get genderFemale => 'Female';
 
   @override
-  String get receiveCattle => 'Receive Cattle';
+  String get color => 'Color';
 
   @override
-  String get purchasedAvgWeight => 'Purchased Avg Weight (kg)';
-
-  @override
-  String get receivedAvgWeight => 'Received Avg Weight (kg)';
-
-  @override
-  String get unassignedCattle => 'Cattle without Identified Lot';
-
-  @override
-  String get assignLotTitle => 'Assign Lot';
-
-  @override
-  String get selectLot => 'Select Lot';
-
-  @override
-  String get providerName => 'Provider';
-
-  @override
-  String get eventsApplied => 'Events Applied';
-
-  @override
-  String get noEventsApplied => 'No events applied';
-
-  @override
-  String get receivedCount => 'Received';
-
-  @override
-  String get purchasedCount => 'Purchased';
-
-  @override
-  String get actions => 'Actions';
-
-  @override
-  String get from => 'From';
-
-  @override
-  String get to => 'To';
-
-  @override
-  String get all => 'All';
-
-  @override
-  String get pending => 'Pending';
-
-  @override
-  String get received => 'Received';
-
-  @override
-  String get receiveAction => 'Receive';
-
-  @override
-  String get rowsPerPage => 'Rows per page';
-
-  @override
-  String get page => 'Page';
-
-  @override
-  String get results => 'results';
-
-  @override
-  String get previous => 'Previous';
-
-  @override
-  String get next => 'Next';
-
-  @override
-  String get receivedCattle => 'Received qty';
-
-  @override
-  String get refresh => 'Refresh';
-
-  @override
-  String get sales_title => 'Sales';
-
-  @override
-  String get sales_addSale => 'Add Sale';
-
-  @override
-  String get sales_searchPlaceholder => 'Search sales...';
-
-  @override
-  String get sales_dateRange => 'Date Range';
-
-  @override
-  String get sales_clearFilters => 'Clear Filters';
-
-  @override
-  String get sales_rowsPerPage => 'Rows per page:';
-
-  @override
-  String get sales_refresh => 'Refresh';
-
-  @override
-  String get sales_noData => 'No sales data available';
-
-  @override
-  String get sales_noDataFiltered => 'No sales found with the current filters';
-
-  @override
-  String get sales_tryAdjustFilters => 'Try adjusting your filters';
-
-  @override
-  String get sales_createFirstSale => 'Create your first sale to get started';
-
-  @override
-  String get sales_date => 'Date';
-
-  @override
-  String get sales_buyer => 'Buyer';
-
-  @override
-  String get sales_items => 'Items';
-
-  @override
-  String get sales_weight => 'Weight (kg)';
-
-  @override
-  String get sales_amount => 'Amount';
-
-  @override
-  String get sales_actions => 'Actions';
-
-  @override
-  String get sales_viewDetails => 'View Details';
-
-  @override
-  String get sales_edit => 'Edit';
-
-  @override
-  String get sales_page => 'Page';
-
-  @override
-  String get sales_of => 'of';
-
-  @override
-  String get sales_showing => 'Showing';
-
-  @override
-  String get sales_editSale => 'Edit Sale';
-
-  @override
-  String get sales_saleDetails => 'Sale Details';
-
-  @override
-  String get sales_transactionDate => 'Transaction Date';
-
-  @override
-  String get sales_totalAmount => 'Total Amount';
-
-  @override
-  String get sales_totalWeight => 'Total Weight';
-
-  @override
-  String get sales_animals => 'Animals';
-
-  @override
-  String get sales_notes => 'Notes';
-
-  @override
-  String get sales_cattleList => 'Cattle List';
-
-  @override
-  String get sales_noDetails => 'No details available.';
-
-  @override
-  String get sales_price => 'Price';
-
-  @override
-  String get sales_close => 'Close';
-
-  @override
-  String get sales_cancel => 'Cancel';
-
-  @override
-  String get sales_save => 'Save';
-
-  @override
-  String get sales_errorLoading => 'Error loading sales';
-
-  @override
-  String get sales_retry => 'Retry';
-
-  @override
-  String get sales_previousPage => 'Previous Page';
-
-  @override
-  String get sales_nextPage => 'Next Page';
-
-  @override
-  String get provider_selectOrCreate => 'Select or create provider';
-
-  @override
-  String get provider_searchByName => 'Search by name...';
-
-  @override
-  String get provider_createNew => 'Create New ';
-
-  @override
-  String provider_providerName(Object providerTypeLabel) {
-    return '$providerTypeLabel Name';
-  }
-
-  @override
-  String get provider_address => 'Address';
-
-  @override
-  String get provider_contactPersonName => 'Contact Person Name';
-
-  @override
-  String get provider_phone1 => 'Phone 1';
-
-  @override
-  String get provider_phone2 => 'Phone 2 (Optional)';
-
-  @override
-  String get provider_email => 'Email';
-
-  @override
-  String get provider_buyer => 'Buyer';
-
-  @override
-  String get provider_transporter => 'Transporter';
-
-  @override
-  String get provider_providerType => 'Type';
-
-  @override
-  String get provider_creating => 'Creating...';
-
-  @override
-  String provider_createdSuccess(Object providerTypeLabel) {
-    return '$providerTypeLabel created successfully';
-  }
-
-  @override
-  String provider_createError(Object providerTypeLabel) {
-    return 'Error creating $providerTypeLabel';
-  }
-
-  @override
-  String get provider_nitLengthError =>
-      'NIT must be between 5 and 20 characters';
-
-  @override
-  String get provider_nameLengthError =>
-      'Name must be between 3 and 50 characters';
-
-  @override
-  String get cattle_validation_validating => 'Validating cattle...';
-
-  @override
-  String get cattle_validation_invalid => 'Invalid cattle number';
-
-  @override
-  String get cattle_validation_notFound => 'Cattle not found.';
-
-  @override
-  String get cattle_validation_notActive => 'Cattle is not ACTIVE';
-
-  @override
-  String get cattle_validation_sold => 'This cattle has already been sold';
-
-  @override
-  String get cattle_validation_dead => 'This cattle is marked as dead';
-
-  @override
-  String get cattle_validation_lost => 'This cattle is marked as lost';
-
-  @override
-  String get cattle_number => 'Cattle Number';
-
-  @override
-  String get cattle_weight => 'Weight (kg)';
-
-  @override
-  String get cattle_addButton => 'Add';
-
-  @override
-  String get cattle_weightUnderMin => 'Weight Below Minimum';
-
-  @override
-  String cattle_weightUnderMinMessage(Object measured, Object min) {
-    return 'The measured weight ($measured kg) is below the minimum weight ($min kg). This cattle will receive the minimum weight for pricing.';
-  }
-
-  @override
-  String get cattle_approveQuestion =>
-      'Do you want to approve or reject this cattle?';
-
-  @override
-  String get cattle_approve => 'Approve';
-
-  @override
-  String get cattle_reject => 'Reject';
-
-  @override
-  String get cattle_approved_title => 'Approved Cattle';
-
-  @override
-  String get cattle_rejected_title => 'Rejected Cattle';
-
-  @override
-  String cattle_approved_count(Object count) {
-    return 'Approved ($count)';
-  }
-
-  @override
-  String cattle_rejected_count(Object count) {
-    return 'Rejected ($count)';
-  }
-
-  @override
-  String get cattle_noApproved => 'No approved cattle yet';
-
-  @override
-  String get cattle_noRejected => 'No rejected cattle';
-
-  @override
-  String get cattle_remove => 'Remove';
-
-  @override
-  String get cattle_rejectionReason => 'Underweight';
-
-  @override
-  String get sale_confirm_title => 'Confirm Sale Creation';
-
-  @override
-  String sale_confirm_message(Object count) {
-    return 'The following $count approved cattle will be marked as SOLD:';
-  }
-
-  @override
-  String get sale_confirm_warning => 'This action cannot be undone. Continue?';
-
-  @override
-  String get sale_confirm_proceed => 'Confirm & Create Sale';
-
-  @override
-  String get sale_creating => 'Creating sale...';
-
-  @override
-  String get sale_created => 'Sale created successfully';
-
-  @override
-  String get sale_createError => 'Error creating sale';
-
-  @override
-  String get user_editUser => 'Edit User';
-
-  @override
-  String get user_logout => 'Logout';
-
-  @override
-  String get user_editUserPageTitle => 'Edit User';
-
-  @override
-  String get user_editUserPageMessage => 'This feature is under development';
-
-  @override
-  String get newSale => 'New Sale';
-
-  @override
-  String get saleSavedSuccess => 'Sale saved successfully';
-
-  @override
-  String get cattleFoundPending => 'Cattle found (Implementation pending)';
-
-  @override
-  String get minWeightKg => 'Min Weight (Kg)';
-
-  @override
-  String get scanEnterNumber => 'Scan/Enter Number';
-
-  @override
-  String get salesDashboard => 'Sales Dashboard';
-
-  @override
-  String get noOfflineSales => 'No offline sales pending sync.';
-
-  @override
-  String saleWithDate(String date) {
-    return 'Sale $date';
-  }
-
-  @override
-  String totalWithAmount(String amount) {
-    return 'Total: $amount';
-  }
-
-  @override
-  String get label_measuredWeight => 'Measured Weight';
-
-  @override
-  String get label_minimumWeight => 'Minimum Weight';
-
-  @override
-  String get label_totalCattle => 'Total Cattle';
-
-  @override
-  String get allPurchasedCattleReceived =>
-      'All purchased cattle have been received';
-
-  @override
-  String get lotAssignedSuccessfully => 'Lot assigned successfully';
-
-  @override
-  String get error_enterCattleNumberWeight =>
-      'Please enter cattle number and weight';
-
-  @override
-  String get error_enterValidWeight => 'Please enter a valid weight';
-
-  @override
-  String get error_addApprovedCattle =>
-      'Please add at least one approved cattle';
-
-  @override
-  String get sale_info => 'Sale Information';
-
-  @override
-  String get pricing_config => 'Pricing Configuration';
-
-  @override
-  String get hint_enterScanId => 'Enter or scan ID';
-
-  @override
-  String get label_validating => 'Validating...';
-
-  @override
-  String get warning_set_min_weight =>
-      'Please set a minimum weight in the pricing configuration above before adding cattle';
-
-  @override
-  String get label_summary => 'Summary';
-
-  @override
-  String get error_invalid_number => 'Invalid number';
-
-  @override
-  String get error_invalid_price => 'Invalid price';
-
-  @override
-  String get label_notes_optional => 'Notes (Optional)';
-
-  @override
-  String get label_transporter_optional => 'Transporter (Optional)';
-
-  @override
-  String get label_buyer_required => 'Buyer *';
-
-  @override
-  String get error_buyer_required => 'Buyer is required';
-
-  @override
-  String get label_price_per_kg_required => 'Price / Kg *';
-
-  @override
-  String get label_cattle_management => 'Cattle Management';
-
-  @override
-  String get tracker_removed => 'Tracker Removed';
-
-  @override
-  String get user_usernameLengthError =>
-      'Username must be between 5 and 50 characters';
-
-  @override
-  String get user_firstNameLengthError =>
-      'First name must be at most 50 characters';
-
-  @override
-  String get user_lastNameLengthError =>
-      'Last name must be at most 50 characters';
-
-  @override
-  String get user_passwordLengthError =>
-      'Password must be between 8 and 50 characters';
-
-  @override
-  String get searchTracker => 'Search tracker...';
-
-  @override
-  String get trackerNotFound => 'Tracker not found';
-
-  @override
-  String get trackerNotSelected => 'Tracker not selected';
-
-  @override
-  String get colSystemNumber => 'System No.';
-
-  @override
-  String get colBrandColor => 'Color';
-
-  @override
-  String get colCharacteristics => 'Characteristics';
-
-  @override
-  String get colHorns => 'Horns';
-
-  @override
-  String get colCastrated => 'Castrated';
-
-  @override
-  String get colReceivedAt => 'Received At';
-
-  @override
-  String get colReceivedWeight => 'Received Weight';
-
-  @override
-  String get colPurchaseWeight => 'Purchase Weight (kg)';
-
-  @override
-  String get colReceivedDate => 'Received Date';
-
-  @override
-  String get colComments => 'Comments';
-
-  @override
-  String get colPurchasePrice => 'Purchase Price';
-
-  @override
-  String get colPurchaseCommission => 'Commission';
-
-  @override
-  String get colStatus => 'Status';
-
-  @override
-  String get colWeightHistory => 'Weight History';
-
-  @override
-  String get colMedicationHistory => 'Medication History';
-
-  @override
-  String get colSaleWeight => 'Sale Weight';
-
-  @override
-  String get colSalePrice => 'Sale Price';
-
-  @override
-  String get colAge => 'Age';
-
-  @override
-  String get colGender => 'Gender';
-
-  @override
-  String get colLastWeight => 'Last Weight';
-
-  @override
-  String get masterListTitle => 'Cattle Master List';
-
-  @override
-  String get addCattleRow => 'Add Cattle';
+  String get colors => 'Colors';
 
   @override
   String get colorBlack => 'Black';
@@ -1238,6 +455,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get colorGrey => 'Grey';
+
+  @override
+  String get characteristic => 'Characteristic';
+
+  @override
+  String get characteristics => 'Characteristics';
 
   @override
   String get charBlackBelly => 'Black Belly';
@@ -1270,19 +493,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get charGreyHead => 'Grey Head';
 
   @override
-  String get charBlackHalfHead => 'Black Half Head';
+  String get charBlackHalfHead => 'Half Black Head';
 
   @override
-  String get charWhiteHalfHead => 'White Half Head';
+  String get charWhiteHalfHead => 'Half White Head';
 
   @override
-  String get charBrownHalfHead => 'Brown Half Head';
+  String get charBrownHalfHead => 'Half Brown Head';
 
   @override
-  String get charLightBrownHalfHead => 'Light Brown Half Head';
+  String get charLightBrownHalfHead => 'Half Light Brown Head';
 
   @override
-  String get charGreyHalfHead => 'Grey Half Head';
+  String get charGreyHalfHead => 'Half Grey Head';
 
   @override
   String get charBlackLegs => 'Black Legs';
@@ -1333,44 +556,781 @@ class AppLocalizationsEn extends AppLocalizations {
   String get charBrownPattern => 'Brown Pattern';
 
   @override
-  String get genderMale => 'Male';
+  String get status => 'Status';
 
   @override
-  String get genderFemale => 'Female';
+  String get purchaseStatusOpen => 'Open';
 
   @override
-  String get statusActive => 'Active';
+  String get purchaseStatusReceived => 'Received';
 
   @override
-  String get statusSold => 'Sold';
+  String get received => 'Received';
 
   @override
-  String get statusDead => 'Dead';
+  String get purchased => 'Purchased';
 
   @override
-  String get statusLost => 'Lost';
+  String get sold => 'Sold';
 
   @override
-  String get noData => 'No data available';
+  String get name => 'Name';
 
   @override
-  String get recordedBy => 'Recorded by';
+  String get firstName => 'First Name';
 
   @override
-  String get close => 'Close';
+  String get lastName => 'Last Name';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get password => 'Password';
+
+  @override
+  String get company => 'Company';
+
+  @override
+  String get confirmPassword => 'Confirm Password';
+
+  @override
+  String get passwordMismatch => 'Passwords do not match';
+
+  @override
+  String get address => 'Address';
+
+  @override
+  String get contactPersonName => 'Contact Name';
+
+  @override
+  String get phone1 => 'Phone 1';
+
+  @override
+  String get phone2 => 'Phone 2 (Optional)';
+
+  @override
+  String get type => 'Type';
+
+  @override
+  String get login => 'Log In';
+
+  @override
+  String get logout => 'Log Out';
+
+  @override
+  String get login_usernameRequired => 'Enter your username';
+
+  @override
+  String get login_passwordRequired => 'Enter your password';
+
+  @override
+  String get login_loginError => 'Login error, please try again';
+
+  @override
+  String get login_invalidCredentials =>
+      'Invalid credentials. Please try again.';
+
+  @override
+  String get login_unexpectedError =>
+      'An unexpected error occurred. Please try later.';
+
+  @override
+  String get systemNumber => 'System No.';
+
+  @override
+  String get cattleNumber => 'Cattle Number';
+
+  @override
+  String get animalNumber => 'Animal Number';
+
+  @override
+  String get number => 'Number';
+
+  @override
+  String get lastWeightKg => 'Last Weight (kg)';
+
+  @override
+  String get eartag => 'Eartag';
+
+  @override
+  String get horns => 'Horns';
+
+  @override
+  String get castrated => 'Castrated';
+
+  @override
+  String get age => 'Age';
+
+  @override
+  String get tracker => 'Tracker';
+
+  @override
+  String get comments => 'Comments';
+
+  @override
+  String get receivedAt => 'Received at';
+
+  @override
+  String get purchaseCommission => 'Commission';
+
+  @override
+  String get purchasePrice => 'Purchase Price';
+
+  @override
+  String get purchaseWeightKg => 'Purchase Weight';
+
+  @override
+  String get receivedWeightKg => 'Received Weight';
+
+  @override
+  String get saleWeightKg => 'Sale Weight';
+
+  @override
+  String get salePrice => 'Sale Price';
+
+  @override
+  String get weightHistory => 'Weight Hist.';
+
+  @override
+  String get medicationHistory => 'Medication Hist.';
+
+  @override
+  String get count => 'Count';
+
+  @override
+  String countSomething(Object object) {
+    return 'Count of $object';
+  }
+
+  @override
+  String countAdjetive(Object adjetive) {
+    return '$adjetive Count';
+  }
+
+  @override
+  String get price => 'Price';
+
+  @override
+  String get weightKg => 'Weight (kg)';
+
+  @override
+  String get totalWeightKg => 'Total Weight (kg)';
+
+  @override
+  String get avgWeightKg => 'Avg. Weight (kg)';
+
+  @override
+  String get pricePerKg => 'Price per Kg';
+
+  @override
+  String get totalPrice => 'Total Price';
+
+  @override
+  String get pricePerHead => 'Avg. Price per Head';
+
+  @override
+  String get minWeightKg => 'Min. Weight (Kg)';
+
+  @override
+  String get purchasedAvgWeight => 'Purchased Avg. Weight (kg)';
+
+  @override
+  String get receivedAvgWeight => 'Received Avg. Weight (kg)';
+
+  @override
+  String get unassignedCattle => 'Cattle without an identified lot';
+
+  @override
+  String get lotNumber => 'Lot Number';
+
+  @override
+  String get origin => 'Origin';
+
+  @override
+  String get total => 'Total';
+
+  @override
+  String get average => 'Average';
+
+  @override
+  String get nit => 'NIT';
 
   @override
   String get dosage => 'Dosage';
 
   @override
-  String get route => 'Route';
+  String get route => 'Administration route';
+
+  @override
+  String get medicationLot => 'Manufacturing lot';
 
   @override
   String get appliedBy => 'Applied by';
 
   @override
-  String get addMedication => 'Add Medication';
+  String get recordedBy => 'Recorded by';
 
   @override
-  String get date => 'Date';
+  String get medication => 'Medication';
+
+  @override
+  String get selectBrand => 'Select a brand';
+
+  @override
+  String get createNewBrand => 'Create new brand';
+
+  @override
+  String get createNewBrandTitle => 'Create New Brand';
+
+  @override
+  String get selectImage => 'Select image';
+
+  @override
+  String get imageRequired => 'Image is required';
+
+  @override
+  String get eventConfigTitle => 'Event Configuration';
+
+  @override
+  String get noAnimals => 'No animals have been added yet';
+
+  @override
+  String get tableSynced => 'Synced';
+
+  @override
+  String get purchaseReceptionTitle => 'Purchase Reception';
+
+  @override
+  String get purchaseBatchesTitle => 'Purchase Lots';
+
+  @override
+  String get cattleOfSelection => 'Selected Cattle';
+
+  @override
+  String get simpleEventsTitle => 'Simple Events';
+
+  @override
+  String get selectAnimalHint => 'Select a head of cattle to view its events';
+
+  @override
+  String get appliedEvents => 'Applied';
+
+  @override
+  String get availableEvents => 'Available';
+
+  @override
+  String get receivedOk => 'Cattle received';
+
+  @override
+  String cattleCountLabel(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count cattle',
+      one: '1 head',
+      zero: '0 cattle',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String purchaseCountLabel(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count cattle',
+      one: '1 head',
+      zero: '0 cattle',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get receptionDate => 'Reception date';
+
+  @override
+  String get initialCattleNumber => 'Initial cattle number';
+
+  @override
+  String get numberInUse => 'This number is already in use';
+
+  @override
+  String get hasHorns => 'Has horns';
+
+  @override
+  String get isCastrated => 'Is castrated';
+
+  @override
+  String get receiveCattle => 'Receive cattle';
+
+  @override
+  String get eventsApplied => 'Applied Events';
+
+  @override
+  String get noEventsApplied => 'No applied events';
+
+  @override
+  String get receivedCount => 'Received';
+
+  @override
+  String get purchasedCount => 'Purchased';
+
+  @override
+  String get sales_searchPlaceholder => 'Search sales...';
+
+  @override
+  String get sales_dateRange => 'Date Range';
+
+  @override
+  String get sales_createFirstSale => 'Create your first sale to get started';
+
+  @override
+  String get sales_amount => 'Amount';
+
+  @override
+  String get sales_viewDetails => 'View Details';
+
+  @override
+  String get sales_showing => 'Showing';
+
+  @override
+  String get sales_saleDetails => 'Sale Details';
+
+  @override
+  String get sales_transactionDate => 'Transaction Date';
+
+  @override
+  String get sales_totalAmount => 'Total Amount';
+
+  @override
+  String get sales_cattleList => 'Cattle List';
+
+  @override
+  String get sales_noDetails => 'No details available.';
+
+  @override
+  String get sales_errorLoading => 'Error loading sales';
+
+  @override
+  String get provider_selectOrCreate => 'Select or create provider';
+
+  @override
+  String get provider_searchByName => 'Search by name...';
+
+  @override
+  String provider_providerName(Object providerTypeLabel) {
+    return '$providerTypeLabel Name';
+  }
+
+  @override
+  String get provider_creating => 'Creating...';
+
+  @override
+  String provider_createdSuccess(Object providerTypeLabel) {
+    return '$providerTypeLabel created successfully';
+  }
+
+  @override
+  String provider_createError(Object providerTypeLabel) {
+    return 'Error creating $providerTypeLabel';
+  }
+
+  @override
+  String get provider_nitLengthError =>
+      'NIT must be between 5 and 20 characters';
+
+  @override
+  String get provider_nameLengthError =>
+      'Name must be between 3 and 50 characters';
+
+  @override
+  String get cattle_validation_validating => 'Validating cattle...';
+
+  @override
+  String get cattle_validation_invalid => 'Invalid cattle number';
+
+  @override
+  String get cattle_validation_notFound => 'Cattle not found';
+
+  @override
+  String get cattle_validation_notActive => 'The cattle is not ACTIVE';
+
+  @override
+  String get cattle_validation_sold => 'This cattle has already been sold';
+
+  @override
+  String get cattle_validation_dead => 'This cattle is marked as dead';
+
+  @override
+  String get cattle_validation_lost => 'This cattle is marked as lost';
+
+  @override
+  String get cattle_weightUnderMin => 'Weight Below Minimum';
+
+  @override
+  String cattle_weightUnderMinMessage(Object measured, Object min) {
+    return 'The measured weight ($measured kg) is below the minimum weight ($min kg). This cattle will use the minimum weight for price calculation.';
+  }
+
+  @override
+  String get cattle_approveQuestion =>
+      'Do you want to approve or reject this cattle?';
+
+  @override
+  String get cattle_approved_title => 'Cattle Approved';
+
+  @override
+  String get cattle_rejected_title => 'Cattle Rejected';
+
+  @override
+  String cattle_approved_count(Object count) {
+    return 'Approved ($count)';
+  }
+
+  @override
+  String cattle_rejected_count(Object count) {
+    return 'Rejected ($count)';
+  }
+
+  @override
+  String get cattle_noApproved => 'There is no approved cattle yet';
+
+  @override
+  String get cattle_noRejected => 'There is no rejected cattle';
+
+  @override
+  String get cattle_rejectionReason => 'Insufficient weight';
+
+  @override
+  String get sale_confirm_title => 'Confirm Sale Creation';
+
+  @override
+  String sale_confirm_message(Object count) {
+    return 'The following $count approved cattle will be marked as SOLD:';
+  }
+
+  @override
+  String get sale_confirm_warning => 'This action cannot be undone. Continue?';
+
+  @override
+  String get sale_confirm_proceed => 'Confirm and Create Sale';
+
+  @override
+  String get sale_creating => 'Creating sale...';
+
+  @override
+  String get sale_created => 'Sale created successfully';
+
+  @override
+  String get sale_createError => 'Error creating sale';
+
+  @override
+  String get user_editUserPageMessage => 'This feature is under development';
+
+  @override
+  String get saleSavedSuccess => 'Sale saved successfully';
+
+  @override
+  String get cattleFoundPending => 'Cattle found (Implementation pending)';
+
+  @override
+  String get scanEnterNumber => 'Scan/Enter Number';
+
+  @override
+  String get salesDashboard => 'Sales Dashboard';
+
+  @override
+  String get noOfflineSales => 'There are no offline sales pending sync.';
+
+  @override
+  String saleWithDate(Object date) {
+    return 'Sale $date';
+  }
+
+  @override
+  String totalWithAmount(Object amount) {
+    return 'Total: $amount';
+  }
+
+  @override
+  String get label_measuredWeight => 'Measured Weight';
+
+  @override
+  String get label_totalCattle => 'Total Cattle';
+
+  @override
+  String get allPurchasedCattleReceived =>
+      'All purchased animals have been received';
+
+  @override
+  String get lotAssignedSuccessfully => 'Lot assigned successfully';
+
+  @override
+  String get error_enterCattleNumberWeight =>
+      'Please enter the cattle number and weight';
+
+  @override
+  String get error_enterValidWeight => 'Please enter a valid weight';
+
+  @override
+  String get error_addApprovedCattle =>
+      'Please add at least one approved cattle';
+
+  @override
+  String get sale_info => 'Sale Information';
+
+  @override
+  String get pricing_config => 'Pricing Configuration';
+
+  @override
+  String get hint_enterScanId => 'Enter or scan ID';
+
+  @override
+  String get label_validating => 'Validating...';
+
+  @override
+  String get warning_set_min_weight =>
+      'Please configure a minimum weight in the above settings before adding cattle';
+
+  @override
+  String get label_summary => 'Summary';
+
+  @override
+  String get error_invalid_number => 'Invalid number';
+
+  @override
+  String get error_invalid_price => 'Invalid price';
+
+  @override
+  String get label_notes_optional => 'Notes (Optional)';
+
+  @override
+  String get label_transporter_optional => 'Transporter (Optional)';
+
+  @override
+  String get label_buyer_required => 'Buyer *';
+
+  @override
+  String get error_buyer_required => 'Buyer is required';
+
+  @override
+  String get label_price_per_kg_required => 'Price / Kg *';
+
+  @override
+  String get label_cattle_management => 'Cattle Management';
+
+  @override
+  String get tracker_removed => 'Tracker removed';
+
+  @override
+  String get user_usernameLengthError =>
+      'Username must be between 5 and 50 characters';
+
+  @override
+  String get user_firstNameLengthError =>
+      'First name must be at most 50 characters';
+
+  @override
+  String get user_lastNameLengthError =>
+      'Last name must be at most 50 characters';
+
+  @override
+  String get user_passwordLengthError =>
+      'Password must be between 8 and 50 characters';
+
+  @override
+  String get searchTracker => 'Search tracker...';
+
+  @override
+  String get trackerNotFound => 'Tracker not found';
+
+  @override
+  String get trackerNotSelected => 'Tracker not selected';
+
+  @override
+  String get masterListTitle => 'Cattle Master List';
+
+  @override
+  String get invalidEmail => 'Invalid email';
+
+  @override
+  String get userCreatedSuccess => 'User created successfully';
+
+  @override
+  String get userUpdatedSuccess => 'User updated successfully';
+
+  @override
+  String get userDeletedSuccess => 'User deleted successfully';
+
+  @override
+  String get userDeleteConfirmTitle => 'Delete User';
+
+  @override
+  String get userDeleteConfirmBody =>
+      'Are you sure you want to delete this user? This action cannot be undone.';
+
+  @override
+  String get noUsersFound => 'No users found';
+
+  @override
+  String get error_eartagExist =>
+      'Eartag number already exists for another head of cattle.';
+
+  @override
+  String get purchase_dateRequired => 'You must select a purchase date.';
+
+  @override
+  String get purchase_saveSuccess => 'Purchase saved successfully.';
+
+  @override
+  String get purchase_saveError => 'Purchase saving failed.';
+
+  @override
+  String get cp_error_noLots => 'You must add at least one lot';
+
+  @override
+  String get cp_error_providerRequired => 'Please select or create a provider.';
+
+  @override
+  String get purchase_totalCattle => 'Total cattle';
+
+  @override
+  String get noPurchasesFound => 'Purchase not found';
+
+  @override
+  String get provider_found => 'Provider found and loaded.';
+
+  @override
+  String get provider_willBeCreated =>
+      'A new provider will be created with this NIT.';
+
+  @override
+  String get provider_nameIsRequired => 'Provider name is required.';
+
+  @override
+  String get provider_nitIsRequired => 'NIT is required.';
+
+  @override
+  String get provider_createdSuccessfully => 'Provider created successfully';
+
+  @override
+  String get provider_nitAlreadyExists =>
+      'A provider with that NIT already exists';
+
+  @override
+  String get provider_creationError => 'Error creating provider';
+
+  @override
+  String get lot_pricePerHeadRequired =>
+      'Please enter the average price per head.';
+
+  @override
+  String get lot_pricePerHeadInvalid => 'Enter a valid average price per head.';
+
+  @override
+  String get lot_numberRequired => 'Please enter the lot number.';
+
+  @override
+  String get lot_duplicateLotNumber =>
+      'Two or more lots have the same lot number.';
+
+  @override
+  String get lot_avgWeightRequired => 'Please enter the average weight (Kg).';
+
+  @override
+  String get lot_avgWeightInvalid => 'Average weight must be greater than 0.';
+
+  @override
+  String get lot_pricePerKgRequired => 'Please enter the price per kilogram';
+
+  @override
+  String get lot_pricePerKgInvalid => 'Enter a valid price per kilogram';
+
+  @override
+  String get lot_cattleCountRequired =>
+      'Please enter the number of cattle in the lot.';
+
+  @override
+  String get lot_cattleCountInvalid =>
+      'The number of cattle in the lot must be greater than 0.';
+
+  @override
+  String get lot_totalWeightRequired => 'Please enter the total weight.';
+
+  @override
+  String get lot_totalWeightInvalid => 'Enter a valid total weight';
+
+  @override
+  String get lot_countAvWeightPriceKgRequired =>
+      'Each lot must have number of cattle, average weight, and price per kg greater than zero.';
+
+  @override
+  String get simpleEventAdded => 'Detail added successfully';
+
+  @override
+  String get simpleEventError => 'An error occurred while adding the detail';
+
+  @override
+  String simpleEventApplied(Object cattleNumber) {
+    return 'Active events were applied to cattle number $cattleNumber';
+  }
+
+  @override
+  String get applyAtLeastOneSimpleEvent => 'You must apply at least one event.';
+
+  @override
+  String get eventsApplicationNotice =>
+      'All events have been applied. If any appear as not applied, make sure you have entered all required information.';
+
+  @override
+  String get error_noSimpleEventsApplied =>
+      'The massive event cannot be closed because no simple event has been applied to any animal.';
+
+  @override
+  String get error_massiveEventAlreadyClosed =>
+      'This massive event is already closed and cannot be modified.';
+
+  @override
+  String get event_finishSuccess =>
+      'The massive event was finished successfully.';
+
+  @override
+  String get cattle_exists_error => 'Number already exists (Active/Lost)';
+
+  @override
+  String get eartag_exists_error => 'Eartag already exists (Active/Lost)';
+
+  @override
+  String get activeDetails => 'Active events:';
+
+  @override
+  String get noActiveDetails => 'No active details';
+
+  @override
+  String get deactivateTooltip => 'Deactivate';
+
+  @override
+  String get inactiveTitle => 'Inactive:';
+
+  @override
+  String get noInactive => 'No inactive events.';
+
+  @override
+  String get reactivateTooltip => 'Reactivate';
+
+  @override
+  String onlyOneType(Object type) {
+    return 'There can only be one event of type $type in this Massive Event.';
+  }
+
+  @override
+  String brandAlreadyExists(Object brand) {
+    return 'The brand \"$brand\" already exists in this Massive Event.';
+  }
+
+  @override
+  String reactivatedInfo(Object name) {
+    return '\"$name\" was reactivated.';
+  }
 }

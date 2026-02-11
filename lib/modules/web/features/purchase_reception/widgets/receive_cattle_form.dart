@@ -157,7 +157,7 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                     child: TextFormField(
                       controller: _numberController,
                       decoration: InputDecoration(
-                        labelText: l10n.cattle_number,
+                        labelText: l10n.cattleNumber,
                         border: const OutlineInputBorder(),
                         errorText: _numberExternalError,
                         suffixIcon:
@@ -185,8 +185,9 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                       },
                       onChanged: (value) {
                         widget.onNumberChanged(value);
-                        if (_numberDebounce?.isActive ?? false)
+                        if (_numberDebounce?.isActive ?? false) {
                           _numberDebounce!.cancel();
+                        }
                         _numberDebounce = Timer(
                           const Duration(milliseconds: 500),
                           () {
@@ -398,8 +399,9 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                         return null;
                       },
                       onChanged: (value) {
-                        if (_eartagDebounce?.isActive ?? false)
+                        if (_eartagDebounce?.isActive ?? false) {
                           _eartagDebounce!.cancel();
+                        }
                         _eartagDebounce = Timer(
                           const Duration(milliseconds: 500),
                           () {
@@ -452,18 +454,21 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                                     textEditingValue.text,
                                   );
                               setState(() => _deviceOptions = results);
-                              if (!completer.isCompleted)
+                              if (!completer.isCompleted) {
                                 completer.complete(results);
+                              }
                             } catch (e) {
-                              print('DEBUG: API error: $e');
+                              debugPrint('DEBUG: API error: $e');
                               setState(() => _deviceOptions = []);
-                              if (!completer.isCompleted)
+                              if (!completer.isCompleted) {
                                 completer.complete(
                                   const Iterable<DeviceModel>.empty().toList(),
                                 );
+                              }
                             } finally {
-                              if (mounted)
+                              if (mounted) {
                                 setState(() => _deviceLoading = false);
+                              }
                             }
                           },
                         );
@@ -489,15 +494,16 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                             if (value != null &&
                                 value.isNotEmpty &&
                                 _selectedDeviceId == null) {
-                              if (_deviceOptions.isEmpty)
+                              if (_deviceOptions.isEmpty) {
                                 return l10n.trackerNotFound;
+                              }
                               return l10n.trackerNotSelected;
                             }
                             return null;
                           },
                           decoration: InputDecoration(
                             labelText:
-                                l10n.trackerLabel, // using existing label key or new one
+                                l10n.tracker, // using existing label key or new one
                             hintText:
                                 l10n.searchTracker, // We'll try to use the key if it exists
                             border: const OutlineInputBorder(),
@@ -755,15 +761,13 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
 
   void _submitForm() async {
     // Clear previous server errors
-    print('DEBUG: Submit button clicked. Checking validation...');
     if (!_formKey.currentState!.validate()) {
-      print('DEBUG: Validation failed');
+      debugPrint('DEBUG: Validation failed');
       return;
     }
-    print('DEBUG: Validation passed');
     double? purchaseWeight = 0;
     double? purchasePrice = 0;
-    print('DEBUG: selectedLotId: $selectedLotId');
+    debugPrint('DEBUG: selectedLotId: $selectedLotId');
     if (selectedLotId != null) {
       for (var lot in widget.availableLots) {
         if (lot['id'] == selectedLotId) {
@@ -771,7 +775,6 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
             var rawTotalWeight = lot['totalWeight'];
             var rawTotalCount = lot['purchasedCattleCount'];
             var rawPricePerKg = lot['pricePerKg'];
-
             num totalPurchaseWeight =
                 rawTotalWeight is String
                     ? double.parse(rawTotalWeight)
@@ -784,11 +787,6 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                 rawPricePerKg is String
                     ? double.parse(rawPricePerKg)
                     : (rawPricePerKg as num? ?? 0);
-
-            print(
-              'DEBUG: totalPurchaseWeight: $totalPurchaseWeight, totalPurchaseCount: $totalPurchaseCount, pricePerKg: $pricePerKg',
-            );
-
             double averagePurchaseWeight = 0;
             if (totalPurchaseCount != 0) {
               averagePurchaseWeight =
@@ -801,12 +799,8 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
             purchasePrice = double.parse(
               (averagePurchaseWeight * pricePerKg).toStringAsFixed(2),
             );
-
-            print(
-              'DEBUG: Calculated purchaseWeight: $purchaseWeight, purchasePrice: $purchasePrice',
-            );
           } catch (e) {
-            print('ERROR calculating purchase data: $e');
+            debugPrint('ERROR calculating purchase data: $e');
           }
         }
       }

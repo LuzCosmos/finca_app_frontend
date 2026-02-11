@@ -99,7 +99,7 @@ class _ProcessedAnimalsTableState extends State<ProcessedAnimalsTable> {
       columns: [
         DataColumn(
           label: Text(
-            l10n.tableAnimal,
+            l10n.animal,
             textAlign: TextAlign.center,
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           ),
@@ -107,7 +107,7 @@ class _ProcessedAnimalsTableState extends State<ProcessedAnimalsTable> {
         if (widget.simpleEventTypes.contains(SimpleEventType.weight))
           DataColumn(
             label: Text(
-              l10n.tableWeight,
+              l10n.weightKg,
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
             ),
@@ -115,7 +115,7 @@ class _ProcessedAnimalsTableState extends State<ProcessedAnimalsTable> {
         if (widget.simpleEventTypes.contains(SimpleEventType.tracker))
           DataColumn(
             label: Text(
-              l10n.tableTracker,
+              l10n.tracker,
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
             ),
@@ -123,7 +123,7 @@ class _ProcessedAnimalsTableState extends State<ProcessedAnimalsTable> {
         if (widget.simpleEventTypes.contains(SimpleEventType.eartag))
           DataColumn(
             label: Text(
-              l10n.tableEartag,
+              l10n.eartag,
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
             ),
@@ -131,7 +131,7 @@ class _ProcessedAnimalsTableState extends State<ProcessedAnimalsTable> {
         if (widget.simpleEventTypes.contains(SimpleEventType.castration))
           DataColumn(
             label: Text(
-              l10n.tableCastration,
+              l10n.castrated,
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
             ),
@@ -139,14 +139,14 @@ class _ProcessedAnimalsTableState extends State<ProcessedAnimalsTable> {
         if (widget.simpleEventTypes.contains(SimpleEventType.brand))
           DataColumn(
             label: Text(
-              l10n.tableBrand,
+              l10n.brand,
               style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
             ),
           ),
         if (widget.simpleEventTypes.contains(SimpleEventType.medication))
           DataColumn(
             label: Text(
-              l10n.tableMedication,
+              l10n.medication,
               style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
             ),
           ),
@@ -213,7 +213,7 @@ class _ProcessedAnimalsTableState extends State<ProcessedAnimalsTable> {
                         vertical: 3,
                         horizontal: 8,
                       ),
-                      child: Text(animalRow.castrated ? l10n.yes : l10n.no),
+                      child: Text(animalRow.castrated ? l10n.yes : l10n.notApplied),
                     ),
                   ),
                 if (widget.simpleEventTypes.contains(SimpleEventType.brand))

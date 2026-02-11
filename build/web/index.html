@@ -48,9 +48,9 @@
       if ('serviceWorker' in navigator) {
         try {
           const regs = await navigator.serviceWorker.getRegistrations();
-          console.log(`[FincaApp] Found ${regs.length} service worker(s), unregistering...`);
+          //console.log(`[FincaApp] Found ${regs.length} service worker(s), unregistering...`);
           await Promise.all(regs.map(r => r.unregister()));
-          console.log('[FincaApp] All service workers unregistered');
+          //console.log('[FincaApp] All service workers unregistered');
         } catch (err) {
           console.warn('[FincaApp] Error unregistering service workers:', err);
         }
@@ -60,9 +60,9 @@
       if ('caches' in window) {
         try {
           const keys = await caches.keys();
-          console.log(`[FincaApp] Found ${keys.length} cache(s), clearing...`);
+          //console.log(`[FincaApp] Found ${keys.length} cache(s), clearing...`);
           await Promise.all(keys.map(k => caches.delete(k)));
-          console.log('[FincaApp] All caches cleared');
+          //console.log('[FincaApp] All caches cleared');
         } catch (err) {
           console.warn('[FincaApp] Error clearing caches:', err);
         }

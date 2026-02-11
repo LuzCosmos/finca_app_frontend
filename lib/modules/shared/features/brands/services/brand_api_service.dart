@@ -2,22 +2,17 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'dart:convert';
 import 'dart:io';
-import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/brands/models/brand_model.dart';
 
 class BrandApiService {
-  static get _baseUrl => BasicApiService.baseUrl;
-
   static Future<List<BrandModel>> getAllBrands() async {
-    final token = await SessionService.getToken();
-    if (token == null || token.isEmpty) {
-      throw Exception('⚠️ No se encontró token de sesión');
-    }
+    final token = await BasicApiService.getToken();
+    final String baseUrl = BasicApiService.getApiBaseUrl();
     try {
       final response = await http.get(
-        Uri.parse('$_baseUrl/brands'),
+        Uri.parse('$baseUrl/brands'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
@@ -46,11 +41,9 @@ class BrandApiService {
   }
 
   static Future<BrandModel> createBrand({required BrandModel brand}) async {
-    final token = await SessionService.getToken();
-    if (token == null || token.isEmpty) {
-      throw Exception('⚠️ No se encontró token de sesión');
-    }
-    final uri = Uri.parse('$_baseUrl/brands');
+    final token = await BasicApiService.getToken();
+    final String baseUrl = BasicApiService.getApiBaseUrl();
+    final uri = Uri.parse('$baseUrl/brands');
     final request =
         http.MultipartRequest('POST', uri)
           ..headers['Authorization'] = 'Bearer $token'
