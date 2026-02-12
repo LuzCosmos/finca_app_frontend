@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:finca_app_frontend/core/models/user_model.dart';
 import 'auth_exception.dart';
 import 'package:finca_app_frontend/core/services/basic_api_service.dart';
+import 'package:finca_app_frontend/core/services/session_service.dart';
 
 class AuthService {
   final http.Client client;
@@ -28,11 +29,13 @@ class AuthService {
       final data = jsonDecode(response.body);
       final user = User.fromJson(data['user']);
       final token = data['access_token'];
+      final refreshToken = data['refresh_token'] ?? data['refreshToken'];
       final permissions = data['permissions'];
       final idTenant = data['tenant_id'];
       return {
         'user': user,
         'token': token,
+        'refreshToken': refreshToken,
         'permissions': permissions,
         'idTenant': idTenant,
       };
@@ -41,5 +44,26 @@ class AuthService {
     } else {
       BasicApiService.manageNotSuccessResponseCode(response);
     }
+  }
+
+  Future<bool> logout() async {
+    final token = await SessionService.getToken();
+    final refreshToken = await SessionService.getRefreshToken();
+    if (token != null && token.isNotEmpty) {
+      try {
+        await http.post(
+          Uri.parse('${BasicApiService.getApiBaseUrl()}/auth/logout'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode({'refresh_token': refreshToken}),
+        );
+      } catch (_) {
+        // Local logout should still succeed even if network/backend fails.
+      }
+    }
+    await SessionService.cleanSession();
+    return true;
   }
 }

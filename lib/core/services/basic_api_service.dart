@@ -1,5 +1,5 @@
 import 'package:finca_app_frontend/core/services/session_service.dart';
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
 import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'dart:convert';
 import 'package:universal_html/js.dart' as js;
@@ -8,6 +8,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class BasicApiService {
   static String _baseUrl = '';
+  static Future<String?>? _refreshTokenFuture;
 
   static void setBaseUrl(String baseUrl) {
     _baseUrl = baseUrl;
@@ -65,10 +66,84 @@ class BasicApiService {
     if (token == null || token.isEmpty) {
       throw ApiException(ApiExceptionCode.unauthorized.name, 'Unauthorized');
     }
-    return token;
+    if (!SessionService.isTokenExpired(token, skewSeconds: 30)) {
+      return token;
+    }
+
+    final refreshedToken = await _refreshAccessToken();
+    if (refreshedToken != null && refreshedToken.isNotEmpty) {
+      return refreshedToken;
+    }
+
+    throw ApiException(ApiExceptionCode.unauthorized.name, 'Unauthorized');
   }
 
-  static Never manageNotSuccessResponseCode(Response response) {
+  static Future<String?> _refreshAccessToken() async {
+    if (_refreshTokenFuture != null) {
+      return _refreshTokenFuture;
+    }
+
+    final refreshFuture = _performRefreshAccessToken();
+    _refreshTokenFuture = refreshFuture;
+    try {
+      return await refreshFuture;
+    } finally {
+      _refreshTokenFuture = null;
+    }
+  }
+
+  static Future<String?> _performRefreshAccessToken() async {
+    final refreshToken = await SessionService.getRefreshToken();
+    if (refreshToken == null || refreshToken.isEmpty) {
+      return null;
+    }
+
+    try {
+      final response = await http
+          .post(
+            Uri.parse('${getApiBaseUrl()}/auth/refresh'),
+            headers: const {'Content-Type': 'application/json'},
+            body: jsonEncode({'refresh_token': refreshToken}),
+          )
+          .timeout(const Duration(seconds: 12));
+
+      if (response.statusCode < 200 || response.statusCode >= 300) {
+        return null;
+      }
+
+      final data = jsonDecode(response.body);
+      if (data is! Map<String, dynamic>) {
+        return null;
+      }
+
+      final newAccessToken = data['access_token'] ?? data['token'];
+      if (newAccessToken is! String || newAccessToken.isEmpty) {
+        return null;
+      }
+
+      final newRefreshToken = data['refresh_token'] ?? data['refreshToken'];
+      final rawPermissions = data['permissions'];
+      final updatedPermissions =
+          rawPermissions is Map<String, dynamic>
+              ? rawPermissions
+              : (rawPermissions is Map
+                  ? rawPermissions.map(
+                    (key, value) => MapEntry(key.toString(), value),
+                  )
+                  : null);
+
+      await SessionService.updateSessionTokens(
+        accessToken: newAccessToken,
+        refreshToken: newRefreshToken is String ? newRefreshToken : null,
+        permissions: updatedPermissions,
+      );
+      return newAccessToken;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  static Never manageNotSuccessResponseCode(http.Response response) {
     if (response.statusCode == 400) {
       final body = jsonDecode(response.body);
       final message = body['message'] ?? 'Bad request';

@@ -82,9 +82,15 @@ final GoRouter appRouter = GoRouter(
   ],
   redirect: (context, state) async {
     final bool loggedIn = await SessionService.hasValidToken();
-    final bool loggingIn = state.uri.path == '/login';
-    final bool loading = state.uri.path == '/loading';
-    if (!loggedIn && !loggingIn && !loading) {
+    final String path = state.uri.path;
+    final bool loggingIn = path == '/login';
+    final bool loading = path == '/loading';
+
+    if (loading) {
+      return loggedIn ? '/home' : '/login';
+    }
+
+    if (!loggedIn && !loggingIn) {
       return '/login';
     }
     if (loggedIn && loggingIn) {

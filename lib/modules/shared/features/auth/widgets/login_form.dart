@@ -46,6 +46,7 @@ class _LoginFormState extends State<LoginForm> {
         permissions: result['permissions'],
         idTenant: user.idTenant,
         idUser: user.id,
+        refreshToken: result['refreshToken'] as String?,
       );
       widget.onLoginSuccess(result);
     } catch (e) {

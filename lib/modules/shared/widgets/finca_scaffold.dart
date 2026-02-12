@@ -1,3 +1,4 @@
+import 'package:finca_app_frontend/core/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:finca_app_frontend/core/blocs/locale/locale_bloc.dart';
@@ -24,7 +25,7 @@ class FincaScaffold extends StatelessWidget {
       future: SessionService.isAuthenticated(),
       builder: (context, snapshot) {
         final bool isAuthenticated = snapshot.data ?? false;
-        
+
         return Scaffold(
           appBar: AppBar(
             backgroundColor: Theme.of(context).colorScheme.primary,
@@ -35,7 +36,11 @@ class FincaScaffold extends StatelessWidget {
             actions: <Widget>[
               BlocBuilder<LocaleBloc, LocaleState>(
                 builder: (context, state) {
-                  return _buildLanguageSwitch(context, Theme.of(context), state);
+                  return _buildLanguageSwitch(
+                    context,
+                    Theme.of(context),
+                    state,
+                  );
                 },
               ),
               if (isAuthenticated) ...[
@@ -49,7 +54,6 @@ class FincaScaffold extends StatelessWidget {
                 ],
                 _buildUserDropdown(context, Theme.of(context)),
               ],
-                
             ],
           ),
           body: body,
@@ -81,37 +85,39 @@ class FincaScaffold extends StatelessWidget {
         final selectedLang = languageFromCode(newLangCode);
         context.read<LocaleBloc>().add(ChangeLanguage(selectedLang));
       },
-      itemBuilder: (BuildContext context) => Language.values.map((lang) {
-        return PopupMenuItem<String>(
-          value: lang.locale,
-          child: Row(
-            children: [
-              Text(
-                lang.flag,
-                style: const TextStyle(fontSize: 16),
-              ),
-              const SizedBox(width: 8),
-              Text(
-                lang.name,
-                style: const TextStyle(color: Colors.white, fontSize: 12),
-              ),
-            ],
-          ),
-        );
-      }).toList(),
+      itemBuilder:
+          (BuildContext context) =>
+              Language.values.map((lang) {
+                return PopupMenuItem<String>(
+                  value: lang.locale,
+                  child: Row(
+                    children: [
+                      Text(lang.flag, style: const TextStyle(fontSize: 16)),
+                      const SizedBox(width: 8),
+                      Text(
+                        lang.name,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
     );
   }
 
   Widget _buildUserDropdown(BuildContext context, ThemeData theme) {
     final l10n = AppLocalizations.of(context)!;
-    
+
     return PopupMenuButton<String>(
       icon: const Icon(Icons.person, color: Colors.white, size: 20),
       color: theme.colorScheme.primary,
       offset: const Offset(0, 40),
       onSelected: (String value) async {
         if (value == 'logout') {
-          final success = await SessionService.logout();
+          final success = await AuthService().logout();
           if (success && context.mounted) {
             context.go('/login');
           }
@@ -119,8 +125,9 @@ class FincaScaffold extends StatelessWidget {
           context.push('/user/edit');
         }*/
       },
-      itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-        /*PopupMenuItem<String>(
+      itemBuilder:
+          (BuildContext context) => <PopupMenuEntry<String>>[
+            /*PopupMenuItem<String>(
           value: 'editUser',
           child: Row(
             children: [
@@ -133,20 +140,20 @@ class FincaScaffold extends StatelessWidget {
             ],
           ),
         ),*/
-        PopupMenuItem<String>(
-          value: 'logout',
-          child: Row(
-            children: [
-              const Icon(Icons.logout, color: Colors.white, size: 16),
-              const SizedBox(width: 8),
-              Text(
-                l10n.logout,
-                style: const TextStyle(color: Colors.white, fontSize: 12),
+            PopupMenuItem<String>(
+              value: 'logout',
+              child: Row(
+                children: [
+                  const Icon(Icons.logout, color: Colors.white, size: 16),
+                  const SizedBox(width: 8),
+                  Text(
+                    l10n.logout,
+                    style: const TextStyle(color: Colors.white, fontSize: 12),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
-      ],
+            ),
+          ],
     );
   }
 }
