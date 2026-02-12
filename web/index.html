@@ -39,43 +39,44 @@
 </head>
 
 <body>
-  <!-- Complete service worker cleanup and Flutter bootstrap -->
+  <!-- Flutter bootstrap first; cleanup runs in background -->
   <script>
-    (async () => {
-      console.log('[FincaApp] Starting cleanup and initialization...');
+    (() => {
+      const loadFlutter = () => {
+        console.log('[FincaApp] Loading Flutter (no service worker)...');
+        const script = document.createElement('script');
+        script.src = 'flutter_bootstrap.js';
+        script.async = true;
+        script.onerror = () => console.error('[FincaApp] Failed to load flutter_bootstrap.js');
+        script.onload = () => console.log('[FincaApp] Flutter bootstrap loaded successfully');
+        document.body.appendChild(script);
+      };
 
-      // 1. Unregister ALL service workers (cleanup old versions)
-      if ('serviceWorker' in navigator) {
-        try {
-          const regs = await navigator.serviceWorker.getRegistrations();
-          //console.log(`[FincaApp] Found ${regs.length} service worker(s), unregistering...`);
-          await Promise.all(regs.map(r => r.unregister()));
-          //console.log('[FincaApp] All service workers unregistered');
-        } catch (err) {
-          console.warn('[FincaApp] Error unregistering service workers:', err);
+      // Start Flutter immediately (do not block on cleanup).
+      loadFlutter();
+
+      // Cleanup legacy service workers/caches in background.
+      (async () => {
+        console.log('[FincaApp] Starting background cleanup...');
+
+        if ('serviceWorker' in navigator) {
+          try {
+            const regs = await navigator.serviceWorker.getRegistrations();
+            await Promise.all(regs.map(r => r.unregister()));
+          } catch (err) {
+            console.warn('[FincaApp] Error unregistering service workers:', err);
+          }
         }
-      }
 
-      // 2. Clear all caches (force fresh start)
-      if ('caches' in window) {
-        try {
-          const keys = await caches.keys();
-          //console.log(`[FincaApp] Found ${keys.length} cache(s), clearing...`);
-          await Promise.all(keys.map(k => caches.delete(k)));
-          //console.log('[FincaApp] All caches cleared');
-        } catch (err) {
-          console.warn('[FincaApp] Error clearing caches:', err);
+        if ('caches' in window) {
+          try {
+            const keys = await caches.keys();
+            await Promise.all(keys.map(k => caches.delete(k)));
+          } catch (err) {
+            console.warn('[FincaApp] Error clearing caches:', err);
+          }
         }
-      }
-
-      // 3. Load Flutter bootstrap WITHOUT service worker
-      console.log('[FincaApp] Loading Flutter (no service worker)...');
-      const script = document.createElement('script');
-      script.src = 'flutter_bootstrap.js';
-      script.async = true;
-      script.onerror = () => console.error('[FincaApp] Failed to load flutter_bootstrap.js');
-      script.onload = () => console.log('[FincaApp] Flutter bootstrap loaded successfully');
-      document.body.appendChild(script);
+      })();
     })();
   </script>
 </body>
