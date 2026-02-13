@@ -27,7 +27,6 @@ class UsersApiService {
     String? username,
     String? lastName,
   }) async {
-    final token = await BasicApiService.getToken();
     final uri = Uri.parse(baseUrl).replace(
       queryParameters: {
         'page': '$page',
@@ -39,7 +38,7 @@ class UsersApiService {
 
     late http.Response res;
     try {
-      res = await http.get(uri, headers: {'Authorization': 'Bearer $token'});
+      res = await BasicApiService.authorizedGet(uri);
     } catch (e) {
       if (e is SocketException || e is http.ClientException) {
         throw ApiException(
@@ -68,12 +67,11 @@ class UsersApiService {
   }
 
   Future<List<RoleModel>> getRoles() async {
-    final token = await BasicApiService.getToken();
     final uri = Uri.parse('$baseUrl/roles');
 
     late http.Response res;
     try {
-      res = await http.get(uri, headers: {'Authorization': 'Bearer $token'});
+      res = await BasicApiService.authorizedGet(uri);
     } catch (e) {
       if (e is SocketException || e is http.ClientException) {
         throw ApiException(
@@ -93,7 +91,6 @@ class UsersApiService {
   }
 
   Future<void> create(Map<String, dynamic> data) async {
-    final token = await BasicApiService.getToken();
     final uri = Uri.parse(baseUrl);
 
     // Ensure roleIds is a list of strings
@@ -107,10 +104,9 @@ class UsersApiService {
 
     late http.Response res;
     try {
-      res = await http.post(
+      res = await BasicApiService.authorizedPost(
         uri,
         headers: {
-          'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
         },
         body: jsonEncode(data),
@@ -131,15 +127,13 @@ class UsersApiService {
   }
 
   Future<void> update(String id, Map<String, dynamic> data) async {
-    final token = await BasicApiService.getToken();
     final uri = Uri.parse('$baseUrl/$id');
 
     late http.Response res;
     try {
-      res = await http.put(
+      res = await BasicApiService.authorizedPut(
         uri,
         headers: {
-          'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
         },
         body: jsonEncode(data),
@@ -160,12 +154,11 @@ class UsersApiService {
   }
 
   Future<void> delete(String id) async {
-    final token = await BasicApiService.getToken();
     final uri = Uri.parse('$baseUrl/$id');
 
     late http.Response res;
     try {
-      res = await http.delete(uri, headers: {'Authorization': 'Bearer $token'});
+      res = await BasicApiService.authorizedDelete(uri);
     } catch (e) {
       if (e is SocketException || e is http.ClientException) {
         throw ApiException(

@@ -12,7 +12,6 @@ class MassiveEventApiService {
     required MassiveEventModel massiveEvent,
     required String idTenant,
   }) async {
-    final token = await BasicApiService.getToken();
     final String baseUrl = BasicApiService.getApiBaseUrl();
     final payload = {
       "eventDate": massiveEvent.eventDate.toIso8601String(),
@@ -23,10 +22,9 @@ class MassiveEventApiService {
     };
     var response;
     try {
-      response = await http.post(
+      response = await BasicApiService.authorizedPost(
         Uri.parse('$baseUrl/massive-events'),
         headers: {
-          'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
         },
         body: jsonEncode(payload),
@@ -69,7 +67,6 @@ class MassiveEventApiService {
     required String massiveEventServerId,
     required SimpleEventModel simpleEvent,
   }) async {
-    final token = await BasicApiService.getToken();
     final String baseUrl = BasicApiService.getApiBaseUrl();
     dynamic decodedJson;
     if (simpleEvent.data != null) {
@@ -86,10 +83,9 @@ class MassiveEventApiService {
     };
     var response;
     try {
-      response = await http.post(
+      response = await BasicApiService.authorizedPost(
         Uri.parse('$baseUrl/simple-events'),
         headers: {
-          'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
         },
         body: jsonEncode(payload),
@@ -130,7 +126,6 @@ class MassiveEventApiService {
     required List<AnimalSimpleEventModel> animalSimpleEvents,
     required String cattleNumber,
   }) async {
-    final token = await BasicApiService.getToken();
     final String baseUrl = BasicApiService.getApiBaseUrl();
     final payload = {
       'applied': {
@@ -141,10 +136,9 @@ class MassiveEventApiService {
                 .toList(),
       },
     };
-    final response = await http.post(
+    final response = await BasicApiService.authorizedPost(
       Uri.parse('$baseUrl/cattle/apply-events/$cattleNumber'),
       headers: {
-        'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
       },
       body: jsonEncode(payload),
@@ -172,12 +166,10 @@ class MassiveEventApiService {
   static Future<void> closeMassiveEvent({
     required String idMassiveEvent,
   }) async {
-    final token = await BasicApiService.getToken();
     final String baseUrl = BasicApiService.getApiBaseUrl();
-    final response = await http.put(
+    final response = await BasicApiService.authorizedPut(
       Uri.parse('$baseUrl/massive-events/close/$idMassiveEvent'),
       headers: {
-        'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
       },
     );
@@ -190,7 +182,6 @@ class MassiveEventApiService {
     required SimpleEventModel simpleEvent,
     required String endpoint,
   }) async {
-    final token = await BasicApiService.getToken();
     final String baseUrl = BasicApiService.getApiBaseUrl();
     dynamic decodedJson;
     if (simpleEvent.data != null) {
@@ -203,10 +194,9 @@ class MassiveEventApiService {
     final payload = {"data": decodedJson, "isActive": simpleEvent.isActive};
     var response;
     try {
-      response = await http.put(
+      response = await BasicApiService.authorizedPut(
         Uri.parse('$baseUrl/$endpoint/${simpleEvent.id}'),
         headers: {
-          'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
         },
         body: jsonEncode(payload),

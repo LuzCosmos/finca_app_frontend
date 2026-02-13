@@ -23,10 +23,8 @@ class SalesDataSourceWeb implements ISalesDataSource {
 
   @override
   Future<List> getProviders(String type) async {
-    final token = await BasicApiService.getToken();
-    final res = await http.get(
+    final res = await BasicApiService.authorizedGet(
       Uri.parse('$baseUrl/providers'),
-      headers: {'Authorization': 'Bearer $token'},
     );
     if (res.statusCode == 200) {
       final list = jsonDecode(res.body) as List;
@@ -42,13 +40,11 @@ class SalesDataSourceWeb implements ISalesDataSource {
 
   @override
   Future<void> saveSale(SaleModel sale) async {
-    final token = await BasicApiService.getToken();
     var response;
     try {
-      response = await http.post(
+      response = await BasicApiService.authorizedPost(
         Uri.parse('$baseUrl/sales'),
         headers: {
-          'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
         },
         body: jsonEncode(sale.toJsonCreate()),
@@ -81,15 +77,13 @@ class SalesDataSourceWeb implements ISalesDataSource {
 
   @override
   Future<PaginatedSales> getSales(SalesQuery query) async {
-    final token = await BasicApiService.getToken();
     final uri = Uri.parse(
       '$baseUrl/sales',
     ).replace(queryParameters: query.toQueryParameters());
     var response;
     try {
-      response = await http.get(
+      response = await BasicApiService.authorizedGet(
         uri,
-        headers: {'Authorization': 'Bearer $token'},
       );
     } catch (e) {
       if (e is SocketException || e is http.ClientException) {
@@ -126,12 +120,9 @@ class SalesDataSourceWeb implements ISalesDataSource {
     final baseUrl = BasicApiService.getApiBaseUrl();
     if (baseUrl.isEmpty) throw Exception('API_URL is not configured');
 
-    final token = await BasicApiService.getToken();
-
-    final res = await http.put(
+    final res = await BasicApiService.authorizedPut(
       Uri.parse('$baseUrl/sales/$id'),
       headers: {
-        'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
       },
       body: jsonEncode(updates),

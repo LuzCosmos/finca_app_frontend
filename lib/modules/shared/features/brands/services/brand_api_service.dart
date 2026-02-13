@@ -8,13 +8,11 @@ import 'package:finca_app_frontend/modules/shared/features/brands/models/brand_m
 
 class BrandApiService {
   static Future<List<BrandModel>> getAllBrands() async {
-    final token = await BasicApiService.getToken();
     final String baseUrl = BasicApiService.getApiBaseUrl();
     try {
-      final response = await http.get(
+      final response = await BasicApiService.authorizedGet(
         Uri.parse('$baseUrl/brands'),
         headers: {
-          'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
         },
       );
@@ -41,24 +39,27 @@ class BrandApiService {
   }
 
   static Future<BrandModel> createBrand({required BrandModel brand}) async {
-    final token = await BasicApiService.getToken();
     final String baseUrl = BasicApiService.getApiBaseUrl();
     final uri = Uri.parse('$baseUrl/brands');
-    final request =
-        http.MultipartRequest('POST', uri)
-          ..headers['Authorization'] = 'Bearer $token'
-          ..fields['name'] = brand.name
-          ..fields['id'] = brand.id
-          ..files.add(
-            http.MultipartFile.fromBytes(
-              'image',
-              brand.imageBytes!,
-              filename: 'brand_image.jpg',
-              contentType: MediaType.parse(brand.imageMimeType),
-            ),
-          );
+    http.MultipartRequest buildRequest(String token) {
+      return http.MultipartRequest('POST', uri)
+        ..headers['Authorization'] = 'Bearer $token'
+        ..fields['name'] = brand.name
+        ..fields['id'] = brand.id
+        ..files.add(
+          http.MultipartFile.fromBytes(
+            'image',
+            brand.imageBytes!,
+            filename: 'brand_image.jpg',
+            contentType: MediaType.parse(brand.imageMimeType),
+          ),
+        );
+    }
     try {
-      final response = await request.send();
+      final response = await BasicApiService.authorizedMultipart(
+        buildRequest: buildRequest,
+      );
+
       if (response.statusCode == 201) {
         final resp = await http.Response.fromStream(response);
         final data = jsonDecode(resp.body);

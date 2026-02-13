@@ -2,6 +2,7 @@ import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:http/http.dart' as http;
 import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'dart:convert';
+import 'dart:async';
 import 'package:universal_html/js.dart' as js;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -78,6 +79,179 @@ class BasicApiService {
     throw ApiException(ApiExceptionCode.unauthorized.name, 'Unauthorized');
   }
 
+  static Future<http.Response> authorizedGet(
+    Uri uri, {
+    Map<String, String>? headers,
+  }) {
+    return _authorizedRequest(
+      method: 'GET',
+      uri: uri,
+      headers: headers,
+    );
+  }
+
+  static Future<http.Response> authorizedPost(
+    Uri uri, {
+    Map<String, String>? headers,
+    Object? body,
+    Encoding? encoding,
+  }) {
+    return _authorizedRequest(
+      method: 'POST',
+      uri: uri,
+      headers: headers,
+      body: body,
+      encoding: encoding,
+    );
+  }
+
+  static Future<http.Response> authorizedPatch(
+    Uri uri, {
+    Map<String, String>? headers,
+    Object? body,
+    Encoding? encoding,
+  }) {
+    return _authorizedRequest(
+      method: 'PATCH',
+      uri: uri,
+      headers: headers,
+      body: body,
+      encoding: encoding,
+    );
+  }
+
+  static Future<http.Response> authorizedPut(
+    Uri uri, {
+    Map<String, String>? headers,
+    Object? body,
+    Encoding? encoding,
+  }) {
+    return _authorizedRequest(
+      method: 'PUT',
+      uri: uri,
+      headers: headers,
+      body: body,
+      encoding: encoding,
+    );
+  }
+
+  static Future<http.Response> authorizedDelete(
+    Uri uri, {
+    Map<String, String>? headers,
+    Object? body,
+    Encoding? encoding,
+  }) {
+    return _authorizedRequest(
+      method: 'DELETE',
+      uri: uri,
+      headers: headers,
+      body: body,
+      encoding: encoding,
+    );
+  }
+
+  static Future<http.Response> _authorizedRequest({
+    required String method,
+    required Uri uri,
+    Map<String, String>? headers,
+    Object? body,
+    Encoding? encoding,
+    bool retryOnUnauthorized = true,
+  }) async {
+    final token = await getToken();
+    final response = await _send(
+      method: method,
+      uri: uri,
+      token: token,
+      headers: headers,
+      body: body,
+      encoding: encoding,
+    );
+
+    if (response.statusCode == 401 && retryOnUnauthorized) {
+      final refreshedToken = await _refreshAccessToken();
+      if (refreshedToken != null && refreshedToken.isNotEmpty) {
+        return _send(
+          method: method,
+          uri: uri,
+          token: refreshedToken,
+          headers: headers,
+          body: body,
+          encoding: encoding,
+        );
+      }
+    }
+
+    return response;
+  }
+
+  static Future<http.Response> _send({
+    required String method,
+    required Uri uri,
+    required String token,
+    Map<String, String>? headers,
+    Object? body,
+    Encoding? encoding,
+  }) {
+    final requestHeaders = <String, String>{
+      ...?headers,
+      'Authorization': 'Bearer $token',
+    };
+
+    switch (method) {
+      case 'GET':
+        return http.get(uri, headers: requestHeaders);
+      case 'POST':
+        return http.post(
+          uri,
+          headers: requestHeaders,
+          body: body,
+          encoding: encoding,
+        );
+      case 'PATCH':
+        return http.patch(
+          uri,
+          headers: requestHeaders,
+          body: body,
+          encoding: encoding,
+        );
+      case 'PUT':
+        return http.put(
+          uri,
+          headers: requestHeaders,
+          body: body,
+          encoding: encoding,
+        );
+      case 'DELETE':
+        return http.delete(
+          uri,
+          headers: requestHeaders,
+          body: body,
+          encoding: encoding,
+        );
+      default:
+        throw ApiException(
+          ApiExceptionCode.unknownError.name,
+          'Unsupported HTTP method: $method',
+        );
+    }
+  }
+
+  static Future<http.StreamedResponse> authorizedMultipart({
+    required http.MultipartRequest Function(String token) buildRequest,
+    bool retryOnUnauthorized = true,
+  }) async {
+    final token = await getToken();
+    var response = await buildRequest(token).send();
+    if (response.statusCode == 401 && retryOnUnauthorized) {
+      final refreshedToken = await _refreshAccessToken();
+      if (refreshedToken != null && refreshedToken.isNotEmpty) {
+        response = await buildRequest(refreshedToken).send();
+      }
+    }
+    return response;
+  }
+
   static Future<String?> _refreshAccessToken() async {
     if (_refreshTokenFuture != null) {
       return _refreshTokenFuture;
@@ -90,6 +264,10 @@ class BasicApiService {
     } finally {
       _refreshTokenFuture = null;
     }
+  }
+
+  static Future<String?> refreshAccessToken() {
+    return _refreshAccessToken();
   }
 
   static Future<String?> _performRefreshAccessToken() async {

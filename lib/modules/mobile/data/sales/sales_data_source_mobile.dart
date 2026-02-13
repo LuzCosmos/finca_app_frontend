@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:finca_app_frontend/modules/shared/enums/cattle_enums.dart';
-import 'package:http/http.dart' as http;
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
 import 'package:finca_app_frontend/core/data/database/app_database_mobile.dart';
@@ -121,7 +120,6 @@ class SalesDataSourceMobile implements ISalesDataSource {
     final pendingSales = await getUnsyncedSales();
     if (pendingSales.isEmpty) return;
     final baseUrl = BasicApiService.getApiBaseUrl();
-    final token = await BasicApiService.getToken();
     for (final sale in pendingSales) {
       try {
         final payload = {
@@ -149,10 +147,9 @@ class SalesDataSourceMobile implements ISalesDataSource {
                   .toList(),
         };
 
-        final response = await http.post(
+        final response = await BasicApiService.authorizedPost(
           Uri.parse('$baseUrl/sales'),
           headers: {
-            'Authorization': 'Bearer $token',
             'Content-Type': 'application/json',
           },
           body: jsonEncode(payload),
@@ -174,13 +171,11 @@ class SalesDataSourceMobile implements ISalesDataSource {
   @override
   Future<void> fetchCatalogs() async {
     final baseUrl = BasicApiService.getApiBaseUrl();
-    final token = await BasicApiService.getToken();
 
     // Providers
     try {
-      final res = await http.get(
+      final res = await BasicApiService.authorizedGet(
         Uri.parse('$baseUrl/providers'),
-        headers: {'Authorization': 'Bearer $token'},
       );
       if (res.statusCode == 200) {
         final List<dynamic> list = jsonDecode(res.body);
@@ -205,9 +200,8 @@ class SalesDataSourceMobile implements ISalesDataSource {
 
     // Cattle
     try {
-      final res = await http.get(
+      final res = await BasicApiService.authorizedGet(
         Uri.parse('$baseUrl/cattle'),
-        headers: {'Authorization': 'Bearer $token'},
       );
       if (res.statusCode == 200) {
         final List<dynamic> list = jsonDecode(res.body);
@@ -236,15 +230,13 @@ class SalesDataSourceMobile implements ISalesDataSource {
   @override
   Future<PaginatedSales> getSales(SalesQuery query) async {
     final baseUrl = BasicApiService.getApiBaseUrl();
-    final token = await BasicApiService.getToken();
 
     try {
       final uri = Uri.parse(
         '$baseUrl/sales',
       ).replace(queryParameters: query.toQueryParameters());
-      final res = await http.get(
+      final res = await BasicApiService.authorizedGet(
         uri,
-        headers: {'Authorization': 'Bearer $token'},
       );
 
       if (res.statusCode == 200) {
@@ -263,12 +255,10 @@ class SalesDataSourceMobile implements ISalesDataSource {
   @override
   Future<void> updateSale(String id, Map<String, dynamic> updates) async {
     final baseUrl = BasicApiService.getApiBaseUrl();
-    final token = await BasicApiService.getToken();
 
-    final res = await http.put(
+    final res = await BasicApiService.authorizedPut(
       Uri.parse('$baseUrl/sales/$id'),
       headers: {
-        'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
       },
       body: jsonEncode(updates),

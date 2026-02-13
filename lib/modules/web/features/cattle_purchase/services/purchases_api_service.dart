@@ -27,7 +27,6 @@ class PurchasesApiService {
     required DateTime purchaseDate,
     required List<Map<String, dynamic>> lots,
   }) async {
-    final token = await BasicApiService.getToken();
     final url = Uri.parse(baseUrl);
 
     final body = jsonEncode({
@@ -37,10 +36,9 @@ class PurchasesApiService {
     });
     var response;
     try {
-      response = await http.post(
+      response = await BasicApiService.authorizedPost(
         url,
         headers: {
-          'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
         },
         body: body,
@@ -72,7 +70,6 @@ class PurchasesApiService {
     String? provider,
     String status = 'all', // 'all'|'open'|'received'
   }) async {
-    final token = await BasicApiService.getToken();
     final uri = Uri.parse(baseUrl).replace(
       queryParameters: {
         'page': '$page',
@@ -86,7 +83,7 @@ class PurchasesApiService {
 
     late http.Response res;
     try {
-      res = await http.get(uri, headers: {'Authorization': 'Bearer $token'});
+      res = await BasicApiService.authorizedGet(uri);
     } catch (e) {
       if (e is SocketException || e is http.ClientException) {
         throw ApiException(

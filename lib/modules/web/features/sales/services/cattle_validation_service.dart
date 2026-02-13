@@ -1,4 +1,3 @@
-import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 
@@ -12,12 +11,10 @@ class CattleValidationService {
   static Future<Map<String, dynamic>> validateCattleByNumber(
     String number,
   ) async {
-    final token = await BasicApiService.getToken();
     final baseUrl = BasicApiService.getApiBaseUrl();
 
-    final response = await http.get(
+    final response = await BasicApiService.authorizedGet(
       Uri.parse('$baseUrl/cattle/validate-number/$number'),
-      headers: {'Authorization': 'Bearer $token'},
     );
 
     if (response.statusCode == 200) {
@@ -38,13 +35,11 @@ class CattleValidationService {
     required DateTime measuredDate,
     String context = 'SALE',
   }) async {
-    final token = await BasicApiService.getToken();
     final baseUrl = BasicApiService.getApiBaseUrl();
 
-    final response = await http.post(
+    final response = await BasicApiService.authorizedPost(
       Uri.parse('$baseUrl/cattle/$cattleId/weight-history'),
       headers: {
-        'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
       },
       body: json.encode({
@@ -64,13 +59,11 @@ class CattleValidationService {
     required String cattleId,
     required double weight,
   }) async {
-    final token = await BasicApiService.getToken();
     final baseUrl = BasicApiService.getApiBaseUrl();
 
-    final response = await http.put(
+    final response = await BasicApiService.authorizedPut(
       Uri.parse('$baseUrl/cattle/$cattleId/weight'),
       headers: {
-        'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
       },
       body: json.encode({'weight': weight}),
@@ -86,13 +79,11 @@ class CattleValidationService {
     required List<String> cattleIds,
     required String status,
   }) async {
-    final token = await BasicApiService.getToken();
     final baseUrl = BasicApiService.getApiBaseUrl();
 
-    final response = await http.put(
+    final response = await BasicApiService.authorizedPut(
       Uri.parse('$baseUrl/cattle/bulk-status'),
       headers: {
-        'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
       },
       body: json.encode({'cattleIds': cattleIds, 'status': status}),

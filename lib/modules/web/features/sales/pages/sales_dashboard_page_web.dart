@@ -328,7 +328,7 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
                         ElevatedButton.icon(
                           onPressed: () => context.push('/sales/create'),
                           icon: const Icon(Icons.add),
-                          label: Text(l10n.addSomething(l10n.sale)),
+                          label: Text(l10n.createSomething(l10n.sale)),
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 24,

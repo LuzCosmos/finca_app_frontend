@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/devices/models/device_model.dart';
 
@@ -20,16 +19,14 @@ class DeviceApiService {
   static final String _baseUrl = BasicApiService.getApiBaseUrl();
 
   static Future<List<DeviceModel>> searchDevices(String query) async {
-    final token = await BasicApiService.getToken();
     // Using the same endpoint as ReceptionApiService for now to ensure exact same behavior
     final url = Uri.parse(
       '$_baseUrl/purchase-receptions/search-devices/by-query?q=$query',
     );
 
-    final response = await http.get(
+    final response = await BasicApiService.authorizedGet(
       url,
       headers: {
-        'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
       },
     );

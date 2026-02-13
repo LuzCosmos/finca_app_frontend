@@ -47,21 +47,15 @@ class AuthService {
   }
 
   Future<bool> logout() async {
-    final token = await SessionService.getToken();
     final refreshToken = await SessionService.getRefreshToken();
-    if (token != null && token.isNotEmpty) {
-      try {
-        await http.post(
-          Uri.parse('${BasicApiService.getApiBaseUrl()}/auth/logout'),
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer $token',
-          },
-          body: jsonEncode({'refresh_token': refreshToken}),
-        );
-      } catch (_) {
-        // Local logout should still succeed even if network/backend fails.
-      }
+    try {
+      await BasicApiService.authorizedPost(
+        Uri.parse('${BasicApiService.getApiBaseUrl()}/auth/logout'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'refresh_token': refreshToken}),
+      );
+    } catch (_) {
+      // Local logout should still succeed even if network/backend fails.
     }
     await SessionService.cleanSession();
     return true;

@@ -18,16 +18,14 @@ class CattleMasterService {
 
   /// Fetch all cattle for the tenant (paged)
   Future<CattlePageResult> getCattleList({int page = 1, int limit = 10}) async {
-    final token = await BasicApiService.getToken();
     final url = Uri.parse(
       '$baseUrl/cattle',
     ).replace(queryParameters: {'page': '$page', 'limit': '$limit'});
     var response;
     try {
-      response = await http.get(
+      response = await BasicApiService.authorizedGet(
         url,
         headers: {
-          'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
         },
       );
@@ -65,14 +63,12 @@ class CattleMasterService {
   /// Fetch all configured colors
   Future<List<String>> getColors() async {
     try {
-      final token = await BasicApiService.getToken();
       final url = Uri.parse('$baseUrl/color-characteristics/color');
       var response;
       try {
-        response = await http.get(
+        response = await BasicApiService.authorizedGet(
           url,
           headers: {
-            'Authorization': 'Bearer $token',
             'Content-Type': 'application/json',
           },
         );
@@ -109,14 +105,12 @@ class CattleMasterService {
   /// Fetch all configured characteristics
   Future<List<String>> getCharacteristics() async {
     try {
-      final token = await BasicApiService.getToken();
       final url = Uri.parse('$baseUrl/color-characteristics/characteristic');
       var response;
       try {
-        response = await http.get(
+        response = await BasicApiService.authorizedGet(
           url,
           headers: {
-            'Authorization': 'Bearer $token',
             'Content-Type': 'application/json',
           },
         );
@@ -162,14 +156,12 @@ class CattleMasterService {
     String id,
     Map<String, dynamic> data,
   ) async {
-    final token = await BasicApiService.getToken();
     final url = Uri.parse('$baseUrl/cattle/$id');
     var response;
     try {
-      response = await http.patch(
+      response = await BasicApiService.authorizedPatch(
         url,
         headers: {
-          'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
         },
         body: jsonEncode(data),
@@ -197,14 +189,12 @@ class CattleMasterService {
     String id,
     Map<String, dynamic> data,
   ) async {
-    final token = await BasicApiService.getToken();
     final url = Uri.parse('$baseUrl/cattle/$id/medication');
     var response;
     try {
-      response = await http.post(
+      response = await BasicApiService.authorizedPost(
         url,
         headers: {
-          'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
         },
         body: jsonEncode(data),
@@ -231,16 +221,14 @@ class CattleMasterService {
   /// Search cattle by query
   Future<List<Map<String, dynamic>>> searchCattle(String query) async {
     try {
-      final token = await BasicApiService.getToken();
       final url = Uri.parse(
         '$baseUrl/cattle/search',
       ).replace(queryParameters: {'q': query});
       var response;
       try {
-        response = await http.get(
+        response = await BasicApiService.authorizedGet(
           url,
           headers: {
-            'Authorization': 'Bearer $token',
             'Content-Type': 'application/json',
           },
         );

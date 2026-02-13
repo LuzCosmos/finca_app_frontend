@@ -6,6 +6,7 @@ import 'package:finca_app_frontend/core/data/database/repositories/animal_simple
 import 'package:finca_app_frontend/core/data/database/repositories/brand_repository.dart';
 import 'package:finca_app_frontend/core/data/database/repositories/massive_event_repository.dart';
 import 'package:finca_app_frontend/core/data/database/repositories/simple_event_repository.dart';
+import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 
 class SyncResult {
   final bool success;
@@ -52,14 +53,6 @@ class SyncService {
         );
       }
       final payload = pending.map(toJson).toList();
-      /*final response = await http.post(
-        Uri.parse('$baseUrl/$endpointPath'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({endpointKey: payload}),
-      );*/
       final response = await _postWithRetry(
         Uri.parse('$baseUrl/$endpointPath'),
         {endpointKey: payload},
@@ -152,14 +145,6 @@ class SyncService {
             };
           }).toList();
 
-      /*final response = await http.post(
-        Uri.parse('$baseUrl/massive-events/sync'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({"massiveEvents": payload}),
-      );*/
       final response = await _postWithRetry(
         Uri.parse('$baseUrl/massive-events/sync'),
         {"massiveEvents": payload},
@@ -271,11 +256,9 @@ class SyncService {
   }) async {
     for (int attempt = 0; attempt < maxRetries; attempt++) {
       try {
-        final token = await getToken();
-        final response = await http.post(
+        final response = await BasicApiService.authorizedPost(
           url,
           headers: {
-            'Authorization': 'Bearer $token',
             'Content-Type': 'application/json',
           },
           body: jsonEncode(payload),

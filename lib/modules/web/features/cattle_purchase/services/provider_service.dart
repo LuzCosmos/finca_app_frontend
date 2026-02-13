@@ -9,14 +9,12 @@ class ProviderService {
   final String baseUrl = '${BasicApiService.getApiBaseUrl()}/providers';
 
   Future<List<ProviderModel>> searchByNit(String query) async {
-    final token = await BasicApiService.getToken();
     final url = Uri.parse('$baseUrl/search/by-nit?query=$query');
     var response;
     try {
-      response = await http.get(
+      response = await BasicApiService.authorizedGet(
         url,
         headers: {
-          'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
         },
       );
@@ -47,14 +45,12 @@ class ProviderService {
     required String nit,
     required String type,
   }) async {
-    final token = await BasicApiService.getToken();
     final url = Uri.parse(baseUrl);
     var response;
     try {
-      response = await http.post(
+      response = await BasicApiService.authorizedPost(
         url,
         headers: {
-          'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
         },
         body: jsonEncode({'name': name, 'nit': nit, 'type': type}),

@@ -11,13 +11,11 @@ class ReceptionApiService {
   ReceptionApiService();
 
   Future<List<DeviceModel>> searchDevices(String query) async {
-    final token = await BasicApiService.getToken();
     final url = Uri.parse('$baseUrl/search-devices/by-query?q=$query');
 
-    final response = await http.get(
+    final response = await BasicApiService.authorizedGet(
       url,
       headers: {
-        'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
       },
     );
@@ -31,11 +29,9 @@ class ReceptionApiService {
   }
 
   Future<bool> checkCattleNumberExists(String number) async {
-    final token = await BasicApiService.getToken();
-    final response = await http.get(
+    final response = await BasicApiService.authorizedGet(
       Uri.parse('$baseUrl/number-exists?number=$number'),
       headers: {
-        'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
       },
     );
@@ -48,11 +44,9 @@ class ReceptionApiService {
   }
 
   Future<bool> checkEartagExists(String eartag) async {
-    final token = await BasicApiService.getToken();
-    final response = await http.get(
+    final response = await BasicApiService.authorizedGet(
       Uri.parse('$baseUrl/eartag-exists?eartag=$eartag'),
       headers: {
-        'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
       },
     );
@@ -65,14 +59,12 @@ class ReceptionApiService {
   }
 
   Future<Map<String, dynamic>> getPurchaseReception(String purchaseId) async {
-    final token = await BasicApiService.getToken();
     final url = Uri.parse('$baseUrl/$purchaseId');
     var response;
     try {
-      response = await http.get(
+      response = await BasicApiService.authorizedGet(
         url,
         headers: {
-          'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
         },
       );
@@ -129,7 +121,6 @@ class ReceptionApiService {
     String? age,
     List<String>? idSimpleEvents,
   }) async {
-    final token = await BasicApiService.getToken();
     final body = {
       'idPurchase': idPurchase,
       'number': number,
@@ -149,10 +140,9 @@ class ReceptionApiService {
       'comments': comments,
       'idSimpleEvents': idSimpleEvents ?? [],
     };
-    final r = await http.post(
+    final r = await BasicApiService.authorizedPost(
       Uri.parse('$baseUrl/receive-cattle'),
       headers: {
-        'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
       },
       body: jsonEncode(body),
@@ -173,11 +163,9 @@ class ReceptionApiService {
     required String animalId,
     required String lotId,
   }) async {
-    final token = await BasicApiService.getToken();
-    final r = await http.patch(
+    final r = await BasicApiService.authorizedPatch(
       Uri.parse('$baseUrl/assign-lot-cattle'),
       headers: {
-        'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
       },
       body: jsonEncode({'idLot': lotId, 'idCattle': animalId}),
@@ -186,11 +174,9 @@ class ReceptionApiService {
   }
 
   Future<List<Map<String, dynamic>>> listAnimalEvents(String animalId) async {
-    final token = await BasicApiService.getToken();
-    final r = await http.get(
+    final r = await BasicApiService.authorizedGet(
       Uri.parse('$baseUrl/animals/$animalId/simple-events'),
       headers: {
-        'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
       },
     );
@@ -205,11 +191,9 @@ class ReceptionApiService {
     List<String> addIds = const [],
     List<String> removeIds = const [],
   }) async {
-    final token = await BasicApiService.getToken();
-    final r = await http.patch(
+    final r = await BasicApiService.authorizedPatch(
       Uri.parse('$baseUrl/animals/$animalId/simple-events'),
       headers: {
-        'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
       },
       body: jsonEncode({
@@ -222,14 +206,12 @@ class ReceptionApiService {
   }
 
   Future<void> updateStatus(String purchaseId, String status) async {
-    final token = await BasicApiService.getToken();
     final url = Uri.parse(
       '${BasicApiService.getApiBaseUrl()}/purchase-receptions/purchase-status/$purchaseId',
     );
-    final response = await http.patch(
+    final response = await BasicApiService.authorizedPatch(
       url,
       headers: {
-        'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
       },
       body: jsonEncode({'status': status}),
