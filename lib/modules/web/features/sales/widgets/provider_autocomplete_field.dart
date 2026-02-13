@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'dart:convert';
@@ -36,8 +37,11 @@ class ProviderAutocompleteField extends StatefulWidget {
 }
 
 class _ProviderAutocompleteFieldState extends State<ProviderAutocompleteField> {
+  static const Duration _searchDebounceDuration = Duration(milliseconds: 350);
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
+  Timer? _searchDebounce;
+  int _searchRequestId = 0;
 
   List<Map<String, dynamic>> _providers = [];
   bool _isLoading = false;
@@ -48,26 +52,38 @@ class _ProviderAutocompleteFieldState extends State<ProviderAutocompleteField> {
   @override
   void initState() {
     super.initState();
-    _controller.addListener(_onSearchChanged);
+    _controller.addListener(_onSearchInputChanged);
   }
 
   @override
   void dispose() {
+    _searchDebounce?.cancel();
     _controller.dispose();
     _focusNode.dispose();
     super.dispose();
   }
 
-  Future<void> _onSearchChanged() async {
+  void _onSearchInputChanged() {
+    _searchDebounce?.cancel();
     final query = _controller.text.trim();
+    final currentRequestId = ++_searchRequestId;
 
     if (query.isEmpty) {
       setState(() {
         _providers = [];
+        _isLoading = false;
         _showDropdown = false;
       });
       return;
     }
+
+    _searchDebounce = Timer(_searchDebounceDuration, () {
+      _performSearch(query, currentRequestId);
+    });
+  }
+
+  Future<void> _performSearch(String query, int requestId) async {
+    if (!mounted) return;
 
     setState(() {
       _isLoading = true;
@@ -76,11 +92,13 @@ class _ProviderAutocompleteFieldState extends State<ProviderAutocompleteField> {
 
     try {
       final providers = await _searchProviders(query);
+      if (!mounted || requestId != _searchRequestId) return;
       setState(() {
         _providers = providers;
         _isLoading = false;
       });
     } catch (e) {
+      if (!mounted || requestId != _searchRequestId) return;
       setState(() {
         _isLoading = false;
         _providers = [];
