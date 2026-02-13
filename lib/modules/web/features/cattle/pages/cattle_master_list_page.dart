@@ -35,12 +35,15 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
 
   // Pagination state
   int _page = 1;
-  int _limit = 20;
+  int _limit = 500;
   int _total = 0;
-  final List<int> _allowedPageSizes = [10, 20, 50, 100];
+  final List<int> _allowedPageSizes = [10, 20, 50, 100, 500];
 
   // Need to rebuild columns when locale changes
-  Key _gridKey = UniqueKey();
+  Key _gridKey = const ValueKey('cattle-grid');
+  List<PlutoColumn> _cachedColumns = [];
+  String _cachedLocaleKey = '';
+  bool _cachedEditPermission = false;
 
   void _showSuccess(String message) {
     if (mounted) {
@@ -171,16 +174,20 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
   int get _pageCount => (_total == 0) ? 1 : ((_total + _limit - 1) ~/ _limit);
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _gridKey = UniqueKey();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final localeKey = Localizations.localeOf(context).toLanguageTag();
+    final shouldRebuildColumns =
+        _cachedColumns.isEmpty ||
+        _cachedLocaleKey != localeKey ||
+        _cachedEditPermission != _hasEditPermission;
 
-    final columns = [
+    if (shouldRebuildColumns) {
+      _cachedLocaleKey = localeKey;
+      _cachedEditPermission = _hasEditPermission;
+      _gridKey = ValueKey('cattle-grid-$localeKey-$_hasEditPermission');
+
+      _cachedColumns = [
       PlutoColumn(
         title: 'Id',
         field: 'id',
@@ -540,7 +547,6 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                                 activeRow.cells['tracker']!.value = '';
                                 activeRow.cells['idDevice']!.value = '';
                                 stateManager.notifyListeners();
-                                setState(() {});
                                 _showSuccess('Removed');
                               }
                             } catch (e) {
@@ -576,7 +582,6 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                                 activeRow.cells['tracker']!.value = result.name;
                                 activeRow.cells['idDevice']!.value = result.id;
                                 stateManager.notifyListeners();
-                                setState(() {});
                                 _showSuccess('Saved');
                               }
                             } catch (e) {
@@ -781,7 +786,10 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
         hide: true,
         width: 0,
       ),
-    ];
+      ];
+    }
+
+    final columns = _cachedColumns;
 
     return FincaScaffold(
       title: l10n.masterListTitle,
