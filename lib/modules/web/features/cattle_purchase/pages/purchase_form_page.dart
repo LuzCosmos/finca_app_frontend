@@ -102,10 +102,7 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
       });
     } on ApiException catch (e) {
       String errorMessage;
-      final ApiExceptionCode codeEnum = ApiExceptionCode.values.firstWhere(
-        (c) => c.name == e.code,
-        orElse: () => ApiExceptionCode.unknownError,
-      );
+      final ApiExceptionCode codeEnum = ApiExceptionCode.fromString(e.code);
       switch (codeEnum) {
         case ApiExceptionCode.serverConnectionError ||
             ApiExceptionCode.serverError:

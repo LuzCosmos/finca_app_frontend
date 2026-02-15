@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
-import 'package:flutter/foundation.dart';
 
 class CattlePageResult {
   final int page, limit, total;
@@ -58,97 +57,6 @@ class CattleMasterService {
     } else {
       BasicApiService.manageNotSuccessResponseCode(response);
     }
-  }
-
-  /// Fetch all configured colors
-  Future<List<String>> getColors() async {
-    try {
-      final url = Uri.parse('$baseUrl/color-characteristics/color');
-      var response;
-      try {
-        response = await BasicApiService.authorizedGet(
-          url,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        );
-      } catch (e) {
-        if (e is SocketException || e is http.ClientException) {
-          throw ApiException(
-            'serverConnectionError',
-            'Error al listar colores: $e',
-          );
-        }
-        throw ApiException('readingObjectError', 'Error al listar colores: $e');
-      }
-      if (response.statusCode == 200) {
-        final dynamic body = jsonDecode(response.body);
-        if (body is List) {
-          return body.cast<String>();
-        } else {
-          debugPrint(
-            'Error: /color-characteristics/color returned non-list: $body',
-          );
-        }
-      } else {
-        BasicApiService.manageNotSuccessResponseCode(response);
-      }
-    } catch (e) {
-      if (e is ApiException) {
-        rethrow;
-      }
-      throw ApiException('readingObjectError', 'Error al listar colores: $e');
-    }
-    return [];
-  }
-
-  /// Fetch all configured characteristics
-  Future<List<String>> getCharacteristics() async {
-    try {
-      final url = Uri.parse('$baseUrl/color-characteristics/characteristic');
-      var response;
-      try {
-        response = await BasicApiService.authorizedGet(
-          url,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        );
-      } catch (e) {
-        if (e is SocketException || e is http.ClientException) {
-          throw ApiException(
-            'serverConnectionError',
-            'Error al listar características: $e',
-          );
-        }
-        throw ApiException(
-          'readingObjectError',
-          'Error al listar características: $e',
-        );
-      }
-
-      if (response.statusCode == 200) {
-        final dynamic body = jsonDecode(response.body);
-        if (body is List) {
-          return body.cast<String>();
-        } else {
-          debugPrint(
-            'Error: /color-characteristics/characteristic returned non-list: $body',
-          );
-        }
-      } else {
-        BasicApiService.manageNotSuccessResponseCode(response);
-      }
-    } catch (e) {
-      if (e is ApiException) {
-        rethrow;
-      }
-      throw ApiException(
-        'readingObjectError',
-        'Error al listar características: $e',
-      );
-    }
-    return [];
   }
 
   /// Update cattle data

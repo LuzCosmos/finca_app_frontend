@@ -26,8 +26,9 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
   final CattleMasterService _service = CattleMasterService();
 
   List<PlutoRow> rows = [];
-  List<String> _colors = [];
-  List<String> _characteristics = [];
+  final List<String> _colors = CattleColor.values.map((e) => e.name).toList();
+  final List<String> _characteristics =
+      CattleCharacteristic.values.map((e) => e.name).toList();
   bool isLoading = true;
   bool _hasEditPermission = false;
   String? _globalErrorMessage;
@@ -100,16 +101,9 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
     }
 
     try {
-      final results = await Future.wait([
-        _service.getCattleList(page: _page, limit: _limit),
-        _service.getColors(),
-        _service.getCharacteristics(),
-      ]);
-      final cattleResult = results[0] as CattlePageResult;
+      final cattleResult = await _service.getCattleList(page: _page, limit: _limit);
       _total = cattleResult.total;
       final cattleList = cattleResult.items;
-      _colors = (results[1] as List).cast<String>();
-      _characteristics = (results[2] as List).cast<String>();
       final newRows = _createRows(cattleList);
       if (mounted) {
         if (isLoading) {
@@ -122,15 +116,13 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
           stateManager.removeAllRows();
           stateManager.appendRows(newRows);
           stateManager.notifyListeners();
-          rows = newRows;
-          setState(() {});
+          setState(() {
+            rows = newRows;
+          });
         }
       }
     } on ApiException catch (e) {
-      final code = ApiExceptionCode.values.firstWhere(
-        (el) => el.name == (e.code),
-        orElse: () => ApiExceptionCode.unknownError,
-      );
+      final code = ApiExceptionCode.fromString(e.code);
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
         final errorText = code.asText(context, objectName: l10n.cattle);
@@ -172,6 +164,81 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
   }
 
   int get _pageCount => (_total == 0) ? 1 : ((_total + _limit - 1) ~/ _limit);
+
+  String _localizedCharacteristicLabel(String characteristicId) {
+    return CattleCharacteristic.fromString(
+          characteristicId,
+        )?.localizedName(context) ??
+        characteristicId;
+  }
+
+  List<String> _extractCharacteristicIds(Map<String, dynamic> cattle) {
+    return (cattle['cattleCharacteristics'] as List?)
+            ?.map((c) => c['characteristic'] as String)
+            .toList() ??
+        <String>[];
+  }
+
+  String _buildCharacteristicsLabel(List<String> characteristicIds) {
+    return characteristicIds.map(_localizedCharacteristicLabel).join(', ');
+  }
+
+  ({String field, dynamic value}) _normalizeChangedValue(
+    PlutoGridOnChangedEvent event,
+  ) {
+    var field = event.column.field;
+    dynamic value = event.value;
+
+    if (field == 'hasHorn') {
+      value = value.toString() == 'true';
+    } else if (field == 'isCastrated') {
+      field = 'castrated';
+      value = value.toString() == 'true';
+    } else if (field == 'characteristicsIds') {
+      field = 'characteristics';
+    }
+
+    return (field: field, value: value);
+  }
+
+  bool _isIgnoredChangeField(String field) {
+    return const ['tracker', 'characteristics', 'idDevice'].contains(field);
+  }
+
+  bool _isInvalidWeightValue(String field, dynamic value) {
+    if (field != 'lastWeight' && field != 'receivedWeight') return false;
+    final weight = double.tryParse(value.toString());
+    return weight == null || weight <= 0;
+  }
+
+  void _revertCellValue(PlutoGridOnChangedEvent event) {
+    stateManager.changeCellValue(
+      event.row.cells[event.column.field]!,
+      event.oldValue,
+      callOnChangedEvent: false,
+      force: true,
+    );
+  }
+
+  void _applyRowServerUpdates(
+    PlutoGridOnChangedEvent event,
+    Map<String, dynamic> updatedData,
+  ) {
+    final row = stateManager.rows.firstWhere((r) => r.key == event.row.key);
+    var changed = false;
+
+    if (updatedData.containsKey('weightHistory')) {
+      row.cells['weightHistory']!.value = updatedData['weightHistory'];
+      changed = true;
+    }
+    if (updatedData.containsKey('medicationHistory')) {
+      row.cells['medicationHistory']!.value = updatedData['medicationHistory'];
+      changed = true;
+    }
+    if (changed) {
+      stateManager.notifyListeners();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -801,7 +868,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
               MessageBanner.error(_globalErrorMessage!),
             if (_globalSuccessMessage != null)
               MessageBanner.success(_globalSuccessMessage!),
-            /*Align(
+            Align(
               alignment: Alignment.centerLeft,
               child: ElevatedButton.icon(
                 onPressed: _addCattleRow,
@@ -809,7 +876,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                 label: Text(l10n.addSomething(l10n.cattle)),
               ),
             ),
-            const SizedBox(height: 12),*/
+            const SizedBox(height: 12),
             Expanded(
               child:
                   isLoading
@@ -833,54 +900,25 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                         },
                         onChanged: (event) async {
                           final rowId = event.row.cells['id']!.value.toString();
-                          /*debugPrint(
-                            'onChanged triggered for rowId: $rowId, field: ${event.column.field}, value: ${event.value}',
-                          );*/
                           if (rowId.isEmpty || rowId == 'New') {
-                            //debugPrint('Skipping save for new/empty row');
                             return;
                           }
-                          String field = event.column.field;
-                          dynamic value = event.value;
-                          if (field == 'hasHorn') {
-                            value = value.toString() == 'true';
+                          final normalized = _normalizeChangedValue(event);
+                          final field = normalized.field;
+                          final value = normalized.value;
+
+                          if (_isIgnoredChangeField(field)) {
+                            return;
                           }
 
-                          if (field == 'isCastrated') {
-                            field = 'castrated';
-                            value = value.toString() == 'true';
-                          }
-                          if (field == 'characteristicsIds') {
-                            field = 'characteristics';
-                          }
-                          if ([
-                            'tracker',
-                            'characteristics',
-                            'idDevice',
-                          ].contains(field)) {
+                          if (_isInvalidWeightValue(field, value)) {
+                            if (mounted) {
+                              _showError(l10n.error_enterValidWeight);
+                              _revertCellValue(event);
+                            }
                             return;
                           }
-                          // Validation for lastWeight,receivedWeight
-                          if (field == 'lastWeight' ||
-                              field == 'receivedWeight') {
-                            final double? weight = double.tryParse(
-                              value.toString(),
-                            );
-                            if (weight == null || weight <= 0) {
-                              if (mounted) {
-                                _showError(l10n.error_enterValidWeight);
-                                // Revert the cell value in the grid UI
-                                final oldWeight = event.oldValue;
-                                stateManager.changeCellValue(
-                                  event.row.cells[field]!,
-                                  oldWeight,
-                                  callOnChangedEvent: false,
-                                  force: true,
-                                );
-                              }
-                              return;
-                            }
-                          }
+
                           try {
                             final updatedData = await _service.updateCattle(
                               rowId,
@@ -888,45 +926,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                             );
                             if (mounted) {
                               if (updatedData != null) {
-                                try {
-                                  // Re-fetch row ensuring we have the latest reference
-                                  final row = stateManager.rows.firstWhere(
-                                    (r) => r.key == event.row.key,
-                                  );
-                                  // ignore: unnecessary_null_comparison
-                                  if (row != null) {
-                                    if (updatedData.containsKey(
-                                      'weightHistory',
-                                    )) {
-                                      /*debugPrint(
-                                        'Updating weight history for row $rowId: ${updatedData['weightHistory'].length} items',
-                                      );*/
-                                      stateManager.changeCellValue(
-                                        row.cells['weightHistory']!,
-                                        updatedData['weightHistory'],
-                                        callOnChangedEvent: false,
-                                        force: true,
-                                      );
-                                    }
-                                    if (updatedData.containsKey(
-                                      'medicationHistory',
-                                    )) {
-                                      /*debugPrint(
-                                        'Updating medication history for row $rowId: ${updatedData['medicationHistory'].length} items',
-                                      );*/
-                                      stateManager.changeCellValue(
-                                        row.cells['medicationHistory']!,
-                                        updatedData['medicationHistory'],
-                                        callOnChangedEvent: false,
-                                        force: true,
-                                      );
-                                    }
-                                  }
-                                } catch (e) {
-                                  debugPrint(
-                                    'Error updating history cells: $e',
-                                  );
-                                }
+                                _applyRowServerUpdates(event, updatedData);
                               }
                               _showSuccess('Saved');
                             }
@@ -944,25 +944,13 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                             } else {
                               _showError(apiCode.asText(context));
                             }
-                            // Revert value on API error as well for consistency
-                            stateManager.changeCellValue(
-                              event.row.cells[event.column.field]!,
-                              event.oldValue,
-                              callOnChangedEvent: false,
-                              force: true,
-                            );
+                            _revertCellValue(event);
                           } catch (e) {
                             debugPrint('Error saving field $field: $e');
                             if (mounted) {
                               String errorMsg = 'Error saving: $e';
                               _showError(errorMsg);
-                              // Revert value on API error as well for consistency
-                              stateManager.changeCellValue(
-                                event.row.cells[event.column.field]!,
-                                event.oldValue,
-                                callOnChangedEvent: false,
-                                force: true,
-                              );
+                              _revertCellValue(event);
                             }
                           }
                         },
@@ -1062,18 +1050,8 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
 
   List<PlutoRow> _createRows(List<Map<String, dynamic>> cattleList) {
     return cattleList.map((cattle) {
-      final characteristicsList =
-          (cattle['cattleCharacteristics'] as List?)
-              ?.map((c) => c['characteristic'] as String)
-              .map(
-                (c) =>
-                    CattleCharacteristic.fromString(
-                      c,
-                    )?.localizedName(context) ??
-                    c,
-              )
-              .join(', ') ??
-          '';
+      final characteristicIds = _extractCharacteristicIds(cattle);
+      final characteristicsList = _buildCharacteristicsLabel(characteristicIds);
 
       return PlutoRow(
         cells: {
@@ -1088,13 +1066,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
           ),
           'color': PlutoCell(value: cattle['color'] ?? ''),
           'characteristics': PlutoCell(value: characteristicsList),
-          'characteristicsIds': PlutoCell(
-            value:
-                (cattle['cattleCharacteristics'] as List?)
-                    ?.map((c) => c['characteristic'] as String)
-                    .toList() ??
-                <String>[],
-          ),
+          'characteristicsIds': PlutoCell(value: characteristicIds),
           'gender': PlutoCell(value: cattle['gender'] ?? 'MALE'),
           'age': PlutoCell(
             value: double.tryParse(cattle['age']?.toString() ?? '') ?? 0,

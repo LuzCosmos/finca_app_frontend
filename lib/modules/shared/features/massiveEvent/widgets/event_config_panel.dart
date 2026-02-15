@@ -126,9 +126,7 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
             widget.onEventsChanged(allDetails);
           } on ApiException catch (e) {
             if (mounted) {
-              String? error = ApiExceptionCode.values
-                  .firstWhere((el) => el.name == e.code)
-                  .asText(context);
+              String? error = ApiExceptionCode.fromString(e.code).asText(context);
               if (error.isNotEmpty) {
                 widget.showError(error);
               }

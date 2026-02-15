@@ -129,16 +129,11 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
         });
       }
     } on ApiException catch (e) {
-      final code = ApiExceptionCode.values.firstWhere(
-        (el) => el.name == (e.code),
-        orElse: () => ApiExceptionCode.unknownError, // <- Fallback seguro
-      );
-
+      final code = ApiExceptionCode.fromString(e.code);
       if (mounted) {
         final errorText = code.asText(context, objectName: l10n.cattlePurchase);
         setState(() => _error = errorText);
       }
-
       // (opcional) Log para cazar códigos desconocidos:
       if (code == ApiExceptionCode.unknownError && e.code != 'unknownError') {
         // ignore: avoid_print

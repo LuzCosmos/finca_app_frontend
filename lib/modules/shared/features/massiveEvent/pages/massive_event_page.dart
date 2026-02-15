@@ -130,9 +130,7 @@ class _MassiveEventPageState extends State<MassiveEventPage> {
       });
     } on ApiException catch (e) {
       if (mounted) {
-        String? error = ApiExceptionCode.values
-            .firstWhere((el) => el.name == e.code)
-            .asText(context);
+        String? error = ApiExceptionCode.fromString(e.code).asText(context);
         if (e.code == ApiExceptionCode.unprocessableEntity.name) {
           if (e.message.contains('closed')) {
             error = l10n.error_massiveEventAlreadyClosed;

@@ -77,10 +77,7 @@ class _UserFormPageState extends State<UserFormPage> {
       });
     } on ApiException catch (e) {
       if (mounted) {
-        final code = ApiExceptionCode.values.firstWhere(
-          (el) => el.name == (e.code),
-          orElse: () => ApiExceptionCode.unknownError,
-        );
+        final code = ApiExceptionCode.fromString(e.code);
         setState(() {
           _error = code.asText(
             context,
@@ -151,10 +148,7 @@ class _UserFormPageState extends State<UserFormPage> {
       }
     } on ApiException catch (e) {
       if (mounted) {
-        final code = ApiExceptionCode.values.firstWhere(
-          (el) => el.name == (e.code),
-          orElse: () => ApiExceptionCode.unknownError,
-        );
+        final code = ApiExceptionCode.fromString(e.code);
         final errorText = code.asText(
           context,
           objectName: AppLocalizations.of(context)!.users,

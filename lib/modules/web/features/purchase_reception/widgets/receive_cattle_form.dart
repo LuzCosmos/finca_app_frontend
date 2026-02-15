@@ -15,8 +15,6 @@ import 'package:flutter/services.dart';
 class ReceiveCattleForm extends StatefulWidget {
   final String? currentNumber;
   final List<Map<String, dynamic>> availableLots;
-  final List<String> colors;
-  final List<String> characteristics;
   final List<SimpleEventModel> activeEvents;
   final Function(Map<String, dynamic> cattleData) onSubmit;
   final Function(String number) onNumberChanged;
@@ -26,8 +24,6 @@ class ReceiveCattleForm extends StatefulWidget {
     super.key,
     this.currentNumber,
     required this.availableLots,
-    required this.colors,
-    required this.characteristics,
     required this.activeEvents,
     required this.onSubmit,
     required this.onNumberChanged,
@@ -45,6 +41,9 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
   final _commentsController = TextEditingController();
   final _eartagController = TextEditingController();
   final _trackerController = TextEditingController();
+  final List<String> colors = CattleColor.values.map((e) => e.name).toList();
+  final List<String> characteristics =
+      CattleCharacteristic.values.map((e) => e.name).toList();
 
   Timer? _debounce;
   Timer? _numberDebounce;
@@ -344,7 +343,7 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                           value: null,
                           child: const Text('—'),
                         ),
-                        ...widget.colors.map((color) {
+                        ...colors.map((color) {
                           final enumVal = CattleColor.fromString(color);
                           return DropdownMenuItem<String>(
                             value: color,
@@ -681,7 +680,7 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                 height: 400,
                 child: ListView(
                   children:
-                      widget.characteristics.map((char) {
+                      characteristics.map((char) {
                         final charId = char;
                         final isSelected = tempSelected.contains(charId);
                         final enumVal = CattleCharacteristic.fromString(charId);

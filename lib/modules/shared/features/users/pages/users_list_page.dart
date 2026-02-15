@@ -68,10 +68,7 @@ class _UsersListPageState extends State<UsersListPage> {
         });
       }
     } on ApiException catch (e) {
-       final code = ApiExceptionCode.values.firstWhere(
-        (el) => el.name == (e.code),
-        orElse: () => ApiExceptionCode.unknownError,
-      );
+       final code = ApiExceptionCode.fromString(e.code);
       if (mounted) {
         final errorText = code.asText(context, objectName: AppLocalizations.of(context)!.users);
         setState(() => _error = errorText);
@@ -117,10 +114,7 @@ class _UsersListPageState extends State<UsersListPage> {
         }
       } on ApiException catch (e) {
          if (mounted) {
-            final code = ApiExceptionCode.values.firstWhere(
-                (el) => el.name == (e.code),
-                orElse: () => ApiExceptionCode.unknownError,
-            );
+            final code = ApiExceptionCode.fromString(e.code);
             final errorText = code.asText(context, objectName: l10n.users);
             ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text(errorText), backgroundColor: Colors.red),

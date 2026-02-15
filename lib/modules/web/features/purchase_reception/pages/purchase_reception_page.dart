@@ -15,6 +15,7 @@ import 'package:finca_app_frontend/modules/web/features/purchase_reception/widge
 import 'package:finca_app_frontend/modules/web/features/purchase_reception/widgets/lots_table.dart';
 import 'package:finca_app_frontend/modules/web/features/purchase_reception/widgets/cattle_list_with_events.dart';
 import 'package:finca_app_frontend/modules/web/features/purchase_reception/widgets/unassigned_cattle_list.dart';
+import 'package:finca_app_frontend/core/services/api_exception.dart';
 
 class PurchaseReceptionPage extends StatefulWidget {
   final String purchaseId;
@@ -134,6 +135,16 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
         currentCattleNumber = data['reception']['nextCattleNumber'] ?? '';
         isLoading = false;
       });
+    } on ApiException catch (e) {
+      if (context.mounted) {
+        setState(() {
+          final l10n = AppLocalizations.of(context)!;
+          _globalErrorMessage = ApiExceptionCode.fromString(
+            e.code,
+          ).asText(context, objectName: l10n.cattlePurchase);
+          isLoading = false;
+        });
+      }
     } catch (e) {
       setState(() {
         _globalErrorMessage = e.toString();
@@ -170,7 +181,7 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
   }
 
   Future<void> _assignLot(String cattleId, String lotId) async {
-    final l10n = AppLocalizations.of(context)!; 
+    final l10n = AppLocalizations.of(context)!;
     try {
       await api.reassignLot(
         purchaseId: widget.purchaseId,
@@ -179,8 +190,20 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
       );
       await _load();
       setGlobalSuccess(l10n.lotAssignedSuccessfully);
+    } on ApiException catch (e) {
+      if (context.mounted) {
+        final l10n = AppLocalizations.of(context)!;
+        setGlobalError(
+          ApiExceptionCode.fromString(
+            e.code,
+          ).asText(context, objectName: l10n.cattlePurchase),
+        );
+      }
     } catch (e) {
-      setGlobalError(e.toString());
+      if (context.mounted) {
+        setGlobalError(e.toString());
+        isLoading = false;
+      }
     }
   }
 
@@ -224,6 +247,15 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
       // Navigator.of(context).pop(); // Maybe?
       // Refresh to update status variable if we were tracking it (we aren't tracking status in this page explicitly yet)
       _load();
+    } on ApiException catch (e) {
+      if (context.mounted) {
+        final l10n = AppLocalizations.of(context)!;
+        setGlobalError(
+          ApiExceptionCode.fromString(
+            e.code,
+          ).asText(context, objectName: l10n.cattlePurchase),
+        );
+      }
     } catch (e) {
       setGlobalError(e.toString());
     }
@@ -247,22 +279,6 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
     final lot = lots.firstWhere((l) => l['id'] == lotId, orElse: () => {});
     if (lot.isEmpty) return [];
     return (lot['cattle'] as List<dynamic>).cast<Map<String, dynamic>>();
-  }
-
-  List<String> _getColors() {
-    if (receptionData == null) return [];
-    return (receptionData!['colors'] as List?)
-            ?.map((e) => e.toString())
-            .toList() ??
-        [];
-  }
-
-  List<String> _getCharacteristics() {
-    if (receptionData == null) return [];
-    return (receptionData!['characteristics'] as List?)
-            ?.map((e) => e.toString())
-            .toList() ??
-        [];
   }
 
   @override
@@ -376,9 +392,14 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
                                   children: [
                                     PurchaseInfoDisplay(
                                       providerName:
-                                          reception['purchaseProviderName'] ?? '—',
+                                          reception['purchaseProviderName'] ??
+                                          '—',
                                       purchaseDate:
-                                          reception['purchaseDate']?.substring(0, 10) ?? '—',
+                                          reception['purchaseDate']?.substring(
+                                            0,
+                                            10,
+                                          ) ??
+                                          '—',
                                       receptionDate: receptionDate,
                                       initialCattleNumber:
                                           currentCattleNumber.isEmpty
@@ -404,8 +425,6 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
                                       ReceiveCattleForm(
                                         currentNumber: currentCattleNumber,
                                         availableLots: lots,
-                                        colors: _getColors(),
-                                        characteristics: _getCharacteristics(),
                                         activeEvents:
                                             simpleEvents
                                                 .where((e) => e.isActive)

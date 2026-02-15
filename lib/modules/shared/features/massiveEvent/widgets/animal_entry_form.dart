@@ -225,9 +225,7 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
           widget.showSuccess(l10n.simpleEventApplied(animalNumber));
         } on ApiException catch (e) {
           if (mounted) {
-            String? error = ApiExceptionCode.values
-                .firstWhere((el) => el.name == e.code)
-                .asText(context, objectName: animalNumber);
+            String? error = ApiExceptionCode.fromString(e.code).asText(context, objectName: animalNumber);
             if (e.code == ApiExceptionCode.notFound.name) {
               if (e.message.contains('Device')) {
                 error = l10n.error_notFound(

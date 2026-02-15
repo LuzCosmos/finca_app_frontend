@@ -91,9 +91,7 @@ class _CreateBrandDialogState extends State<CreateBrandDialog> {
         }
       } on ApiException catch (e) {
         setState(() {
-          error = ApiExceptionCode.values
-              .firstWhere((el) => el.name == e.code)
-              .asText(context);
+          error = ApiExceptionCode.fromString(e.code).asText(context);
           _showImageError = true;
         });
       } catch (e) {
