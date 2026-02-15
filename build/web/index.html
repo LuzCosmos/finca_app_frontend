@@ -13,9 +13,6 @@
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
   <meta name="description" content="Application to manage a farm">
 
   <!-- iOS meta tags & icons -->
@@ -55,28 +52,36 @@
       // Start Flutter immediately (do not block on cleanup).
       loadFlutter();
 
-      // Cleanup legacy service workers/caches in background.
-      (async () => {
-        console.log('[FincaApp] Starting background cleanup...');
+      // Cleanup legacy service workers/caches ONLY when explicitly requested.
+      const forceCleanupFromEnv =
+        typeof window.ENV !== 'undefined' &&
+        String(window.ENV.FORCE_WEB_CACHE_CLEANUP).toLowerCase() === 'true';
+      const forceCleanupFromUrl = new URLSearchParams(window.location.search).has('cleanup');
+      const shouldCleanup = forceCleanupFromEnv || forceCleanupFromUrl;
 
-        if ('serviceWorker' in navigator) {
-          try {
-            const regs = await navigator.serviceWorker.getRegistrations();
-            await Promise.all(regs.map(r => r.unregister()));
-          } catch (err) {
-            console.warn('[FincaApp] Error unregistering service workers:', err);
-          }
-        }
+      if (shouldCleanup) {
+        (async () => {
+          console.log('[FincaApp] Starting forced background cleanup...');
 
-        if ('caches' in window) {
-          try {
-            const keys = await caches.keys();
-            await Promise.all(keys.map(k => caches.delete(k)));
-          } catch (err) {
-            console.warn('[FincaApp] Error clearing caches:', err);
+          if ('serviceWorker' in navigator) {
+            try {
+              const regs = await navigator.serviceWorker.getRegistrations();
+              await Promise.all(regs.map(r => r.unregister()));
+            } catch (err) {
+              console.warn('[FincaApp] Error unregistering service workers:', err);
+            }
           }
-        }
-      })();
+
+          if ('caches' in window) {
+            try {
+              const keys = await caches.keys();
+              await Promise.all(keys.map(k => caches.delete(k)));
+            } catch (err) {
+              console.warn('[FincaApp] Error clearing caches:', err);
+            }
+          }
+        })();
+      }
     })();
   </script>
 </body>

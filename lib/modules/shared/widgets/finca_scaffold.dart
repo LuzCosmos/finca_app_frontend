@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
 
-class FincaScaffold extends StatelessWidget {
+class FincaScaffold extends StatefulWidget {
   final Widget body;
   final String? title;
   final bool showHomeButton;
@@ -20,9 +20,22 @@ class FincaScaffold extends StatelessWidget {
   });
 
   @override
+  State<FincaScaffold> createState() => _FincaScaffoldState();
+}
+
+class _FincaScaffoldState extends State<FincaScaffold> {
+  late Future<bool> _isAuthenticatedFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _isAuthenticatedFuture = SessionService.isAuthenticated();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return FutureBuilder<bool>(
-      future: SessionService.isAuthenticated(),
+      future: _isAuthenticatedFuture,
       builder: (context, snapshot) {
         final bool isAuthenticated = snapshot.data ?? false;
 
@@ -30,7 +43,7 @@ class FincaScaffold extends StatelessWidget {
           appBar: AppBar(
             backgroundColor: Theme.of(context).colorScheme.primary,
             foregroundColor: Colors.white,
-            title: Text(title ?? 'Finca App'),
+            title: Text(widget.title ?? 'Finca App'),
             leading: Navigator.of(context).canPop() ? const BackButton() : null,
             automaticallyImplyLeading: true,
             actions: <Widget>[
@@ -44,7 +57,7 @@ class FincaScaffold extends StatelessWidget {
                 },
               ),
               if (isAuthenticated) ...[
-                if (showHomeButton) ...[
+                if (widget.showHomeButton) ...[
                   IconButton(
                     icon: const Icon(Icons.home, color: Colors.white, size: 20),
                     onPressed: () {
@@ -56,7 +69,7 @@ class FincaScaffold extends StatelessWidget {
               ],
             ],
           ),
-          body: body,
+          body: widget.body,
         );
       },
     );
