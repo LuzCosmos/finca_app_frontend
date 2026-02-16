@@ -136,15 +136,14 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
         isLoading = false;
       });
     } on ApiException catch (e) {
-      if (context.mounted) {
-        setState(() {
-          final l10n = AppLocalizations.of(context)!;
-          _globalErrorMessage = ApiExceptionCode.fromString(
-            e.code,
-          ).asText(context, objectName: l10n.cattlePurchase);
-          isLoading = false;
-        });
-      }
+      if (!mounted) return;
+      setState(() {
+        final l10n = AppLocalizations.of(context)!;
+        _globalErrorMessage = ApiExceptionCode.fromString(
+          e.code,
+        ).asText(context, objectName: l10n.cattlePurchase);
+        isLoading = false;
+      });
     } catch (e) {
       setState(() {
         _globalErrorMessage = e.toString();
@@ -191,19 +190,17 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
       await _load();
       setGlobalSuccess(l10n.lotAssignedSuccessfully);
     } on ApiException catch (e) {
-      if (context.mounted) {
-        final l10n = AppLocalizations.of(context)!;
-        setGlobalError(
-          ApiExceptionCode.fromString(
-            e.code,
-          ).asText(context, objectName: l10n.cattlePurchase),
-        );
-      }
+      if (!mounted) return;
+      final l10n = AppLocalizations.of(context)!;
+      setGlobalError(
+        ApiExceptionCode.fromString(
+          e.code,
+        ).asText(context, objectName: l10n.cattlePurchase),
+      );
     } catch (e) {
-      if (context.mounted) {
-        setGlobalError(e.toString());
-        isLoading = false;
-      }
+      if (!mounted) return;
+      setGlobalError(e.toString());
+      isLoading = false;
     }
   }
 
@@ -248,14 +245,13 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
       // Refresh to update status variable if we were tracking it (we aren't tracking status in this page explicitly yet)
       _load();
     } on ApiException catch (e) {
-      if (context.mounted) {
-        final l10n = AppLocalizations.of(context)!;
-        setGlobalError(
-          ApiExceptionCode.fromString(
-            e.code,
-          ).asText(context, objectName: l10n.cattlePurchase),
-        );
-      }
+      if (!mounted) return;
+      final l10n = AppLocalizations.of(context)!;
+      setGlobalError(
+        ApiExceptionCode.fromString(
+          e.code,
+        ).asText(context, objectName: l10n.cattlePurchase),
+      );
     } catch (e) {
       setGlobalError(e.toString());
     }
