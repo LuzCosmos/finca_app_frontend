@@ -473,7 +473,7 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
   }
 
   String? _buildSubtitle(SimpleEventModel detail) {
-    if (detail.type != SimpleEventType.medication || detail.data == null) {
+    if (detail.data == null) {
       return null;
     } else if (detail.type == SimpleEventType.medication) {
       final l10n = AppLocalizations.of(context)!;
@@ -486,6 +486,15 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
         '${l10n.route}: $route',
         '${l10n.medicationLot}: $lot',
       ].where((part) => part.toString().trim().isNotEmpty).join('; ');
+    } else if (detail.type == SimpleEventType.eartag) {
+      final l10n = AppLocalizations.of(context)!;
+      final data = jsonDecode(detail.data!);
+      final left = (data['eartagLeft'] ?? '').toString().trim();
+      final right = (data['eartagRight'] ?? '').toString().trim();
+      return [
+        if (left.isNotEmpty) '${l10n.eartagLeft}: $left',
+        if (right.isNotEmpty) '${l10n.eartagRight}: $right',
+      ].join('; ');
     }
     return null;
   }

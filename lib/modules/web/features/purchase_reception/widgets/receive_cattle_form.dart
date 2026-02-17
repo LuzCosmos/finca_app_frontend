@@ -39,7 +39,8 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
   late TextEditingController _numberController;
   final _weightController = TextEditingController();
   final _commentsController = TextEditingController();
-  final _eartagController = TextEditingController();
+  final _eartagLeftController = TextEditingController();
+  final _eartagRightController = TextEditingController();
   final _trackerController = TextEditingController();
   final List<String> colors = CattleColor.values.map((e) => e.name).toList();
   final List<String> characteristics =
@@ -47,11 +48,14 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
 
   Timer? _debounce;
   Timer? _numberDebounce;
-  Timer? _eartagDebounce;
+  Timer? _eartagLeftDebounce;
+  Timer? _eartagRightDebounce;
   String? _numberExternalError;
-  String? _eartagExternalError;
+  String? _eartagLeftExternalError;
+  String? _eartagRightExternalError;
   bool _isValidatingNumber = false;
-  bool _isValidatingEartag = false;
+  bool _isValidatingEartagLeft = false;
+  bool _isValidatingEartagRight = false;
 
   List<DeviceModel> _deviceOptions = [];
   bool _deviceLoading = false;
@@ -99,11 +103,13 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
     _numberController.dispose();
     _weightController.dispose();
     _commentsController.dispose();
-    _eartagController.dispose();
+    _eartagLeftController.dispose();
+    _eartagRightController.dispose();
     _trackerController.dispose();
     _debounce?.cancel();
     _numberDebounce?.cancel();
-    _eartagDebounce?.cancel();
+    _eartagLeftDebounce?.cancel();
+    _eartagRightDebounce?.cancel();
     super.dispose();
   }
 
@@ -368,17 +374,18 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                     ),
                   ),
 
-                  // Eartag
+                  // Eartag left
+
                   SizedBox(
                     width: 180,
                     child: TextFormField(
-                      controller: _eartagController,
+                      controller: _eartagRightController,
                       decoration: InputDecoration(
-                        labelText: l10n.eartag,
+                        labelText: l10n.eartagRight,
                         border: const OutlineInputBorder(),
-                        errorText: _eartagExternalError,
+                        errorText: _eartagRightExternalError,
                         suffixIcon:
-                            _isValidatingEartag
+                            _isValidatingEartagRight
                                 ? const Padding(
                                   padding: EdgeInsets.all(12.0),
                                   child: SizedBox(
@@ -392,19 +399,60 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                                 : null,
                       ),
                       validator: (v) {
-                        if (_eartagExternalError != null) {
-                          return _eartagExternalError;
+                        if (_eartagRightExternalError != null) {
+                          return _eartagRightExternalError;
                         }
                         return null;
                       },
                       onChanged: (value) {
-                        if (_eartagDebounce?.isActive ?? false) {
-                          _eartagDebounce!.cancel();
+                        if (_eartagRightDebounce?.isActive ?? false) {
+                          _eartagRightDebounce!.cancel();
                         }
-                        _eartagDebounce = Timer(
+                        _eartagRightDebounce = Timer(
                           const Duration(milliseconds: 500),
                           () {
-                            _checkEartagExists(value);
+                            _checkEartagExists(value, isLeft: false);
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    width: 180,
+                    child: TextFormField(
+                      controller: _eartagLeftController,
+                      decoration: InputDecoration(
+                        labelText: l10n.eartagLeft,
+                        border: const OutlineInputBorder(),
+                        errorText: _eartagLeftExternalError,
+                        suffixIcon:
+                            _isValidatingEartagLeft
+                                ? const Padding(
+                                  padding: EdgeInsets.all(12.0),
+                                  child: SizedBox(
+                                    width: 16,
+                                    height: 16,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
+                                  ),
+                                )
+                                : null,
+                      ),
+                      validator: (v) {
+                        if (_eartagLeftExternalError != null) {
+                          return _eartagLeftExternalError;
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {
+                        if (_eartagLeftDebounce?.isActive ?? false) {
+                          _eartagLeftDebounce!.cancel();
+                        }
+                        _eartagLeftDebounce = Timer(
+                          const Duration(milliseconds: 500),
+                          () {
+                            _checkEartagExists(value, isLeft: true);
                           },
                         );
                       },
@@ -640,27 +688,55 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
     }
   }
 
-  Future<void> _checkEartagExists(String val) async {
+  Future<void> _checkEartagExists(String val, {required bool isLeft}) async {
     final l10n = AppLocalizations.of(context)!;
     if (val.isEmpty) {
-      if (_eartagExternalError != null) {
-        setState(() => _eartagExternalError = null);
+      if (isLeft && _eartagLeftExternalError != null) {
+        setState(() => _eartagLeftExternalError = null);
+      }
+      if (!isLeft && _eartagRightExternalError != null) {
+        setState(() => _eartagRightExternalError = null);
       }
       return;
     }
-    setState(() => _isValidatingEartag = true);
+    setState(() {
+      if (isLeft) {
+        _isValidatingEartagLeft = true;
+      } else {
+        _isValidatingEartagRight = true;
+      }
+    });
     try {
       final exists = await _apiService.checkEartagExists(val);
       if (exists) {
-        setState(() => _eartagExternalError = l10n.eartag_exists_error);
-      } else if (_eartagExternalError != null) {
-        setState(() => _eartagExternalError = null);
+        setState(() {
+          if (isLeft) {
+            _eartagLeftExternalError = l10n.eartag_exists_error;
+          } else {
+            _eartagRightExternalError = l10n.eartag_exists_error;
+          }
+        });
+      } else {
+        setState(() {
+          if (isLeft && _eartagLeftExternalError != null) {
+            _eartagLeftExternalError = null;
+          }
+          if (!isLeft && _eartagRightExternalError != null) {
+            _eartagRightExternalError = null;
+          }
+        });
       }
     } catch (e) {
       widget.onError?.call(e.toString());
     } finally {
       if (mounted) {
-        setState(() => _isValidatingEartag = false);
+        setState(() {
+          if (isLeft) {
+            _isValidatingEartagLeft = false;
+          } else {
+            _isValidatingEartagRight = false;
+          }
+        });
       }
     }
   }
@@ -817,10 +893,14 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
       'gender': _selectedGender.name,
       'color': selectedColorId,
       'characteristics': selectedCharacteristicIds,
-      'eartag':
-          _eartagController.text.trim().isEmpty
+      'eartagLeft':
+          _eartagLeftController.text.trim().isEmpty
               ? null
-              : _eartagController.text.trim(),
+              : _eartagLeftController.text.trim(),
+      'eartagRight':
+          _eartagRightController.text.trim().isEmpty
+              ? null
+              : _eartagRightController.text.trim(),
       'idDevice': _selectedDeviceId, // Use selected ID
       'deviceName': _trackerController.text, // Pass the name for consistency
       'comments':

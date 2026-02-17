@@ -321,10 +321,17 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
         enableEditingMode: _hasEditPermission,
       ),
       PlutoColumn(
-        title: l10n.eartag,
-        field: 'eartag',
+        title: l10n.eartagRight,
+        field: 'eartagRight',
         type: PlutoColumnType.text(),
-        width: 100,
+        width: 110,
+        enableEditingMode: _hasEditPermission,
+      ),
+      PlutoColumn(
+        title: l10n.eartagLeft,
+        field: 'eartagLeft',
+        type: PlutoColumnType.text(),
+        width: 110,
         enableEditingMode: _hasEditPermission,
       ),
       PlutoColumn(
@@ -936,7 +943,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                             if (apiCode == ApiExceptionCode.conflictError) {
                               if (field == 'number') {
                                 _showError(l10n.cattle_exists_error);
-                              } else if (field == 'eartag') {
+                              } else if (field == 'eartagLeft' || field == 'eartagRight') {
                                 _showError(l10n.eartag_exists_error);
                               } else {
                                 _showError(apiCode.asText(context));
@@ -1020,7 +1027,8 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
           'number': PlutoCell(value: ''),
           'status': PlutoCell(value: CattleStatusEnum.ACTIVE.name),
           'lastWeight': PlutoCell(value: 0),
-          'eartag': PlutoCell(value: ''),
+          'eartagLeft': PlutoCell(value: ''),
+          'eartagRight': PlutoCell(value: ''),
           'hasHorn': PlutoCell(value: 'false'),
           'isCastrated': PlutoCell(value: 'false'),
           'color': PlutoCell(value: _colors.isNotEmpty ? _colors[0] : ''),
@@ -1059,7 +1067,8 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
           'number': PlutoCell(value: cattle['number'] ?? ''),
           'status': PlutoCell(value: cattle['status'] ?? 'ACTIVE'),
           'lastWeight': PlutoCell(value: cattle['lastWeight'] ?? 0),
-          'eartag': PlutoCell(value: cattle['eartag'] ?? ''),
+          'eartagLeft': PlutoCell(value: cattle['eartagLeft'] ?? ''),
+          'eartagRight': PlutoCell(value: cattle['eartagRight'] ?? ''),
           'hasHorn': PlutoCell(value: (cattle['hasHorn'] ?? false).toString()),
           'isCastrated': PlutoCell(
             value: (cattle['castrated'] ?? false).toString(),

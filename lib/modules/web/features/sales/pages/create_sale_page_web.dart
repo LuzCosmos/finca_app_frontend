@@ -828,9 +828,19 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                                         ? CattleColor.fromString(colorValue.toString())
                                             .localizedName(context)
                                         : '';
+                                    final eartagLeft =
+                                        (option['eartagLeft'] ?? '')
+                                            .toString()
+                                            .trim();
+                                    final eartagRight =
+                                        (option['eartagRight'] ?? '').toString().trim();
+                                    final eartagLabel = [
+                                      if (eartagLeft.isNotEmpty) eartagLeft,
+                                      if (eartagRight.isNotEmpty) eartagRight,
+                                    ].join(' / ');
                                     return ListTile(
                                       title: Text(
-                                          '${option['number']?.toString() ?? ''}${option['eartag'] != null ? ' / ${option['eartag']}' : ''}${deviceText.isNotEmpty ? ' / $deviceText' : ''}',
+                                          '${option['number']?.toString() ?? ''}${eartagLabel.isNotEmpty ? ' / $eartagLabel' : ''}${deviceText.isNotEmpty ? ' / $deviceText' : ''}',
                                           style: const TextStyle(fontSize: 13),
                                         ),
                                         subtitle: colorText.isNotEmpty

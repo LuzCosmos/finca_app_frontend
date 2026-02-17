@@ -47,7 +47,8 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
   final TextEditingController _animalNumberController = TextEditingController();
   final TextEditingController _weightController = TextEditingController();
   final TextEditingController _trackerController = TextEditingController();
-  final TextEditingController _eartagController = TextEditingController();
+  final TextEditingController _eartagLeftController = TextEditingController();
+  final TextEditingController _eartagRightController = TextEditingController();
 
   late Set<SimpleEventType> _activeTypes;
 
@@ -84,7 +85,8 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
     _animalNumberController.dispose();
     _weightController.dispose();
     _trackerController.dispose();
-    _eartagController.dispose();
+    _eartagLeftController.dispose();
+    _eartagRightController.dispose();
     _formKey.currentState?.reset();
     _formKey.currentState?.dispose();
     _activeTypes.clear();
@@ -109,7 +111,8 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
         castrated: false,
         weight: null,
         tracker: null,
-        earTag: null,
+        earTagLeft: null,
+        earTagRight: null,
         idSimpleEventsApplied: <String>[],
         brandNames: <String>[],
         medicalTreatments: <String>[],
@@ -152,13 +155,19 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
             }
             break;
           case SimpleEventType.eartag:
-            if (_eartagController.text.trim().isNotEmpty) {
-              final eartag = _eartagController.text.trim();
-              if (toApplyRow.earTag == eartag) {
+            final eartagLeft = _eartagLeftController.text.trim();
+            final eartagRight = _eartagRightController.text.trim();
+            if (eartagLeft.isNotEmpty || eartagRight.isNotEmpty) {
+              if (toApplyRow.earTagLeft == eartagLeft &&
+                  toApplyRow.earTagRight == eartagRight) {
                 continue;
               }
-              toApplyRow.earTag = eartag;
-              data = {'eartagNumber': eartag};
+              toApplyRow.earTagLeft = eartagLeft.isEmpty ? toApplyRow.earTagLeft : eartagLeft;
+              toApplyRow.earTagRight = eartagRight.isEmpty ? toApplyRow.earTagRight : eartagRight;
+              data = {
+                if (eartagLeft.isNotEmpty) 'eartagLeft': eartagLeft,
+                if (eartagRight.isNotEmpty) 'eartagRight': eartagRight,
+              };
             } else {
               continue;
             }
@@ -218,7 +227,8 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
           _animalNumberController.clear();
           _weightController.clear();
           _trackerController.clear();
-          _eartagController.clear();
+          _eartagLeftController.clear();
+          _eartagRightController.clear();
           final newMap = widget.animalEventsAppliedMap;
           newMap[animalNumber] = toApplyRow;
           widget.onApply(newMap);
@@ -234,7 +244,7 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
               }
               if (e.message.contains('Eartag')) {
                 error = l10n.error_notFound(
-                  'Eartag ${toApplyRow.earTag ?? ''}',
+                  'Eartag ${toApplyRow.earTagLeft ?? toApplyRow.earTagRight ?? ''}',
                 );
               }
             }
@@ -442,7 +452,7 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                                       return ListTile(
                                         dense: true,
                                         title: Text(
-                                          '${option['number']?.toString() ?? ''}${option['eartag'] != null ? ' / ${option['eartag']}' : ''}${deviceText.isNotEmpty ? ' / $deviceText' : ''}',
+                                          '${option['number']?.toString() ?? ''}${_formatEartags(option).isNotEmpty ? ' / ${_formatEartags(option)}' : ''}${deviceText.isNotEmpty ? ' / $deviceText' : ''}',
                                           style: const TextStyle(fontSize: 13),
                                         ),
                                         subtitle: colorText.isNotEmpty
@@ -721,18 +731,18 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                   if (_activeTypes.contains(SimpleEventType.tracker) &&
                       _activeTypes.contains(SimpleEventType.eartag))
                     const SizedBox(width: 12),
-                  if (_activeTypes.contains(SimpleEventType.eartag))
+                  if (_activeTypes.contains(SimpleEventType.eartag)) ... [
                     Expanded(
                       child: TextFormField(
-                        controller: _eartagController,
+                        controller: _eartagRightController,
                         style: const TextStyle(fontSize: 13),
                         decoration: InputDecoration(
                           isDense: true,
                           contentPadding: const EdgeInsets.symmetric(
                             vertical: 6,
                             horizontal: 8,
-                          ), // Controla la altura
-                          labelText: l10n.eartag,
+                          ),
+                          labelText: l10n.eartagRight,
                           labelStyle: const TextStyle(
                             fontSize: 11,
                           ), // Label cuando flota abajo
@@ -742,6 +752,28 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                         ),
                       ),
                     ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: TextFormField(
+                        controller: _eartagLeftController,
+                        style: const TextStyle(fontSize: 13),
+                        decoration: InputDecoration(
+                          isDense: true,
+                          contentPadding: const EdgeInsets.symmetric(
+                            vertical: 6,
+                            horizontal: 8,
+                          ), // Controla la altura
+                          labelText: l10n.eartagLeft,
+                          labelStyle: const TextStyle(
+                            fontSize: 11,
+                          ), // Label cuando flota abajo
+                          floatingLabelStyle: const TextStyle(
+                            fontSize: 11,
+                          ), // Label cuando flota arriba
+                        ),
+                      ),
+                    ),
+                  ]
                 ],
               ),
             ],
@@ -749,5 +781,14 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
         ),
       ),
     );
+  }
+
+  String _formatEartags(Map<String, dynamic> option) {
+    final left = (option['eartagLeft'] ?? '').toString().trim();
+    final right = (option['eartagRight'] ?? '').toString().trim();
+    if (left.isEmpty && right.isEmpty) return '';
+    if (left.isEmpty) return right;
+    if (right.isEmpty) return left;
+    return '$left / $right';
   }
 }

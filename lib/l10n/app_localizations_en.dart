@@ -654,6 +654,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get eartag => 'Eartag';
 
   @override
+  String get eartagLeft => 'Left Eartag';
+
+  @override
+  String get eartagRight => 'Right Eartag';
+
+  @override
   String get horns => 'Horns';
 
   @override

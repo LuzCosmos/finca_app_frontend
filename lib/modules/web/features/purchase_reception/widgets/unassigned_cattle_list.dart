@@ -84,9 +84,20 @@ class _UnassignedCattleListState extends State<UnassignedCattleList> {
                         ),
                       ),
                       Expanded(
-                        flex: 2,
+                        flex: 1,
                         child: Text(
-                          l10n.eartag,
+                          l10n.eartagRight,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: Text(
+                          l10n.eartagLeft,
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 12,
@@ -186,9 +197,17 @@ class _UnassignedCattleListState extends State<UnassignedCattleList> {
                                         ),
                                       ),
                                       Expanded(
-                                        flex: 2,
+                                        flex: 1,
                                         child: Text(
-                                          animal['eartag'] ?? '—',
+                                          _eartagRight(animal),
+                                          style: const TextStyle(fontSize: 11),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 1,
+                                        child: Text(
+                                          _eartagLeft(animal),
                                           style: const TextStyle(fontSize: 11),
                                           textAlign: TextAlign.center,
                                         ),
@@ -379,5 +398,15 @@ class _UnassignedCattleListState extends State<UnassignedCattleList> {
         style: const TextStyle(fontWeight: FontWeight.bold),
       ),
     ];
+  }
+
+  String _eartagLeft(Map<String, dynamic> cattle) {
+    final value = (cattle['eartagLeft'] ?? '').toString().trim();
+    return value.isEmpty ? '—' : value;
+  }
+
+  String _eartagRight(Map<String, dynamic> cattle) {
+    final value = (cattle['eartagRight'] ?? '').toString().trim();
+    return value.isEmpty ? '—' : value;
   }
 }

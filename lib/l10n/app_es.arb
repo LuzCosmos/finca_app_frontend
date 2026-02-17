@@ -274,6 +274,8 @@
   "number": "Número",
   "lastWeightKg": "Último Peso (kg)",
   "eartag": "Arete",
+  "eartagLeft": "Arete Izquierdo",
+  "eartagRight": "Arete Derecho",
   "horns": "Cachos",
   "castrated": "Castrado",
   "age": "Edad",

@@ -84,9 +84,20 @@ class _CattleListWithEventsState extends State<CattleListWithEvents> {
                         ),
                       ),
                       Expanded(
-                        flex: 2,
+                        flex: 1,
                         child: Text(
-                          l10n.eartag,
+                          l10n.eartagRight,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: Text(
+                          l10n.eartagLeft,
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 13,
@@ -185,9 +196,17 @@ class _CattleListWithEventsState extends State<CattleListWithEvents> {
                                         ),
                                       ),
                                       Expanded(
-                                        flex: 2,
+                                        flex: 1,
                                         child: Text(
-                                          cattle['eartag'] ?? '—',
+                                          _eartagRight(cattle),
+                                          style: const TextStyle(fontSize: 12),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 1,
+                                        child: Text(
+                                          _eartagLeft(cattle),
                                           style: const TextStyle(fontSize: 12),
                                           textAlign: TextAlign.center,
                                         ),
@@ -378,5 +397,15 @@ class _CattleListWithEventsState extends State<CattleListWithEvents> {
         style: const TextStyle(fontWeight: FontWeight.bold),
       ),
     ];
+  }
+
+  String _eartagLeft(Map<String, dynamic> cattle) {
+    final value = (cattle['eartagLeft'] ?? '').toString().trim();
+    return value.isEmpty ? '—' : value;
+  }
+
+  String _eartagRight(Map<String, dynamic> cattle) {
+    final value = (cattle['eartagRight'] ?? '').toString().trim();
+    return value.isEmpty ? '—' : value;
   }
 }

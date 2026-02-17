@@ -7,7 +7,8 @@ class AnimalSimpleEventTableRowModel {
   final String animalNumber;
   double? weight;
   String? tracker;
-  String? earTag;
+  String? earTagLeft;
+  String? earTagRight;
   bool castrated;
   List<String> idSimpleEventsApplied;
   List<String> medicalTreatments;
@@ -19,7 +20,8 @@ class AnimalSimpleEventTableRowModel {
     required this.animalNumber,
     this.weight,
     this.tracker,
-    this.earTag,
+    this.earTagLeft,
+    this.earTagRight,
     this.castrated = false,
     List<String>? idSimpleEventsApplied,
     List<String>? medicalTreatments,
@@ -54,8 +56,12 @@ class AnimalSimpleEventTableRowModel {
       (e) => e.type == SimpleEventType.eartag && e.data != null,
     );
 
-    final earTag =
-        earTagEvent != null ? jsonDecode(earTagEvent.data!)['eartag'] : null;
+    final earTagData = earTagEvent != null ? jsonDecode(earTagEvent.data!) : null;
+    final earTagLeft =
+        earTagData != null
+            ? earTagData['eartagLeft']
+            : null;
+    final earTagRight = earTagData != null ? earTagData['eartagRight'] : null;
 
     final castratedEvent = animalSimpleEvents.firstWhereOrNull(
       (e) => e.type == SimpleEventType.castration && e.data != null,
@@ -89,7 +95,8 @@ class AnimalSimpleEventTableRowModel {
       animalNumber: animalSimpleEvents.first.animalNumber,
       weight: weight,
       tracker: tracker,
-      earTag: earTag,
+      earTagLeft: earTagLeft,
+      earTagRight: earTagRight,
       castrated: castrated,
       idSimpleEventsApplied: idSimpleEventsApplied,
       medicalTreatments: medicalTreatments,
@@ -117,8 +124,12 @@ class AnimalSimpleEventTableRowModel {
     final earTagEvent = animalSimpleEvents.firstWhereOrNull(
       (e) => e.type == SimpleEventType.eartag && e.data != null,
     );
-    final earTag =
-        earTagEvent != null ? jsonDecode(earTagEvent.data!)['eartag'] : null;
+    final earTagData = earTagEvent != null ? jsonDecode(earTagEvent.data!) : null;
+    final earTagLeft =
+        earTagData != null
+            ? earTagData['eartagLeft']
+            : null;
+    final earTagRight = earTagData != null ? earTagData['eartagRight'] : null;
     final castratedEvent = animalSimpleEvents.firstWhereOrNull(
       (e) => e.type == SimpleEventType.castration && e.data != null,
     );
@@ -149,7 +160,8 @@ class AnimalSimpleEventTableRowModel {
         }).toList();
     this.weight = weight ?? this.weight;
     this.tracker = tracker ?? this.tracker;
-    this.earTag = earTag ?? this.earTag;
+    this.earTagLeft = earTagLeft ?? this.earTagLeft;
+    this.earTagRight = earTagRight ?? this.earTagRight;
     this.castrated = castrated;
     this.isSynced = isSynced;
     idSimpleEventsApplied =

@@ -123,7 +123,15 @@ class _ProcessedAnimalsTableState extends State<ProcessedAnimalsTable> {
         if (widget.simpleEventTypes.contains(SimpleEventType.eartag))
           DataColumn(
             label: Text(
-              l10n.eartag,
+              l10n.eartagRight,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+            ),
+          ),
+        if (widget.simpleEventTypes.contains(SimpleEventType.eartag))
+          DataColumn(
+            label: Text(
+              l10n.eartagLeft,
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
             ),
@@ -201,7 +209,17 @@ class _ProcessedAnimalsTableState extends State<ProcessedAnimalsTable> {
                         vertical: 3,
                         horizontal: 8,
                       ),
-                      child: Text(animalRow.earTag ?? ''),
+                      child: Text(animalRow.earTagRight ?? ''),
+                    ),
+                  ),
+                if (widget.simpleEventTypes.contains(SimpleEventType.eartag))
+                  DataCell(
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 3,
+                        horizontal: 8,
+                      ),
+                      child: Text(animalRow.earTagLeft ?? ''),
                     ),
                   ),
                 if (widget.simpleEventTypes.contains(

@@ -1304,6 +1304,18 @@ abstract class AppLocalizations {
   /// **'Eartag'**
   String get eartag;
 
+  /// No description provided for @eartagLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Left Eartag'**
+  String get eartagLeft;
+
+  /// No description provided for @eartagRight.
+  ///
+  /// In en, this message translates to:
+  /// **'Right Eartag'**
+  String get eartagRight;
+
   /// No description provided for @horns.
   ///
   /// In en, this message translates to:

@@ -23,6 +23,8 @@ class _EventDetailFormState extends State<EventDetailForm> {
   final TextEditingController _routeController = TextEditingController();
   final TextEditingController _dosageController = TextEditingController();
   final TextEditingController _lotController = TextEditingController();
+  final TextEditingController _eartagLeftController = TextEditingController();
+  final TextEditingController _eartagRightController = TextEditingController();
   BrandModel? selectedBrandObject;
   List<BrandModel> availableBrands = [];
   bool _initialized = false;
@@ -33,6 +35,8 @@ class _EventDetailFormState extends State<EventDetailForm> {
     _routeController.dispose();
     _dosageController.dispose();
     _lotController.dispose();
+    _eartagLeftController.dispose();
+    _eartagRightController.dispose();
     availableBrands.clear();
     selectedBrandObject = null;
     _formKey.currentState?.reset();
@@ -194,6 +198,18 @@ class _EventDetailFormState extends State<EventDetailForm> {
                   label: Text(l10n.createNewBrand),
                 ),
               ],
+              if (selectedType == SimpleEventType.eartag.name) ...[
+                const SizedBox(height: 8),
+                TextFormField(
+                  controller: _eartagRightController,
+                  decoration: InputDecoration(labelText: l10n.eartagRight),
+                ),
+                const SizedBox(height: 8),
+                TextFormField(
+                  controller: _eartagLeftController,
+                  decoration: InputDecoration(labelText: l10n.eartagLeft),
+                ),
+              ],
             ],
           ),
         ),
@@ -212,6 +228,16 @@ class _EventDetailFormState extends State<EventDetailForm> {
               final isValid = _formKey.currentState?.validate() ?? false;
               if (!isValid) return;
             }
+            if (selectedType == SimpleEventType.eartag.name) {
+              final left = _eartagLeftController.text.trim();
+              final right = _eartagRightController.text.trim();
+              if (left.isEmpty && right.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(l10n.fieldRequired)),
+                );
+                return;
+              }
+            }
             final Map<String, dynamic> data = {'type': selectedType};
             if (selectedType == SimpleEventType.medication.name) {
               data['name'] = _nameController.text;
@@ -226,6 +252,14 @@ class _EventDetailFormState extends State<EventDetailForm> {
               data['data'] = jsonEncode({
                 'idBrand': selectedBrandObject!.id,
                 'brandName': selectedBrandObject!.name,
+              });
+            } else if (selectedType == SimpleEventType.eartag.name) {
+              final left = _eartagLeftController.text.trim();
+              final right = _eartagRightController.text.trim();
+              data['name'] = selectedType;
+              data['data'] = jsonEncode({
+                if (left.isNotEmpty) 'eartagLeft': left,
+                if (right.isNotEmpty) 'eartagRight': right,
               });
             } else {
               data['name'] = selectedType;

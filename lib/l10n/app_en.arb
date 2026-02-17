@@ -274,6 +274,8 @@
   "number": "Number",
   "lastWeightKg": "Last Weight (kg)",
   "eartag": "Eartag",
+  "eartagLeft": "Left Eartag",
+  "eartagRight": "Right Eartag",
   "horns": "Horns",
   "castrated": "Castrated",
   "age": "Age",

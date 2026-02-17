@@ -653,6 +653,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get eartag => 'Arete';
 
   @override
+  String get eartagLeft => 'Arete Izquierdo';
+
+  @override
+  String get eartagRight => 'Arete Derecho';
+
+  @override
   String get horns => 'Cachos';
 
   @override
