@@ -568,10 +568,10 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
         },
       ),
       PlutoColumn(
-        title: l10n.age,
-        field: 'age',
-        type: PlutoColumnType.number(format: '#,##0.##'),
-        width: 60,
+        title: l10n.approxBirthDate,
+        field: 'birthDateAprx',
+        type: PlutoColumnType.text(),
+        width: 120,
         enableEditingMode: _hasEditPermission,
       ),
       PlutoColumn(
@@ -687,13 +687,6 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
             ),
           );
         },
-      ),
-      PlutoColumn(
-        title: l10n.lot,
-        field: 'lot',
-        type: PlutoColumnType.text(),
-        width: 100,
-        enableEditingMode: _hasEditPermission,
       ),
       PlutoColumn(
         title: l10n.comments,
@@ -1034,10 +1027,9 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
           'color': PlutoCell(value: _colors.isNotEmpty ? _colors[0] : ''),
           'characteristics': PlutoCell(value: ''),
           'gender': PlutoCell(value: 'MALE'),
-          'age': PlutoCell(value: 0),
+          'birthDateAprx': PlutoCell(value: ''),
           'tracker': PlutoCell(value: ''),
           'idDevice': PlutoCell(value: ''),
-          'lot': PlutoCell(value: ''),
           'comments': PlutoCell(value: ''),
           'purchaseWeight': PlutoCell(value: 0),
           'purchasePrice': PlutoCell(value: 0),
@@ -1077,8 +1069,8 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
           'characteristics': PlutoCell(value: characteristicsList),
           'characteristicsIds': PlutoCell(value: characteristicIds),
           'gender': PlutoCell(value: cattle['gender'] ?? 'MALE'),
-          'age': PlutoCell(
-            value: double.tryParse(cattle['age']?.toString() ?? '') ?? 0,
+          'birthDateAprx': PlutoCell(
+            value: (cattle['birthDateAprx'] ?? '').toString(),
           ),
           'tracker': PlutoCell(
             value:
@@ -1092,7 +1084,6 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                     ? cattle['device']['id']
                     : ((cattle['idDevice'] as String?) ?? ''),
           ),
-          'lot': PlutoCell(value: cattle['lot'] ?? ''),
           'comments': PlutoCell(value: cattle['comments'] ?? ''),
           'purchaseWeight': PlutoCell(value: cattle['purchaseWeight'] ?? 0),
           'purchasePrice': PlutoCell(value: cattle['purchasePrice'] ?? 0),

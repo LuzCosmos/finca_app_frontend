@@ -8,9 +8,6 @@ import 'package:finca_app_frontend/modules/shared/features/devices/models/device
 import 'package:finca_app_frontend/modules/shared/features/devices/services/device_api_service.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'package:finca_app_frontend/modules/shared/enums/cattle_enums.dart';
-import 'package:finca_app_frontend/core/utils/regex_patterns.dart';
-import 'package:finca_app_frontend/modules/shared/validator/validator.dart';
-import 'package:flutter/services.dart';
 
 class ReceiveCattleForm extends StatefulWidget {
   final String? currentNumber;
@@ -70,7 +67,7 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
   List<String> selectedCharacteristicIds = [];
   bool hasHorns = false;
   bool isCastrated = false;
-  final _ageController = TextEditingController();
+  final _birthDateAprxController = TextEditingController();
   CattleGender _selectedGender = CattleGender.MALE;
 
   @override
@@ -106,6 +103,7 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
     _eartagLeftController.dispose();
     _eartagRightController.dispose();
     _trackerController.dispose();
+    _birthDateAprxController.dispose();
     _debounce?.cancel();
     _numberDebounce?.cancel();
     _eartagLeftDebounce?.cancel();
@@ -288,27 +286,18 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                     ),
                   ),
 
-                  // Age
+                  // Approximate birth date
                   SizedBox(
-                    width: 70,
+                    width: 170,
                     child: TextFormField(
-                      controller: _ageController,
-                      textAlign: TextAlign.right,
+                      controller: _birthDateAprxController,
+                      readOnly: true,
                       decoration: InputDecoration(
-                        labelText: l10n.age,
+                        labelText: l10n.approxBirthDate,
                         border: const OutlineInputBorder(),
+                        suffixIcon: const Icon(Icons.calendar_today),
                       ),
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(
-                          RegexPatterns.permissivePositiveDecimalTwoDigits,
-                        ),
-                      ],
-                      validator: Validator.validateNumericMandatory(
-                        l10n.lot_totalWeightRequired,
-                        l10n.lot_totalWeightInvalid,
-                        RegexPatterns.positiveDecimalTwoDigitsNoZero,
-                      ),
+                      onTap: _pickBirthDateAprx,
                     ),
                   ),
 
@@ -889,7 +878,10 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
       'idLot': selectedLotId,
       'hasHorns': hasHorns,
       'isCastrated': isCastrated,
-      'age': double.tryParse(_ageController.text.trim()),
+      'birthDateAprx':
+          _birthDateAprxController.text.trim().isEmpty
+              ? null
+              : _birthDateAprxController.text.trim(),
       'gender': _selectedGender.name,
       'color': selectedColorId,
       'characteristics': selectedCharacteristicIds,
@@ -922,5 +914,21 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
       widget.onError?.call(e.toString());
     }
     //_resetForm();
+  }
+
+  Future<void> _pickBirthDateAprx() async {
+    final now = DateTime.now();
+    final initialDate = now.subtract(const Duration(days: 365 * 2));
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: DateTime(1990),
+      lastDate: now,
+    );
+    if (picked == null) return;
+    final y = picked.year.toString().padLeft(4, '0');
+    final m = picked.month.toString().padLeft(2, '0');
+    final d = picked.day.toString().padLeft(2, '0');
+    _birthDateAprxController.text = '$y-$m-$d';
   }
 }

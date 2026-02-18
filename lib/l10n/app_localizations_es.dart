@@ -668,6 +668,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get age => 'Edad';
 
   @override
+  String get approxBirthDate => 'Fecha aprox. de nacimiento';
+
+  @override
   String get tracker => 'Tracker';
 
   @override

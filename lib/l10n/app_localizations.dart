@@ -1334,6 +1334,12 @@ abstract class AppLocalizations {
   /// **'Age'**
   String get age;
 
+  /// No description provided for @approxBirthDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Approx. Birth Date'**
+  String get approxBirthDate;
+
   /// No description provided for @tracker.
   ///
   /// In en, this message translates to:

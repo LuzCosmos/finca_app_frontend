@@ -173,7 +173,7 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
       idProvider: receptionData!['reception']['providerId'],
       comments: cattleData['comments'],
       gender: cattleData['gender'],
-      age: cattleData['age'],
+      birthDateAprx: cattleData['birthDateAprx'],
       idSimpleEvents: cattleData['idSimpleEvents'],
     );
     await _load();

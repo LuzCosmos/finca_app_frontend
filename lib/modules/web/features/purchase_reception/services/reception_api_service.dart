@@ -60,7 +60,7 @@ class ReceptionApiService {
 
   Future<Map<String, dynamic>> getPurchaseReception(String purchaseId) async {
     final url = Uri.parse('$baseUrl/$purchaseId');
-    var response;
+    late final http.Response response;
     try {
       response = await BasicApiService.authorizedGet(
         url,
@@ -80,24 +80,17 @@ class ReceptionApiService {
         'Error al obtener purchase reception: $e',
       );
     }
-    if (response != null) {
-      if (response.statusCode == 201 || response.statusCode == 200) {
-        try {
-          return jsonDecode(response.body) as Map<String, dynamic>;
-        } catch (e) {
-          throw ApiException(
-            'savingObjectError',
-            'Error al obtener purchase reception: $e',
-          );
-        }
-      } else {
-        BasicApiService.manageNotSuccessResponseCode(response);
+    if (response.statusCode == 201 || response.statusCode == 200) {
+      try {
+        return jsonDecode(response.body) as Map<String, dynamic>;
+      } catch (e) {
+        throw ApiException(
+          'savingObjectError',
+          'Error al obtener purchase reception: $e',
+        );
       }
     } else {
-      throw ApiException(
-        'savingObjectError',
-        'Get purchase reception: Response is null.',
-      );
+      BasicApiService.manageNotSuccessResponseCode(response);
     }
   }
 
@@ -119,7 +112,7 @@ class ReceptionApiService {
     String? idProvider,
     String? comments,
     String? gender,
-    String? age,
+    String? birthDateAprx,
     List<String>? idSimpleEvents,
   }) async {
     final body = {
@@ -131,7 +124,7 @@ class ReceptionApiService {
       'hasHorn': hasHorn,
       'castrated': castrated,
       'gender': gender,
-      'age': age,
+      'birthDateAprx': birthDateAprx,
       'idLot': idLot,
       'color': color,
       'characteristics': characteristics ?? [],

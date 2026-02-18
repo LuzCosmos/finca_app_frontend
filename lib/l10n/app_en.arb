@@ -279,6 +279,7 @@
   "horns": "Horns",
   "castrated": "Castrated",
   "age": "Age",
+  "approxBirthDate": "Approx. Birth Date",
   "tracker": "Tracker",
   "comments": "Comments",
   "receivedAt": "Received at",
