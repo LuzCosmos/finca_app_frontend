@@ -108,5 +108,17 @@ class AppTheme {
         color: Color(0xFF1E2D26),
       ),
     ),
+
+    // Evita que los números del calendario se corten en el popup de columnas tipo date (p. ej. PlutoGrid)
+    datePickerTheme: DatePickerThemeData(
+      dayStyle: const TextStyle(
+        fontSize: 14,
+        height: 2.0,
+      ),
+      weekdayStyle: const TextStyle(
+        fontSize: 12,
+        height: 1.8,
+      ),
+    ),
   );
 }

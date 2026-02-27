@@ -650,6 +650,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get lastWeightKg => 'Último Peso (kg)';
 
   @override
+  String get estimatedWeightKg => 'Peso estimado (kg)';
+
+  @override
   String get eartag => 'Arete';
 
   @override
@@ -669,6 +672,12 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get approxBirthDate => 'Fecha aprox. de nacimiento';
+
+  @override
+  String get newFeedStartDate => 'Inicio nueva alimentación';
+
+  @override
+  String get averageDailyGain => 'Ganancia diaria prom.';
 
   @override
   String get tracker => 'Tracker';

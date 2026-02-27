@@ -20,7 +20,7 @@ class _LoginFormState extends State<LoginForm> {
   final _formKey = GlobalKey<FormState>();
   String username = '';
   String password = '';
-  String companyUsername = 'finca_alamos';
+  String companyUsername = 'GPCB';
 
   bool loading = false;
   late final AuthService authService;
@@ -94,7 +94,7 @@ class _LoginFormState extends State<LoginForm> {
                 (val) => val!.isEmpty ? l10n.login_passwordRequired : null,
           ),
           TextFormField(
-            initialValue: 'finca_alamos',
+            initialValue: 'GPCB',
             decoration: InputDecoration(labelText: l10n.company),
             onChanged: (val) => companyUsername = val,
           ),

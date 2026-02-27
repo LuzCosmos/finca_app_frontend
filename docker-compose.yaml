@@ -1,7 +1,7 @@
 services:
   # Frontend Web App
   web:
-    container_name: finca_app_frontend
+    container_name: ${ENVIRONMENT}_finca_app_frontend
     image: finca_app_frontend:latest
     restart: unless-stopped
     ports:

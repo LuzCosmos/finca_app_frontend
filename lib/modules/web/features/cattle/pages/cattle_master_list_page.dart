@@ -101,7 +101,10 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
     }
 
     try {
-      final cattleResult = await _service.getCattleList(page: _page, limit: _limit);
+      final cattleResult = await _service.getCattleList(
+        page: _page,
+        limit: _limit,
+      );
       _total = cattleResult.total;
       final cattleList = cattleResult.items;
       final newRows = _createRows(cattleList);
@@ -183,6 +186,80 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
     return characteristicIds.map(_localizedCharacteristicLabel).join(', ');
   }
 
+  /// Columna de fecha que usa el DatePicker de Flutter (calendario bien dimensionado)
+  /// en lugar del calendario interno de PlutoGrid, que hereda la altura de fila y corta los números.
+  PlutoColumn _buildDateColumn(String title, String field, double width) {
+    return PlutoColumn(
+      title: title,
+      field: field,
+      type: PlutoColumnType.text(),
+      width: width,
+      enableEditingMode: false,
+      renderer: (rendererContext) {
+        final cell = rendererContext.cell;
+        final value = cell.value;
+        final displayText = DateTimeHelper.formatLocalDate(value, fallback: '');
+        return InkWell(
+          onTap: !_hasEditPermission
+              ? null
+              :               () async {
+                  final rowKey = rendererContext.row.key;
+                  DateTime? initial = displayText.isEmpty ? null : DateTime.tryParse(displayText);
+                  if (initial == null && value != null && value.toString().isNotEmpty) {
+                    initial = DateTimeHelper.parseToLocal(value);
+                  }
+                  final picked = await showDatePicker(
+                    context: context,
+                    initialDate: initial ?? DateTime.now(),
+                    firstDate: DateTime(1900),
+                    lastDate: DateTime(2100),
+                    useRootNavigator: true,
+                  );
+                  if (picked == null || !mounted) return;
+                  final formatted = DateTimeHelper.formatLocalDate(picked, fallback: '');
+                  // Rebuscar la fila y celda actuales tras el async (la referencia puede quedar obsoleta)
+                  PlutoRow? row;
+                  try {
+                    row = stateManager.rows.firstWhere((r) => r.key == rowKey);
+                  } catch (_) {
+                    if (mounted) _showError('No se encontró la fila');
+                    return;
+                  }
+                  final targetCell = row.cells[field];
+                  if (targetCell != null) {
+                    stateManager.changeCellValue(
+                      targetCell,
+                      formatted,
+                      force: true,
+                      callOnChangedEvent: false,
+                    );
+                  }
+                  final rowId = row.cells['id']?.value.toString() ?? '';
+                  if (rowId.isNotEmpty && rowId != 'New') {
+                    try {
+                      await _service.updateCattle(rowId, {field: formatted});
+                      if (mounted) _showSuccess('Saved');
+                    } catch (e) {
+                      if (mounted) _showError('Error: $e');
+                    }
+                  }
+                },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 2),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                displayText,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(fontSize: 13),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   ({String field, dynamic value}) _normalizeChangedValue(
     PlutoGridOnChangedEvent event,
   ) {
@@ -235,6 +312,30 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
       row.cells['medicationHistory']!.value = updatedData['medicationHistory'];
       changed = true;
     }
+    // El backend puede recalcular averageDailyGain al actualizar lastWeight
+    final averageDailyGain = updatedData['averageDailyGain'] ?? updatedData['average_daily_gain'];
+    if (averageDailyGain != null && row.cells['averageDailyGain'] != null) {
+      stateManager.changeCellValue(
+        row.cells['averageDailyGain']!,
+        averageDailyGain,
+        force: true,
+        callOnChangedEvent: false,
+      );
+      changed = true;
+    }
+    // Peso estimado se recalcula en backend al actualizar lastWeight
+    if (updatedData.containsKey('estimatedWeight') || updatedData.containsKey('estimated_weight')) {
+      final estimatedWeight = updatedData['estimatedWeight'] ?? updatedData['estimated_weight'];
+      if (row.cells['estimatedWeight'] != null) {
+        stateManager.changeCellValue(
+          row.cells['estimatedWeight']!,
+          estimatedWeight,
+          force: true,
+          callOnChangedEvent: false,
+        );
+        changed = true;
+      }
+    }
     if (changed) {
       stateManager.notifyListeners();
     }
@@ -255,604 +356,630 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
       _gridKey = ValueKey('cattle-grid-$localeKey-$_hasEditPermission');
 
       _cachedColumns = [
-      PlutoColumn(
-        title: 'Id',
-        field: 'id',
-        type: PlutoColumnType.text(),
-        hide: true,
-        width: 0,
-      ),
-      PlutoColumn(
-        title: l10n.number,
-        field: 'number',
-        type: PlutoColumnType.text(),
-        width: 90,
-        enableEditingMode: _hasEditPermission,
-        frozen: PlutoColumnFrozen.start,
-      ),
-      PlutoColumn(
-        title: l10n.status,
-        field: 'status',
-        type: PlutoColumnType.text(),
-        enableEditingMode: _hasEditPermission,
-        width: 80,
-        renderer: (rendererContext) {
-          String currentValue = rendererContext.cell.value.toString();
-          final statusList = CattleStatusEnum.getStatusList();
-          return DropdownButtonHideUnderline(
-            child: DropdownButton<String>(
-              value: statusList.contains(currentValue) ? currentValue : null,
-              icon: const Icon(Icons.arrow_drop_down, size: 16),
-              isDense: true,
-              isExpanded: true,
-              style: const TextStyle(fontSize: 12, color: Colors.black),
-              items:
-                  statusList.map((s) {
-                    return DropdownMenuItem(
-                      value: s,
-                      child: Text(
-                        CattleStatusEnum.fromString(s).localizedName(context),
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(fontSize: 12),
-                      ),
-                    );
-                  }).toList(),
+        PlutoColumn(
+          title: 'Id',
+          field: 'id',
+          type: PlutoColumnType.text(),
+          hide: true,
+          width: 0,
+        ),
+        PlutoColumn(
+          title: l10n.number,
+          field: 'number',
+          type: PlutoColumnType.text(),
+          width: 90,
+          enableEditingMode: _hasEditPermission,
+          frozen: PlutoColumnFrozen.start,
+        ),
+        PlutoColumn(
+          title: l10n.status,
+          field: 'status',
+          type: PlutoColumnType.text(),
+          enableEditingMode: _hasEditPermission,
+          width: 80,
+          renderer: (rendererContext) {
+            String currentValue = rendererContext.cell.value.toString();
+            final statusList = CattleStatusEnum.getStatusList();
+            return DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                value: statusList.contains(currentValue) ? currentValue : null,
+                icon: const Icon(Icons.arrow_drop_down, size: 16),
+                isDense: true,
+                isExpanded: true,
+                style: const TextStyle(fontSize: 12, color: Colors.black),
+                items:
+                    statusList.map((s) {
+                      return DropdownMenuItem(
+                        value: s,
+                        child: Text(
+                          CattleStatusEnum.fromString(s).localizedName(context),
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(fontSize: 12),
+                        ),
+                      );
+                    }).toList(),
+                onChanged:
+                    !_hasEditPermission
+                        ? null
+                        : (newValue) {
+                          if (newValue != null) {
+                            debugPrint('Status changed to $newValue');
+                            rendererContext.stateManager.changeCellValue(
+                              rendererContext.cell,
+                              newValue,
+                            );
+                          }
+                        },
+              ),
+            );
+          },
+        ),
+        PlutoColumn(
+          title: l10n.lastWeightKg,
+          field: 'lastWeight',
+          type: PlutoColumnType.number(format: '#,##0.00'),
+          width: 100,
+          enableEditingMode: _hasEditPermission,
+        ),
+        PlutoColumn(
+          title: l10n.estimatedWeightKg,
+          field: 'estimatedWeight',
+          type: PlutoColumnType.number(format: '#,##0.00'),
+          width: 120,
+          enableEditingMode: false,
+        ),
+        PlutoColumn(
+          title: l10n.averageDailyGain,
+          field: 'averageDailyGain',
+          type: PlutoColumnType.number(
+            format: '#,##0.000',
+            applyFormatOnInit: true,
+          ),
+          width: 120,
+          enableEditingMode: _hasEditPermission,
+        ),
+        PlutoColumn(
+          title: l10n.eartagRight,
+          field: 'eartagRight',
+          type: PlutoColumnType.text(),
+          width: 110,
+          enableEditingMode: _hasEditPermission,
+        ),
+        PlutoColumn(
+          title: l10n.eartagLeft,
+          field: 'eartagLeft',
+          type: PlutoColumnType.text(),
+          width: 110,
+          enableEditingMode: _hasEditPermission,
+        ),
+        PlutoColumn(
+          title: l10n.horns,
+          field: 'hasHorn',
+          type: PlutoColumnType.text(),
+          renderer: (rendererContext) {
+            bool value = rendererContext.cell.value.toString() == 'true';
+            return Checkbox(
+              value: value,
               onChanged:
                   !_hasEditPermission
                       ? null
                       : (newValue) {
-                        if (newValue != null) {
-                          debugPrint('Status changed to $newValue');
-                          rendererContext.stateManager.changeCellValue(
-                            rendererContext.cell,
-                            newValue,
-                          );
-                        }
+                        stateManager.changeCellValue(
+                          rendererContext.cell,
+                          newValue.toString(),
+                        );
                       },
-            ),
-          );
-        },
-      ),
-      PlutoColumn(
-        title: l10n.lastWeightKg,
-        field: 'lastWeight',
-        type: PlutoColumnType.number(),
-        width: 100,
-        enableEditingMode: _hasEditPermission,
-      ),
-      PlutoColumn(
-        title: l10n.eartagRight,
-        field: 'eartagRight',
-        type: PlutoColumnType.text(),
-        width: 110,
-        enableEditingMode: _hasEditPermission,
-      ),
-      PlutoColumn(
-        title: l10n.eartagLeft,
-        field: 'eartagLeft',
-        type: PlutoColumnType.text(),
-        width: 110,
-        enableEditingMode: _hasEditPermission,
-      ),
-      PlutoColumn(
-        title: l10n.horns,
-        field: 'hasHorn',
-        type: PlutoColumnType.text(),
-        renderer: (rendererContext) {
-          bool value = rendererContext.cell.value.toString() == 'true';
-          return Checkbox(
-            value: value,
-            onChanged:
-                !_hasEditPermission
-                    ? null
-                    : (newValue) {
-                      stateManager.changeCellValue(
-                        rendererContext.cell,
-                        newValue.toString(),
-                      );
-                    },
-          );
-        },
-        width: 80,
-      ),
-      PlutoColumn(
-        title: l10n.castrated,
-        field: 'isCastrated',
-        type: PlutoColumnType.text(),
-        renderer: (rendererContext) {
-          bool value = rendererContext.cell.value.toString() == 'true';
-          return Checkbox(
-            value: value,
-            onChanged:
-                !_hasEditPermission
-                    ? null
-                    : (newValue) {
-                      stateManager.changeCellValue(
-                        rendererContext.cell,
-                        newValue.toString(),
-                      );
-                    },
-          );
-        },
-        width: 90,
-      ),
-      // Dynamic Color Dropdown
-      PlutoColumn(
-        title: l10n.color,
-        field: 'color',
-        type: PlutoColumnType.text(),
-        enableEditingMode: _hasEditPermission,
-        width: 120,
-        renderer: (rendererContext) {
-          String currentValue = rendererContext.cell.value.toString();
-          // Ensure current value is in the list, otherwise default to first or handle gracefully
-          if (!_colors.contains(currentValue) && _colors.isNotEmpty) {
-            // Optional: logic to handle unknown values
-          }
-          return DropdownButtonHideUnderline(
-            child: DropdownButton<String>(
-              value: _colors.contains(currentValue) ? currentValue : null,
-              icon: const Icon(Icons.arrow_drop_down, size: 16),
-              isDense: true,
-              isExpanded: true,
-              style: const TextStyle(fontSize: 12, color: Colors.black),
-              items:
-                  _colors.map((c) {
-                    return DropdownMenuItem(
-                      value: c,
-                      child: Text(
-                        CattleColor.fromString(c).localizedName(context),
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(fontSize: 12),
-                      ),
-                    );
-                  }).toList(),
+            );
+          },
+          width: 80,
+        ),
+        PlutoColumn(
+          title: l10n.castrated,
+          field: 'isCastrated',
+          type: PlutoColumnType.text(),
+          renderer: (rendererContext) {
+            bool value = rendererContext.cell.value.toString() == 'true';
+            return Checkbox(
+              value: value,
               onChanged:
                   !_hasEditPermission
                       ? null
                       : (newValue) {
-                        if (newValue != null) {
-                          debugPrint('Color changed to $newValue');
-                          rendererContext.stateManager.changeCellValue(
-                            rendererContext.cell,
-                            newValue,
-                          );
-                        }
+                        stateManager.changeCellValue(
+                          rendererContext.cell,
+                          newValue.toString(),
+                        );
                       },
-            ),
-          );
-        },
-      ),
-      PlutoColumn(
-        title: l10n.characteristics,
-        field: 'characteristics',
-        type: PlutoColumnType.text(),
-        width: 150,
-        enableEditingMode: false,
-        renderer: (rendererContext) {
-          return InkWell(
-            onTap:
-                !_hasEditPermission
-                    ? null
-                    : () async {
-                      final ids =
-                          rendererContext.row.cells['characteristicsIds']?.value
-                              as List<String>;
-                      // Capture key to ensure we find the correct row even if sorting/filtering changed usage
-                      final rowKey = rendererContext.row.key;
-                      final cattleNumber =
-                          rendererContext.row.cells['number']?.value
-                              .toString() ??
-                          '';
-                      final result = await showDialog(
-                        context: context,
-                        builder:
-                            (ctx) => CharacteristicsEditDialog(
-                              availableCharacteristics: _characteristics,
-                              selectedIds: ids,
-                              cattleNumber: cattleNumber,
-                            ),
+            );
+          },
+          width: 90,
+        ),
+        // Dynamic Color Dropdown
+        PlutoColumn(
+          title: l10n.color,
+          field: 'color',
+          type: PlutoColumnType.text(),
+          enableEditingMode: _hasEditPermission,
+          width: 120,
+          renderer: (rendererContext) {
+            String currentValue = rendererContext.cell.value.toString();
+            // Ensure current value is in the list, otherwise default to first or handle gracefully
+            if (!_colors.contains(currentValue) && _colors.isNotEmpty) {
+              // Optional: logic to handle unknown values
+            }
+            return DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                value: _colors.contains(currentValue) ? currentValue : null,
+                icon: const Icon(Icons.arrow_drop_down, size: 16),
+                isDense: true,
+                isExpanded: true,
+                style: const TextStyle(fontSize: 12, color: Colors.black),
+                items:
+                    _colors.map((c) {
+                      return DropdownMenuItem(
+                        value: c,
+                        child: Text(
+                          CattleColor.fromString(c).localizedName(context),
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(fontSize: 12),
+                        ),
                       );
-                      if (result != null && result is Map && mounted) {
-                        final newIds = result['ids'] as List<String>;
-                        final newNames = result['names'] as List<String>;
-                        debugPrint('Dialog result received. IDs: $newIds');
-                        // Find the row
-                        PlutoRow activeRow;
-                        try {
-                          activeRow = stateManager.rows.firstWhere(
-                            (r) => r.key == rowKey,
-                          );
-                        } catch (e) {
-                          debugPrint('Could not find row with key $rowKey: $e');
-                          return;
-                        }
-                        final rowId =
-                            activeRow.cells['id']?.value.toString() ?? '';
-                        if (rowId != 'New' && rowId.isNotEmpty) {
-                          debugPrint("Saving to DB for row $rowId");
+                    }).toList(),
+                onChanged:
+                    !_hasEditPermission
+                        ? null
+                        : (newValue) {
+                          if (newValue != null) {
+                            debugPrint('Color changed to $newValue');
+                            rendererContext.stateManager.changeCellValue(
+                              rendererContext.cell,
+                              newValue,
+                            );
+                          }
+                        },
+              ),
+            );
+          },
+        ),
+        PlutoColumn(
+          title: l10n.characteristics,
+          field: 'characteristics',
+          type: PlutoColumnType.text(),
+          width: 150,
+          enableEditingMode: false,
+          renderer: (rendererContext) {
+            return InkWell(
+              onTap:
+                  !_hasEditPermission
+                      ? null
+                      : () async {
+                        final ids =
+                            rendererContext
+                                    .row
+                                    .cells['characteristicsIds']
+                                    ?.value
+                                as List<String>;
+                        // Capture key to ensure we find the correct row even if sorting/filtering changed usage
+                        final rowKey = rendererContext.row.key;
+                        final cattleNumber =
+                            rendererContext.row.cells['number']?.value
+                                .toString() ??
+                            '';
+                        final result = await showDialog(
+                          context: context,
+                          builder:
+                              (ctx) => CharacteristicsEditDialog(
+                                availableCharacteristics: _characteristics,
+                                selectedIds: ids,
+                                cattleNumber: cattleNumber,
+                              ),
+                        );
+                        if (result != null && result is Map && mounted) {
+                          final newIds = result['ids'] as List<String>;
+                          final newNames = result['names'] as List<String>;
+                          debugPrint('Dialog result received. IDs: $newIds');
+                          // Find the row
+                          PlutoRow activeRow;
                           try {
-                            // Manual API call to avoid triggering onChanged with List value
-                            await _service.updateCattle(rowId, {
-                              'characteristics': newIds,
-                            });
-                            if (mounted) {
-                              // Update hidden value directly
-                              activeRow.cells['characteristicsIds']!.value =
-                                  newIds;
-                              // Update visible text manually
-                              activeRow
-                                  .cells['characteristics']!
-                                  .value = newNames.join(', ');
-                              // Force grid refresh
-                              stateManager
-                                  .notifyListeners(); // Notify PlutoGrid to rebuild
-                              setState(
-                                () {},
-                              ); // Trigger local widget rebuild just in case
-                              _showSuccess('Saved');
-                            }
+                            activeRow = stateManager.rows.firstWhere(
+                              (r) => r.key == rowKey,
+                            );
                           } catch (e) {
-                            debugPrint("Error saving characteristics: $e");
-                            if (mounted) {
-                              _showError('Error saving: $e');
-                            }
+                            debugPrint(
+                              'Could not find row with key $rowKey: $e',
+                            );
+                            return;
                           }
-                        } else {
-                          // For new rows not yet saved to DB, just update local state
-                          activeRow.cells['characteristicsIds']!.value = newIds;
-                          stateManager.changeCellValue(
-                            activeRow.cells['characteristics']!,
-                            newNames.join(', '),
-                          );
-                        }
-                      }
-                    },
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    rendererContext.cell.value.toString(),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                const Icon(Icons.edit, size: 14, color: Colors.grey),
-              ],
-            ),
-          );
-        },
-      ),
-      PlutoColumn(
-        title: l10n.gender,
-        field: 'gender',
-        type: PlutoColumnType.text(),
-        enableEditingMode: _hasEditPermission,
-        width: 100,
-        renderer: (rendererContext) {
-          String currentValue = rendererContext.cell.value.toString();
-          return DropdownButtonHideUnderline(
-            child: DropdownButton<String>(
-              value:
-                  CattleGender.values.any((e) => e.name == currentValue)
-                      ? currentValue
-                      : null,
-              icon: const Icon(Icons.arrow_drop_down, size: 16),
-              isDense: true,
-              isExpanded: true,
-              style: const TextStyle(fontSize: 12, color: Colors.black),
-              items:
-                  CattleGender.values.map((e) {
-                    return DropdownMenuItem(
-                      value: e.name,
-                      child: Text(
-                        e.localizedName(context),
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(fontSize: 12),
-                      ),
-                    );
-                  }).toList(),
-              onChanged:
-                  !_hasEditPermission
-                      ? null
-                      : (newValue) {
-                        if (newValue != null) {
-                          // debugPrint('Gender changed to $newValue');
-                          rendererContext.stateManager.changeCellValue(
-                            rendererContext.cell,
-                            newValue,
-                          );
-                        }
-                      },
-            ),
-          );
-        },
-      ),
-      PlutoColumn(
-        title: l10n.approxBirthDate,
-        field: 'birthDateAprx',
-        type: PlutoColumnType.text(),
-        width: 120,
-        enableEditingMode: _hasEditPermission,
-      ),
-      PlutoColumn(
-        title: l10n.tracker,
-        field: 'tracker',
-        type: PlutoColumnType.text(),
-        width: 170,
-        enableEditingMode: false,
-        renderer: (rendererContext) {
-          return InkWell(
-            onTap:
-                !_hasEditPermission
-                    ? null
-                    : () async {
-                      final rowKey = rendererContext.row.key;
-                      final result = await showDialog(
-                        context: context,
-                        builder:
-                            (ctx) => TrackerEditDialog(
-                              initialValue:
-                                  rendererContext.cell.value.toString(),
-                              onSelected:
-                                  (device) {}, // Handled by await result
-                            ),
-                      );
-                      if (result != null && mounted) {
-                        PlutoRow? activeRow;
-                        try {
-                          activeRow = stateManager.rows.firstWhere(
-                            (r) => r.key == rowKey,
-                          );
-                        } catch (e) {
-                          return;
-                        }
-
-                        final rowId =
-                            activeRow.cells['id']?.value.toString() ?? '';
-
-                        if (result == 'remove') {
-                          // Logic to remove tracker
+                          final rowId =
+                              activeRow.cells['id']?.value.toString() ?? '';
                           if (rowId != 'New' && rowId.isNotEmpty) {
+                            debugPrint("Saving to DB for row $rowId");
                             try {
+                              // Manual API call to avoid triggering onChanged with List value
                               await _service.updateCattle(rowId, {
-                                'idDevice': null,
+                                'characteristics': newIds,
                               });
                               if (mounted) {
-                                activeRow.cells['tracker']!.value = '';
-                                activeRow.cells['idDevice']!.value = '';
-                                stateManager.notifyListeners();
-                                _showSuccess('Removed');
-                              }
-                            } catch (e) {
-                              if (mounted) _showError('Error: $e');
-                            }
-                          } else {
-                            // For new rows
-                            activeRow.cells['tracker']!.value = '';
-                            activeRow.cells['idDevice']!.value = '';
-                          }
-                        } else if (result is DeviceModel) {
-                          // Logic to add tracker (existing)
-                          if (rowId != 'New' && rowId.isNotEmpty) {
-                            try {
-                              await _service.updateCattle(rowId, {
-                                'idDevice': result.id,
-                              });
-                              if (mounted) {
-                                // Find any other row that has this device attached and clear it
-                                try {
-                                  final oldOwnerRow = stateManager.rows
-                                      .firstWhere(
-                                        (r) =>
-                                            r.key != rowKey &&
-                                            r.cells['idDevice']?.value ==
-                                                result.id,
-                                      );
-                                  oldOwnerRow.cells['tracker']!.value = '';
-                                  oldOwnerRow.cells['idDevice']!.value = '';
-                                } catch (e) {
-                                  // No previous owner found
-                                }
-                                activeRow.cells['tracker']!.value = result.name;
-                                activeRow.cells['idDevice']!.value = result.id;
-                                stateManager.notifyListeners();
+                                // Update hidden value directly
+                                activeRow.cells['characteristicsIds']!.value =
+                                    newIds;
+                                // Update visible text manually
+                                activeRow
+                                    .cells['characteristics']!
+                                    .value = newNames.join(', ');
+                                // Force grid refresh
+                                stateManager
+                                    .notifyListeners(); // Notify PlutoGrid to rebuild
+                                setState(
+                                  () {},
+                                ); // Trigger local widget rebuild just in case
                                 _showSuccess('Saved');
                               }
                             } catch (e) {
-                              if (mounted) _showError('Error: $e');
+                              debugPrint("Error saving characteristics: $e");
+                              if (mounted) {
+                                _showError('Error saving: $e');
+                              }
                             }
                           } else {
-                            activeRow.cells['tracker']!.value = result.name;
+                            // For new rows not yet saved to DB, just update local state
+                            activeRow.cells['characteristicsIds']!.value =
+                                newIds;
                             stateManager.changeCellValue(
-                              activeRow.cells['idDevice']!,
-                              result.id,
+                              activeRow.cells['characteristics']!,
+                              newNames.join(', '),
                             );
                           }
                         }
-                      }
-                    },
-            child: Row(
-              children: [
-                if (rendererContext.cell.value.toString().isNotEmpty)
-                  const Icon(Icons.location_on, size: 16, color: Colors.green),
-                const SizedBox(width: 4),
-                Expanded(
-                  child: Text(
-                    rendererContext.cell.value.toString(),
-                    overflow: TextOverflow.ellipsis,
+                      },
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      rendererContext.cell.value.toString(),
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
-                ),
-                const Icon(Icons.edit, size: 14, color: Colors.grey),
-              ],
-            ),
-          );
-        },
-      ),
-      PlutoColumn(
-        title: l10n.comments,
-        field: 'comments',
-        type: PlutoColumnType.text(),
-        width: 200,
-        enableEditingMode: _hasEditPermission,
-      ),
-      PlutoColumn(
-        title: l10n.purchaseWeightKg,
-        field: 'purchaseWeight',
-        type: PlutoColumnType.number(),
-        width: 110,
-        enableEditingMode: _hasEditPermission,
-      ),
-      PlutoColumn(
-        title: l10n.purchasePrice,
-        field: 'purchasePrice',
-        type: PlutoColumnType.number(),
-        width: 110,
-        enableEditingMode: _hasEditPermission,
-      ),
-      PlutoColumn(
-        title: l10n.purchaseCommission,
-        field: 'purchaseCommission',
-        type: PlutoColumnType.number(),
-        width: 110,
-        enableEditingMode: _hasEditPermission,
-      ),
-      PlutoColumn(
-        title: l10n.receivedAt,
-        field: 'receivedAt',
-        type: PlutoColumnType.date(),
-        width: 110,
-        enableEditingMode: _hasEditPermission,
-      ),
-      PlutoColumn(
-        title: l10n.receivedWeightKg,
-        field: 'receivedWeight',
-        type: PlutoColumnType.number(),
-        width: 100,
-        enableEditingMode: _hasEditPermission,
-      ),
-      PlutoColumn(
-        title: l10n.saleWeightKg,
-        field: 'saleWeight',
-        type: PlutoColumnType.number(),
-        width: 110,
-        enableEditingMode: _hasEditPermission,
-      ),
-      PlutoColumn(
-        title: l10n.salePrice,
-        field: 'salePrice',
-        type: PlutoColumnType.number(),
-        width: 110,
-        enableEditingMode: _hasEditPermission,
-      ),
-      PlutoColumn(
-        title: l10n.weightHistory,
-        field: 'weightHistory',
-        type: PlutoColumnType.text(),
-        enableEditingMode: false,
-        width: 100,
-        renderer: (ctx) {
-          return InkWell(
-            onTap: () {
-              final history = ctx.cell.value;
-              final cattleNumber =
-                  ctx.row.cells['number']?.value.toString() ?? '';
-              if (history is List) {
+                  const Icon(Icons.edit, size: 14, color: Colors.grey),
+                ],
+              ),
+            );
+          },
+        ),
+        PlutoColumn(
+          title: l10n.gender,
+          field: 'gender',
+          type: PlutoColumnType.text(),
+          enableEditingMode: _hasEditPermission,
+          width: 100,
+          renderer: (rendererContext) {
+            String currentValue = rendererContext.cell.value.toString();
+            return DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                value:
+                    CattleGender.values.any((e) => e.name == currentValue)
+                        ? currentValue
+                        : null,
+                icon: const Icon(Icons.arrow_drop_down, size: 16),
+                isDense: true,
+                isExpanded: true,
+                style: const TextStyle(fontSize: 12, color: Colors.black),
+                items:
+                    CattleGender.values.map((e) {
+                      return DropdownMenuItem(
+                        value: e.name,
+                        child: Text(
+                          e.localizedName(context),
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(fontSize: 12),
+                        ),
+                      );
+                    }).toList(),
+                onChanged:
+                    !_hasEditPermission
+                        ? null
+                        : (newValue) {
+                          if (newValue != null) {
+                            // debugPrint('Gender changed to $newValue');
+                            rendererContext.stateManager.changeCellValue(
+                              rendererContext.cell,
+                              newValue,
+                            );
+                          }
+                        },
+              ),
+            );
+          },
+        ),
+        _buildDateColumn(l10n.approxBirthDate, 'birthDateAprx', 120),
+        _buildDateColumn(l10n.newFeedStartDate, 'newFeedStartDate', 140),
+        PlutoColumn(
+          title: l10n.tracker,
+          field: 'tracker',
+          type: PlutoColumnType.text(),
+          width: 170,
+          enableEditingMode: false,
+          renderer: (rendererContext) {
+            return InkWell(
+              onTap:
+                  !_hasEditPermission
+                      ? null
+                      : () async {
+                        final rowKey = rendererContext.row.key;
+                        final result = await showDialog(
+                          context: context,
+                          builder:
+                              (ctx) => TrackerEditDialog(
+                                initialValue:
+                                    rendererContext.cell.value.toString(),
+                                onSelected:
+                                    (device) {}, // Handled by await result
+                              ),
+                        );
+                        if (result != null && mounted) {
+                          PlutoRow? activeRow;
+                          try {
+                            activeRow = stateManager.rows.firstWhere(
+                              (r) => r.key == rowKey,
+                            );
+                          } catch (e) {
+                            return;
+                          }
+
+                          final rowId =
+                              activeRow.cells['id']?.value.toString() ?? '';
+
+                          if (result == 'remove') {
+                            // Logic to remove tracker
+                            if (rowId != 'New' && rowId.isNotEmpty) {
+                              try {
+                                await _service.updateCattle(rowId, {
+                                  'idDevice': null,
+                                });
+                                if (mounted) {
+                                  activeRow.cells['tracker']!.value = '';
+                                  activeRow.cells['idDevice']!.value = '';
+                                  stateManager.notifyListeners();
+                                  _showSuccess('Removed');
+                                }
+                              } catch (e) {
+                                if (mounted) _showError('Error: $e');
+                              }
+                            } else {
+                              // For new rows
+                              activeRow.cells['tracker']!.value = '';
+                              activeRow.cells['idDevice']!.value = '';
+                            }
+                          } else if (result is DeviceModel) {
+                            // Logic to add tracker (existing)
+                            if (rowId != 'New' && rowId.isNotEmpty) {
+                              try {
+                                await _service.updateCattle(rowId, {
+                                  'idDevice': result.id,
+                                });
+                                if (mounted) {
+                                  // Find any other row that has this device attached and clear it
+                                  try {
+                                    final oldOwnerRow = stateManager.rows
+                                        .firstWhere(
+                                          (r) =>
+                                              r.key != rowKey &&
+                                              r.cells['idDevice']?.value ==
+                                                  result.id,
+                                        );
+                                    oldOwnerRow.cells['tracker']!.value = '';
+                                    oldOwnerRow.cells['idDevice']!.value = '';
+                                  } catch (e) {
+                                    // No previous owner found
+                                  }
+                                  activeRow.cells['tracker']!.value =
+                                      result.name;
+                                  activeRow.cells['idDevice']!.value =
+                                      result.id;
+                                  stateManager.notifyListeners();
+                                  _showSuccess('Saved');
+                                }
+                              } catch (e) {
+                                if (mounted) _showError('Error: $e');
+                              }
+                            } else {
+                              activeRow.cells['tracker']!.value = result.name;
+                              stateManager.changeCellValue(
+                                activeRow.cells['idDevice']!,
+                                result.id,
+                              );
+                            }
+                          }
+                        }
+                      },
+              child: Row(
+                children: [
+                  if (rendererContext.cell.value.toString().isNotEmpty)
+                    const Icon(
+                      Icons.location_on,
+                      size: 16,
+                      color: Colors.green,
+                    ),
+                  const SizedBox(width: 4),
+                  Expanded(
+                    child: Text(
+                      rendererContext.cell.value.toString(),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  const Icon(Icons.edit, size: 14, color: Colors.grey),
+                ],
+              ),
+            );
+          },
+        ),
+        PlutoColumn(
+          title: l10n.comments,
+          field: 'comments',
+          type: PlutoColumnType.text(),
+          width: 200,
+          enableEditingMode: _hasEditPermission,
+        ),
+        PlutoColumn(
+          title: l10n.purchaseWeightKg,
+          field: 'purchaseWeight',
+          type: PlutoColumnType.number(format: '#,##0.00'),
+          width: 110,
+          enableEditingMode: _hasEditPermission,
+        ),
+        PlutoColumn(
+          title: l10n.purchasePrice,
+          field: 'purchasePrice',
+          type: PlutoColumnType.number(),
+          width: 110,
+          enableEditingMode: _hasEditPermission,
+        ),
+        PlutoColumn(
+          title: l10n.purchaseCommission,
+          field: 'purchaseCommission',
+          type: PlutoColumnType.number(),
+          width: 110,
+          enableEditingMode: _hasEditPermission,
+        ),
+        _buildDateColumn(l10n.receivedAt, 'receivedAt', 110),
+        PlutoColumn(
+          title: l10n.receivedWeightKg,
+          field: 'receivedWeight',
+          type: PlutoColumnType.number(format: '#,##0.00'),
+          width: 100,
+          enableEditingMode: _hasEditPermission,
+        ),
+        PlutoColumn(
+          title: l10n.saleWeightKg,
+          field: 'saleWeight',
+          type: PlutoColumnType.number(format: '#,##0.00'),
+          width: 110,
+          enableEditingMode: _hasEditPermission,
+        ),
+        PlutoColumn(
+          title: l10n.salePrice,
+          field: 'salePrice',
+          type: PlutoColumnType.number(),
+          width: 110,
+          enableEditingMode: _hasEditPermission,
+        ),
+        PlutoColumn(
+          title: l10n.weightHistory,
+          field: 'weightHistory',
+          type: PlutoColumnType.text(),
+          enableEditingMode: false,
+          width: 100,
+          renderer: (ctx) {
+            return InkWell(
+              onTap: () {
+                final raw = ctx.cell.value;
+                List<dynamic> history = <dynamic>[];
+                if (raw is List) {
+                  try {
+                    history = List<dynamic>.from(raw);
+                  } catch (_) {}
+                }
+                final cattleNumber =
+                    ctx.row.cells['number']?.value.toString() ?? '';
+                final loc = AppLocalizations.of(context);
                 showDialog(
                   context: context,
                   builder:
                       (_) => WeightHistoryDialog(
                         history: history,
                         cattleNumber: cattleNumber,
+                        noDataMessage: loc?.noData ?? 'No data available',
+                        closeLabel: loc?.close ?? 'Close',
+                        weightHistoryLabel: loc?.weightHistory ?? 'Weight Hist.',
                       ),
                 );
-              }
-            },
-            child: const Icon(Icons.history, size: 18),
-          );
-        },
-      ),
-      PlutoColumn(
-        title: l10n.medicationHistory,
-        field: 'medicationHistory',
-        type: PlutoColumnType.text(),
-        enableEditingMode: false,
-        width: 100,
-        renderer: (ctx) {
-          return InkWell(
-            onTap: () async {
-              final rowId = ctx.row.cells['id']!.value.toString();
-              final cattleNumber =
-                  ctx.row.cells['number']?.value.toString() ?? '';
-              final history = (ctx.cell.value as List?) ?? [];
-              final result = await showDialog<List<dynamic>>(
-                context: context,
-                builder:
-                    (_) => MedicationHistoryDialog(
-                      cattleId: rowId,
-                      cattleNumber: cattleNumber,
-                      history: history,
-                      service: _service,
-                      onAdded: (newRecord) {
-                        /*debugPrint(
+              },
+              child: const Icon(Icons.history, size: 18),
+            );
+          },
+        ),
+        PlutoColumn(
+          title: l10n.medicationHistory,
+          field: 'medicationHistory',
+          type: PlutoColumnType.text(),
+          enableEditingMode: false,
+          width: 100,
+          renderer: (ctx) {
+            return InkWell(
+              onTap: () async {
+                final rowId = ctx.row.cells['id']!.value.toString();
+                final cattleNumber =
+                    ctx.row.cells['number']?.value.toString() ?? '';
+                final history = (ctx.cell.value as List?) ?? [];
+                final result = await showDialog<List<dynamic>>(
+                  context: context,
+                  builder:
+                      (_) => MedicationHistoryDialog(
+                        cattleId: rowId,
+                        cattleNumber: cattleNumber,
+                        history: history,
+                        service: _service,
+                        onAdded: (newRecord) {
+                          /*debugPrint(
                           'Adding new medication record to grid: $newRecord',
                         );*/
-                        try {
-                          final row = stateManager.rows.firstWhere(
-                            (r) => r.key == ctx.row.key,
-                          );
-                          // ignore: unnecessary_null_comparison
-                          if (row != null) {
-                            final cell = row.cells['medicationHistory']!;
-                            final currentHistory = List<dynamic>.from(
-                              cell.value as List? ?? [],
+                          try {
+                            final row = stateManager.rows.firstWhere(
+                              (r) => r.key == ctx.row.key,
                             );
-                            currentHistory.insert(0, newRecord);
-                            stateManager.changeCellValue(
-                              cell,
-                              currentHistory,
-                              callOnChangedEvent: false,
-                              force: true,
-                            );
-                            /*debugPrint(
+                            // ignore: unnecessary_null_comparison
+                            if (row != null) {
+                              final cell = row.cells['medicationHistory']!;
+                              final currentHistory = List<dynamic>.from(
+                                cell.value as List? ?? [],
+                              );
+                              currentHistory.insert(0, newRecord);
+                              stateManager.changeCellValue(
+                                cell,
+                                currentHistory,
+                                callOnChangedEvent: false,
+                                force: true,
+                              );
+                              /*debugPrint(
                               'Grid cell updated. New history length: ${currentHistory.length}',
                             );*/
-                          } else {
+                            } else {
+                              debugPrint(
+                                'Could not find row by key to update medication history',
+                              );
+                            }
+                          } catch (e) {
                             debugPrint(
-                              'Could not find row by key to update medication history',
+                              'Error updating grid medication history: $e',
                             );
                           }
-                        } catch (e) {
-                          debugPrint(
-                            'Error updating grid medication history: $e',
-                          );
-                        }
-                      },
-                    ),
-              );
-              // We rely on onAdded to update the grid, treating result as redundant or fallback
-              if (result != null) {
-                // stateManager.changeCellValue(ctx.cell, result, callOnChangedEvent: false);
-              }
-            },
-            child: const Icon(Icons.medical_services, size: 18),
-          );
-        },
-      ),
+                        },
+                      ),
+                );
+                // We rely on onAdded to update the grid, treating result as redundant or fallback
+                if (result != null) {
+                  // stateManager.changeCellValue(ctx.cell, result, callOnChangedEvent: false);
+                }
+              },
+              child: const Icon(Icons.medical_services, size: 18),
+            );
+          },
+        ),
 
-      PlutoColumn(
-        title: 'IdDevice',
-        field: 'idDevice',
-        type: PlutoColumnType.text(),
-        hide: true,
-        width: 0,
-      ),
-      PlutoColumn(
-        title: 'CharacteristicsIds',
-        field: 'characteristicsIds',
-        type: PlutoColumnType.text(),
-        hide: true,
-        width: 0,
-      ),
+        PlutoColumn(
+          title: 'IdDevice',
+          field: 'idDevice',
+          type: PlutoColumnType.text(),
+          hide: true,
+          width: 0,
+        ),
+        PlutoColumn(
+          title: 'CharacteristicsIds',
+          field: 'characteristicsIds',
+          type: PlutoColumnType.text(),
+          hide: true,
+          width: 0,
+        ),
       ];
     }
 
@@ -936,7 +1063,8 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                             if (apiCode == ApiExceptionCode.conflictError) {
                               if (field == 'number') {
                                 _showError(l10n.cattle_exists_error);
-                              } else if (field == 'eartagLeft' || field == 'eartagRight') {
+                              } else if (field == 'eartagLeft' ||
+                                  field == 'eartagRight') {
                                 _showError(l10n.eartag_exists_error);
                               } else {
                                 _showError(apiCode.asText(context));
@@ -1020,6 +1148,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
           'number': PlutoCell(value: ''),
           'status': PlutoCell(value: CattleStatusEnum.ACTIVE.name),
           'lastWeight': PlutoCell(value: 0),
+          'averageDailyGain': PlutoCell(value: 0),
           'eartagLeft': PlutoCell(value: ''),
           'eartagRight': PlutoCell(value: ''),
           'hasHorn': PlutoCell(value: 'false'),
@@ -1028,6 +1157,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
           'characteristics': PlutoCell(value: ''),
           'gender': PlutoCell(value: 'MALE'),
           'birthDateAprx': PlutoCell(value: ''),
+          'newFeedStartDate': PlutoCell(value: ''),
           'tracker': PlutoCell(value: ''),
           'idDevice': PlutoCell(value: ''),
           'comments': PlutoCell(value: ''),
@@ -1059,6 +1189,12 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
           'number': PlutoCell(value: cattle['number'] ?? ''),
           'status': PlutoCell(value: cattle['status'] ?? 'ACTIVE'),
           'lastWeight': PlutoCell(value: cattle['lastWeight'] ?? 0),
+          'estimatedWeight': PlutoCell(
+            value: cattle['estimatedWeight'] ?? cattle['estimated_weight'],
+          ),
+          'averageDailyGain': PlutoCell(
+            value: cattle['averageDailyGain'] ?? cattle['average_daily_gain'] ?? 0,
+          ),
           'eartagLeft': PlutoCell(value: cattle['eartagLeft'] ?? ''),
           'eartagRight': PlutoCell(value: cattle['eartagRight'] ?? ''),
           'hasHorn': PlutoCell(value: (cattle['hasHorn'] ?? false).toString()),
@@ -1070,7 +1206,16 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
           'characteristicsIds': PlutoCell(value: characteristicIds),
           'gender': PlutoCell(value: cattle['gender'] ?? 'MALE'),
           'birthDateAprx': PlutoCell(
-            value: (cattle['birthDateAprx'] ?? '').toString(),
+            value: DateTimeHelper.formatLocalDate(
+              cattle['birthDateAprx'] ?? cattle['birth_date_aprx'],
+              fallback: '',
+            ),
+          ),
+          'newFeedStartDate': PlutoCell(
+            value: DateTimeHelper.formatLocalDate(
+              cattle['newFeedStartDate'] ?? cattle['new_feed_start_date'],
+              fallback: '',
+            ),
           ),
           'tracker': PlutoCell(
             value:

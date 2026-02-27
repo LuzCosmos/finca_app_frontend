@@ -1298,6 +1298,12 @@ abstract class AppLocalizations {
   /// **'Last Weight (kg)'**
   String get lastWeightKg;
 
+  /// No description provided for @estimatedWeightKg.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated Weight (kg)'**
+  String get estimatedWeightKg;
+
   /// No description provided for @eartag.
   ///
   /// In en, this message translates to:
@@ -1339,6 +1345,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Approx. Birth Date'**
   String get approxBirthDate;
+
+  /// No description provided for @newFeedStartDate.
+  ///
+  /// In en, this message translates to:
+  /// **'New feed start date'**
+  String get newFeedStartDate;
+
+  /// No description provided for @averageDailyGain.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg. daily gain'**
+  String get averageDailyGain;
 
   /// No description provided for @tracker.
   ///
