@@ -995,14 +995,14 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
               MessageBanner.error(_globalErrorMessage!),
             if (_globalSuccessMessage != null)
               MessageBanner.success(_globalSuccessMessage!),
-            Align(
+            /*Align(
               alignment: Alignment.centerLeft,
               child: ElevatedButton.icon(
                 onPressed: _addCattleRow,
                 icon: const Icon(Icons.add),
                 label: Text(l10n.addSomething(l10n.cattle)),
               ),
-            ),
+            ),*/
             const SizedBox(height: 12),
             Expanded(
               child:

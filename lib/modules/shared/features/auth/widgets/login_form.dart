@@ -1,5 +1,6 @@
 import 'package:finca_app_frontend/modules/shared/widgets/message_banner.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:finca_app_frontend/core/services/auth_service.dart';
 import 'package:finca_app_frontend/core/services/auth_exception.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
@@ -81,6 +82,7 @@ class _LoginFormState extends State<LoginForm> {
           TextFormField(
             initialValue: '',
             decoration: InputDecoration(labelText: l10n.username),
+            autofillHints: const [AutofillHints.username],
             onChanged: (val) => username = val,
             validator:
                 (val) => val!.isEmpty ? l10n.login_usernameRequired : null,
@@ -89,6 +91,7 @@ class _LoginFormState extends State<LoginForm> {
             initialValue: '',
             decoration: InputDecoration(labelText: l10n.password),
             obscureText: true,
+            autofillHints: const [AutofillHints.password],
             onChanged: (val) => password = val,
             validator:
                 (val) => val!.isEmpty ? l10n.login_passwordRequired : null,
