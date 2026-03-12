@@ -494,15 +494,17 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                               return null;
                             }
                           }
-                          return Validator.validateNumericMandatory(
-                            l10n.fieldRequired,
-                            l10n.invalidValue,
-                            RegexPatterns.positiveDecimalTwoDigitsNoZero,
-                          )(value);
+                          if (value == null || value.isEmpty) {
+                            return l10n.fieldRequired;
+                          }
+                          if (!RegexPatterns.alphanumericHyphen.hasMatch(value)) {
+                            return l10n.invalidValue;
+                          }
+                          return null;
                         },
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(
-                            RegexPatterns.permissivePositiveDecimalTwoDigits,
+                            RegexPatterns.permissiveAlphanumericHyphen,
                           ),
                         ],
                         decoration: InputDecoration(
@@ -519,7 +521,7 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                             fontSize: 11,
                           ), // Label cuando flota arriba
                         ),
-                        keyboardType: TextInputType.number,
+                        keyboardType: TextInputType.text,
                       ),
                     ),
                   const SizedBox(width: 8),

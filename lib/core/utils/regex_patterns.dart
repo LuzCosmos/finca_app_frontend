@@ -10,6 +10,9 @@ class RegexPatterns {
   static final RegExp positiveDecimalTwoDigitsNoZero = RegExp(
     r'^[1-9][0-9]*(\.\d{1,2})?$',
   );
+  // Letras (mayúsc/minúsc), números y guion medio, pero SIN permitir que empiece por '-'
+  static final RegExp alphanumericHyphen =
+      RegExp(r'^[A-Za-z0-9][A-Za-z0-9-]*$');
   //static final RegExp cattleAge = RegExp(r'^\d [0-9]{1,2}/[0-9]{1,2}$');
   static final RegExp cattleAge = RegExp(r'^(\d|(\d [0-9]{1,2}/[0-9]{1,2}))$');
 
@@ -24,4 +27,8 @@ class RegexPatterns {
 
   static final RegExp permissiveCattleAge = RegExp(r'^[0-9 /]*$');
   // Permite ir escribiendo dígito, espacio, números y la barra poco a poco
+
+  // Vacío o lo mismo que alphanumericHyphen (para permitir escritura progresiva)
+  static final RegExp permissiveAlphanumericHyphen =
+      RegExp(r'^(?:[A-Za-z0-9][A-Za-z0-9-]*)?$');
 }
