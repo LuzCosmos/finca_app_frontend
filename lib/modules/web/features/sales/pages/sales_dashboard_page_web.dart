@@ -8,7 +8,10 @@ import 'package:finca_app_frontend/modules/web/data/sales/sales_data_source_web_
 import 'package:finca_app_frontend/modules/shared/widgets/finca_scaffold.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/models/sales_query_models.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/models/sale_model.dart';
+import 'dart:async';
+
 import 'package:finca_app_frontend/core/services/api_exception.dart';
+import 'package:finca_app_frontend/core/services/sale_sync_notifier.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
 
 class SaleDashboardPage extends StatelessWidget {
@@ -38,11 +41,25 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
   DateTime? _endDate;
   bool canCreate = false;
   bool canUpdate = false;
+  StreamSubscription<String>? _saleSyncSubscription;
 
   @override
   void initState() {
     super.initState();
     _loadPermissions();
+    _saleSyncSubscription =
+        SaleSyncNotifier.instance.updatedSaleIds.listen((_) {
+      if (mounted) {
+        final bloc = context.read<SalesWebBloc>();
+        bloc.add(LoadSalesWeb(query: bloc.state.query));
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _saleSyncSubscription?.cancel();
+    super.dispose();
   }
 
   Future<void> _loadPermissions() async {

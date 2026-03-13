@@ -127,6 +127,17 @@
   "error_cattleIsNotActive": "The cattle is not active.",
   "@error_cattleIsNotActive": { "description": "Error when the cattle is not active." },
 
+  "error_soldCattleMissingSaleDetail": "Sold cattle must have an associated sale detail.",
+  "@error_soldCattleMissingSaleDetail": { "description": "Shown when editing a SOLD cattle but no sale detail exists." },
+  "error_saleFieldsOnlyForSoldCattle": "Sale price and weight can only be updated for cattle in SOLD status.",
+  "@error_saleFieldsOnlyForSoldCattle": { "description": "Shown when trying to update sale fields on non-SOLD cattle." },
+  "error_invalidSalePrice": "Invalid sale price.",
+  "@error_invalidSalePrice": { "description": "Validation error for sale price field." },
+  "error_invalidSaleWeight": "Invalid sale weight.",
+  "@error_invalidSaleWeight": { "description": "Validation error for sale weight field." },
+  "error_savingField": "Error saving: {error}",
+  "@error_savingField": { "description": "Generic error when saving a field in the cattle grid. {error} is the technical message." },
+
   "noData": "No data available",
   
   "noDataSomething": "No {object} data available",

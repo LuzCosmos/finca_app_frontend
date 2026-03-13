@@ -12,6 +12,7 @@ import 'package:finca_app_frontend/modules/shared/enums/cattle_enums.dart';
 import 'package:finca_app_frontend/modules/shared/widgets/message_banner.dart';
 import 'package:finca_app_frontend/modules/web/features/cattle/widgets/cattle_history_dialogs.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
+import 'package:finca_app_frontend/core/services/sale_sync_notifier.dart';
 import 'package:finca_app_frontend/core/utils/date_time_helper.dart';
 
 class CattleMasterListPage extends StatefulWidget {
@@ -31,6 +32,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
       CattleCharacteristic.values.map((e) => e.name).toList();
   bool isLoading = true;
   bool _hasEditPermission = false;
+  bool _isSaving = false;
   String? _globalErrorMessage;
   String? _globalSuccessMessage;
 
@@ -200,50 +202,61 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
         final value = cell.value;
         final displayText = DateTimeHelper.formatLocalDate(value, fallback: '');
         return InkWell(
-          onTap: !_hasEditPermission
-              ? null
-              :               () async {
-                  final rowKey = rendererContext.row.key;
-                  DateTime? initial = displayText.isEmpty ? null : DateTime.tryParse(displayText);
-                  if (initial == null && value != null && value.toString().isNotEmpty) {
-                    initial = DateTimeHelper.parseToLocal(value);
-                  }
-                  final picked = await showDatePicker(
-                    context: context,
-                    initialDate: initial ?? DateTime.now(),
-                    firstDate: DateTime(1900),
-                    lastDate: DateTime(2100),
-                    useRootNavigator: true,
-                  );
-                  if (picked == null || !mounted) return;
-                  final formatted = DateTimeHelper.formatLocalDate(picked, fallback: '');
-                  // Rebuscar la fila y celda actuales tras el async (la referencia puede quedar obsoleta)
-                  PlutoRow? row;
-                  try {
-                    row = stateManager.rows.firstWhere((r) => r.key == rowKey);
-                  } catch (_) {
-                    if (mounted) _showError('No se encontró la fila');
-                    return;
-                  }
-                  final targetCell = row.cells[field];
-                  if (targetCell != null) {
-                    stateManager.changeCellValue(
-                      targetCell,
-                      formatted,
-                      force: true,
-                      callOnChangedEvent: false,
-                    );
-                  }
-                  final rowId = row.cells['id']?.value.toString() ?? '';
-                  if (rowId.isNotEmpty && rowId != 'New') {
-                    try {
-                      await _service.updateCattle(rowId, {field: formatted});
-                      if (mounted) _showSuccess('Saved');
-                    } catch (e) {
-                      if (mounted) _showError('Error: $e');
+          onTap:
+              !_hasEditPermission
+                  ? null
+                  : () async {
+                    final rowKey = rendererContext.row.key;
+                    DateTime? initial =
+                        displayText.isEmpty
+                            ? null
+                            : DateTime.tryParse(displayText);
+                    if (initial == null &&
+                        value != null &&
+                        value.toString().isNotEmpty) {
+                      initial = DateTimeHelper.parseToLocal(value);
                     }
-                  }
-                },
+                    final picked = await showDatePicker(
+                      context: context,
+                      initialDate: initial ?? DateTime.now(),
+                      firstDate: DateTime(1900),
+                      lastDate: DateTime(2100),
+                      useRootNavigator: true,
+                    );
+                    if (picked == null || !mounted) return;
+                    final formatted = DateTimeHelper.formatLocalDate(
+                      picked,
+                      fallback: '',
+                    );
+                    // Rebuscar la fila y celda actuales tras el async (la referencia puede quedar obsoleta)
+                    PlutoRow? row;
+                    try {
+                      row = stateManager.rows.firstWhere(
+                        (r) => r.key == rowKey,
+                      );
+                    } catch (_) {
+                      if (mounted) _showError('No se encontró la fila');
+                      return;
+                    }
+                    final targetCell = row.cells[field];
+                    if (targetCell != null) {
+                      stateManager.changeCellValue(
+                        targetCell,
+                        formatted,
+                        force: true,
+                        callOnChangedEvent: false,
+                      );
+                    }
+                    final rowId = row.cells['id']?.value.toString() ?? '';
+                    if (rowId.isNotEmpty && rowId != 'New') {
+                      try {
+                        await _service.updateCattle(rowId, {field: formatted});
+                        if (mounted) _showSuccess('Saved');
+                      } catch (e) {
+                        if (mounted) _showError('Error: $e');
+                      }
+                    }
+                  },
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 2),
             child: Align(
@@ -288,6 +301,12 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
     return weight == null || weight <= 0;
   }
 
+  bool _isInvalidSaleFieldValue(String field, dynamic value) {
+    if (field != 'salePrice' && field != 'saleWeight') return false;
+    final n = double.tryParse(value.toString());
+    return n == null || n < 0;
+  }
+
   void _revertCellValue(PlutoGridOnChangedEvent event) {
     stateManager.changeCellValue(
       event.row.cells[event.column.field]!,
@@ -313,7 +332,8 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
       changed = true;
     }
     // El backend puede recalcular averageDailyGain al actualizar lastWeight
-    final averageDailyGain = updatedData['averageDailyGain'] ?? updatedData['average_daily_gain'];
+    final averageDailyGain =
+        updatedData['averageDailyGain'] ?? updatedData['average_daily_gain'];
     if (averageDailyGain != null && row.cells['averageDailyGain'] != null) {
       stateManager.changeCellValue(
         row.cells['averageDailyGain']!,
@@ -324,8 +344,10 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
       changed = true;
     }
     // Peso estimado se recalcula en backend al actualizar lastWeight
-    if (updatedData.containsKey('estimatedWeight') || updatedData.containsKey('estimated_weight')) {
-      final estimatedWeight = updatedData['estimatedWeight'] ?? updatedData['estimated_weight'];
+    if (updatedData.containsKey('estimatedWeight') ||
+        updatedData.containsKey('estimated_weight')) {
+      final estimatedWeight =
+          updatedData['estimatedWeight'] ?? updatedData['estimated_weight'];
       if (row.cells['estimatedWeight'] != null) {
         stateManager.changeCellValue(
           row.cells['estimatedWeight']!,
@@ -335,6 +357,26 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
         );
         changed = true;
       }
+    }
+    if (updatedData.containsKey('salePrice') &&
+        row.cells['salePrice'] != null) {
+      stateManager.changeCellValue(
+        row.cells['salePrice']!,
+        updatedData['salePrice'],
+        force: true,
+        callOnChangedEvent: false,
+      );
+      changed = true;
+    }
+    if (updatedData.containsKey('saleWeight') &&
+        row.cells['saleWeight'] != null) {
+      stateManager.changeCellValue(
+        row.cells['saleWeight']!,
+        updatedData['saleWeight'],
+        force: true,
+        callOnChangedEvent: false,
+      );
+      changed = true;
     }
     if (changed) {
       stateManager.notifyListeners();
@@ -377,6 +419,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
           type: PlutoColumnType.text(),
           enableEditingMode: _hasEditPermission,
           width: 80,
+          frozen: PlutoColumnFrozen.start,
           renderer: (rendererContext) {
             String currentValue = rendererContext.cell.value.toString();
             final statusList = CattleStatusEnum.getStatusList();
@@ -890,7 +933,8 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                         cattleNumber: cattleNumber,
                         noDataMessage: loc?.noData ?? 'No data available',
                         closeLabel: loc?.close ?? 'Close',
-                        weightHistoryLabel: loc?.weightHistory ?? 'Weight Hist.',
+                        weightHistoryLabel:
+                            loc?.weightHistory ?? 'Weight Hist.',
                       ),
                 );
               },
@@ -1030,6 +1074,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                           if (rowId.isEmpty || rowId == 'New') {
                             return;
                           }
+                          if (_isSaving) return;
                           final normalized = _normalizeChangedValue(event);
                           final field = normalized.field;
                           final value = normalized.value;
@@ -1046,6 +1091,15 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                             return;
                           }
 
+                          if (_isInvalidSaleFieldValue(field, value)) {
+                            if (mounted) {
+                              _showError(l10n.error_enterValidWeight);
+                              _revertCellValue(event);
+                            }
+                            return;
+                          }
+
+                          setState(() => _isSaving = true);
                           try {
                             final updatedData = await _service.updateCattle(
                               rowId,
@@ -1054,6 +1108,14 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                             if (mounted) {
                               if (updatedData != null) {
                                 _applyRowServerUpdates(event, updatedData);
+                                final affectedSaleId =
+                                    updatedData['affectedSaleId']?.toString();
+                                if (affectedSaleId != null &&
+                                    affectedSaleId.isNotEmpty) {
+                                  SaleSyncNotifier.instance.notifySaleUpdated(
+                                    affectedSaleId,
+                                  );
+                                }
                               }
                               _showSuccess('Saved');
                             }
@@ -1076,10 +1138,11 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                           } catch (e) {
                             debugPrint('Error saving field $field: $e');
                             if (mounted) {
-                              String errorMsg = 'Error saving: $e';
-                              _showError(errorMsg);
+                              _showError(l10n.error_savingField(l10n.cattle));
                               _revertCellValue(event);
                             }
+                          } finally {
+                            if (mounted) setState(() => _isSaving = false);
                           }
                         },
                       ),
@@ -1193,7 +1256,8 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
             value: cattle['estimatedWeight'] ?? cattle['estimated_weight'],
           ),
           'averageDailyGain': PlutoCell(
-            value: cattle['averageDailyGain'] ?? cattle['average_daily_gain'] ?? 0,
+            value:
+                cattle['averageDailyGain'] ?? cattle['average_daily_gain'] ?? 0,
           ),
           'eartagLeft': PlutoCell(value: cattle['eartagLeft'] ?? ''),
           'eartagRight': PlutoCell(value: cattle['eartagRight'] ?? ''),

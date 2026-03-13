@@ -324,12 +324,22 @@ class BasicApiService {
   static Never manageNotSuccessResponseCode(http.Response response) {
     if (response.statusCode == 400) {
       final body = jsonDecode(response.body);
-      final message = body['message'] ?? 'Bad request';
+      final message = body['message']?.toString() ?? 'Bad request';
       if (message.isNotEmpty && message == 'cattleIsNotActive') {
         throw ApiException(
           ApiExceptionCode.cattleIsNotActive.name,
           'Cattle is not Active',
         );
+      }
+      // Pass backend sale-sync error codes so UI can show specific message
+      const saleSyncCodes = [
+        'SOLD_CATTLE_MISSING_SALE_DETAIL',
+        'SALE_FIELDS_ONLY_FOR_SOLD_CATTLE',
+        'INVALID_SALE_PRICE',
+        'INVALID_SALE_WEIGHT',
+      ];
+      if (saleSyncCodes.contains(message)) {
+        throw ApiException(message, message);
       }
       throw ApiException(ApiExceptionCode.badRequest.name, 'Invalid data');
     } else if (response.statusCode == 401) {

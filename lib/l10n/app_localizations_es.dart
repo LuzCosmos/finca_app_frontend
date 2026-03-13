@@ -264,6 +264,25 @@ class AppLocalizationsEs extends AppLocalizations {
   String get error_cattleIsNotActive => 'La res no está activa.';
 
   @override
+  String get error_soldCattleMissingSaleDetail =>
+      'La res vendida debe tener un detalle de venta asociado.';
+
+  @override
+  String get error_saleFieldsOnlyForSoldCattle =>
+      'El precio y peso de venta solo pueden actualizarse para reses en estado VENDIDO.';
+
+  @override
+  String get error_invalidSalePrice => 'Precio de venta inválido.';
+
+  @override
+  String get error_invalidSaleWeight => 'Peso de venta inválido.';
+
+  @override
+  String error_savingField(Object error) {
+    return 'Error al guardar: $error';
+  }
+
+  @override
   String get noData => 'No hay datos disponibles';
 
   @override

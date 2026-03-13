@@ -127,6 +127,17 @@
   "error_cattleIsNotActive": "La res no está activa.",
   "@error_cattleIsNotActive": { "description": "Error específico para cuando el ganado no está activo." },
 
+  "error_soldCattleMissingSaleDetail": "La res vendida debe tener un detalle de venta asociado.",
+  "@error_soldCattleMissingSaleDetail": { "description": "Se muestra al editar una res SOLD sin detalle de venta." },
+  "error_saleFieldsOnlyForSoldCattle": "El precio y peso de venta solo pueden actualizarse para reses en estado VENDIDO.",
+  "@error_saleFieldsOnlyForSoldCattle": { "description": "Se muestra al intentar actualizar campos de venta en res no vendida." },
+  "error_invalidSalePrice": "Precio de venta inválido.",
+  "@error_invalidSalePrice": { "description": "Error de validación del campo precio de venta." },
+  "error_invalidSaleWeight": "Peso de venta inválido.",
+  "@error_invalidSaleWeight": { "description": "Error de validación del campo peso de venta." },
+  "error_savingField": "Error al guardar: {error}",
+  "@error_savingField": { "description": "Error genérico al guardar un campo en la grilla de ganado. {error} es el mensaje técnico." },
+
   "noData": "No hay datos disponibles",
   
   "noDataSomething": "No hay datos de {object} disponibles",

@@ -548,6 +548,36 @@ abstract class AppLocalizations {
   /// **'The cattle is not active.'**
   String get error_cattleIsNotActive;
 
+  /// Shown when editing a SOLD cattle but no sale detail exists.
+  ///
+  /// In en, this message translates to:
+  /// **'Sold cattle must have an associated sale detail.'**
+  String get error_soldCattleMissingSaleDetail;
+
+  /// Shown when trying to update sale fields on non-SOLD cattle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sale price and weight can only be updated for cattle in SOLD status.'**
+  String get error_saleFieldsOnlyForSoldCattle;
+
+  /// Validation error for sale price field.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid sale price.'**
+  String get error_invalidSalePrice;
+
+  /// Validation error for sale weight field.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid sale weight.'**
+  String get error_invalidSaleWeight;
+
+  /// Generic error when saving a field in the cattle grid. {error} is the technical message.
+  ///
+  /// In en, this message translates to:
+  /// **'Error saving: {error}'**
+  String error_savingField(Object error);
+
   /// No description provided for @noData.
   ///
   /// In en, this message translates to:

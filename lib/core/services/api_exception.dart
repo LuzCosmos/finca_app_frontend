@@ -14,7 +14,12 @@ enum ApiExceptionCode {
   serverConnectionError,
   notFound,
   unprocessableEntity,
-  locked;
+  locked,
+  // Sale sync when editing sold cattle
+  soldCattleMissingSaleDetail,
+  saleFieldsOnlyForSoldCattle,
+  invalidSalePrice,
+  invalidSaleWeight;
 
   String asText(BuildContext context, {String? objectName}) {
     final l10n = AppLocalizations.of(context)!;
@@ -47,10 +52,27 @@ enum ApiExceptionCode {
         return l10n.error_unprocessableEntity;
       case ApiExceptionCode.locked:
         return l10n.error_locked;
+      case ApiExceptionCode.soldCattleMissingSaleDetail:
+        return l10n.error_soldCattleMissingSaleDetail;
+      case ApiExceptionCode.saleFieldsOnlyForSoldCattle:
+        return l10n.error_saleFieldsOnlyForSoldCattle;
+      case ApiExceptionCode.invalidSalePrice:
+        return l10n.error_invalidSalePrice;
+      case ApiExceptionCode.invalidSaleWeight:
+        return l10n.error_invalidSaleWeight;
     }
   }
 
   static ApiExceptionCode fromString(String value) {
+    // Map backend error codes (SCREAMING_SNAKE_CASE) to enum
+    final backendCodeMap = <String, ApiExceptionCode>{
+      'SOLD_CATTLE_MISSING_SALE_DETAIL': ApiExceptionCode.soldCattleMissingSaleDetail,
+      'SALE_FIELDS_ONLY_FOR_SOLD_CATTLE': ApiExceptionCode.saleFieldsOnlyForSoldCattle,
+      'INVALID_SALE_PRICE': ApiExceptionCode.invalidSalePrice,
+      'INVALID_SALE_WEIGHT': ApiExceptionCode.invalidSaleWeight,
+    };
+    final mapped = backendCodeMap[value];
+    if (mapped != null) return mapped;
     return ApiExceptionCode.values.firstWhere(
       (e) => e.name == value,
       orElse: () => ApiExceptionCode.unknownError,

@@ -266,6 +266,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get error_cattleIsNotActive => 'The cattle is not active.';
 
   @override
+  String get error_soldCattleMissingSaleDetail =>
+      'Sold cattle must have an associated sale detail.';
+
+  @override
+  String get error_saleFieldsOnlyForSoldCattle =>
+      'Sale price and weight can only be updated for cattle in SOLD status.';
+
+  @override
+  String get error_invalidSalePrice => 'Invalid sale price.';
+
+  @override
+  String get error_invalidSaleWeight => 'Invalid sale weight.';
+
+  @override
+  String error_savingField(Object error) {
+    return 'Error saving: $error';
+  }
+
+  @override
   String get noData => 'No data available';
 
   @override
