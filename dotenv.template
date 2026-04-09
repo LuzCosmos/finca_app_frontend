@@ -1,0 +1,4 @@
+# Plantilla para build Docker/CI: Flutter exige que exista el asset ".env".
+# No incluyas secretos aquí. En web, la API real va en window.ENV (docker-entrypoint).
+# Para desarrollo local: copia a .env y ajusta valores.
+API_BASE_URL=/api/v1

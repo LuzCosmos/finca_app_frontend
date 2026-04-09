@@ -21,7 +21,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # IMPORTANT: Increment the build_number (+X) on EVERY production deployment
 # This forces Flutter to regenerate flutter_service_worker.js with new MD5 hashes,
 # which enables proper cache busting in browsers.
-version: 0.1.0+1
+version: 0.1.1+2
 
 environment:
   sdk: ^3.7.0
@@ -107,6 +107,7 @@ flutter:
   uses-material-design: true
   generate: true #Para que se genere el archivo de localizaciones (app_localizations.dart)
   assets:
+    - .env
 
   # To add assets to your application, add an assets section, like this:
   # assets:

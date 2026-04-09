@@ -171,6 +171,14 @@
   "cattlePurchase": "Cattle Purchase",
   "massiveEvent": "Massive Event",
   "massiveEvents": "Massive Events",
+  "massiveEventPendingSync": "This event is saved on the device and is pending synchronization with the server.",
+  "@massiveEventPendingSync": {
+    "description": "Shown on mobile when a massive event exists locally but is not yet synced."
+  },
+  "syncNow": "Sync now",
+  "@syncNow": {
+    "description": "Button label to trigger manual data sync on mobile."
+  },
   "event": "Event",
   "events": "Events",
   "sale": "Sale",

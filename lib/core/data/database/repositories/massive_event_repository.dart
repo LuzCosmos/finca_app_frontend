@@ -3,6 +3,7 @@ import 'package:finca_app_frontend/core/data/database/daos/massive_event_dao.dar
 import 'package:finca_app_frontend/core/data/database/daos/simple_event_dao.dart';
 import 'package:drift/drift.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/massive_event_model.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_model.dart';
 import 'package:finca_app_frontend/core/data/mappers/massive_event_model_mapper.dart';
 import 'package:finca_app_frontend/core/data/mappers/simple_event_model_mapper.dart';
 
@@ -23,6 +24,7 @@ class MassiveEventRepository {
     final companion = massiveEvent.toLocalCompanion(
       massiveEvent.idTenant!,
       isSynced: isSynced,
+      createdBy: massiveEvent.createdBy,
     );
     final simpleEventCompanions = massiveEvent.simpleEvents.map(
       (se) => se.toLocalCompanion(
@@ -56,6 +58,8 @@ class MassiveEventRepository {
     return _dao.getAll();
   }
 
+  Future<MassiveEvent?> getById(String id) => _dao.getById(id);
+
   Future<List<MassiveEvent>> getByStatus(String status) {
     return _dao.getByStatus(status);
   }
@@ -73,5 +77,58 @@ class MassiveEventRepository {
 
   Future<void> markAsSynced(String id) {
     return _dao.markAsSynced(id);
+  }
+
+  /// Sustituye un masivo local (y sus simples) por la respuesta del servidor,
+  /// manteniendo coherencia en filas de animal_simple_event.
+  Future<void> replaceLocalMassiveWithServerResponse({
+    required String oldLocalMassiveId,
+    required MassiveEventModel savedFromServer,
+    required bool isSynced,
+  }) async {
+    final animalDao = _dao.db.animalSimpleEventDao;
+    final oldRows = await _simpleEventDao.getByidMassiveEvent(oldLocalMassiveId);
+    final newSimples = List<SimpleEventModel>.from(savedFromServer.simpleEvents);
+    if (oldRows.length != newSimples.length) {
+      throw StateError(
+        'replaceLocalMassiveWithServerResponse: conteo simples local (${oldRows.length}) '
+        '!= servidor (${newSimples.length})',
+      );
+    }
+    int cmpSimple(SimpleEvent a, SimpleEvent b) {
+      final t = a.type.compareTo(b.type);
+      if (t != 0) return t;
+      final ca = a.createdAt ?? DateTime.fromMillisecondsSinceEpoch(0);
+      final cb = b.createdAt ?? DateTime.fromMillisecondsSinceEpoch(0);
+      return ca.compareTo(cb);
+    }
+
+    int cmpModel(SimpleEventModel a, SimpleEventModel b) {
+      final t = a.type.name.compareTo(b.type.name);
+      if (t != 0) return t;
+      return a.createdAt.compareTo(b.createdAt);
+    }
+
+    final oldOrdered = [...oldRows]..sort(cmpSimple);
+    newSimples.sort(cmpModel);
+    final simpleIdMap = <String, String>{};
+    for (var i = 0; i < oldOrdered.length; i++) {
+      simpleIdMap[oldOrdered[i].id] = newSimples[i].id;
+    }
+
+    await _dao.db.transaction(() async {
+      for (final e in simpleIdMap.entries) {
+        await animalDao.remapSimpleEventId(e.key, e.value);
+      }
+      await animalDao.remapMassiveEventId(
+        oldLocalMassiveId,
+        savedFromServer.id,
+      );
+      for (final r in oldOrdered) {
+        await _simpleEventDao.deleteSimpleEvent(r.id);
+      }
+      await _dao.deleteMassiveEvent(oldLocalMassiveId);
+      await insert(savedFromServer, isSynced: isSynced);
+    });
   }
 }

@@ -171,6 +171,14 @@
   "cattlePurchase": "Compra de Ganado",
   "massiveEvent": "Evento masivo",
   "massiveEvents": "Eventos masivos",
+  "massiveEventPendingSync": "Este evento está guardado en el dispositivo y pendiente de sincronizar con el servidor.",
+  "@massiveEventPendingSync": {
+    "description": "Mensaje móvil cuando el evento masivo existe en local pero no está sincronizado."
+  },
+  "syncNow": "Sincronizar ahora",
+  "@syncNow": {
+    "description": "Botón para disparar sincronización manual en móvil."
+  },
   "event": "Evento",
   "events": "Eventos",
   "sale": "Venta",

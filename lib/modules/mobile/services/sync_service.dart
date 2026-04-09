@@ -129,7 +129,8 @@ class SyncService {
                         "id": s.id,
                         "idTenant": s.idTenant,
                         "type": s.type,
-                        "data": s.data,
+                        "dataJson": s.data,
+                        "isActive": s.isActive,
                         "createdAt": s.createdAt?.toIso8601String(),
                       },
                     )
@@ -137,10 +138,12 @@ class SyncService {
             return {
               "id": m.id,
               "idTenant": m.idTenant,
+              "name": m.name,
               "eventDate": m.eventDate.toIso8601String(),
               "status": m.status,
               "createdBy": m.createdBy,
               "createdAt": m.createdAt?.toIso8601String(),
+              "updatedAt": m.updatedAt?.toIso8601String(),
               "simpleEvents": simpleEventsJson,
             };
           }).toList();
@@ -188,7 +191,8 @@ class SyncService {
             "idTenant": s.idTenant,
             "massiveEventServerId": s.idMassiveEvent,
             "type": s.type,
-            "data": s.data,
+            "dataJson": s.data,
+            "isActive": s.isActive,
             "createdAt": s.createdAt?.toIso8601String(),
           },
       markSynced: (id) => simpleEventRepository.markAsSynced(id),

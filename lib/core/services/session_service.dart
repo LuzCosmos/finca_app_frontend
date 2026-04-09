@@ -24,6 +24,40 @@ class SessionService {
     return _prefsFuture!;
   }
 
+  /// Carga token y demás claves en memoria antes de [runApp], para que el
+  /// [redirect] síncrono de GoRouter pueda usar [hasValidTokenSync].
+  static Future<void> hydrateFromStorage() async {
+    final prefs = await SharedPreferences.getInstance();
+    _prefsFuture = Future<SharedPreferences>.value(prefs);
+    _cachedToken = prefs.getString(_tokenKey);
+    _cachedRefreshToken = prefs.getString(_refreshTokenKey);
+    final permStr = prefs.getString(_permissionsKey);
+    if (permStr != null && permStr.isNotEmpty) {
+      try {
+        _cachedPermissions = jsonDecode(permStr) as Map<String, dynamic>;
+      } catch (_) {
+        _cachedPermissions = <String, dynamic>{};
+      }
+    } else {
+      _cachedPermissions = <String, dynamic>{};
+    }
+    _cachedIdTenant = prefs.getString(_idTenantKey);
+    _cachedIdUser = prefs.getString(_idUserKey);
+    _tokenLoaded = true;
+    _refreshTokenLoaded = true;
+    _permissionsLoaded = true;
+    _idTenantLoaded = true;
+    _idUserLoaded = true;
+  }
+
+  /// Solo válido después de [hydrateFromStorage] (llamado desde [main]).
+  static bool hasValidTokenSync() {
+    if (!_tokenLoaded) return false;
+    final token = _cachedToken;
+    if (token == null || token.isEmpty) return false;
+    return !isTokenExpired(token, skewSeconds: 30);
+  }
+
   static Future<void> saveSession({
     required String token,
     required Map<String, dynamic> permissions,

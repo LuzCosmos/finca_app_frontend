@@ -26,6 +26,27 @@ class AnimalSimpleEventModel {
     required this.idSimpleEvent,
   });
 
+  AnimalSimpleEventModel copyWith({
+    String? idMassiveEvent,
+    String? idSimpleEvent,
+    String? appliedBy,
+    String? id,
+    String? idTenant,
+  }) {
+    return AnimalSimpleEventModel(
+      id: id ?? this.id,
+      idTenant: idTenant ?? this.idTenant,
+      idAnimal: idAnimal,
+      animalNumber: animalNumber,
+      type: type,
+      data: data,
+      appliedAt: appliedAt,
+      appliedBy: appliedBy ?? this.appliedBy,
+      idMassiveEvent: idMassiveEvent ?? this.idMassiveEvent,
+      idSimpleEvent: idSimpleEvent ?? this.idSimpleEvent,
+    );
+  }
+
   factory AnimalSimpleEventModel.fromJson(Map<String, dynamic> json) {
     return AnimalSimpleEventModel(
       id: json['id'],

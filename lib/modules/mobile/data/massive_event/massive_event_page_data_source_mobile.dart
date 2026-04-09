@@ -1,5 +1,11 @@
+import 'package:drift/drift.dart';
+import 'package:finca_app_frontend/core/data/mappers/simple_event_model_mapper.dart';
+import 'package:finca_app_frontend/core/data/database/app_database_mobile.dart';
+import 'package:finca_app_frontend/core/data/database/repositories/animal_simple_event_repository.dart';
 import 'package:finca_app_frontend/core/data/database/repositories/simple_event_repository.dart';
 import 'package:finca_app_frontend/core/data/database/repositories/massive_event_repository.dart';
+import 'package:finca_app_frontend/core/services/api_exception.dart';
+import 'package:finca_app_frontend/core/services/network_service.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/brands/models/brand_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/brands/services/brand_api_service.dart';
@@ -7,91 +13,242 @@ import 'package:finca_app_frontend/modules/shared/features/massiveEvent/data/mas
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/animal_simple_event_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/massive_event_model.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_type.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/services/massive_event_api_service.dart';
+import 'package:uuid/uuid.dart';
+
+bool _isConnectionFailure(Object e) {
+  return e is ApiException &&
+      e.code == ApiExceptionCode.serverConnectionError.name;
+}
+
+int _cmpDriftSimple(SimpleEvent a, SimpleEvent b) {
+  final t = a.type.compareTo(b.type);
+  if (t != 0) return t;
+  final ca = a.createdAt ?? DateTime.fromMillisecondsSinceEpoch(0);
+  final cb = b.createdAt ?? DateTime.fromMillisecondsSinceEpoch(0);
+  return ca.compareTo(cb);
+}
+
+int _cmpSimpleModel(SimpleEventModel a, SimpleEventModel b) {
+  final t = a.type.name.compareTo(b.type.name);
+  if (t != 0) return t;
+  return a.createdAt.compareTo(b.createdAt);
+}
+
+SimpleEventModel _simpleModelFromDrift(SimpleEvent row) {
+  return SimpleEventModel(
+    id: row.id,
+    idTenant: row.idTenant,
+    idMassiveEvent: row.idMassiveEvent,
+    type: SimpleEventType.values.firstWhere((e) => e.name == row.type),
+    data: row.data,
+    createdAt: row.createdAt ?? DateTime.now(),
+    isActive: row.isActive,
+  );
+}
+
+MassiveEventModel _massiveModelFromDrift(MassiveEvent row, List<SimpleEventModel> simples) {
+  return MassiveEventModel(
+    id: row.id,
+    idTenant: row.idTenant,
+    name: row.name,
+    createdBy: row.createdBy,
+    eventDate: row.eventDate,
+    simpleEvents: simples,
+    status: row.status,
+    createdAt: row.createdAt ?? DateTime.now(),
+    updatedAt: row.updatedAt ?? DateTime.now(),
+  );
+}
+
+/// Tras subir un masivo pendiente: modelo servidor y mapa id simple local → servidor.
+class _PushMassiveOutcome {
+  final MassiveEventModel savedMassive;
+  final Map<String, String> simpleIdByOld;
+
+  _PushMassiveOutcome({
+    required this.savedMassive,
+    required this.simpleIdByOld,
+  });
+}
 
 class MassiveEventPageDataSourceMobile implements IMassiveEventPageDataSource {
   final SimpleEventRepository repo;
   final MassiveEventRepository _massiveEventRepository;
+  final AnimalSimpleEventRepository _animalSimpleEventRepository;
+  final NetworkService _networkService;
 
-  MassiveEventPageDataSourceMobile(this.repo, this._massiveEventRepository);
+  MassiveEventPageDataSourceMobile(
+    this.repo,
+    this._massiveEventRepository,
+    this._animalSimpleEventRepository, {
+    NetworkService? networkService,
+  }) : _networkService = networkService ?? NetworkService();
+
+  /// Sube masivo + simples actuales en BD y reemplaza filas locales por la respuesta.
+  Future<_PushMassiveOutcome?> _pushUnsyncedMassiveBranch(
+    String localMassiveId,
+  ) async {
+    final row = await _massiveEventRepository.getById(localMassiveId);
+    if (row == null) {
+      throw StateError('No existe el evento masivo $localMassiveId');
+    }
+    if (row.isSynced) return null;
+
+    final dbRows = await repo.getByidMassiveEvent(localMassiveId);
+    if (dbRows.isEmpty) {
+      throw StateError('El masivo no tiene simple events en el dispositivo');
+    }
+    final models = dbRows.map(_simpleModelFromDrift).toList();
+    final pushModel = _massiveModelFromDrift(row, models);
+    final saved = await MassiveEventApiService.createMassiveEvent(
+      massiveEvent: pushModel,
+      idTenant: row.idTenant,
+    );
+
+    final oldOrdered = [...dbRows]..sort(_cmpDriftSimple);
+    final newOrdered = [...saved.simpleEvents]..sort(_cmpSimpleModel);
+    if (oldOrdered.length != newOrdered.length) {
+      throw StateError(
+        'Respuesta del servidor: número de simple events distinto al local',
+      );
+    }
+    final simpleIdByOld = <String, String>{};
+    for (var i = 0; i < oldOrdered.length; i++) {
+      simpleIdByOld[oldOrdered[i].id] = newOrdered[i].id;
+    }
+
+    await _massiveEventRepository.replaceLocalMassiveWithServerResponse(
+      oldLocalMassiveId: localMassiveId,
+      savedFromServer: saved,
+      isSynced: true,
+    );
+    return _PushMassiveOutcome(
+      savedMassive: saved,
+      simpleIdByOld: simpleIdByOld,
+    );
+  }
 
   @override
   Future<MassiveEventModel> saveMassiveEvent({
     required MassiveEventModel massiveEvent,
   }) async {
     final idTenant = await SessionService.getIdTenant();
-    final created = await MassiveEventApiService.createMassiveEvent(
-      massiveEvent: massiveEvent,
-      idTenant: idTenant!,
+    final idUser = await SessionService.getIdUser();
+    if (idTenant == null || idUser == null) {
+      throw StateError('Sesión incompleta: falta idTenant o idUser');
+    }
+    final enriched = massiveEvent.copyWith(
+      idTenant: idTenant,
+      createdBy: idUser,
     );
-    return created;
-    /*var enriched = massiveEvent.copyWith();
-    enriched.idTenant = idTenant;
-    try {
-      var isSynced = false;
-      final hasNetwork = await NetworkService().hasNetwork();
-      if (hasNetwork) {
-        try {
-          enriched = await MassiveEventApiService.createMassiveEvent(
-            massiveEvent: enriched,
-            idTenant: idTenant!,
-          );
-          isSynced = true;
-        } catch (e) {
-          isSynced = false;
+
+    if (await _networkService.hasNetwork()) {
+      try {
+        final saved = await MassiveEventApiService.createMassiveEvent(
+          massiveEvent: enriched,
+          idTenant: idTenant,
+        );
+        for (final s in saved.simpleEvents) {
+          s.idMassiveEvent = saved.id;
         }
-      } else {
-        isSynced = false;
+        await _massiveEventRepository.insert(saved, isSynced: true);
+        return saved;
+      } catch (e) {
+        if (!_isConnectionFailure(e)) rethrow;
       }
-      await _massiveEventRepository.insert(enriched, isSynced: isSynced);
-      return enriched;
-    } catch (_) {
-      await _massiveEventRepository.insert(enriched, isSynced: false);
-      return enriched;
-    }*/
+    }
+
+    await _massiveEventRepository.insert(enriched, isSynced: false);
+    for (final s in enriched.simpleEvents) {
+      s.idMassiveEvent = enriched.id;
+    }
+    return enriched;
   }
 
   @override
-  Future<SimpleEventModel> saveSimpleEvent({
+  Future<SaveSimpleEventResult> saveSimpleEvent({
     required SimpleEventModel simpleEvent,
   }) async {
     final idTenant = await SessionService.getIdTenant();
-    simpleEvent.idTenant = idTenant;
-    final simpleEventSaved = await MassiveEventApiService.createSimpleEvent(
-      simpleEvent: simpleEvent,
-      massiveEventServerId: '',
-    );
-    return simpleEventSaved;
-    /*var simpleEventEnriched = simpleEvent.copyWith();
-    simpleEventEnriched.idTenant = idTenant!;
-    var isSynced = false;
-    //TODO:Revisar que aunque haya un idMssiveEvent pude ser que sea porque se guardo en el repo local pero no en el del backend
-    try {
-      final hasNetwork = await NetworkService().hasNetwork();
-      if (hasNetwork) {
-        try {
-          simpleEventEnriched = await MassiveEventApiService.createSimpleEvent(
-            simpleEvent: simpleEventEnriched,
-            massiveEventServerId: simpleEventEnriched.idMassiveEvent!,
-          );
-          isSynced = true;
-        } catch (e) {
-          isSynced = false;
-        }
-      } else {
-        isSynced = false;
-      }
-    } catch (e) {
-      isSynced = false;
+    if (idTenant == null) {
+      throw StateError('Sesión incompleta: falta idTenant');
     }
-    await repo.create(
-      simpleEventEnriched.toLocalCompanion(
-        simpleEventEnriched.idMassiveEvent!,
-        idTenant!,
-        isSynced: isSynced,
-      ),
-    );
-    return simpleEventEnriched;*/
+    final idMe = simpleEvent.idMassiveEvent;
+    if (idMe == null) {
+      throw StateError('Falta idMassiveEvent para el simple event');
+    }
+    simpleEvent.idTenant = idTenant;
+
+    Future<SaveSimpleEventResult> saveNewSimpleOffline() async {
+      await repo.create(
+        simpleEvent.toLocalCompanion(idMe, idTenant, isSynced: false),
+      );
+      return SaveSimpleEventResult(saved: simpleEvent);
+    }
+
+    if (!await _networkService.hasNetwork()) {
+      return saveNewSimpleOffline();
+    }
+
+    try {
+      final massiveRow = await _massiveEventRepository.getById(idMe);
+      if (massiveRow == null) {
+        throw StateError('No existe el evento masivo $idMe');
+      }
+
+      if (!massiveRow.isSynced) {
+        final inDb = await repo.getByidMassiveEvent(idMe);
+        final idsInDb = inDb.map((r) => r.id).toSet();
+        if (!idsInDb.contains(simpleEvent.id)) {
+          await repo.create(
+            simpleEvent.toLocalCompanion(idMe, idTenant, isSynced: false),
+          );
+        }
+        final allRows = await repo.getByidMassiveEvent(idMe);
+        final dbModels = allRows.map(_simpleModelFromDrift).toList();
+        final pushModel = _massiveModelFromDrift(massiveRow, dbModels);
+        final saved = await MassiveEventApiService.createMassiveEvent(
+          massiveEvent: pushModel,
+          idTenant: idTenant,
+        );
+        await _massiveEventRepository.replaceLocalMassiveWithServerResponse(
+          oldLocalMassiveId: idMe,
+          savedFromServer: saved,
+          isSynced: true,
+        );
+        final sortedRows = [...allRows]..sort(_cmpDriftSimple);
+        final sortedSaved = [...saved.simpleEvents]..sort(_cmpSimpleModel);
+        final idx = sortedRows.indexWhere((r) => r.id == simpleEvent.id);
+        final savedSimple =
+            idx >= 0 && idx < sortedSaved.length
+                ? sortedSaved[idx]
+                : sortedSaved.last;
+        return SaveSimpleEventResult(
+          saved: savedSimple,
+          newMassiveEventId: saved.id,
+          remappedSimpleEvents: saved.simpleEvents,
+        );
+      }
+
+      final saved = await MassiveEventApiService.createSimpleEvent(
+        massiveEventServerId: idMe,
+        simpleEvent: simpleEvent,
+      );
+      final massiveId = saved.idMassiveEvent ?? idMe;
+      await repo.create(
+        saved.toLocalCompanion(
+          massiveId,
+          idTenant,
+          isSynced: true,
+        ),
+      );
+      return SaveSimpleEventResult(saved: saved);
+    } catch (e) {
+      if (!_isConnectionFailure(e)) rethrow;
+      return saveNewSimpleOffline();
+    }
   }
 
   @override
@@ -110,25 +267,84 @@ class MassiveEventPageDataSourceMobile implements IMassiveEventPageDataSource {
   Future<List<AnimalSimpleEventModel>> getAnimalSimpleEvents({
     required String idMassiveEvent,
   }) {
-    // TODO: implement getAnimalSimpleEvents
     throw UnimplementedError();
   }
 
   @override
-  Future<List<AnimalSimpleEventModel>> saveAnimalSimpleEvents({
+  Future<SaveAnimalSimpleEventsResult> saveAnimalSimpleEvents({
     required List<AnimalSimpleEventModel> animalSimpleEvents,
     required String cattleNumber,
   }) async {
-    final appliedBy = await SessionService.getIdUser();
-    for (var animalSimpleEvent in animalSimpleEvents) {
-      animalSimpleEvent.appliedBy = appliedBy;
+    final idTenant = await SessionService.getIdTenant();
+    if (idTenant == null) {
+      throw StateError('Sesión incompleta: falta idTenant');
     }
-    final animalSimpleEventsSaved =
-        await MassiveEventApiService.saveAnimalSimpleEvents(
-          animalSimpleEvents: animalSimpleEvents,
-          cattleNumber: cattleNumber,
+    final appliedBy = await SessionService.getIdUser();
+    if (animalSimpleEvents.isEmpty) {
+      return SaveAnimalSimpleEventsResult(animalSimpleEvents: const []);
+    }
+
+    if (await _networkService.hasNetwork()) {
+      try {
+        final mid = animalSimpleEvents.first.idMassiveEvent;
+        final pushed = await _pushUnsyncedMassiveBranch(mid);
+        var forApi =
+            animalSimpleEvents
+                .map((e) => e.copyWith(appliedBy: appliedBy))
+                .toList();
+        if (pushed != null) {
+          forApi =
+              forApi
+                  .map((e) {
+                    final ns = pushed.simpleIdByOld[e.idSimpleEvent];
+                    return e.copyWith(
+                      idMassiveEvent: pushed.savedMassive.id,
+                      idSimpleEvent: ns ?? e.idSimpleEvent,
+                    );
+                  })
+                  .toList();
+        }
+        final savedAnimals =
+            await MassiveEventApiService.saveAnimalSimpleEvents(
+              animalSimpleEvents: forApi,
+              cattleNumber: cattleNumber,
+            );
+        return SaveAnimalSimpleEventsResult(
+          animalSimpleEvents: savedAnimals,
+          newMassiveEventId: pushed?.savedMassive.id,
+          remappedSimpleEvents: pushed?.savedMassive.simpleEvents,
+          syncedWithServer: true,
         );
-    return animalSimpleEventsSaved;
+      } catch (e) {
+        if (!_isConnectionFailure(e)) rethrow;
+      }
+    }
+
+    final out = <AnimalSimpleEventModel>[];
+    for (final e in animalSimpleEvents) {
+      final id = e.id ?? const Uuid().v4();
+      var row = e.copyWith(id: id, idTenant: idTenant, appliedBy: appliedBy);
+      await _animalSimpleEventRepository.create(
+        AnimalSimpleEventLocalCompanion.insert(
+          id: id,
+          idTenant: idTenant,
+          animalNumber: row.animalNumber,
+          type: row.type.name,
+          data: row.data != null ? Value(row.data!) : const Value.absent(),
+          idMassiveEvent: Value(row.idMassiveEvent),
+          idSimpleEvent: Value(row.idSimpleEvent),
+          appliedAt: row.appliedAt,
+          appliedBy: row.appliedBy != null ? Value(row.appliedBy!) : const Value.absent(),
+          recordedInMassiveEvent: Value(row.idMassiveEvent),
+          isSynced: const Value(false),
+        ),
+      );
+      out.add(row);
+    }
+    return SaveAnimalSimpleEventsResult(
+      animalSimpleEvents: out,
+      syncedWithServer: false,
+    );
   }
 
   @override

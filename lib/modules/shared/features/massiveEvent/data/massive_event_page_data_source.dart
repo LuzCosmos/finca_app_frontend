@@ -3,9 +3,38 @@ import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/a
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/massive_event_model.dart';
 
+/// Resultado de guardar un simple: si se subió antes un masivo pendiente, la UI
+/// debe actualizar [newMassiveEventId] y sustituir la lista por [remappedSimpleEvents].
+class SaveSimpleEventResult {
+  final SimpleEventModel saved;
+  final String? newMassiveEventId;
+  final List<SimpleEventModel>? remappedSimpleEvents;
+
+  const SaveSimpleEventResult({
+    required this.saved,
+    this.newMassiveEventId,
+    this.remappedSimpleEvents,
+  });
+}
+
+class SaveAnimalSimpleEventsResult {
+  final List<AnimalSimpleEventModel> animalSimpleEvents;
+  final String? newMassiveEventId;
+  final List<SimpleEventModel>? remappedSimpleEvents;
+
+  /// En móvil, `false` cuando solo se persistió en Drift a la espera de red.
+  final bool syncedWithServer;
+
+  const SaveAnimalSimpleEventsResult({
+    required this.animalSimpleEvents,
+    this.newMassiveEventId,
+    this.remappedSimpleEvents,
+    this.syncedWithServer = true,
+  });
+}
+
 abstract class IMassiveEventPageDataSource {
-  /// Guarda un simple event y retorna el id generado o null
-  Future<SimpleEventModel> saveSimpleEvent({
+  Future<SaveSimpleEventResult> saveSimpleEvent({
     required SimpleEventModel simpleEvent,
   });
 
@@ -21,7 +50,7 @@ abstract class IMassiveEventPageDataSource {
     required String idMassiveEvent,
   });
 
-  Future<List<AnimalSimpleEventModel>> saveAnimalSimpleEvents({
+  Future<SaveAnimalSimpleEventsResult> saveAnimalSimpleEvents({
     required List<AnimalSimpleEventModel> animalSimpleEvents,
     required String cattleNumber,
   });

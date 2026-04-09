@@ -21,7 +21,7 @@ class MassiveEventPageDataSourceWeb implements IMassiveEventPageDataSource {
   }
 
   @override
-  Future<SimpleEventModel> saveSimpleEvent({
+  Future<SaveSimpleEventResult> saveSimpleEvent({
     required SimpleEventModel simpleEvent,
   }) async {
     final idTenant = await SessionService.getIdTenant();
@@ -30,7 +30,7 @@ class MassiveEventPageDataSourceWeb implements IMassiveEventPageDataSource {
       simpleEvent: simpleEvent,
       massiveEventServerId: '',
     );
-    return simpleEventSaved;
+    return SaveSimpleEventResult(saved: simpleEventSaved);
   }
 
   @override
@@ -54,7 +54,7 @@ class MassiveEventPageDataSourceWeb implements IMassiveEventPageDataSource {
   }
 
   @override
-  Future<List<AnimalSimpleEventModel>> saveAnimalSimpleEvents({
+  Future<SaveAnimalSimpleEventsResult> saveAnimalSimpleEvents({
     required List<AnimalSimpleEventModel> animalSimpleEvents,
     required String cattleNumber,
   }) async {
@@ -67,7 +67,9 @@ class MassiveEventPageDataSourceWeb implements IMassiveEventPageDataSource {
           animalSimpleEvents: animalSimpleEvents,
           cattleNumber: cattleNumber,
         );
-    return animalSimpleEventsSaved;
+    return SaveAnimalSimpleEventsResult(
+      animalSimpleEvents: animalSimpleEventsSaved,
+    );
   }
 
   @override

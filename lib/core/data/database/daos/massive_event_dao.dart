@@ -14,6 +14,11 @@ class MassiveEventDao extends DatabaseAccessor<AppDatabase>
 
   Future<List<MassiveEvent>> getAll() => select(massiveEventLocal).get();
 
+  Future<MassiveEvent?> getById(String id) {
+    return (select(massiveEventLocal)..where((t) => t.id.equals(id)))
+        .getSingleOrNull();
+  }
+
   Future<List<MassiveEvent>> getByStatus(String status) {
     return (select(massiveEventLocal)
       ..where((t) => t.status.equals(status))).get();

@@ -722,6 +722,18 @@ abstract class AppLocalizations {
   /// **'Massive Events'**
   String get massiveEvents;
 
+  /// Shown on mobile when a massive event exists locally but is not yet synced.
+  ///
+  /// In en, this message translates to:
+  /// **'This event is saved on the device and is pending synchronization with the server.'**
+  String get massiveEventPendingSync;
+
+  /// Button label to trigger manual data sync on mobile.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync now'**
+  String get syncNow;
+
   /// No description provided for @event.
   ///
   /// In en, this message translates to:

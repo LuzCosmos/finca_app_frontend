@@ -3,9 +3,12 @@ import 'package:http/http.dart' as http;
 import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'dart:convert';
 import 'dart:async';
-import 'package:universal_html/js.dart' as js;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+import 'package:finca_app_frontend/core/services/basic_api_service_env_stub.dart'
+    if (dart.library.html) 'package:finca_app_frontend/core/services/basic_api_service_env_web.dart'
+    as web_env;
 
 class BasicApiService {
   static String _baseUrl = '';
@@ -20,45 +23,32 @@ class BasicApiService {
       return _baseUrl;
     }
     if (kIsWeb) {
-      if (js.context.hasProperty('ENV')) {
-        final env = js.context['ENV'];
-        // Verify if it is a JsObject (standard valid case)
-        if (env is js.JsObject) {
-          if (env.hasProperty('API_BASE_URL')) {
-            final val = env['API_BASE_URL'];
-            if (val != null &&
-                val.toString().toLowerCase() != 'null' &&
-                val.toString().trim().isNotEmpty) {
-              setBaseUrl(val.toString());
-              return _baseUrl;
-            }
-          } else {
-            print(
-              'BasicApiService: ENV object found but no API_BASE_URL property',
-            );
-          }
-        } else {
-          // Fallback for some browsers/compilers treating it as a Map/dynamic
-          print('BasicApiService: ENV is not JsObject, trying dynamic read...');
-          try {
-            final val = (env as dynamic)['API_BASE_URL'];
-            print('BasicApiService: dynamic read result: $val');
-            if (val != null &&
-                val.toString().toLowerCase() != 'null' &&
-                val.toString().trim().isNotEmpty) {
-              setBaseUrl(val.toString());
-              return _baseUrl;
-            }
-          } catch (e) {
-            print('BasicApiService: dynamic read failed: $e');
-          }
-        }
-      } else {
-        print('BasicApiService: window.ENV not found');
+      final fromWindow = web_env.readWebApiBaseUrlFromWindow();
+      if (fromWindow != null && fromWindow.isNotEmpty) {
+        setBaseUrl(fromWindow);
+        return _baseUrl;
       }
     }
-    // Fallback a dotenv (Development local o Mobile)
-    setBaseUrl(dotenv.env['API_BASE_URL'] ?? '/api/v1');
+    // Fallback a dotenv (desarrollo local o mobile)
+    String apiBaseFromEnv = '/api/v1';
+    String? backendFromEnv;
+    try {
+      apiBaseFromEnv = dotenv.env['API_BASE_URL'] ?? '/api/v1';
+      backendFromEnv = dotenv.env['BACKEND_URL'];
+    } catch (_) {
+      // dotenv no inicializado (p. ej. falló dotenv.load en arranque)
+    }
+
+    // En mobile es común tener BACKEND_URL (host completo) separado de
+    // API_BASE_URL (path). Si API_BASE_URL es relativo tipo `/api/v1`,
+    // concatenamos para formar una URL absoluta.
+    if (backendFromEnv != null &&
+        backendFromEnv.isNotEmpty &&
+        apiBaseFromEnv.startsWith('/')) {
+      setBaseUrl('$backendFromEnv$apiBaseFromEnv');
+    } else {
+      setBaseUrl(apiBaseFromEnv);
+    }
     return _baseUrl;
   }
 

@@ -117,9 +117,22 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
               newSimpleEvent = newMassiveEvent.simpleEvents.first;
               widget.onMassiveEventCreated(newMassiveEvent.id);
             } else {
-              newSimpleEvent = await dataSource.saveSimpleEvent(
+              final outcome = await dataSource.saveSimpleEvent(
                 simpleEvent: newSimpleEvent,
               );
+              newSimpleEvent = outcome.saved;
+              if (outcome.newMassiveEventId != null) {
+                widget.onMassiveEventCreated(outcome.newMassiveEventId!);
+              }
+              if (!mounted) return;
+              final allDetails =
+                  outcome.remappedSimpleEvents != null
+                      ? List<SimpleEventModel>.from(
+                        outcome.remappedSimpleEvents!,
+                      )
+                      : [...widget.simpleEvents, newSimpleEvent];
+              widget.onEventsChanged(allDetails);
+              return;
             }
             if (!mounted) return;
             final allDetails = [...widget.simpleEvents, newSimpleEvent];

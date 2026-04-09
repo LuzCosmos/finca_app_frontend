@@ -363,6 +363,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get massiveEvents => 'Eventos masivos';
 
   @override
+  String get massiveEventPendingSync =>
+      'Este evento está guardado en el dispositivo y pendiente de sincronizar con el servidor.';
+
+  @override
+  String get syncNow => 'Sincronizar ahora';
+
+  @override
   String get event => 'Evento';
 
   @override
