@@ -8,6 +8,7 @@ class SimpleEventLocal extends Table {
   TextColumn get idMassiveEvent => text()(); // FK a MassiveEventLocal.id
   TextColumn get type => text()();
   TextColumn get data => text().nullable()();
+  BoolColumn get isActive => boolean().withDefault(const Constant(true))();
   BoolColumn get isSynced => boolean().withDefault(const Constant(false))();
   DateTimeColumn get createdAt => dateTime().nullable()();
 

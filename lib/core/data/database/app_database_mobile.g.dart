@@ -684,6 +684,21 @@ class $SimpleEventLocalTable extends SimpleEventLocal
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _isActiveMeta = const VerificationMeta(
+    'isActive',
+  );
+  @override
+  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>(
+    'is_active',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_active" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
   static const VerificationMeta _isSyncedMeta = const VerificationMeta(
     'isSynced',
   );
@@ -718,6 +733,7 @@ class $SimpleEventLocalTable extends SimpleEventLocal
     idMassiveEvent,
     type,
     data,
+    isActive,
     isSynced,
     createdAt,
   ];
@@ -777,6 +793,12 @@ class $SimpleEventLocalTable extends SimpleEventLocal
         this.data.isAcceptableOrUnknown(data['data']!, _dataMeta),
       );
     }
+    if (data.containsKey('is_active')) {
+      context.handle(
+        _isActiveMeta,
+        isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta),
+      );
+    }
     if (data.containsKey('is_synced')) {
       context.handle(
         _isSyncedMeta,
@@ -826,6 +848,11 @@ class $SimpleEventLocalTable extends SimpleEventLocal
         DriftSqlType.string,
         data['${effectivePrefix}data'],
       ),
+      isActive:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.bool,
+            data['${effectivePrefix}is_active'],
+          )!,
       isSynced:
           attachedDatabase.typeMapping.read(
             DriftSqlType.bool,
@@ -851,6 +878,7 @@ class SimpleEvent extends DataClass implements Insertable<SimpleEvent> {
   final String idMassiveEvent;
   final String type;
   final String? data;
+  final bool isActive;
   final bool isSynced;
   final DateTime? createdAt;
   const SimpleEvent({
@@ -860,6 +888,7 @@ class SimpleEvent extends DataClass implements Insertable<SimpleEvent> {
     required this.idMassiveEvent,
     required this.type,
     this.data,
+    required this.isActive,
     required this.isSynced,
     this.createdAt,
   });
@@ -876,6 +905,7 @@ class SimpleEvent extends DataClass implements Insertable<SimpleEvent> {
     if (!nullToAbsent || data != null) {
       map['data'] = Variable<String>(data);
     }
+    map['is_active'] = Variable<bool>(isActive);
     map['is_synced'] = Variable<bool>(isSynced);
     if (!nullToAbsent || createdAt != null) {
       map['created_at'] = Variable<DateTime>(createdAt);
@@ -894,6 +924,7 @@ class SimpleEvent extends DataClass implements Insertable<SimpleEvent> {
       idMassiveEvent: Value(idMassiveEvent),
       type: Value(type),
       data: data == null && nullToAbsent ? const Value.absent() : Value(data),
+      isActive: Value(isActive),
       isSynced: Value(isSynced),
       createdAt:
           createdAt == null && nullToAbsent
@@ -914,6 +945,7 @@ class SimpleEvent extends DataClass implements Insertable<SimpleEvent> {
       idMassiveEvent: serializer.fromJson<String>(json['idMassiveEvent']),
       type: serializer.fromJson<String>(json['type']),
       data: serializer.fromJson<String?>(json['data']),
+      isActive: serializer.fromJson<bool>(json['isActive']),
       isSynced: serializer.fromJson<bool>(json['isSynced']),
       createdAt: serializer.fromJson<DateTime?>(json['createdAt']),
     );
@@ -928,6 +960,7 @@ class SimpleEvent extends DataClass implements Insertable<SimpleEvent> {
       'idMassiveEvent': serializer.toJson<String>(idMassiveEvent),
       'type': serializer.toJson<String>(type),
       'data': serializer.toJson<String?>(data),
+      'isActive': serializer.toJson<bool>(isActive),
       'isSynced': serializer.toJson<bool>(isSynced),
       'createdAt': serializer.toJson<DateTime?>(createdAt),
     };
@@ -940,6 +973,7 @@ class SimpleEvent extends DataClass implements Insertable<SimpleEvent> {
     String? idMassiveEvent,
     String? type,
     Value<String?> data = const Value.absent(),
+    bool? isActive,
     bool? isSynced,
     Value<DateTime?> createdAt = const Value.absent(),
   }) => SimpleEvent(
@@ -949,6 +983,7 @@ class SimpleEvent extends DataClass implements Insertable<SimpleEvent> {
     idMassiveEvent: idMassiveEvent ?? this.idMassiveEvent,
     type: type ?? this.type,
     data: data.present ? data.value : this.data,
+    isActive: isActive ?? this.isActive,
     isSynced: isSynced ?? this.isSynced,
     createdAt: createdAt.present ? createdAt.value : this.createdAt,
   );
@@ -963,6 +998,7 @@ class SimpleEvent extends DataClass implements Insertable<SimpleEvent> {
               : this.idMassiveEvent,
       type: data.type.present ? data.type.value : this.type,
       data: data.data.present ? data.data.value : this.data,
+      isActive: data.isActive.present ? data.isActive.value : this.isActive,
       isSynced: data.isSynced.present ? data.isSynced.value : this.isSynced,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
@@ -977,6 +1013,7 @@ class SimpleEvent extends DataClass implements Insertable<SimpleEvent> {
           ..write('idMassiveEvent: $idMassiveEvent, ')
           ..write('type: $type, ')
           ..write('data: $data, ')
+          ..write('isActive: $isActive, ')
           ..write('isSynced: $isSynced, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
@@ -991,6 +1028,7 @@ class SimpleEvent extends DataClass implements Insertable<SimpleEvent> {
     idMassiveEvent,
     type,
     data,
+    isActive,
     isSynced,
     createdAt,
   );
@@ -1004,6 +1042,7 @@ class SimpleEvent extends DataClass implements Insertable<SimpleEvent> {
           other.idMassiveEvent == this.idMassiveEvent &&
           other.type == this.type &&
           other.data == this.data &&
+          other.isActive == this.isActive &&
           other.isSynced == this.isSynced &&
           other.createdAt == this.createdAt);
 }
@@ -1015,6 +1054,7 @@ class SimpleEventLocalCompanion extends UpdateCompanion<SimpleEvent> {
   final Value<String> idMassiveEvent;
   final Value<String> type;
   final Value<String?> data;
+  final Value<bool> isActive;
   final Value<bool> isSynced;
   final Value<DateTime?> createdAt;
   final Value<int> rowid;
@@ -1025,6 +1065,7 @@ class SimpleEventLocalCompanion extends UpdateCompanion<SimpleEvent> {
     this.idMassiveEvent = const Value.absent(),
     this.type = const Value.absent(),
     this.data = const Value.absent(),
+    this.isActive = const Value.absent(),
     this.isSynced = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -1036,6 +1077,7 @@ class SimpleEventLocalCompanion extends UpdateCompanion<SimpleEvent> {
     required String idMassiveEvent,
     required String type,
     this.data = const Value.absent(),
+    this.isActive = const Value.absent(),
     this.isSynced = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -1050,6 +1092,7 @@ class SimpleEventLocalCompanion extends UpdateCompanion<SimpleEvent> {
     Expression<String>? idMassiveEvent,
     Expression<String>? type,
     Expression<String>? data,
+    Expression<bool>? isActive,
     Expression<bool>? isSynced,
     Expression<DateTime>? createdAt,
     Expression<int>? rowid,
@@ -1061,6 +1104,7 @@ class SimpleEventLocalCompanion extends UpdateCompanion<SimpleEvent> {
       if (idMassiveEvent != null) 'id_massive_event': idMassiveEvent,
       if (type != null) 'type': type,
       if (data != null) 'data': data,
+      if (isActive != null) 'is_active': isActive,
       if (isSynced != null) 'is_synced': isSynced,
       if (createdAt != null) 'created_at': createdAt,
       if (rowid != null) 'rowid': rowid,
@@ -1074,6 +1118,7 @@ class SimpleEventLocalCompanion extends UpdateCompanion<SimpleEvent> {
     Value<String>? idMassiveEvent,
     Value<String>? type,
     Value<String?>? data,
+    Value<bool>? isActive,
     Value<bool>? isSynced,
     Value<DateTime?>? createdAt,
     Value<int>? rowid,
@@ -1085,6 +1130,7 @@ class SimpleEventLocalCompanion extends UpdateCompanion<SimpleEvent> {
       idMassiveEvent: idMassiveEvent ?? this.idMassiveEvent,
       type: type ?? this.type,
       data: data ?? this.data,
+      isActive: isActive ?? this.isActive,
       isSynced: isSynced ?? this.isSynced,
       createdAt: createdAt ?? this.createdAt,
       rowid: rowid ?? this.rowid,
@@ -1112,6 +1158,9 @@ class SimpleEventLocalCompanion extends UpdateCompanion<SimpleEvent> {
     if (data.present) {
       map['data'] = Variable<String>(data.value);
     }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
+    }
     if (isSynced.present) {
       map['is_synced'] = Variable<bool>(isSynced.value);
     }
@@ -1133,6 +1182,7 @@ class SimpleEventLocalCompanion extends UpdateCompanion<SimpleEvent> {
           ..write('idMassiveEvent: $idMassiveEvent, ')
           ..write('type: $type, ')
           ..write('data: $data, ')
+          ..write('isActive: $isActive, ')
           ..write('isSynced: $isSynced, ')
           ..write('createdAt: $createdAt, ')
           ..write('rowid: $rowid')
@@ -5053,6 +5103,7 @@ typedef $$SimpleEventLocalTableCreateCompanionBuilder =
       required String idMassiveEvent,
       required String type,
       Value<String?> data,
+      Value<bool> isActive,
       Value<bool> isSynced,
       Value<DateTime?> createdAt,
       Value<int> rowid,
@@ -5065,6 +5116,7 @@ typedef $$SimpleEventLocalTableUpdateCompanionBuilder =
       Value<String> idMassiveEvent,
       Value<String> type,
       Value<String?> data,
+      Value<bool> isActive,
       Value<bool> isSynced,
       Value<DateTime?> createdAt,
       Value<int> rowid,
@@ -5106,6 +5158,11 @@ class $$SimpleEventLocalTableFilterComposer
 
   ColumnFilters<String> get data => $composableBuilder(
     column: $table.data,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -5159,6 +5216,11 @@ class $$SimpleEventLocalTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<bool> get isSynced => $composableBuilder(
     column: $table.isSynced,
     builder: (column) => ColumnOrderings(column),
@@ -5198,6 +5260,9 @@ class $$SimpleEventLocalTableAnnotationComposer
 
   GeneratedColumn<String> get data =>
       $composableBuilder(column: $table.data, builder: (column) => column);
+
+  GeneratedColumn<bool> get isActive =>
+      $composableBuilder(column: $table.isActive, builder: (column) => column);
 
   GeneratedColumn<bool> get isSynced =>
       $composableBuilder(column: $table.isSynced, builder: (column) => column);
@@ -5252,6 +5317,7 @@ class $$SimpleEventLocalTableTableManager
                 Value<String> idMassiveEvent = const Value.absent(),
                 Value<String> type = const Value.absent(),
                 Value<String?> data = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
                 Value<bool> isSynced = const Value.absent(),
                 Value<DateTime?> createdAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -5262,6 +5328,7 @@ class $$SimpleEventLocalTableTableManager
                 idMassiveEvent: idMassiveEvent,
                 type: type,
                 data: data,
+                isActive: isActive,
                 isSynced: isSynced,
                 createdAt: createdAt,
                 rowid: rowid,
@@ -5274,6 +5341,7 @@ class $$SimpleEventLocalTableTableManager
                 required String idMassiveEvent,
                 required String type,
                 Value<String?> data = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
                 Value<bool> isSynced = const Value.absent(),
                 Value<DateTime?> createdAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -5284,6 +5352,7 @@ class $$SimpleEventLocalTableTableManager
                 idMassiveEvent: idMassiveEvent,
                 type: type,
                 data: data,
+                isActive: isActive,
                 isSynced: isSynced,
                 createdAt: createdAt,
                 rowid: rowid,

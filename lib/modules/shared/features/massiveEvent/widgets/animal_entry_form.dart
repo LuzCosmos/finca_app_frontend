@@ -26,6 +26,9 @@ class AnimalEntryForm extends StatefulWidget {
   final Function(String?) showError;
   final Function(String?) showSuccess;
   final Function(String?) showInfo;
+  /// Móvil: si se subió un masivo pendiente antes de aplicar al ganado, actualiza id y simples.
+  final void Function(String newMassiveId, List<SimpleEventModel> remappedSimples)?
+  onMassiveBranchSyncedFromServer;
 
   const AnimalEntryForm({
     super.key,
@@ -36,6 +39,7 @@ class AnimalEntryForm extends StatefulWidget {
     required this.showError,
     required this.showSuccess,
     required this.showInfo,
+    this.onMassiveBranchSyncedFromServer,
   });
 
   @override
@@ -47,6 +51,8 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
   final TextEditingController _animalNumberController = TextEditingController();
   final TextEditingController _weightController = TextEditingController();
   final TextEditingController _trackerController = TextEditingController();
+  final FocusNode _animalNumberFocusNode = FocusNode();
+  final FocusNode _trackerFocusNode = FocusNode();
   final TextEditingController _eartagLeftController = TextEditingController();
   final TextEditingController _eartagRightController = TextEditingController();
 
@@ -85,6 +91,8 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
     _animalNumberController.dispose();
     _weightController.dispose();
     _trackerController.dispose();
+    _animalNumberFocusNode.dispose();
+    _trackerFocusNode.dispose();
     _eartagLeftController.dispose();
     _eartagRightController.dispose();
     _formKey.currentState?.reset();
@@ -218,12 +226,22 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
       if (appliedEvents.isNotEmpty) {
         try {
           final dataSource = context.read<MassiveEventBloc>().dataSource;
-          final listOfAnimalSimpleEvents = await dataSource
-              .saveAnimalSimpleEvents(
-                animalSimpleEvents: appliedEvents,
-                cattleNumber: animalNumber,
-              );
-          toApplyRow.updateWith(listOfAnimalSimpleEvents, true);
+          final outcome = await dataSource.saveAnimalSimpleEvents(
+            animalSimpleEvents: appliedEvents,
+            cattleNumber: animalNumber,
+          );
+          if (outcome.newMassiveEventId != null &&
+              outcome.remappedSimpleEvents != null &&
+              widget.onMassiveBranchSyncedFromServer != null) {
+            widget.onMassiveBranchSyncedFromServer!(
+              outcome.newMassiveEventId!,
+              outcome.remappedSimpleEvents!,
+            );
+          }
+          toApplyRow.updateWith(
+            outcome.animalSimpleEvents,
+            outcome.syncedWithServer,
+          );
           _animalNumberController.clear();
           _weightController.clear();
           _trackerController.clear();
@@ -313,6 +331,7 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                         final layoutL10n = AppLocalizations.of(layoutContext)!;
                         return RawAutocomplete<Map<String, dynamic>>(
                           textEditingController: _animalNumberController,
+                          focusNode: _animalNumberFocusNode,
                           optionsBuilder: (
                             TextEditingValue textEditingValue,
                           ) async {
@@ -726,6 +745,7 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                               });
                             },
                             textEditingController: _trackerController,
+                            focusNode: _trackerFocusNode,
                           );
                         },
                       ),

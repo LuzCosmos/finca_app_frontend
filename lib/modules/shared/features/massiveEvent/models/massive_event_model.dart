@@ -7,6 +7,8 @@ class MassiveEventModel {
   final DateTime eventDate;
   final List<SimpleEventModel> simpleEvents;
   String? idTenant;
+  String? name;
+  String? createdBy;
   String status = 'open';
   DateTime createdAt;
   DateTime updatedAt;
@@ -16,6 +18,8 @@ class MassiveEventModel {
     required this.eventDate,
     required this.simpleEvents,
     this.idTenant,
+    this.name,
+    this.createdBy,
     this.status = 'open',
     required this.createdAt,
     required this.updatedAt,
@@ -26,11 +30,15 @@ class MassiveEventModel {
     required List<SimpleEventModel> simpleEvents,
     String? idTenant,
     String? id,
+    String? name,
+    String? createdBy,
     String status = 'open',
   }) {
     return MassiveEventModel(
       id: id ?? const Uuid().v4(),
       idTenant: idTenant,
+      name: name,
+      createdBy: createdBy,
       eventDate: eventDate,
       simpleEvents: simpleEvents,
       status: status,
@@ -39,11 +47,17 @@ class MassiveEventModel {
     );
   }
 
-  /// Devuelve una copia con isActive modificado
-  MassiveEventModel copyWith({bool? isActive}) {
+  MassiveEventModel copyWith({
+    bool? isActive,
+    String? name,
+    String? createdBy,
+    String? idTenant,
+  }) {
     return MassiveEventModel(
       id: id,
-      idTenant: idTenant,
+      idTenant: idTenant ?? this.idTenant,
+      name: name ?? this.name,
+      createdBy: createdBy ?? this.createdBy,
       eventDate: eventDate,
       simpleEvents: simpleEvents,
       status: status,
@@ -57,6 +71,8 @@ class MassiveEventModel {
     return {
       'id': id,
       'idTenant': idTenant,
+      if (name != null) 'name': name,
+      if (createdBy != null) 'createdBy': createdBy,
       'eventDate': formattedDate,
       'simpleEvents': simpleEvents.map((e) => e.toJson()).toList(),
       'status': status,
@@ -78,6 +94,8 @@ class MassiveEventModel {
     return MassiveEventModel(
       id: json['id'] as String,
       idTenant: json['idTenant'] as String,
+      name: json['name'] as String?,
+      createdBy: json['createdBy'] as String?,
       eventDate: DateTime.parse(json['eventDate'] as String),
       simpleEvents:
           (json['simpleEvents'] as List)

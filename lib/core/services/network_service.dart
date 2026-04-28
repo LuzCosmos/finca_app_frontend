@@ -2,7 +2,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 
 class NetworkService {
   Future<bool> hasNetwork() async {
-    final result = await Connectivity().checkConnectivity();
-    return result != ConnectivityResult.none;
+    final results = await Connectivity().checkConnectivity();
+    return results.any((r) => r != ConnectivityResult.none);
   }
 }

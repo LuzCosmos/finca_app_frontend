@@ -39,6 +39,7 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
   final _eartagLeftController = TextEditingController();
   final _eartagRightController = TextEditingController();
   final _trackerController = TextEditingController();
+  final FocusNode _trackerFocusNode = FocusNode();
   final List<String> colors = CattleColor.values.map((e) => e.name).toList();
   final List<String> characteristics =
       CattleCharacteristic.values.map((e) => e.name).toList();
@@ -103,6 +104,7 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
     _eartagLeftController.dispose();
     _eartagRightController.dispose();
     _trackerController.dispose();
+    _trackerFocusNode.dispose();
     _birthDateAprxController.dispose();
     _debounce?.cancel();
     _numberDebounce?.cancel();
@@ -453,6 +455,7 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                     width: 200,
                     child: RawAutocomplete<DeviceModel>(
                       textEditingController: _trackerController,
+                      focusNode: _trackerFocusNode,
                       optionsBuilder: (TextEditingValue textEditingValue) {
                         // Cancel previous completer if it exists and hasn't completed
                         if (_lastCompleter != null &&

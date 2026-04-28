@@ -12,8 +12,17 @@ RUN flutter pub get
 # Copy source code
 COPY . .
 
-# Build the web application
-RUN flutter build web --release
+# .dockerignore excluye .env; el pubspec declara ese asset — copiamos plantilla segura.
+RUN cp dotenv.template .env
+
+# Web/shared no deben importar SQLite FFI (app_database_mobile / drift native).
+RUN if grep -rE 'app_database_mobile|package:drift/native\.dart' lib/modules/web lib/modules/shared --include='*.dart' 2>/dev/null | grep -q .; then \
+      echo 'ERROR: lib/modules/web o shared importan capa SQLite nativa'; \
+      exit 1; \
+    fi
+
+# Build the web application (--no-wasm-dry-run: universal_html usa dart:js, aviso esperado)
+RUN flutter build web --release --no-wasm-dry-run
 
 # Stage 2: Serve with Nginx
 FROM nginx:alpine

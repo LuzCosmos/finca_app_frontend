@@ -3,6 +3,8 @@ import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/modules/shared/widgets/finca_scaffold.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/shared/features/home/widgets/home_option_with_permission.dart';
+import 'package:finca_app_frontend/modules/shared/features/home/home_sync_helper_stub.dart'
+    if (dart.library.io) 'package:finca_app_frontend/modules/shared/features/home/home_sync_helper_io.dart';
 import 'package:flutter/cupertino.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,11 +16,20 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late final Future<Map<String, dynamic>> _permissionsFuture;
+  late final HomeSyncHelper _homeSyncHelper;
 
   @override
   void initState() {
     super.initState();
+    _homeSyncHelper = createHomeSyncHelper();
     _permissionsFuture = SessionService.getPermissions();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _homeSyncHelper.onPostFrame(this));
+  }
+
+  @override
+  void dispose() {
+    _homeSyncHelper.dispose();
+    super.dispose();
   }
 
   bool _hasPermission(
@@ -52,8 +63,12 @@ class _HomePageState extends State<HomePage> {
           showHomeButton: false,
           body: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Center(
-              child: Wrap(
+            child: Column(
+              children: [
+                _homeSyncHelper.buildSyncSection(context, l10n),
+                Expanded(
+                  child: Center(
+                    child: Wrap(
                 spacing: 16,
                 runSpacing: 16,
                 alignment: WrapAlignment.center,
@@ -97,7 +112,10 @@ class _HomePageState extends State<HomePage> {
                     forWebOnly: true,
                   ),
                 ],
-              ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         );

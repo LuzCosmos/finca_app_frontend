@@ -22,13 +22,14 @@ class MassiveEventBloc extends Bloc<MassiveEventEvent, MassiveEventState> {
   ) async {
     emit(MassiveEventLoading());
     try {
-      final result = await dataSource.saveSimpleEvent(
+      final outcome = await dataSource.saveSimpleEvent(
         simpleEvent: event.simpleEvent,
       );
+      final result = outcome.saved;
       emit(
         MassiveEventSuccess(
           messageKey: 'simpleEventAdded',
-          configs: [event.simpleEvent],
+          configs: [result],
         ),
       );
       return result;
@@ -95,11 +96,15 @@ class MassiveEventBloc extends Bloc<MassiveEventEvent, MassiveEventState> {
   ) async {
     emit(MassiveEventLoading());
     try {
-      final result = await dataSource.saveAnimalSimpleEvents(
+      final outcome = await dataSource.saveAnimalSimpleEvents(
         animalSimpleEvents: event.animalSimpleEvents,
         cattleNumber: event.cattleNumber,
       );
-      emit(AnimalSimpleEventsAdded(animalSimpleEvents: result));
+      emit(
+        AnimalSimpleEventsAdded(
+          animalSimpleEvents: outcome.animalSimpleEvents,
+        ),
+      );
     } catch (e) {
       emit(
         MassiveEventError(

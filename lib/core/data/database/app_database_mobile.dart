@@ -45,18 +45,30 @@ LazyDatabase _openConnection() {
     SaleDetailLocal,
   ],
   daos: [
-    SimpleEventDao, 
-    MassiveEventDao, 
-    BrandDao, 
+    SimpleEventDao,
+    MassiveEventDao,
+    BrandDao,
     AnimalSimpleEventDao,
     CattleDao,
     ProviderDao,
-    SaleDao
+    SaleDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 1; // Increment schema version to trigger migration logic if handled (Drift usually needs migration strategy but auto-create works for dev)
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+    onCreate: (Migrator m) async {
+      await m.createAll();
+    },
+    onUpgrade: (Migrator m, int from, int to) async {
+      if (from < 2) {
+        await m.addColumn(simpleEventLocal, simpleEventLocal.isActive);
+      }
+    },
+  );
 }

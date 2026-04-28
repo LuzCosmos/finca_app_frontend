@@ -80,8 +80,9 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => const EditUserPage(),
     ),*/
   ],
-  redirect: (context, state) async {
-    final bool loggedIn = await SessionService.hasValidToken();
+  // Síncrono: un redirect `async` retrasa el primer frame y deja pantalla blanca hasta resolver SharedPreferences.
+  redirect: (context, state) {
+    final bool loggedIn = SessionService.hasValidTokenSync();
     final String path = state.uri.path;
     final bool loggingIn = path == '/login';
     final bool loading = path == '/loading';

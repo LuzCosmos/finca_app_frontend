@@ -14,6 +14,7 @@ extension ToCompanion on SimpleEventModel {
       idMassiveEvent: idMassiveEvent,
       type: type.name,
       data: data != null ? Value(data) : const Value(null),
+      isActive: Value(isActive),
       isSynced: Value(isSynced),
       createdAt: Value(createdAt),
     );

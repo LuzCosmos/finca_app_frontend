@@ -21,6 +21,7 @@ class TrackerEditDialog extends StatefulWidget {
 
 class _TrackerEditDialogState extends State<TrackerEditDialog> {
   final TextEditingController _controller = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
   // List<DeviceModel> _options = [];
   bool _isLoading = false;
   Timer? _debounce;
@@ -36,6 +37,7 @@ class _TrackerEditDialogState extends State<TrackerEditDialog> {
   @override
   void dispose() {
     _controller.dispose();
+    _focusNode.dispose();
     _debounce?.cancel();
     super.dispose();
   }
@@ -53,6 +55,7 @@ class _TrackerEditDialogState extends State<TrackerEditDialog> {
           children: [
             RawAutocomplete<DeviceModel>(
               textEditingController: _controller,
+              focusNode: _focusNode,
               optionsBuilder: (TextEditingValue textEditingValue) async {
                 if (textEditingValue.text.length < 3) {
                   return const Iterable<DeviceModel>.empty();

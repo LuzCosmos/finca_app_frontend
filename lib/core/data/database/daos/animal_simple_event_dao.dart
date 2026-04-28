@@ -29,4 +29,24 @@ class AnimalSimpleEventDao extends DatabaseAccessor<AppDatabase>
       (t) => t.id.equals(id),
     )).write(AnimalSimpleEventLocalCompanion(isInvalid: Value(true)));
   }
+
+  /// Actualiza referencias al masivo local tras subirlo al servidor (nuevo id).
+  Future<void> remapMassiveEventId(String oldMassiveId, String newMassiveId) {
+    return (update(animalSimpleEventLocal)..where(
+      (t) =>
+          t.idMassiveEvent.equals(oldMassiveId) |
+          t.recordedInMassiveEvent.equals(oldMassiveId),
+    )).write(
+      AnimalSimpleEventLocalCompanion(
+        idMassiveEvent: Value(newMassiveId),
+        recordedInMassiveEvent: Value(newMassiveId),
+      ),
+    );
+  }
+
+  Future<void> remapSimpleEventId(String oldSimpleId, String newSimpleId) {
+    return (update(animalSimpleEventLocal)..where(
+      (t) => t.idSimpleEvent.equals(oldSimpleId),
+    )).write(AnimalSimpleEventLocalCompanion(idSimpleEvent: Value(newSimpleId)));
+  }
 }
