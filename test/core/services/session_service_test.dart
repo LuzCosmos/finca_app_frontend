@@ -18,6 +18,17 @@ String _jwtWithExp(int expUnix) {
   return '$header.$payload.sig';
 }
 
+/// JWT con payload JSON arbitrario (firma dummy).
+String _jwtFromPayload(Map<String, dynamic> payload) {
+  final header = base64Url
+      .encode(utf8.encode(jsonEncode({'alg': 'none'})))
+      .replaceAll('=', '');
+  final p = base64Url
+      .encode(utf8.encode(jsonEncode(payload)))
+      .replaceAll('=', '');
+  return '$header.$p.sig';
+}
+
 void main() {
   setUp(() {
     SharedPreferences.setMockInitialValues({});
@@ -173,6 +184,312 @@ void main() {
       );
       expect(await SessionService.logout(), true);
       expect(await SessionService.getToken(), isNull);
+    });
+  });
+
+  group('SessionService getTokenExpirationUnix', () {
+    test('exp entero', () {
+      final exp = 1700000000;
+      final unix = SessionService.getTokenExpirationUnix(
+        _jwtFromPayload({'exp': exp}),
+      );
+      expect(unix, exp);
+    });
+
+    test('exp string numérico', () {
+      final exp = 1700000000;
+      final unix = SessionService.getTokenExpirationUnix(
+        _jwtFromPayload({'exp': '$exp'}),
+      );
+      expect(unix, exp);
+    });
+
+    test('sin exp retorna null', () {
+      expect(SessionService.getTokenExpirationUnix(_jwtFromPayload({})), isNull);
+    });
+
+    test('payload inválido (no JSON al decodificar) retorna null', () {
+      final header = base64Url.encode(utf8.encode('{}')).replaceAll('=', '');
+      final badPayload = base64Url.encode(utf8.encode('not-json')).replaceAll('=', '');
+      expect(
+        SessionService.getTokenExpirationUnix('$header.$badPayload.sig'),
+        isNull,
+      );
+    });
+
+    test('menos de 3 partes retorna null', () {
+      expect(SessionService.getTokenExpirationUnix('a.b'), isNull);
+    });
+
+    test('más de 3 partes retorna null', () {
+      expect(SessionService.getTokenExpirationUnix('a.b.c.d'), isNull);
+    });
+
+    test('exp tipo inválido retorna null', () {
+      expect(
+        SessionService.getTokenExpirationUnix(_jwtFromPayload({'exp': true})),
+        isNull,
+      );
+    });
+  });
+
+  group('SessionService isTokenExpired (skew y opaco)', () {
+    test('sin exp no expira', () {
+      expect(SessionService.isTokenExpired(_jwtFromPayload({})), false);
+    });
+
+    test('futuro → false', () {
+      final exp = DateTime.now().millisecondsSinceEpoch ~/ 1000 + 10000;
+      expect(SessionService.isTokenExpired(_jwtWithExp(exp), skewSeconds: 0), false);
+    });
+
+    test('vencimiento dentro de skew → true', () {
+      final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+      final exp = now + 10;
+      expect(
+        SessionService.isTokenExpired(_jwtWithExp(exp), skewSeconds: 30),
+        true,
+      );
+    });
+
+    test('pasado sin skew → true', () {
+      final exp = DateTime.now().millisecondsSinceEpoch ~/ 1000 - 10;
+      expect(SessionService.isTokenExpired(_jwtWithExp(exp), skewSeconds: 0), true);
+    });
+  });
+
+  group('SessionService hasValidToken e isAuthenticated', () {
+    test('sin token → false', () async {
+      expect(await SessionService.hasValidToken(), false);
+      expect(await SessionService.isAuthenticated(), false);
+    });
+
+    test('con token (aunque expirado) → true (solo existencia)', () async {
+      final past = DateTime.now().millisecondsSinceEpoch ~/ 1000 - 100;
+      await SessionService.saveSession(
+        token: _jwtWithExp(past),
+        permissions: {},
+        idTenant: 't',
+        idUser: 'u',
+      );
+      expect(await SessionService.hasValidToken(), true);
+      expect(await SessionService.isAuthenticated(), true);
+    });
+  });
+
+  group('SessionService updateSessionTokens preservación', () {
+    test('refreshToken null conserva refresh anterior', () async {
+      await SessionService.saveSession(
+        token: _jwtWithExp(
+          DateTime.now().millisecondsSinceEpoch ~/ 1000 + 1000,
+        ),
+        permissions: {'m': {}},
+        idTenant: 't',
+        idUser: 'u',
+        refreshToken: 'keep-me',
+      );
+      final newAccess = _jwtWithExp(
+        DateTime.now().millisecondsSinceEpoch ~/ 1000 + 2000,
+      );
+      await SessionService.updateSessionTokens(accessToken: newAccess);
+      expect(await SessionService.getRefreshToken(), 'keep-me');
+    });
+
+    test('permissions null conserva mapa anterior', () async {
+      await SessionService.saveSession(
+        token: _jwtWithExp(
+          DateTime.now().millisecondsSinceEpoch ~/ 1000 + 500,
+        ),
+        permissions: {'A': {'x': '11111'}},
+        idTenant: 't',
+        idUser: 'u',
+      );
+      final newAccess = _jwtWithExp(
+        DateTime.now().millisecondsSinceEpoch ~/ 1000 + 600,
+      );
+      await SessionService.updateSessionTokens(accessToken: newAccess);
+      final p = await SessionService.getPermissions();
+      expect(p['A'], isA<Map>());
+      expect(await SessionService.hasPermission('A', 'x'), true);
+    });
+
+    test('refreshToken vacío no actualiza prefs ni borra explícito', () async {
+      await SessionService.saveSession(
+        token: _jwtWithExp(
+          DateTime.now().millisecondsSinceEpoch ~/ 1000 + 400,
+        ),
+        permissions: {},
+        idTenant: 't',
+        idUser: 'u',
+        refreshToken: 'prev',
+      );
+      final next = _jwtWithExp(
+        DateTime.now().millisecondsSinceEpoch ~/ 1000 + 800,
+      );
+      await SessionService.updateSessionTokens(
+        accessToken: next,
+        refreshToken: '',
+      );
+      expect(await SessionService.getRefreshToken(), 'prev');
+    });
+  });
+
+  group('SessionService saveSession refresh opcional', () {
+    test('refresh null elimina refresh en prefs', () async {
+      await SessionService.saveSession(
+        token: _jwtWithExp(
+          DateTime.now().millisecondsSinceEpoch ~/ 1000 + 900,
+        ),
+        permissions: {},
+        idTenant: 't',
+        idUser: 'u',
+        refreshToken: 'x',
+      );
+      await SessionService.saveSession(
+        token: _jwtWithExp(
+          DateTime.now().millisecondsSinceEpoch ~/ 1000 + 901,
+        ),
+        permissions: {},
+        idTenant: 't',
+        idUser: 'u',
+      );
+      expect(await SessionService.getRefreshToken(), isNull);
+    });
+
+    test('refresh vacío no persiste refresh (caché puede quedar string vacío)', () async {
+      await SessionService.saveSession(
+        token: _jwtWithExp(
+          DateTime.now().millisecondsSinceEpoch ~/ 1000 + 902,
+        ),
+        permissions: {},
+        idTenant: 't',
+        idUser: 'u',
+        refreshToken: 'x',
+      );
+      await SessionService.saveSession(
+        token: _jwtWithExp(
+          DateTime.now().millisecondsSinceEpoch ~/ 1000 + 903,
+        ),
+        permissions: {},
+        idTenant: 't',
+        idUser: 'u',
+        refreshToken: '',
+      );
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.getString('refresh_token'), isNull);
+      expect(await SessionService.getRefreshToken(), '');
+    });
+  });
+
+  group('SessionService cleanSession y persistencia', () {
+    test('cleanSession + reset + hydrate sin datos', () async {
+      final token = _jwtWithExp(
+        DateTime.now().millisecondsSinceEpoch ~/ 1000 + 5000,
+      );
+      await SessionService.saveSession(
+        token: token,
+        permissions: {'K': {}},
+        idTenant: 'ta',
+        idUser: 'ua',
+        refreshToken: 'rr',
+      );
+      await SessionService.cleanSession();
+      SessionService.resetForTesting();
+      await SessionService.hydrateFromStorage();
+      expect(await SessionService.getToken(), isNull);
+      expect(await SessionService.getRefreshToken(), isNull);
+      expect(await SessionService.getIdTenant(), isNull);
+      expect(SessionService.hasValidTokenSync(), false);
+    });
+  });
+
+  group('SessionService hasActionPermission casos límite', () {
+    setUp(() async {
+      final tok = _jwtWithExp(
+        DateTime.now().millisecondsSinceEpoch ~/ 1000 + 8000,
+      );
+      await SessionService.saveSession(
+        token: tok,
+        permissions: {
+          'M': {'r': '11111', 'short': '10', 'zero': '00000', 'x': 'nope'},
+          'NOT_MAP': 'x',
+          'BAD_MASK': {'x': 1},
+        },
+        idTenant: 't',
+        idUser: 'u',
+      );
+    });
+
+    test('acciones READ / Read / read equivalentes', () async {
+      expect(
+        await SessionService.hasActionPermission('M', 'r', 'READ'),
+        true,
+      );
+      expect(
+        await SessionService.hasActionPermission('M', 'r', 'Read'),
+        true,
+      );
+      expect(
+        await SessionService.hasActionPermission('M', 'r', 'read'),
+        true,
+      );
+    });
+
+    test('acción desconocida', () async {
+      expect(
+        await SessionService.hasActionPermission('M', 'r', 'purge'),
+        false,
+      );
+    });
+
+    test('módulo inexistente', () async {
+      expect(
+        await SessionService.hasActionPermission('Z', 'r', 'read'),
+        false,
+      );
+    });
+
+    test('resource inexistente', () async {
+      expect(
+        await SessionService.hasActionPermission('M', 'missing', 'read'),
+        false,
+      );
+    });
+
+    test('módulo no es Map', () async {
+      expect(
+        await SessionService.hasActionPermission('NOT_MAP', 'r', 'read'),
+        false,
+      );
+    });
+
+    test('máscara no es String', () async {
+      expect(
+        await SessionService.hasActionPermission('BAD_MASK', 'x', 'read'),
+        false,
+      );
+    });
+
+    test('máscara corta', () async {
+      expect(
+        await SessionService.hasActionPermission('M', 'short', 'read'),
+        false,
+      );
+    });
+
+    test('00000 todo false', () async {
+      for (final a in ['create', 'read', 'update', 'delete', 'list']) {
+        expect(
+          await SessionService.hasActionPermission('M', 'zero', a),
+          false,
+        );
+      }
+    });
+
+    test('11111 todo true', () async {
+      for (final a in ['create', 'read', 'update', 'delete', 'list']) {
+        expect(await SessionService.hasActionPermission('M', 'r', a), true);
+      }
     });
   });
 }

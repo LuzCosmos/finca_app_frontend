@@ -89,6 +89,33 @@ API_BASE_URL=/api/v1
         expect(web_env_stub.readWebApiBaseUrlFromWindow(), isNull);
       },
     );
+
+    test(
+      'BACKEND con / final y API_BASE_URL relativo (comportamiento: doble slash)',
+      () {
+        dotenv.loadFromString(envString: '''
+BACKEND_URL=https://backend.test/
+API_BASE_URL=/api/v1
+''');
+        BasicApiService.resetForTesting();
+        expect(
+          BasicApiService.getApiBaseUrl(),
+          'https://backend.test//api/v1',
+        );
+      },
+    );
+
+    test(
+      'API_BASE_URL sin / inicial no se concatena con BACKEND',
+      () {
+        dotenv.loadFromString(envString: '''
+BACKEND_URL=https://b.test
+API_BASE_URL=api/v1
+''');
+        BasicApiService.resetForTesting();
+        expect(BasicApiService.getApiBaseUrl(), 'api/v1');
+      },
+    );
   });
 
   group('BasicApiService.getToken', () {

@@ -24,6 +24,9 @@ class SyncService {
   final SimpleEventRepository simpleEventRepository;
   final String baseUrl;
   final Future<String> Function() getToken;
+  /// Retraso inicial entre reintentos de POST (exponencial: ×2 por intento).
+  final Duration retryInitialDelay;
+  final int maxRetries;
 
   SyncService({
     required this.animalSimpleEventRepository,
@@ -32,6 +35,8 @@ class SyncService {
     required this.simpleEventRepository,
     required this.baseUrl,
     required this.getToken,
+    this.retryInitialDelay = const Duration(seconds: 2),
+    this.maxRetries = 3,
   });
 
   Future<SyncResult> _syncEntities<T>({
@@ -254,10 +259,8 @@ class SyncService {
 
   Future<http.Response> _postWithRetry(
     Uri url,
-    Map<String, dynamic> payload, {
-    int maxRetries = 3,
-    Duration initialDelay = const Duration(seconds: 2),
-  }) async {
+    Map<String, dynamic> payload,
+  ) async {
     for (int attempt = 0; attempt < maxRetries; attempt++) {
       try {
         final response = await BasicApiService.authorizedPost(
@@ -283,7 +286,7 @@ class SyncService {
       // Si no fue el último intento, esperamos antes de reintentar
       if (attempt < maxRetries - 1) {
         final delay = Duration(
-          seconds: initialDelay.inSeconds * (1 << attempt),
+          seconds: retryInitialDelay.inSeconds * (1 << attempt),
         );
         debugPrint('🔄 Reintentando en ${delay.inSeconds} segundos...');
         await Future.delayed(delay);
