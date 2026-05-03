@@ -23,17 +23,20 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final isWideScreen = MediaQuery.of(context).size.width > 600;
 
-    return FincaScaffold(
-      title: title,
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxWidth: isWideScreen ? 400 : double.infinity,
-            ),
-            child: LoginForm(
-              onLoginSuccess: (data) => _handleLoginSuccess(context, data),
+    return KeyedSubtree(
+      key: const ValueKey<String>('login-page'),
+      child: FincaScaffold(
+        title: title,
+        body: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: isWideScreen ? 400 : double.infinity,
+              ),
+              child: LoginForm(
+                onLoginSuccess: (data) => _handleLoginSuccess(context, data),
+              ),
             ),
           ),
         ),

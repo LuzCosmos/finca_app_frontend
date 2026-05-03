@@ -45,81 +45,100 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return FutureBuilder<Map<String, dynamic>>(
-      future: _permissionsFuture,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState != ConnectionState.done) {
+    return KeyedSubtree(
+      key: const ValueKey<String>('home-page'),
+      child: FutureBuilder<Map<String, dynamic>>(
+        future: _permissionsFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState != ConnectionState.done) {
+            return FincaScaffold(
+              title: l10n.home_title,
+              showHomeButton: false,
+              body: const Center(child: CircularProgressIndicator()),
+            );
+          }
+
+          final permissions = snapshot.data ?? const <String, dynamic>{};
+
           return FincaScaffold(
             title: l10n.home_title,
             showHomeButton: false,
-            body: const Center(child: CircularProgressIndicator()),
-          );
-        }
-
-        final permissions = snapshot.data ?? const <String, dynamic>{};
-
-        return FincaScaffold(
-          title: l10n.home_title,
-          showHomeButton: false,
-          body: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                _homeSyncHelper.buildSyncSection(context, l10n),
-                Expanded(
-                  child: Center(
-                    child: Wrap(
-                spacing: 16,
-                runSpacing: 16,
-                alignment: WrapAlignment.center,
+            body: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
                 children: [
-                  HomeOptionWithPermission(
-                    isVisible: _hasPermission(permissions, "COMMERCE", "purchases"),
-                    title: l10n.purchase,
-                    icon: Icons.shopping_cart,
-                    route: "/purchases",
-                  ),
-                  HomeOptionWithPermission(
-                    isVisible: _hasPermission(
-                      permissions,
-                      "MASSIVE_EVENTS",
-                      "massive_events",
+                  _homeSyncHelper.buildSyncSection(context, l10n),
+                  Expanded(
+                    child: Center(
+                      child: Wrap(
+                        spacing: 16,
+                        runSpacing: 16,
+                        alignment: WrapAlignment.center,
+                        children: [
+                          HomeOptionWithPermission(
+                            isVisible: _hasPermission(
+                              permissions,
+                              "COMMERCE",
+                              "purchases",
+                            ),
+                            title: l10n.purchase,
+                            icon: Icons.shopping_cart,
+                            route: "/purchases",
+                          ),
+                          HomeOptionWithPermission(
+                            isVisible: _hasPermission(
+                              permissions,
+                              "MASSIVE_EVENTS",
+                              "massive_events",
+                            ),
+                            title: l10n.massiveEvent,
+                            icon: CupertinoIcons.list_bullet,
+                            route: "/massive-events/create",
+                            forWebOnly: false,
+                          ),
+                          HomeOptionWithPermission(
+                            isVisible: _hasPermission(
+                              permissions,
+                              "COMMERCE",
+                              "sales",
+                            ),
+                            title: l10n.sale,
+                            icon: Icons.monetization_on,
+                            route: "/sales",
+                            forWebOnly: true,
+                          ),
+                          HomeOptionWithPermission(
+                            isVisible: _hasPermission(
+                              permissions,
+                              "EMP_MGMT",
+                              "users",
+                            ),
+                            title: l10n.users,
+                            icon: Icons.people,
+                            route: "/users",
+                            forWebOnly: false,
+                          ),
+                          HomeOptionWithPermission(
+                            isVisible: _hasPermission(
+                              permissions,
+                              "FARM",
+                              "cattle",
+                            ),
+                            title: l10n.masterListTitle,
+                            icon: Icons.table_view,
+                            route: "/cattle",
+                            forWebOnly: true,
+                          ),
+                        ],
+                      ),
                     ),
-                    title: l10n.massiveEvent,
-                    icon: CupertinoIcons.list_bullet,
-                    route: "/massive-events/create",
-                    forWebOnly: false,
-                  ),
-                  HomeOptionWithPermission(
-                    isVisible: _hasPermission(permissions, "COMMERCE", "sales"),
-                    title: l10n.sale,
-                    icon: Icons.monetization_on,
-                    route: "/sales",
-                    forWebOnly: true,
-                  ),
-                  HomeOptionWithPermission(
-                    isVisible: _hasPermission(permissions, "EMP_MGMT", "users"),
-                    title: l10n.users,
-                    icon: Icons.people,
-                    route: "/users",
-                    forWebOnly: false,
-                  ),
-                  HomeOptionWithPermission(
-                    isVisible: _hasPermission(permissions, "FARM", "cattle"),
-                    title: l10n.masterListTitle,
-                    icon: Icons.table_view,
-                    route: "/cattle",
-                    forWebOnly: true,
                   ),
                 ],
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }

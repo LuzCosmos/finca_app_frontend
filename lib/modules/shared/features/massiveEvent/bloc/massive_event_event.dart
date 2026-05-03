@@ -54,7 +54,7 @@ class AddAnimalSimpleEvents extends MassiveEventEvent {
   });
 
   @override
-  List<Object?> get props => [animalSimpleEvents];
+  List<Object?> get props => [animalSimpleEvents, cattleNumber];
 }
 
 class CloseMassiveEvent extends MassiveEventEvent {

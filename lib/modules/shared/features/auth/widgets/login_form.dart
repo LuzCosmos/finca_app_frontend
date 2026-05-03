@@ -80,6 +80,7 @@ class _LoginFormState extends State<LoginForm> {
       child: Column(
         children: [
           TextFormField(
+            key: const Key('login-username-field'),
             initialValue: '',
             decoration: InputDecoration(labelText: l10n.username),
             autofillHints: const [AutofillHints.username],

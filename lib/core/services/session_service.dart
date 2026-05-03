@@ -1,4 +1,6 @@
 import 'dart:convert';
+
+import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SessionService {
@@ -22,6 +24,24 @@ class SessionService {
   static Future<SharedPreferences> _prefs() {
     _prefsFuture ??= SharedPreferences.getInstance();
     return _prefsFuture!;
+  }
+
+  /// Limpia caché en memoria y el futuro de [SharedPreferences]. Usar en tests
+  /// después de [SharedPreferences.setMockInitialValues] para evitar fugas
+  /// entre casos.
+  @visibleForTesting
+  static void resetForTesting() {
+    _prefsFuture = null;
+    _cachedToken = null;
+    _cachedRefreshToken = null;
+    _cachedPermissions = null;
+    _cachedIdTenant = null;
+    _cachedIdUser = null;
+    _tokenLoaded = false;
+    _refreshTokenLoaded = false;
+    _permissionsLoaded = false;
+    _idTenantLoaded = false;
+    _idUserLoaded = false;
   }
 
   /// Carga token y demás claves en memoria antes de [runApp], para que el

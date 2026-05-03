@@ -5,6 +5,11 @@ class LoadingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    return KeyedSubtree(
+      key: const ValueKey<String>('loading-page'),
+      child: const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      ),
+    );
   }
 }

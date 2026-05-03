@@ -36,7 +36,10 @@ class MassiveEventError extends MassiveEventState {
 class BrandCreatedSuccess extends MassiveEventState {
   final BrandModel brand;
 
-  BrandCreatedSuccess({required this.brand});
+  const BrandCreatedSuccess({required this.brand});
+
+  @override
+  List<Object?> get props => [brand];
 }
 
 class AnimalSimpleEventsAdded extends MassiveEventState {

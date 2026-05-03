@@ -19,84 +19,98 @@ import 'package:finca_app_frontend/modules/shared/features/massiveEvent/data/mas
     if (dart.library.io) 'package:finca_app_frontend/modules/mobile/data/massive_event/massive_event_page_data_source_mobile_interface.dart'
     if (dart.library.html) 'package:finca_app_frontend/modules/web/data/massive_event/massive_event_page_data_source_web_interface.dart';
 
-final GoRouter appRouter = GoRouter(
-  initialLocation: '/loading',
-  routes: [
-    GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
-    GoRoute(path: '/home', builder: (context, state) => const HomePage()),
-    GoRoute(
-      path: '/purchases/create',
-      builder: (context, state) => const PurchaseFormPage(),
-    ),
-    GoRoute(
-      path: '/purchases',
-      name: 'purchasesList',
-      builder: (_, _) => const PurchasesListPage(),
-    ),
-    GoRoute(
-      path: '/purchases/pending',
-      name: 'purchasesPending',
-      builder: (_, _) => const PurchasesListPage(initialStatusFilter: 'open'),
-    ),
+/// Firma injectable para decidir sesión en tests sin depender del estado
+/// estático de [SessionService].
+typedef HasValidToken = bool Function();
 
-    GoRoute(
-      path: '/sales',
-      builder: (context, state) => const SaleDashboardPage(),
-    ),
-    GoRoute(
-      path: '/sales/create',
-      builder: (context, state) => const CreateSalePage(),
-    ),
-    GoRoute(
-      path: '/loading',
-      builder: (context, state) => const LoadingPage(),
-    ), //ruta de espera
-    GoRoute(
-      path: '/massive-events/create',
-      builder: (context, state) {
-        final dataSource = createMassiveEventPageDataSource();
-        return BlocProvider(
-          create: (_) => MassiveEventBloc(dataSource: dataSource),
-          child: const MassiveEventPage(),
-        );
-      },
-    ),
-    GoRoute(path: '/users', builder: (context, state) => const UsersListPage()),
-    GoRoute(
-      path: '/purchase/reception/:purchaseId',
-      name: 'purchaseReception',
-      builder: (context, state) {
-        final id = state.pathParameters['purchaseId']!;
-        return PurchaseReceptionPage(purchaseId: id);
-      },
-    ),
-    GoRoute(
-      path: '/cattle',
-      builder: (context, state) => const CattleMasterListPage(),
-    ),
-    /*GoRoute(
-      path: '/user/edit',
-      name: 'editUser',
-      builder: (context, state) => const EditUserPage(),
-    ),*/
-  ],
-  // Síncrono: un redirect `async` retrasa el primer frame y deja pantalla blanca hasta resolver SharedPreferences.
-  redirect: (context, state) {
-    final bool loggedIn = SessionService.hasValidTokenSync();
-    final String path = state.uri.path;
-    final bool loggingIn = path == '/login';
-    final bool loading = path == '/loading';
+/// Crea una instancia nueva de [GoRouter] (evita estado compartido entre tests).
+/// En producción se usa [appRouter] sin argumentos.
+GoRouter createAppRouter({
+  HasValidToken? hasValidToken,
+  String initialLocation = '/loading',
+}) {
+  final HasValidToken resolveHasValidToken =
+      hasValidToken ?? SessionService.hasValidTokenSync;
 
-    if (loading) {
-      return loggedIn ? '/home' : '/login';
-    }
+  return GoRouter(
+    initialLocation: initialLocation,
+    routes: [
+      GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
+      GoRoute(path: '/home', builder: (context, state) => const HomePage()),
+      GoRoute(
+        path: '/purchases/create',
+        builder: (context, state) => const PurchaseFormPage(),
+      ),
+      GoRoute(
+        path: '/purchases',
+        name: 'purchasesList',
+        builder: (_, _) => const PurchasesListPage(),
+      ),
+      GoRoute(
+        path: '/purchases/pending',
+        name: 'purchasesPending',
+        builder: (_, _) =>
+            const PurchasesListPage(initialStatusFilter: 'open'),
+      ),
 
-    if (!loggedIn && !loggingIn) {
-      return '/login';
-    }
-    if (loggedIn && loggingIn) {
-      return '/home';
-    }
-    return null;
-  },
-);
+      GoRoute(
+        path: '/sales',
+        builder: (context, state) => const SaleDashboardPage(),
+      ),
+      GoRoute(
+        path: '/sales/create',
+        builder: (context, state) => const CreateSalePage(),
+      ),
+      GoRoute(
+        path: '/loading',
+        builder: (context, state) => const LoadingPage(),
+      ),
+      GoRoute(
+        path: '/massive-events/create',
+        builder: (context, state) {
+          final dataSource = createMassiveEventPageDataSource();
+          return BlocProvider(
+            create: (_) => MassiveEventBloc(dataSource: dataSource),
+            child: const MassiveEventPage(),
+          );
+        },
+      ),
+      GoRoute(
+        path: '/users',
+        builder: (context, state) => const UsersListPage(),
+      ),
+      GoRoute(
+        path: '/purchase/reception/:purchaseId',
+        name: 'purchaseReception',
+        builder: (context, state) {
+          final id = state.pathParameters['purchaseId']!;
+          return PurchaseReceptionPage(purchaseId: id);
+        },
+      ),
+      GoRoute(
+        path: '/cattle',
+        builder: (context, state) => const CattleMasterListPage(),
+      ),
+    ],
+    redirect: (context, state) {
+      final bool loggedIn = resolveHasValidToken();
+      final String path = state.uri.path;
+      final bool loggingIn = path == '/login';
+      final bool loading = path == '/loading';
+
+      if (loading) {
+        return loggedIn ? '/home' : '/login';
+      }
+
+      if (!loggedIn && !loggingIn) {
+        return '/login';
+      }
+      if (loggedIn && loggingIn) {
+        return '/home';
+      }
+      return null;
+    },
+  );
+}
+
+final GoRouter appRouter = createAppRouter();
