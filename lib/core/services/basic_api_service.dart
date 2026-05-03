@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'dart:convert';
 import 'dart:async';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kIsWeb, visibleForTesting;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:finca_app_frontend/core/services/basic_api_service_env_stub.dart'
@@ -16,6 +16,13 @@ class BasicApiService {
 
   static void setBaseUrl(String baseUrl) {
     _baseUrl = baseUrl;
+  }
+
+  /// Restaura estado estático para tests (base URL y refresh en curso).
+  @visibleForTesting
+  static void resetForTesting() {
+    _baseUrl = '';
+    _refreshTokenFuture = null;
   }
 
   static String getApiBaseUrl() {
