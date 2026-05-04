@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:finca_app_frontend/core/services/auth_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/auth/page/login_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/home/page/home_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/loading/loading_page.dart';
@@ -28,6 +29,7 @@ typedef HasValidToken = bool Function();
 GoRouter createAppRouter({
   HasValidToken? hasValidToken,
   String initialLocation = '/loading',
+  AuthService? loginAuthService,
 }) {
   final HasValidToken resolveHasValidToken =
       hasValidToken ?? SessionService.hasValidTokenSync;
@@ -35,7 +37,11 @@ GoRouter createAppRouter({
   return GoRouter(
     initialLocation: initialLocation,
     routes: [
-      GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
+      GoRoute(
+        path: '/login',
+        builder: (context, state) =>
+            LoginPage(authService: loginAuthService),
+      ),
       GoRoute(path: '/home', builder: (context, state) => const HomePage()),
       GoRoute(
         path: '/purchases/create',

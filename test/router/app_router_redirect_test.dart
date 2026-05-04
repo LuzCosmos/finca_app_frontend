@@ -86,4 +86,30 @@ void main() {
       findsOneWidget,
     );
   });
+
+  testWidgets('/users sin sesión → login', (tester) async {
+    final router = createAppRouter(
+      hasValidToken: () => false,
+      initialLocation: '/users',
+    );
+    await tester.pumpWidget(buildRouterTestHost(router));
+    await pumpRouterFrames(tester);
+    expect(
+      find.byKey(const ValueKey<String>('login-page')),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('/massive-events/create sin sesión → login', (tester) async {
+    final router = createAppRouter(
+      hasValidToken: () => false,
+      initialLocation: '/massive-events/create',
+    );
+    await tester.pumpWidget(buildRouterTestHost(router));
+    await pumpRouterFrames(tester);
+    expect(
+      find.byKey(const ValueKey<String>('login-page')),
+      findsOneWidget,
+    );
+  });
 }

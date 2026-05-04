@@ -116,4 +116,34 @@ void main() {
     await pumpAuthenticated(tester, '/cattle');
     expect(find.byType(CattleMasterListPage), findsOneWidget);
   });
+
+  testWidgets('goNamed purchasesList abre PurchasesListPage', (tester) async {
+    final router = createAppRouter(
+      hasValidToken: () => true,
+      initialLocation: '/home',
+    );
+    await tester.pumpWidget(buildRouterTestHost(router));
+    await pumpRouterFrames(tester);
+    router.goNamed('purchasesList');
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 2));
+    expect(find.byType(PurchasesListPage), findsOneWidget);
+  });
+
+  testWidgets('goNamed purchasesPending abre lista pendiente', (tester) async {
+    final router = createAppRouter(
+      hasValidToken: () => true,
+      initialLocation: '/home',
+    );
+    await tester.pumpWidget(buildRouterTestHost(router));
+    await pumpRouterFrames(tester);
+    router.goNamed('purchasesPending');
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 2));
+    expect(find.byType(PurchasesListPage), findsOneWidget);
+    final page = tester.widget<PurchasesListPage>(
+      find.byType(PurchasesListPage),
+    );
+    expect(page.initialStatusFilter, 'open');
+  });
 }

@@ -1,22 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:finca_app_frontend/core/services/auth_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/auth/widgets/login_form.dart';
 import 'package:finca_app_frontend/modules/shared/widgets/finca_scaffold.dart';
 
 class LoginPage extends StatelessWidget {
   final String title;
-  const LoginPage({super.key, this.title = ''});
+  final AuthService? authService;
+
+  const LoginPage({super.key, this.title = '', this.authService});
 
   void _handleLoginSuccess(
     BuildContext context,
-    Map<String, dynamic> loginData,
+    Map<String, dynamic> _,
   ) {
-    // Aquí haces navegación o asignación de estado global
-    // Ejemplo: Navigator.pushReplacementNamed(context, '/home');
-    //Navigator.pushReplacement(context,MaterialPageRoute(builder: (_) => const HomePage()),);
     context.go('/home');
-
-    print('Login exitoso. Usuario: ${loginData['user'].username}');
   }
 
   @override
@@ -36,6 +34,7 @@ class LoginPage extends StatelessWidget {
               ),
               child: LoginForm(
                 onLoginSuccess: (data) => _handleLoginSuccess(context, data),
+                authService: authService,
               ),
             ),
           ),

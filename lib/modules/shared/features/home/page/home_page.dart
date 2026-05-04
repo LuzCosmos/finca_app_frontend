@@ -38,7 +38,14 @@ class _HomePageState extends State<HomePage> {
     String resource,
   ) {
     final moduleData = permissions[module];
-    return moduleData is Map && moduleData.containsKey(resource);
+    if (moduleData is! Map) return false;
+    final value = moduleData[resource];
+    if (value is bool) return value;
+    if (value is String) {
+      final lower = value.toLowerCase();
+      return lower == 'true' || lower == '1';
+    }
+    return false;
   }
 
   @override

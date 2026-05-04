@@ -24,6 +24,19 @@ jobs:
       - name: Run tests with coverage
         run: flutter test --coverage
 
+      # Fase 3 §5.6: home_page_web_test.dart usa kIsWeb; en VM los casos van en skip — ejecutarlos en Chrome en CI.
+      - name: Setup Chrome (widget tests web)
+        uses: browser-actions/setup-chrome@v1
+        id: setup-chrome
+        with:
+          chrome-version: stable
+
+      - name: Run web-only HomePage widget tests (Chrome)
+        # Primera compilación web puede superar el timeout por defecto (~12m); 30m reduce falsos negativos en CI.
+        run: flutter test --platform chrome --timeout=30m test/modules/shared/features/home/home_page_web_test.dart
+        env:
+          CHROME_EXECUTABLE: ${{ steps.setup-chrome.outputs.chrome-path }}
+
       - name: Build Flutter Web
         run: flutter build web --release
 
