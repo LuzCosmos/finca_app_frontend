@@ -70,6 +70,15 @@ class SessionService {
     _idUserLoaded = true;
   }
 
+  /// Mapa de permisos en memoria cuando ya se cargó sesión vía
+  /// [hydrateFromStorage] o [saveSession]. Si aún no hay carga, devuelve
+  /// `null` y el guard de rutas no aplica (comportamiento previo a §5.3).
+  static Map<String, dynamic>? get permissionsSnapshotForRouteGuard {
+    if (!_permissionsLoaded) return null;
+    if (_cachedPermissions == null) return <String, dynamic>{};
+    return Map<String, dynamic>.from(_cachedPermissions!);
+  }
+
   /// Solo válido después de [hydrateFromStorage] (llamado desde [main]).
   static bool hasValidTokenSync() {
     if (!_tokenLoaded) return false;

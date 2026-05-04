@@ -9,8 +9,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EventDetailForm extends StatefulWidget {
   final List<SimpleEventType> activeEventTypes;
+  final ValueChanged<String?> onBrandsLoadError;
 
-  const EventDetailForm({super.key, required this.activeEventTypes});
+  const EventDetailForm({
+    super.key,
+    required this.activeEventTypes,
+    required this.onBrandsLoadError,
+  });
 
   @override
   State<EventDetailForm> createState() => _EventDetailFormState();
@@ -69,8 +74,14 @@ class _EventDetailFormState extends State<EventDetailForm> {
       setState(() {
         availableBrands = brands;
       });
-    } catch (e) {
-      // Manejo de error
+    } catch (_) {
+      if (!mounted) return;
+      final msg = AppLocalizations.of(context)!.error_generic;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          widget.onBrandsLoadError(msg);
+        }
+      });
     }
   }
 

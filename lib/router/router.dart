@@ -14,6 +14,7 @@ import 'package:finca_app_frontend/modules/web/features/cattle_purchase/pages/pu
 import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/users/pages/users_list_page.dart';
 import 'package:finca_app_frontend/modules/web/features/cattle/pages/cattle_master_list_page.dart';
+import 'package:finca_app_frontend/router/route_access.dart';
 
 // Conditional imports para data source específico de plataforma
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/data/massive_event_page_data_source_stub.dart'
@@ -113,6 +114,20 @@ GoRouter createAppRouter({
       }
       if (loggedIn && loggingIn) {
         return '/home';
+      }
+
+      final permissions = SessionService.permissionsSnapshotForRouteGuard;
+      if (loggedIn &&
+          !loggingIn &&
+          !loading &&
+          permissions != null) {
+        final denied = routeAccessDeniedRedirect(
+          path: path,
+          permissions: permissions,
+        );
+        if (denied != null) {
+          return denied;
+        }
       }
       return null;
     },

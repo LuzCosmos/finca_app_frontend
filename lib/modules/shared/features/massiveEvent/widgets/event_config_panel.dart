@@ -89,7 +89,10 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
         builder:
             (outerContext) => BlocProvider.value(
               value: massiveBloc,
-              child: EventDetailForm(activeEventTypes: activeEventTypes),
+              child: EventDetailForm(
+                activeEventTypes: activeEventTypes,
+                onBrandsLoadError: widget.showError,
+              ),
             ),
       );
       if (result != null) {

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/bloc/massive_event_bloc.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/pages/massive_event_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/pages/sale_dashboard_page_export.dart';
@@ -27,6 +29,23 @@ import '../support/router_test_host.dart';
 // (y MassiveEventBloc en la ruta massive-events/create).
 
 void main() {
+  setUp(() async {
+    SessionService.resetForTesting();
+    SharedPreferences.setMockInitialValues({});
+    await SessionService.saveSession(
+      token: 't',
+      permissions: <String, dynamic>{
+        'COMMERCE': <String, dynamic>{'purchases': true, 'sales': true},
+        'FARM': <String, dynamic>{'cattle': true},
+        'EMP_MGMT': <String, dynamic>{'users': true},
+        'MASSIVE_EVENTS': <String, dynamic>{'massive_events': true},
+      },
+      idTenant: 'tid',
+      idUser: 'uid',
+    );
+  });
+
+  /// Sesión con permisos completos (setUp) + token válido vía [hasValidToken].
   Future<void> pumpAuthenticated(WidgetTester tester, String location) async {
     final router = createAppRouter(
       hasValidToken: () => true,
