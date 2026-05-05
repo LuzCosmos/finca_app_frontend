@@ -5,7 +5,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:finca_app_frontend/core/data/database/database_provider.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/main.dart';
-import 'package:finca_app_frontend/modules/mobile/bloc/sync_bloc.dart';
+import 'package:finca_app_frontend/modules/mobile/bloc/sync_bloc_stub.dart'
+    if (dart.library.io) 'package:finca_app_frontend/modules/mobile/bloc/sync_bloc.dart';
 import 'package:finca_app_frontend/modules/mobile/bloc/sync_state.dart';
 import 'package:finca_app_frontend/modules/mobile/services/sync_service.dart';
 import 'package:finca_app_frontend/router/router.dart';
@@ -14,6 +15,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'support/integration_fake_auth_service.dart';
+import 'support/sync_bloc_factory.dart';
 
 // Bajo prueba (integración): lib/main.dart (MainApp, appRouter), lib/router/router.dart,
 // lib/core/services/session_service.dart, capa masiva IO + Drift vía navegación real,
@@ -105,7 +107,7 @@ void main() {
 
     final mockSync = _MockSyncService();
     when(() => mockSync.syncAllInOrder(any())).thenAnswer((_) async => <SyncResult>[]);
-    final syncBloc = SyncBloc(mockSync);
+    final SyncBloc syncBloc = createIntegrationSyncBloc(mockSync);
     addTearDown(() async {
       await syncBloc.close();
       reset(mockSync);
@@ -164,7 +166,7 @@ void main() {
       syncCalls++;
       return <SyncResult>[];
     });
-    final syncBloc = SyncBloc(mockSync);
+    final SyncBloc syncBloc = createIntegrationSyncBloc(mockSync);
     addTearDown(() async {
       await syncBloc.close();
       reset(mockSync);

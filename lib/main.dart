@@ -10,7 +10,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:finca_app_frontend/core/theme/theme.dart';
 import 'package:finca_app_frontend/core/bootstrap/mobile_sync_provider.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
-import 'package:finca_app_frontend/modules/mobile/bloc/sync_bloc.dart';
+import 'package:finca_app_frontend/modules/mobile/bloc/sync_bloc_stub.dart'
+    if (dart.library.io) 'package:finca_app_frontend/modules/mobile/bloc/sync_bloc.dart';
 import 'package:flutter/foundation.dart' show debugPrint, kIsWeb;
 
 class _ErrorApp extends StatelessWidget {
