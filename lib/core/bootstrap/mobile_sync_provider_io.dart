@@ -10,7 +10,16 @@ import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/modules/mobile/bloc/sync_bloc.dart';
 import 'package:finca_app_frontend/modules/mobile/services/sync_service.dart';
 
-Widget wrapMobileSyncScope(Widget child) {
+Widget wrapMobileSyncScope(
+  Widget child, {
+  SyncBloc? syncBlocOverride,
+}) {
+  if (syncBlocOverride != null) {
+    return BlocProvider<SyncBloc>.value(
+      value: syncBlocOverride,
+      child: child,
+    );
+  }
   // Importante: en release, si falla la inicializacion local (Drift/SQLite),
   // evita que toda la app quede en blanco; permitimos que al menos navegue
   // el router (login/home) aunque el sync no funcione.

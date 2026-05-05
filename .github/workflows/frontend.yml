@@ -21,8 +21,17 @@ jobs:
       - name: Install Dependencies
         run: flutter pub get
 
+      - name: Install Linux deps (integration_test en runner ubuntu)
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y cmake ninja-build pkg-config libgtk-3-dev clang liblzma-dev xvfb
+
       - name: Run tests with coverage
         run: flutter test --coverage
+
+      # §5.6 Fase 4: integration_test no corre en `chrome`/web; en GHA usar `linux` + display virtual.
+      - name: Run integration tests (Linux, headless)
+        run: xvfb-run -a flutter test integration_test/ -d linux --timeout=30m
 
       # Fase 3 §5.6: home_page_web_test.dart usa kIsWeb; en VM los casos van en skip — ejecutarlos en Chrome en CI.
       - name: Setup Chrome (widget tests web)
