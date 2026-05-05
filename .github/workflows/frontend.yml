@@ -29,6 +29,13 @@ jobs:
       - name: Run tests with coverage
         run: flutter test --coverage
 
+      - name: Coverage gate (lcov)
+        env:
+          # Umbral inicial conservador; subir por fases según §1.1 / §5.6 del plan.
+          # Nota: ajustar si el baseline real cambia (ver `coverage/lcov.info`).
+          MIN_LINE_COVERAGE_PCT: '20'
+        run: python3 scripts/check-coverage-min.py --min "$MIN_LINE_COVERAGE_PCT" --lcov coverage/lcov.info
+
       # §5.6 Fase 4: integration_test no corre en `chrome`/web; en GHA usar `linux` + display virtual.
       - name: Run integration tests (Linux, headless)
         run: xvfb-run -a flutter test integration_test/ -d linux --timeout=30m
