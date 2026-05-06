@@ -2599,6 +2599,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'\"{name}\" was reactivated.'**
   String reactivatedInfo(Object name);
+
+  /// Message shown when locations map fails to load.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load the locations map.'**
+  String get locations_map_loadError;
+
+  /// Message shown when there are no locations to display on the map.
+  ///
+  /// In en, this message translates to:
+  /// **'No locations available.'**
+  String get locations_map_empty;
+
+  /// Dialog/overlay title for last known location.
+  ///
+  /// In en, this message translates to:
+  /// **'Last location'**
+  String get locations_map_lastLocationTitle;
+
+  /// Required OpenStreetMap attribution text.
+  ///
+  /// In en, this message translates to:
+  /// **'© OpenStreetMap contributors'**
+  String get locations_map_osmAttribution;
 }
 
 class _AppLocalizationsDelegate

@@ -1,0 +1,131 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
+
+import 'package:finca_app_frontend/l10n/app_localizations.dart';
+import 'package:finca_app_frontend/modules/shared/features/locations/models/latest_cattle_location_model.dart';
+import 'package:finca_app_frontend/modules/shared/features/locations/services/locations_api_service.dart';
+import 'package:finca_app_frontend/modules/shared/features/locations/utils/location_time_formatter.dart';
+
+class CattleLastLocationsMapWidget extends StatefulWidget {
+  final double height;
+  final double initialZoom;
+
+  const CattleLastLocationsMapWidget({
+    super.key,
+    this.height = 420,
+    this.initialZoom = 14,
+  });
+
+  @override
+  State<CattleLastLocationsMapWidget> createState() => _CattleLastLocationsMapWidgetState();
+}
+
+class _CattleLastLocationsMapWidgetState extends State<CattleLastLocationsMapWidget> {
+  late final Future<List<LatestCattleLocationModel>> _future = LocationsApiService.getLatestCattleLocations();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return SizedBox(
+      height: widget.height,
+      child: FutureBuilder<List<LatestCattleLocationModel>>(
+        future: _future,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(
+                l10n.locations_map_loadError,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            );
+          }
+
+          final items = snapshot.data ?? const [];
+          if (items.isEmpty) {
+            return Center(
+              child: Text(
+                l10n.locations_map_empty,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            );
+          }
+
+          final center = LatLng(items.first.latitude, items.first.longitude);
+          final markers = items.map((it) => _markerFor(context, it)).toList();
+
+          return FlutterMap(
+            options: MapOptions(
+              initialCenter: center,
+              initialZoom: widget.initialZoom,
+            ),
+            children: [
+              TileLayer(
+                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                userAgentPackageName: 'finca_app_frontend',
+              ),
+              MarkerLayer(markers: markers),
+              Positioned(
+                left: 8,
+                bottom: 8,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.92),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    child: Text(
+                      l10n.locations_map_osmAttribution,
+                      style: const TextStyle(fontSize: 12),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Marker _markerFor(BuildContext context, LatestCattleLocationModel it) {
+    final pos = LatLng(it.latitude, it.longitude);
+    final label = '${it.cattleNumber} • ${formatLocationTime(it.time)}';
+
+    return Marker(
+      point: pos,
+      width: 48,
+      height: 48,
+      child: Tooltip(
+        message: label,
+        child: InkWell(
+          onTap: () => _showDetails(context, it),
+          child: const Icon(Icons.location_on, size: 36, color: Colors.red),
+        ),
+      ),
+    );
+  }
+
+  void _showDetails(BuildContext context, LatestCattleLocationModel it) {
+    final l10n = AppLocalizations.of(context)!;
+    final label = '${it.cattleNumber} • ${formatLocationTime(it.time)}';
+    showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.locations_map_lastLocationTitle),
+        content: Text(label),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(l10n.close),
+          ),
+        ],
+      ),
+    );
+  }
+}
+

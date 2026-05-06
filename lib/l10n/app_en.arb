@@ -565,4 +565,14 @@
   "brandAlreadyExists": "The brand \"{brand}\" already exists in this Massive Event.",
   "reactivatedInfo": "\"{name}\" was reactivated."
 
+  ,
+  "locations_map_loadError": "Could not load the locations map.",
+  "@locations_map_loadError": { "description": "Message shown when locations map fails to load." },
+  "locations_map_empty": "No locations available.",
+  "@locations_map_empty": { "description": "Message shown when there are no locations to display on the map." },
+  "locations_map_lastLocationTitle": "Last location",
+  "@locations_map_lastLocationTitle": { "description": "Dialog/overlay title for last known location." },
+  "locations_map_osmAttribution": "© OpenStreetMap contributors",
+  "@locations_map_osmAttribution": { "description": "Required OpenStreetMap attribution text." }
+
 }

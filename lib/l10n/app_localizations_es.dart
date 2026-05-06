@@ -1380,4 +1380,17 @@ class AppLocalizationsEs extends AppLocalizations {
   String reactivatedInfo(Object name) {
     return 'Se reactivó \"$name\".';
   }
+
+  @override
+  String get locations_map_loadError =>
+      'No se pudo cargar el mapa de ubicaciones.';
+
+  @override
+  String get locations_map_empty => 'No hay ubicaciones disponibles.';
+
+  @override
+  String get locations_map_lastLocationTitle => 'Última ubicación';
+
+  @override
+  String get locations_map_osmAttribution => '© OpenStreetMap contributors';
 }

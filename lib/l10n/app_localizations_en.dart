@@ -1377,4 +1377,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String reactivatedInfo(Object name) {
     return '\"$name\" was reactivated.';
   }
+
+  @override
+  String get locations_map_loadError => 'Could not load the locations map.';
+
+  @override
+  String get locations_map_empty => 'No locations available.';
+
+  @override
+  String get locations_map_lastLocationTitle => 'Last location';
+
+  @override
+  String get locations_map_osmAttribution => '© OpenStreetMap contributors';
 }

@@ -565,4 +565,14 @@
   "brandAlreadyExists": "Ya existe la marca \"{brand}\" en este Evento Masivo.",
   "reactivatedInfo": "Se reactivó \"{name}\"."
 
+  ,
+  "locations_map_loadError": "No se pudo cargar el mapa de ubicaciones.",
+  "@locations_map_loadError": { "description": "Mensaje cuando falla la carga del mapa de ubicaciones." },
+  "locations_map_empty": "No hay ubicaciones disponibles.",
+  "@locations_map_empty": { "description": "Mensaje cuando no existen ubicaciones para mostrar en el mapa." },
+  "locations_map_lastLocationTitle": "Última ubicación",
+  "@locations_map_lastLocationTitle": { "description": "Título del diálogo/overlay para la última ubicación." },
+  "locations_map_osmAttribution": "© OpenStreetMap contributors",
+  "@locations_map_osmAttribution": { "description": "Texto de atribución requerido por OpenStreetMap." }
+
 }
