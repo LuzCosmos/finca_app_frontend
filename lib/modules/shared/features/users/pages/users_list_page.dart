@@ -224,6 +224,7 @@ class _UsersListPageState extends State<UsersListPage> {
                             DataColumn(label: Text(l10n.firstName)),
                             DataColumn(label: Text(l10n.lastName)),
                             DataColumn(label: Text(l10n.email)),
+                            DataColumn(label: Text(l10n.roles)),
                             const DataColumn(label: SizedBox()),
                           ],
                           rows: _items.map((user) => DataRow(
@@ -232,6 +233,7 @@ class _UsersListPageState extends State<UsersListPage> {
                               DataCell(Text(user.firstName)),
                               DataCell(Text(user.lastName)),
                               DataCell(Text(user.email)),
+                              DataCell(Text(user.rolesTableCellText)),
                               DataCell(
                                 Row(
                                   mainAxisSize: MainAxisSize.min,

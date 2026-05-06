@@ -32,4 +32,16 @@ class UserModel {
           .toList() ?? [],
     );
   }
+
+  /// Nombres de rol para tablas: separados por coma, o raya (—) si no hay datos útiles.
+  String get rolesTableCellText {
+    const dash = '\u2014';
+    if (roles.isEmpty) return dash;
+    final names = roles
+        .map((r) => r.name.trim())
+        .where((n) => n.isNotEmpty)
+        .toList();
+    if (names.isEmpty) return dash;
+    return names.join(', ');
+  }
 }
