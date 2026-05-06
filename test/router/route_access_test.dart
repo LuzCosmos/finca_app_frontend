@@ -36,6 +36,35 @@ void main() {
       );
     });
 
+    test('máscara CRUDL del backend (solo 0/1) → permitido si hay algún 1', () {
+      expect(
+        homeStyleResourceAllowed(
+          {'FARM': <String, dynamic>{'cattle': '11111'}},
+          'FARM',
+          'cattle',
+        ),
+        isTrue,
+      );
+      expect(
+        homeStyleResourceAllowed(
+          {
+            'MASSIVE_EVENTS': <String, dynamic>{'cattle': '01101'},
+          },
+          'MASSIVE_EVENTS',
+          'cattle',
+        ),
+        isTrue,
+      );
+      expect(
+        homeStyleResourceAllowed(
+          {'COMMERCE': <String, dynamic>{'sales': '00000'}},
+          'COMMERCE',
+          'sales',
+        ),
+        isFalse,
+      );
+    });
+
     test('false o módulo ausente → denegado', () {
       expect(
         homeStyleResourceAllowed(

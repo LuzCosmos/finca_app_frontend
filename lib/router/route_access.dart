@@ -1,6 +1,6 @@
-/// Reglas de acceso a rutas alineadas con [HomePage] (mismo criterio “truthy”
-/// sobre el mapa de permisos). Cubierto por tests unitarios en
-/// `test/router/route_access_test.dart` (§5.3).
+/// Reglas de acceso a rutas alineadas con [HomePage]. El backend usa máscaras
+/// CRUDL de 5 bits por recurso (p. ej. `"11111"`), no solo `"true"`/`"1"`.
+/// Cubierto por `test/router/route_access_test.dart` (§5.3).
 bool homeStyleResourceAllowed(
   Map<String, dynamic> permissions,
   String module,
@@ -12,7 +12,14 @@ bool homeStyleResourceAllowed(
   if (value is bool) return value;
   if (value is String) {
     final lower = value.toLowerCase();
-    return lower == 'true' || lower == '1';
+    if (lower == 'true' || lower == '1') return true;
+    // Máscara binaria (CRUDL u homóloga): al menos un `1` ⇒ hay acceso al módulo.
+    if (value.isNotEmpty &&
+        RegExp(r'^[01]+$').hasMatch(value) &&
+        value.contains('1')) {
+      return true;
+    }
+    return false;
   }
   return false;
 }

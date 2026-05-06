@@ -3,6 +3,7 @@ import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/modules/shared/widgets/finca_scaffold.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/shared/features/home/widgets/home_option_with_permission.dart';
+import 'package:finca_app_frontend/router/route_access.dart';
 import 'package:finca_app_frontend/modules/shared/features/home/home_sync_helper_stub.dart'
     if (dart.library.io) 'package:finca_app_frontend/modules/shared/features/home/home_sync_helper_io.dart';
 import 'package:flutter/cupertino.dart';
@@ -30,22 +31,6 @@ class _HomePageState extends State<HomePage> {
   void dispose() {
     _homeSyncHelper.dispose();
     super.dispose();
-  }
-
-  bool _hasPermission(
-    Map<String, dynamic> permissions,
-    String module,
-    String resource,
-  ) {
-    final moduleData = permissions[module];
-    if (moduleData is! Map) return false;
-    final value = moduleData[resource];
-    if (value is bool) return value;
-    if (value is String) {
-      final lower = value.toLowerCase();
-      return lower == 'true' || lower == '1';
-    }
-    return false;
   }
 
   @override
@@ -83,7 +68,7 @@ class _HomePageState extends State<HomePage> {
                         alignment: WrapAlignment.center,
                         children: [
                           HomeOptionWithPermission(
-                            isVisible: _hasPermission(
+                            isVisible: homeStyleResourceAllowed(
                               permissions,
                               "COMMERCE",
                               "purchases",
@@ -93,7 +78,7 @@ class _HomePageState extends State<HomePage> {
                             route: "/purchases",
                           ),
                           HomeOptionWithPermission(
-                            isVisible: _hasPermission(
+                            isVisible: homeStyleResourceAllowed(
                               permissions,
                               "MASSIVE_EVENTS",
                               "massive_events",
@@ -104,7 +89,7 @@ class _HomePageState extends State<HomePage> {
                             forWebOnly: false,
                           ),
                           HomeOptionWithPermission(
-                            isVisible: _hasPermission(
+                            isVisible: homeStyleResourceAllowed(
                               permissions,
                               "COMMERCE",
                               "sales",
@@ -115,7 +100,7 @@ class _HomePageState extends State<HomePage> {
                             forWebOnly: true,
                           ),
                           HomeOptionWithPermission(
-                            isVisible: _hasPermission(
+                            isVisible: homeStyleResourceAllowed(
                               permissions,
                               "EMP_MGMT",
                               "users",
@@ -126,7 +111,7 @@ class _HomePageState extends State<HomePage> {
                             forWebOnly: false,
                           ),
                           HomeOptionWithPermission(
-                            isVisible: _hasPermission(
+                            isVisible: homeStyleResourceAllowed(
                               permissions,
                               "FARM",
                               "cattle",

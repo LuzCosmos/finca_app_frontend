@@ -62,6 +62,42 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets(
+    'permisos como máscara CRUDL (strings tipo backend) equivalen a bool en Home',
+    (tester) async {
+      await SessionService.saveSession(
+        token: 't.ok',
+        permissions: {
+          'MASSIVE_EVENTS': {'massive_events': '11111'},
+          'EMP_MGMT': {'users': '11111'},
+          'COMMERCE': {'purchases': '11111', 'sales': '11111'},
+          'FARM': {'cattle': '11111'},
+        },
+        idTenant: 'tid',
+        idUser: 'uid',
+      );
+
+      late AppLocalizations l10n;
+      await tester.pumpWidget(
+        pumpLocalizedMaterialShell(
+          home: Builder(
+            builder: (context) {
+              l10n = AppLocalizations.of(context)!;
+              return const HomePage();
+            },
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const ValueKey<String>('home-page')), findsOneWidget);
+      expect(find.text(l10n.massiveEvent), findsOneWidget);
+      expect(find.text(l10n.users), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   testWidgets('sin permisos: no muestra tarjetas de módulo ni rompe', (
     tester,
   ) async {
