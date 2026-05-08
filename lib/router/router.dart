@@ -14,6 +14,7 @@ import 'package:finca_app_frontend/modules/web/features/cattle_purchase/pages/pu
 import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/users/pages/users_list_page.dart';
 import 'package:finca_app_frontend/modules/web/features/cattle/pages/cattle_master_list_page.dart';
+import 'package:finca_app_frontend/modules/shared/features/devices/screens/device_remote_config_screen.dart';
 import 'package:finca_app_frontend/router/route_access.dart';
 
 // Conditional imports para data source específico de plataforma
@@ -97,6 +98,18 @@ GoRouter createAppRouter({
       GoRoute(
         path: '/cattle',
         builder: (context, state) => const CattleMasterListPage(),
+      ),
+      GoRoute(
+        path: '/devices/:deveui/remote-config',
+        name: 'deviceRemoteConfig',
+        builder: (context, state) {
+          final deveui = state.pathParameters['deveui']!;
+          final deviceName = state.uri.queryParameters['name'];
+          return DeviceRemoteConfigScreen(
+            deveui: deveui,
+            deviceName: deviceName,
+          );
+        },
       ),
     ],
     redirect: (context, state) {

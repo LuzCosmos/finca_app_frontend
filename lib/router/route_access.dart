@@ -49,6 +49,12 @@ String? routeAccessDeniedRedirect({
       path.startsWith('/purchases')) {
     module = 'COMMERCE';
     resource = 'purchases';
+  } else if (path.startsWith('/devices/') &&
+      path.contains('/remote-config')) {
+    // Configuración remota de dispositivos MOKO LW001-BG PRO.
+    // Requiere acceso al módulo PROD_CENTER, recurso remote_config.
+    module = 'PROD_CENTER';
+    resource = 'remote_config';
   }
 
   if (module == null || resource == null) return null;

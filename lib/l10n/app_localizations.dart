@@ -2623,6 +2623,427 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'© OpenStreetMap contributors'**
   String get locations_map_osmAttribution;
+
+  /// Remote device configuration screen title.
+  ///
+  /// In en, this message translates to:
+  /// **'Remote configuration'**
+  String get deviceRemoteConfig_title;
+
+  /// Screen title with device name.
+  ///
+  /// In en, this message translates to:
+  /// **'Configuration: {name}'**
+  String deviceRemoteConfig_titleWithName(Object name);
+
+  /// Status card title.
+  ///
+  /// In en, this message translates to:
+  /// **'Configuration status'**
+  String get deviceRemoteConfig_statusTitle;
+
+  /// Status when configuration is in sync.
+  ///
+  /// In en, this message translates to:
+  /// **'Synced'**
+  String get deviceRemoteConfig_synced;
+
+  /// Status when waiting for strict confirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for collar confirmation (desired version {desired} vs confirmed {confirmed})'**
+  String deviceRemoteConfig_waitingConfirmation(
+    Object desired,
+    Object confirmed,
+  );
+
+  /// Current profile label.
+  ///
+  /// In en, this message translates to:
+  /// **'Current profile: {name}'**
+  String deviceRemoteConfig_currentProfile(Object name);
+
+  /// Text when no profile is applied.
+  ///
+  /// In en, this message translates to:
+  /// **'No profile applied'**
+  String get deviceRemoteConfig_noProfileApplied;
+
+  /// Divergent parameters list.
+  ///
+  /// In en, this message translates to:
+  /// **'Out-of-sync parameters: {params}'**
+  String deviceRemoteConfig_divergentParams(Object params);
+
+  /// History section title.
+  ///
+  /// In en, this message translates to:
+  /// **'Command history'**
+  String get deviceRemoteConfig_actions_historyTitle;
+
+  /// Apply profile button.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply profile'**
+  String get deviceRemoteConfig_action_applyProfile;
+
+  /// Request position button.
+  ///
+  /// In en, this message translates to:
+  /// **'Request position now'**
+  String get deviceRemoteConfig_action_requestPositionNow;
+
+  /// Request battery button.
+  ///
+  /// In en, this message translates to:
+  /// **'Request battery'**
+  String get deviceRemoteConfig_action_requestBattery;
+
+  /// Clear man-down button.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear man-down'**
+  String get deviceRemoteConfig_action_clearManDown;
+
+  /// Button that turns the 6 position strategies off so the position is computed by the LNS via TDOA/RSSI.
+  ///
+  /// In en, this message translates to:
+  /// **'LoRaWAN-only positioning (turn GPS/WiFi/BT off)'**
+  String get deviceRemoteConfig_action_lorawanOnly;
+
+  /// Confirmation dialog title for LoRaWAN-only positioning.
+  ///
+  /// In en, this message translates to:
+  /// **'Use LoRaWAN-only positioning?'**
+  String get deviceRemoteConfig_lorawanOnly_dialog_title;
+
+  /// Confirmation dialog body for LoRaWAN-only positioning.
+  ///
+  /// In en, this message translates to:
+  /// **'The collar will stop attempting GPS, WiFi and Bluetooth fixes. Position will be computed by the LoRaWAN server (TDOA/RSSI). Saves significant battery but accuracy depends on gateway coverage.'**
+  String get deviceRemoteConfig_lorawanOnly_dialog_body;
+
+  /// Cancel button on the LoRaWAN-only dialog.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get deviceRemoteConfig_lorawanOnly_dialog_cancel;
+
+  /// Apply button on the LoRaWAN-only dialog.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply'**
+  String get deviceRemoteConfig_lorawanOnly_dialog_confirm;
+
+  /// Snackbar shown when LoRaWAN-only configuration is sent.
+  ///
+  /// In en, this message translates to:
+  /// **'“LoRaWAN-only” configuration sent to the collar.'**
+  String get deviceRemoteConfig_snackbar_lorawanOnlySent;
+
+  /// Snackbar when applying a profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile applied. Waiting for collar confirmation.'**
+  String get deviceRemoteConfig_snackbar_profileApplied;
+
+  /// Snackbar when requesting position.
+  ///
+  /// In en, this message translates to:
+  /// **'Position requested from collar.'**
+  String get deviceRemoteConfig_snackbar_positionRequested;
+
+  /// Snackbar when requesting battery.
+  ///
+  /// In en, this message translates to:
+  /// **'Battery report requested.'**
+  String get deviceRemoteConfig_snackbar_batteryRequested;
+
+  /// Snackbar when clearing man-down.
+  ///
+  /// In en, this message translates to:
+  /// **'Man-down state cleared.'**
+  String get deviceRemoteConfig_snackbar_manDownCleared;
+
+  /// Snackbar when requesting read.
+  ///
+  /// In en, this message translates to:
+  /// **'Read request sent. It will appear on the next uplink.'**
+  String get deviceRemoteConfig_snackbar_readRequested;
+
+  /// Button to enqueue bulk read of non-sensitive collar parameters.
+  ///
+  /// In en, this message translates to:
+  /// **'Read all parameters (safe)'**
+  String get deviceRemoteConfig_action_readAllSafeParameters;
+
+  /// Snackbar after bulk read.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent {chunks} read frame(s) ({total} parameters). Values will arrive in uplinks.'**
+  String deviceRemoteConfig_snackbar_readAllSent(Object chunks, Object total);
+
+  /// Title above per-chunk read buttons.
+  ///
+  /// In en, this message translates to:
+  /// **'Read by block (non-sensitive)'**
+  String get deviceRemoteConfig_readSafeChunks_sectionTitle;
+
+  /// Text while the safe-read chunk plan is loading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading blocks…'**
+  String get deviceRemoteConfig_readSafeChunks_loading;
+
+  /// Message when GET …/read-safe-parameters-chunks fails.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load the block plan. Restart the backend if you just updated it.'**
+  String get deviceRemoteConfig_readSafeChunks_unavailable;
+
+  /// Button to retry loading the chunk plan.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get deviceRemoteConfig_readSafeChunks_retry;
+
+  /// Short label for one safe read chunk button.
+  ///
+  /// In en, this message translates to:
+  /// **'Block {blockNumber}/{totalBlocks}'**
+  String deviceRemoteConfig_action_readSafeChunkShort(
+    Object blockNumber,
+    Object totalBlocks,
+  );
+
+  /// Snackbar after enqueueing a single safe read chunk.
+  ///
+  /// In en, this message translates to:
+  /// **'Block {blockNumber} of {totalBlocks} enqueued ({paramCount} parameters). Values will arrive in uplinks.'**
+  String deviceRemoteConfig_snackbar_readChunkSent(
+    Object blockNumber,
+    Object totalBlocks,
+    Object paramCount,
+  );
+
+  /// Title of the table showing values read from the collar.
+  ///
+  /// In en, this message translates to:
+  /// **'Current device values'**
+  String get deviceRemoteConfig_currentValuesTitle;
+
+  /// Text shown when lastConfirmedAt is null.
+  ///
+  /// In en, this message translates to:
+  /// **'No confirmed reads yet. From the actions card you can request reads block-by-block or all at once.'**
+  String get deviceRemoteConfig_currentValues_neverRead;
+
+  /// Subtitle with the last confirmation timestamp.
+  ///
+  /// In en, this message translates to:
+  /// **'Last confirmed read: {when}'**
+  String deviceRemoteConfig_currentValues_lastReadAt(Object when);
+
+  /// Hint for the parameter search field.
+  ///
+  /// In en, this message translates to:
+  /// **'Search parameter…'**
+  String get deviceRemoteConfig_currentValues_searchHint;
+
+  /// Empty filter result message.
+  ///
+  /// In en, this message translates to:
+  /// **'No parameters match the search.'**
+  String get deviceRemoteConfig_currentValues_noMatches;
+
+  /// Empty state when neither desired nor confirmed values exist.
+  ///
+  /// In en, this message translates to:
+  /// **'No parameters have been read from the collar yet. Use the \"Block …\" buttons or \"Read all parameters (safe)\" — values will appear as uplinks arrive.'**
+  String get deviceRemoteConfig_currentValues_emptyHint;
+
+  /// Parameter column header.
+  ///
+  /// In en, this message translates to:
+  /// **'Parameter'**
+  String get deviceRemoteConfig_currentValues_colParameter;
+
+  /// Confirmed value column header.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirmed value'**
+  String get deviceRemoteConfig_currentValues_colConfirmed;
+
+  /// Desired value column header.
+  ///
+  /// In en, this message translates to:
+  /// **'Desired value'**
+  String get deviceRemoteConfig_currentValues_colDesired;
+
+  /// State column header.
+  ///
+  /// In en, this message translates to:
+  /// **'State'**
+  String get deviceRemoteConfig_currentValues_colState;
+
+  /// State: desired and confirmed match.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get deviceRemoteConfig_currentValues_state_ok;
+
+  /// State: desired and confirmed do not match.
+  ///
+  /// In en, this message translates to:
+  /// **'Divergent'**
+  String get deviceRemoteConfig_currentValues_state_divergent;
+
+  /// State: desired but not yet confirmed by collar.
+  ///
+  /// In en, this message translates to:
+  /// **'Unread'**
+  String get deviceRemoteConfig_currentValues_state_pending;
+
+  /// State: collar reported a value but no desired was configured.
+  ///
+  /// In en, this message translates to:
+  /// **'Read-only'**
+  String get deviceRemoteConfig_currentValues_state_readonly;
+
+  /// Snackbar when configuring parameters.
+  ///
+  /// In en, this message translates to:
+  /// **'Parameters sent. Waiting for confirmation.'**
+  String get deviceRemoteConfig_snackbar_configureSent;
+
+  /// Dialog title for selecting a profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply configuration profile'**
+  String get deviceRemoteConfig_dialog_applyProfileTitle;
+
+  /// Dialog empty state when no profiles exist.
+  ///
+  /// In en, this message translates to:
+  /// **'No profiles available for this tenant.'**
+  String get deviceRemoteConfig_dialog_noProfiles;
+
+  /// Badge for system profiles.
+  ///
+  /// In en, this message translates to:
+  /// **'system'**
+  String get deviceRemoteConfig_profile_systemBadge;
+
+  /// Empty state for command history.
+  ///
+  /// In en, this message translates to:
+  /// **'There are no commands sent to this collar yet.'**
+  String get deviceRemoteConfig_history_empty;
+
+  /// History item status label.
+  ///
+  /// In en, this message translates to:
+  /// **'Status: {status}'**
+  String deviceRemoteConfig_history_statusLabel(Object status);
+
+  /// History item error label.
+  ///
+  /// In en, this message translates to:
+  /// **'Error: {error}'**
+  String deviceRemoteConfig_history_errorLabel(Object error);
+
+  /// fPort label.
+  ///
+  /// In en, this message translates to:
+  /// **'fPort {port}'**
+  String deviceRemoteConfig_history_fportLabel(Object port);
+
+  /// Title for the diagnostic mode card.
+  ///
+  /// In en, this message translates to:
+  /// **'Diagnostic mode'**
+  String get deviceRemoteConfig_diagnostic_title;
+
+  /// Explanation of the diagnostic mode.
+  ///
+  /// In en, this message translates to:
+  /// **'Temporarily silences shock, man-down and tamper events and lowers the heartbeat to the MOKO minimum (300 s) so you can inspect the collar from ChirpStack. It restores itself when it expires.'**
+  String get deviceRemoteConfig_diagnostic_description;
+
+  /// Status when diagnostic mode is inactive.
+  ///
+  /// In en, this message translates to:
+  /// **'Inactive. The collar runs with its normal parameters.'**
+  String get deviceRemoteConfig_diagnostic_inactiveStatus;
+
+  /// Status when diagnostic mode is active.
+  ///
+  /// In en, this message translates to:
+  /// **'Active. Auto-restore in {remaining}.'**
+  String deviceRemoteConfig_diagnostic_activeStatus(Object remaining);
+
+  /// Button to enable diagnostic mode.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable diagnostic mode'**
+  String get deviceRemoteConfig_diagnostic_action_enable;
+
+  /// Button to disable diagnostic mode and restore.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable and restore'**
+  String get deviceRemoteConfig_diagnostic_action_disable;
+
+  /// Remaining time format.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min {seconds} s'**
+  String deviceRemoteConfig_diagnostic_remainingMinutesSeconds(
+    Object minutes,
+    Object seconds,
+  );
+
+  /// Snackbar when enabling diagnostic mode.
+  ///
+  /// In en, this message translates to:
+  /// **'Diagnostic mode enabled. It will auto-restore when it expires.'**
+  String get deviceRemoteConfig_snackbar_diagnosticEnabled;
+
+  /// Snackbar when disabling diagnostic mode.
+  ///
+  /// In en, this message translates to:
+  /// **'Diagnostic mode disabled. Restoring previous parameters.'**
+  String get deviceRemoteConfig_snackbar_diagnosticDisabled;
+
+  /// Tooltip for the icon that opens the tracker remote configuration from the cattle list.
+  ///
+  /// In en, this message translates to:
+  /// **'Open collar remote configuration'**
+  String get openRemoteConfigTooltip;
+
+  /// Hint of the tracker search field indicating the minimum number of characters.
+  ///
+  /// In en, this message translates to:
+  /// **'Min {count} chars…'**
+  String trackerSearch_minCharsHint(int count);
+
+  /// Snackbar shown when a change is saved in the cattle grid.
+  ///
+  /// In en, this message translates to:
+  /// **'Changes saved'**
+  String get cattleGrid_savedSuccess;
+
+  /// Snackbar shown when the tracker is unassigned from a cattle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tracker removed'**
+  String get cattleGrid_trackerRemoved;
+
+  /// Error shown when an async operation cannot find the row by its key.
+  ///
+  /// In en, this message translates to:
+  /// **'Row not found'**
+  String get cattleGrid_rowNotFound;
 }
 
 class _AppLocalizationsDelegate

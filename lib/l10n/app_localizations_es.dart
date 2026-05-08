@@ -1393,4 +1393,277 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get locations_map_osmAttribution => '© OpenStreetMap contributors';
+
+  @override
+  String get deviceRemoteConfig_title => 'Configuración remota';
+
+  @override
+  String deviceRemoteConfig_titleWithName(Object name) {
+    return 'Configuración: $name';
+  }
+
+  @override
+  String get deviceRemoteConfig_statusTitle => 'Estado de configuración';
+
+  @override
+  String get deviceRemoteConfig_synced => 'Sincronizado';
+
+  @override
+  String deviceRemoteConfig_waitingConfirmation(
+    Object desired,
+    Object confirmed,
+  ) {
+    return 'Esperando confirmación del collar (versión deseada $desired vs confirmada $confirmed)';
+  }
+
+  @override
+  String deviceRemoteConfig_currentProfile(Object name) {
+    return 'Perfil actual: $name';
+  }
+
+  @override
+  String get deviceRemoteConfig_noProfileApplied => 'Sin perfil aplicado';
+
+  @override
+  String deviceRemoteConfig_divergentParams(Object params) {
+    return 'Parámetros desincronizados: $params';
+  }
+
+  @override
+  String get deviceRemoteConfig_actions_historyTitle => 'Historial de comandos';
+
+  @override
+  String get deviceRemoteConfig_action_applyProfile => 'Aplicar perfil';
+
+  @override
+  String get deviceRemoteConfig_action_requestPositionNow =>
+      'Pedir posición ahora';
+
+  @override
+  String get deviceRemoteConfig_action_requestBattery => 'Pedir batería';
+
+  @override
+  String get deviceRemoteConfig_action_clearManDown => 'Limpiar man-down';
+
+  @override
+  String get deviceRemoteConfig_action_lorawanOnly =>
+      'Solo LoRaWAN (apaga GPS/WiFi/BT)';
+
+  @override
+  String get deviceRemoteConfig_lorawanOnly_dialog_title =>
+      '¿Usar solo LoRaWAN para posición?';
+
+  @override
+  String get deviceRemoteConfig_lorawanOnly_dialog_body =>
+      'El collar dejará de intentar fixes con GPS, WiFi y Bluetooth. La posición la calculará el servidor LoRaWAN (TDOA/RSSI). Ahorra mucha batería pero la precisión depende de la cobertura de gateways.';
+
+  @override
+  String get deviceRemoteConfig_lorawanOnly_dialog_cancel => 'Cancelar';
+
+  @override
+  String get deviceRemoteConfig_lorawanOnly_dialog_confirm => 'Aplicar';
+
+  @override
+  String get deviceRemoteConfig_snackbar_lorawanOnlySent =>
+      'Configuración «Solo LoRaWAN» enviada al collar.';
+
+  @override
+  String get deviceRemoteConfig_snackbar_profileApplied =>
+      'Perfil aplicado. Esperando confirmación del collar.';
+
+  @override
+  String get deviceRemoteConfig_snackbar_positionRequested =>
+      'Posición solicitada al collar.';
+
+  @override
+  String get deviceRemoteConfig_snackbar_batteryRequested =>
+      'Reporte de batería solicitado.';
+
+  @override
+  String get deviceRemoteConfig_snackbar_manDownCleared =>
+      'Estado man-down limpiado.';
+
+  @override
+  String get deviceRemoteConfig_snackbar_readRequested =>
+      'Solicitud de lectura enviada. Aparecerá en el próximo uplink.';
+
+  @override
+  String get deviceRemoteConfig_action_readAllSafeParameters =>
+      'Leer todos los parámetros (seguros)';
+
+  @override
+  String deviceRemoteConfig_snackbar_readAllSent(Object chunks, Object total) {
+    return 'Se enviaron $chunks tramas de lectura ($total parámetros). Los valores llegarán en uplinks.';
+  }
+
+  @override
+  String get deviceRemoteConfig_readSafeChunks_sectionTitle =>
+      'Lectura por bloques (no sensibles)';
+
+  @override
+  String get deviceRemoteConfig_readSafeChunks_loading => 'Cargando bloques…';
+
+  @override
+  String get deviceRemoteConfig_readSafeChunks_unavailable =>
+      'No se pudo cargar el plan de bloques. Reinicia el backend si acabas de actualizar.';
+
+  @override
+  String get deviceRemoteConfig_readSafeChunks_retry => 'Reintentar';
+
+  @override
+  String deviceRemoteConfig_action_readSafeChunkShort(
+    Object blockNumber,
+    Object totalBlocks,
+  ) {
+    return 'Bloque $blockNumber/$totalBlocks';
+  }
+
+  @override
+  String deviceRemoteConfig_snackbar_readChunkSent(
+    Object blockNumber,
+    Object totalBlocks,
+    Object paramCount,
+  ) {
+    return 'Bloque $blockNumber de $totalBlocks encolado ($paramCount parámetros). Los valores llegarán en uplinks.';
+  }
+
+  @override
+  String get deviceRemoteConfig_currentValuesTitle =>
+      'Valores actuales del dispositivo';
+
+  @override
+  String get deviceRemoteConfig_currentValues_neverRead =>
+      'Sin lecturas confirmadas todavía. Desde la tarjeta de acciones puedes solicitar lecturas por bloque o todas a la vez.';
+
+  @override
+  String deviceRemoteConfig_currentValues_lastReadAt(Object when) {
+    return 'Última lectura confirmada: $when';
+  }
+
+  @override
+  String get deviceRemoteConfig_currentValues_searchHint => 'Buscar parámetro…';
+
+  @override
+  String get deviceRemoteConfig_currentValues_noMatches =>
+      'Ningún parámetro coincide con la búsqueda.';
+
+  @override
+  String get deviceRemoteConfig_currentValues_emptyHint =>
+      'Aún no se han leído parámetros del collar. Usa los botones «Bloque …» o «Leer todos los parámetros (seguros)» y los valores se llenarán a medida que lleguen los uplinks.';
+
+  @override
+  String get deviceRemoteConfig_currentValues_colParameter => 'Parámetro';
+
+  @override
+  String get deviceRemoteConfig_currentValues_colConfirmed =>
+      'Valor confirmado';
+
+  @override
+  String get deviceRemoteConfig_currentValues_colDesired => 'Valor deseado';
+
+  @override
+  String get deviceRemoteConfig_currentValues_colState => 'Estado';
+
+  @override
+  String get deviceRemoteConfig_currentValues_state_ok => 'OK';
+
+  @override
+  String get deviceRemoteConfig_currentValues_state_divergent => 'Divergente';
+
+  @override
+  String get deviceRemoteConfig_currentValues_state_pending => 'Sin lectura';
+
+  @override
+  String get deviceRemoteConfig_currentValues_state_readonly => 'Solo lectura';
+
+  @override
+  String get deviceRemoteConfig_snackbar_configureSent =>
+      'Parámetros enviados. Esperando confirmación.';
+
+  @override
+  String get deviceRemoteConfig_dialog_applyProfileTitle =>
+      'Aplicar perfil de configuración';
+
+  @override
+  String get deviceRemoteConfig_dialog_noProfiles =>
+      'No hay perfiles disponibles para este tenant.';
+
+  @override
+  String get deviceRemoteConfig_profile_systemBadge => 'sistema';
+
+  @override
+  String get deviceRemoteConfig_history_empty =>
+      'Aún no hay comandos enviados a este collar.';
+
+  @override
+  String deviceRemoteConfig_history_statusLabel(Object status) {
+    return 'Estado: $status';
+  }
+
+  @override
+  String deviceRemoteConfig_history_errorLabel(Object error) {
+    return 'Error: $error';
+  }
+
+  @override
+  String deviceRemoteConfig_history_fportLabel(Object port) {
+    return 'fPort $port';
+  }
+
+  @override
+  String get deviceRemoteConfig_diagnostic_title => 'Modo diagnóstico';
+
+  @override
+  String get deviceRemoteConfig_diagnostic_description =>
+      'Silencia temporalmente shock, man-down y tamper, y baja el heartbeat al mínimo (300 s) para inspeccionar el collar en ChirpStack. Se restaura solo al expirar.';
+
+  @override
+  String get deviceRemoteConfig_diagnostic_inactiveStatus =>
+      'Inactivo. El collar opera con sus parámetros normales.';
+
+  @override
+  String deviceRemoteConfig_diagnostic_activeStatus(Object remaining) {
+    return 'Activo. Restauración automática en $remaining.';
+  }
+
+  @override
+  String get deviceRemoteConfig_diagnostic_action_enable =>
+      'Activar modo diagnóstico';
+
+  @override
+  String get deviceRemoteConfig_diagnostic_action_disable =>
+      'Desactivar y restaurar';
+
+  @override
+  String deviceRemoteConfig_diagnostic_remainingMinutesSeconds(
+    Object minutes,
+    Object seconds,
+  ) {
+    return '$minutes min $seconds s';
+  }
+
+  @override
+  String get deviceRemoteConfig_snackbar_diagnosticEnabled =>
+      'Modo diagnóstico activado. Se restaurará automáticamente al expirar.';
+
+  @override
+  String get deviceRemoteConfig_snackbar_diagnosticDisabled =>
+      'Modo diagnóstico desactivado. Restaurando los parámetros previos.';
+
+  @override
+  String get openRemoteConfigTooltip => 'Abrir configuración remota del collar';
+
+  @override
+  String trackerSearch_minCharsHint(int count) {
+    return 'Mínimo $count caracteres…';
+  }
+
+  @override
+  String get cattleGrid_savedSuccess => 'Cambios guardados';
+
+  @override
+  String get cattleGrid_trackerRemoved => 'Tracker eliminado';
+
+  @override
+  String get cattleGrid_rowNotFound => 'No se encontró la fila';
 }
