@@ -55,6 +55,7 @@ void main() {
     expect(find.byKey(const ValueKey<String>('home-page')), findsOneWidget);
     expect(find.text(l10n.home_title), findsWidgets);
 
+    expect(find.text(l10n.dashboard_title), findsOneWidget);
     // En test VM kIsWeb es false: forWebOnly oculta compras/ventas/ganado.
     expect(find.text(l10n.massiveEvent), findsOneWidget);
     expect(find.text(l10n.users), findsOneWidget);
@@ -92,6 +93,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byKey(const ValueKey<String>('home-page')), findsOneWidget);
+      expect(find.text(l10n.dashboard_title), findsOneWidget);
       expect(find.text(l10n.massiveEvent), findsOneWidget);
       expect(find.text(l10n.users), findsOneWidget);
       expect(tester.takeException(), isNull);
@@ -122,6 +124,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text(l10n.home_title), findsWidgets);
+    expect(find.text(l10n.dashboard_title), findsOneWidget);
     expect(find.text(l10n.massiveEvent), findsNothing);
     expect(find.text(l10n.users), findsNothing);
     expect(find.text(l10n.purchase), findsNothing);
@@ -151,6 +154,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    expect(find.text(l10n.dashboard_title), findsOneWidget);
     expect(find.text(l10n.massiveEvent), findsOneWidget);
     expect(find.text(l10n.users), findsNothing);
   });
@@ -178,6 +182,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    expect(find.text(l10n.dashboard_title), findsOneWidget);
     expect(find.text(l10n.users), findsOneWidget);
     expect(find.text(l10n.massiveEvent), findsNothing);
   });
@@ -207,6 +212,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    expect(find.text(l10n.dashboard_title), findsOneWidget);
     expect(find.text(l10n.massiveEvent), findsNothing);
   });
 
@@ -215,9 +221,7 @@ void main() {
   ) async {
     await SessionService.saveSession(
       token: 't',
-      permissions: {
-        'MASSIVE_EVENTS': <String, dynamic>{},
-      },
+      permissions: {'MASSIVE_EVENTS': <String, dynamic>{}},
       idTenant: 'tid',
       idUser: 'uid',
     );
@@ -235,6 +239,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    expect(find.text(l10n.dashboard_title), findsOneWidget);
     expect(find.text(l10n.massiveEvent), findsNothing);
     expect(tester.takeException(), isNull);
   });
@@ -257,9 +262,10 @@ void main() {
     await tester.pumpWidget(buildRouterTestHost(router));
     await pumpRouterFrames(tester);
 
-    final l10n = AppLocalizations.of(
-      tester.element(find.byKey(const ValueKey<String>('home-page'))),
-    )!;
+    final l10n =
+        AppLocalizations.of(
+          tester.element(find.byKey(const ValueKey<String>('home-page'))),
+        )!;
 
     await tester.tap(find.text(l10n.massiveEvent));
     await tester.pump();
@@ -284,18 +290,16 @@ void main() {
     final router = GoRouter(
       initialLocation: '/home',
       routes: [
-        GoRoute(
-          path: '/home',
-          builder: (_, _) => const HomePage(),
-        ),
+        GoRoute(path: '/home', builder: (_, _) => const HomePage()),
         GoRoute(
           path: '/users',
-          builder: (_, _) => const Scaffold(
-            body: KeyedSubtree(
-              key: ValueKey<String>('users-route-stub'),
-              child: Text('Users Stub'),
-            ),
-          ),
+          builder:
+              (_, _) => const Scaffold(
+                body: KeyedSubtree(
+                  key: ValueKey<String>('users-route-stub'),
+                  child: Text('Users Stub'),
+                ),
+              ),
         ),
       ],
     );
@@ -303,14 +307,18 @@ void main() {
     await tester.pumpWidget(buildRouterTestHost(router));
     await pumpRouterFrames(tester);
 
-    final l10n = AppLocalizations.of(
-      tester.element(find.byKey(const ValueKey<String>('home-page'))),
-    )!;
+    final l10n =
+        AppLocalizations.of(
+          tester.element(find.byKey(const ValueKey<String>('home-page'))),
+        )!;
 
     await tester.tap(find.text(l10n.users));
     await tester.pumpAndSettle();
 
-    expect(find.byKey(const ValueKey<String>('users-route-stub')), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey<String>('users-route-stub')),
+      findsOneWidget,
+    );
     expect(tester.takeException(), isNull);
   });
 }

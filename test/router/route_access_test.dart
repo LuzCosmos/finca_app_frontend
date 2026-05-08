@@ -9,7 +9,9 @@ void main() {
     test('bool true → permitido', () {
       expect(
         homeStyleResourceAllowed(
-          {'COMMERCE': <String, dynamic>{'sales': true}},
+          {
+            'COMMERCE': <String, dynamic>{'sales': true},
+          },
           'COMMERCE',
           'sales',
         ),
@@ -20,7 +22,9 @@ void main() {
     test('string "1" / "true" → permitido', () {
       expect(
         homeStyleResourceAllowed(
-          {'FARM': <String, dynamic>{'cattle': '1'}},
+          {
+            'FARM': <String, dynamic>{'cattle': '1'},
+          },
           'FARM',
           'cattle',
         ),
@@ -28,7 +32,9 @@ void main() {
       );
       expect(
         homeStyleResourceAllowed(
-          {'FARM': <String, dynamic>{'cattle': 'TRUE'}},
+          {
+            'FARM': <String, dynamic>{'cattle': 'TRUE'},
+          },
           'FARM',
           'cattle',
         ),
@@ -39,7 +45,9 @@ void main() {
     test('máscara CRUDL del backend (solo 0/1) → permitido si hay algún 1', () {
       expect(
         homeStyleResourceAllowed(
-          {'FARM': <String, dynamic>{'cattle': '11111'}},
+          {
+            'FARM': <String, dynamic>{'cattle': '11111'},
+          },
           'FARM',
           'cattle',
         ),
@@ -57,7 +65,9 @@ void main() {
       );
       expect(
         homeStyleResourceAllowed(
-          {'COMMERCE': <String, dynamic>{'sales': '00000'}},
+          {
+            'COMMERCE': <String, dynamic>{'sales': '00000'},
+          },
           'COMMERCE',
           'sales',
         ),
@@ -68,7 +78,9 @@ void main() {
     test('false o módulo ausente → denegado', () {
       expect(
         homeStyleResourceAllowed(
-          {'COMMERCE': <String, dynamic>{'sales': false}},
+          {
+            'COMMERCE': <String, dynamic>{'sales': false},
+          },
           'COMMERCE',
           'sales',
         ),
@@ -90,12 +102,13 @@ void main() {
     };
 
     test('sin restricción conocida → null', () {
+      expect(routeAccessDeniedRedirect(path: '/home', permissions: {}), isNull);
       expect(
-        routeAccessDeniedRedirect(path: '/home', permissions: {}),
+        routeAccessDeniedRedirect(path: '/login', permissions: {}),
         isNull,
       );
       expect(
-        routeAccessDeniedRedirect(path: '/login', permissions: {}),
+        routeAccessDeniedRedirect(path: '/dashboard', permissions: {}),
         isNull,
       );
     });
@@ -104,7 +117,9 @@ void main() {
       expect(
         routeAccessDeniedRedirect(
           path: '/massive-events/create',
-          permissions: {'EMP_MGMT': <String, dynamic>{'users': true}},
+          permissions: {
+            'EMP_MGMT': <String, dynamic>{'users': true},
+          },
         ),
         '/home',
       );

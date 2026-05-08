@@ -25,17 +25,23 @@ class LatestCattleLocationModel {
     throw ArgumentError('Invalid numeric value: $v');
   }
 
+  static String _asString(dynamic v) {
+    if (v == null) {
+      throw ArgumentError('Invalid string value: $v');
+    }
+    return v.toString();
+  }
+
   factory LatestCattleLocationModel.fromJson(Map<String, dynamic> json) {
     return LatestCattleLocationModel(
-      idTenant: (json['id_tenant'] ?? json['idTenant']) as String,
-      idDevice: (json['id_device'] ?? json['idDevice']) as String,
-      idCattle: (json['id_cattle'] ?? json['idCattle']) as String,
+      idTenant: _asString(json['id_tenant'] ?? json['idTenant']),
+      idDevice: _asString(json['id_device'] ?? json['idDevice']),
+      idCattle: _asString(json['id_cattle'] ?? json['idCattle']),
       latitude: _asDouble(json['latitude']),
       longitude: _asDouble(json['longitude']),
       altitude: json['altitude'] == null ? null : _asDouble(json['altitude']),
-      time: DateTime.parse(json['time'] as String),
-      cattleNumber: (json['cattle_number'] ?? json['cattleNumber']) as String,
+      time: DateTime.parse(_asString(json['time'])),
+      cattleNumber: _asString(json['cattle_number'] ?? json['cattleNumber']),
     );
   }
 }
-

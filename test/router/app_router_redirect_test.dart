@@ -22,10 +22,7 @@ void main() {
     );
     await tester.pumpWidget(buildRouterTestHost(router));
     await pumpRouterFrames(tester);
-    expect(
-      find.byKey(const ValueKey<String>('login-page')),
-      findsOneWidget,
-    );
+    expect(find.byKey(const ValueKey<String>('login-page')), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
@@ -36,10 +33,7 @@ void main() {
     );
     await tester.pumpWidget(buildRouterTestHost(router));
     await pumpRouterFrames(tester);
-    expect(
-      find.byKey(const ValueKey<String>('login-page')),
-      findsOneWidget,
-    );
+    expect(find.byKey(const ValueKey<String>('login-page')), findsOneWidget);
   });
 
   testWidgets('/login sin sesión permanece en login', (tester) async {
@@ -49,10 +43,7 @@ void main() {
     );
     await tester.pumpWidget(buildRouterTestHost(router));
     await pumpRouterFrames(tester);
-    expect(
-      find.byKey(const ValueKey<String>('login-page')),
-      findsOneWidget,
-    );
+    expect(find.byKey(const ValueKey<String>('login-page')), findsOneWidget);
   });
 
   testWidgets('desde /loading con sesión → home', (tester) async {
@@ -62,10 +53,7 @@ void main() {
     );
     await tester.pumpWidget(buildRouterTestHost(router));
     await pumpRouterFrames(tester);
-    expect(
-      find.byKey(const ValueKey<String>('home-page')),
-      findsOneWidget,
-    );
+    expect(find.byKey(const ValueKey<String>('home-page')), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
@@ -76,10 +64,7 @@ void main() {
     );
     await tester.pumpWidget(buildRouterTestHost(router));
     await pumpRouterFrames(tester);
-    expect(
-      find.byKey(const ValueKey<String>('home-page')),
-      findsOneWidget,
-    );
+    expect(find.byKey(const ValueKey<String>('home-page')), findsOneWidget);
   });
 
   testWidgets('/home con sesión permanece en home', (tester) async {
@@ -89,10 +74,7 @@ void main() {
     );
     await tester.pumpWidget(buildRouterTestHost(router));
     await pumpRouterFrames(tester);
-    expect(
-      find.byKey(const ValueKey<String>('home-page')),
-      findsOneWidget,
-    );
+    expect(find.byKey(const ValueKey<String>('home-page')), findsOneWidget);
   });
 
   testWidgets('/users sin sesión → login', (tester) async {
@@ -102,10 +84,17 @@ void main() {
     );
     await tester.pumpWidget(buildRouterTestHost(router));
     await pumpRouterFrames(tester);
-    expect(
-      find.byKey(const ValueKey<String>('login-page')),
-      findsOneWidget,
+    expect(find.byKey(const ValueKey<String>('login-page')), findsOneWidget);
+  });
+
+  testWidgets('/dashboard sin sesión → login', (tester) async {
+    final router = createAppRouter(
+      hasValidToken: () => false,
+      initialLocation: '/dashboard',
     );
+    await tester.pumpWidget(buildRouterTestHost(router));
+    await pumpRouterFrames(tester);
+    expect(find.byKey(const ValueKey<String>('login-page')), findsOneWidget);
   });
 
   testWidgets('/massive-events/create sin sesión → login', (tester) async {
@@ -115,10 +104,7 @@ void main() {
     );
     await tester.pumpWidget(buildRouterTestHost(router));
     await pumpRouterFrames(tester);
-    expect(
-      find.byKey(const ValueKey<String>('login-page')),
-      findsOneWidget,
-    );
+    expect(find.byKey(const ValueKey<String>('login-page')), findsOneWidget);
   });
 
   testWidgets(

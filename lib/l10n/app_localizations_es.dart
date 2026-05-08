@@ -305,6 +305,34 @@ class AppLocalizationsEs extends AppLocalizations {
   String get home_title => 'Inicio';
 
   @override
+  String get dashboard_title => 'Dashboard';
+
+  @override
+  String get dashboard_welcome => 'Resumen de la finca';
+
+  @override
+  String get dashboard_description =>
+      'Consulta el mapa de ganado y los reportes disponibles para tu usuario.';
+
+  @override
+  String get dashboard_cattleMapTitle => 'Mapa de ganado';
+
+  @override
+  String get dashboard_cattleMapSubtitle =>
+      'Última ubicación reportada por cada res con rastreador.';
+
+  @override
+  String get dashboard_reportsTitle => 'Reportes';
+
+  @override
+  String get dashboard_reportsSubtitle =>
+      'Widgets de reportes filtrados por rol y permisos.';
+
+  @override
+  String get dashboard_reportsPending =>
+      'Los widgets de reportes reutilizables se mostrarán aquí conforme se implementen. Cada reporte conserva su propio filtro de acceso.';
+
+  @override
   String get date => 'Fecha';
 
   @override
@@ -1390,6 +1418,11 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get locations_map_lastLocationTitle => 'Última ubicación';
+
+  @override
+  String locations_map_cattleCount(Object count) {
+    return 'Mostrando $count reses';
+  }
 
   @override
   String get locations_map_osmAttribution => '© OpenStreetMap contributors';

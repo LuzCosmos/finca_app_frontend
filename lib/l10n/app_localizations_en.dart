@@ -307,6 +307,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get home_title => 'Home';
 
   @override
+  String get dashboard_title => 'Dashboard';
+
+  @override
+  String get dashboard_welcome => 'Farm overview';
+
+  @override
+  String get dashboard_description =>
+      'Review the cattle map and the reports available to your user.';
+
+  @override
+  String get dashboard_cattleMapTitle => 'Cattle map';
+
+  @override
+  String get dashboard_cattleMapSubtitle =>
+      'Last reported location for each tracked animal.';
+
+  @override
+  String get dashboard_reportsTitle => 'Reports';
+
+  @override
+  String get dashboard_reportsSubtitle =>
+      'Report widgets filtered by role and permissions.';
+
+  @override
+  String get dashboard_reportsPending =>
+      'Reusable report widgets will appear here as they are implemented. Each report keeps its own access filter.';
+
+  @override
   String get date => 'Date';
 
   @override
@@ -1386,6 +1414,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get locations_map_lastLocationTitle => 'Last location';
+
+  @override
+  String locations_map_cattleCount(Object count) {
+    return 'Showing $count cattle';
+  }
 
   @override
   String get locations_map_osmAttribution => '© OpenStreetMap contributors';

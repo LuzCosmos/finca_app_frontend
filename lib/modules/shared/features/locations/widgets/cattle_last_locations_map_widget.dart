@@ -6,6 +6,7 @@ import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/shared/features/locations/models/latest_cattle_location_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/locations/services/locations_api_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/locations/utils/location_time_formatter.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class CattleLastLocationsMapWidget extends StatefulWidget {
   final double height;
@@ -18,11 +19,14 @@ class CattleLastLocationsMapWidget extends StatefulWidget {
   });
 
   @override
-  State<CattleLastLocationsMapWidget> createState() => _CattleLastLocationsMapWidgetState();
+  State<CattleLastLocationsMapWidget> createState() =>
+      _CattleLastLocationsMapWidgetState();
 }
 
-class _CattleLastLocationsMapWidgetState extends State<CattleLastLocationsMapWidget> {
-  late final Future<List<LatestCattleLocationModel>> _future = LocationsApiService.getLatestCattleLocations();
+class _CattleLastLocationsMapWidgetState
+    extends State<CattleLastLocationsMapWidget> {
+  late final Future<List<LatestCattleLocationModel>> _future =
+      LocationsApiService.getLatestCattleLocations();
 
   @override
   Widget build(BuildContext context) {
@@ -70,19 +74,18 @@ class _CattleLastLocationsMapWidgetState extends State<CattleLastLocationsMapWid
               MarkerLayer(markers: markers),
               Positioned(
                 left: 8,
+                top: 8,
+                child: _MapOverlayLabel(
+                  icon: FontAwesomeIcons.cow,
+                  label: l10n.locations_map_cattleCount(items.length),
+                ),
+              ),
+              Positioned(
+                left: 8,
                 bottom: 8,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.92),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                    child: Text(
-                      l10n.locations_map_osmAttribution,
-                      style: const TextStyle(fontSize: 12),
-                    ),
-                  ),
+                child: _MapOverlayLabel(
+                  label: l10n.locations_map_osmAttribution,
+                  textStyle: const TextStyle(fontSize: 12),
                 ),
               ),
             ],
@@ -115,17 +118,62 @@ class _CattleLastLocationsMapWidgetState extends State<CattleLastLocationsMapWid
     final label = '${it.cattleNumber} • ${formatLocationTime(it.time)}';
     showDialog<void>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.locations_map_lastLocationTitle),
-        content: Text(label),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(l10n.close),
+      builder:
+          (context) => AlertDialog(
+            title: Text(l10n.locations_map_lastLocationTitle),
+            content: Text(label),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(l10n.close),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 }
 
+class _MapOverlayLabel extends StatelessWidget {
+  final IconData? icon;
+  final String label;
+  final TextStyle? textStyle;
+
+  const _MapOverlayLabel({required this.label, this.icon, this.textStyle});
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.92),
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: const [
+          BoxShadow(
+            blurRadius: 6,
+            color: Color(0x22000000),
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (icon != null) ...[
+              Icon(
+                icon,
+                size: 16,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              const SizedBox(width: 6),
+            ],
+            Text(
+              label,
+              style: textStyle ?? Theme.of(context).textTheme.bodySmall,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

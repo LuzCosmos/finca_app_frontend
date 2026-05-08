@@ -24,7 +24,9 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     _homeSyncHelper = createHomeSyncHelper();
     _permissionsFuture = SessionService.getPermissions();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _homeSyncHelper.onPostFrame(this));
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => _homeSyncHelper.onPostFrame(this),
+    );
   }
 
   @override
@@ -67,6 +69,13 @@ class _HomePageState extends State<HomePage> {
                         runSpacing: 16,
                         alignment: WrapAlignment.center,
                         children: [
+                          HomeOptionWithPermission(
+                            isVisible: true,
+                            title: l10n.dashboard_title,
+                            icon: Icons.dashboard_outlined,
+                            route: "/dashboard",
+                            forWebOnly: false,
+                          ),
                           HomeOptionWithPermission(
                             isVisible: homeStyleResourceAllowed(
                               permissions,

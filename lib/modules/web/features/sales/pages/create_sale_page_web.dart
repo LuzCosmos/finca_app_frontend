@@ -818,39 +818,45 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                                     final Map<String, dynamic> option = options
                                         .elementAt(index);
                                     final device = option['device'];
-                                    final deviceText = device != null
-                                              ? (device['name'] ??
-                                                  device['deveui'] ??
-                                                  '')
-                                              : '';
+                                    final deviceText =
+                                        device != null
+                                            ? (device['name'] ??
+                                                device['deveui'] ??
+                                                '')
+                                            : '';
                                     final colorValue = option['color'];
-                                    final colorText = colorValue != null
-                                        ? CattleColor.fromString(colorValue.toString())
-                                            .localizedName(context)
-                                        : '';
+                                    final colorText =
+                                        colorValue != null
+                                            ? CattleColor.fromString(
+                                              colorValue.toString(),
+                                            ).localizedName(context)
+                                            : '';
                                     final eartagLeft =
                                         (option['eartagLeft'] ?? '')
                                             .toString()
                                             .trim();
                                     final eartagRight =
-                                        (option['eartagRight'] ?? '').toString().trim();
+                                        (option['eartagRight'] ?? '')
+                                            .toString()
+                                            .trim();
                                     final eartagLabel = [
                                       if (eartagLeft.isNotEmpty) eartagLeft,
                                       if (eartagRight.isNotEmpty) eartagRight,
                                     ].join(' / ');
                                     return ListTile(
                                       title: Text(
-                                          '${option['number']?.toString() ?? ''}${eartagLabel.isNotEmpty ? ' / $eartagLabel' : ''}${deviceText.isNotEmpty ? ' / $deviceText' : ''}',
-                                          style: const TextStyle(fontSize: 13),
-                                        ),
-                                        subtitle: colorText.isNotEmpty
-                                            ? Text(
+                                        '${option['number']?.toString() ?? ''}${eartagLabel.isNotEmpty ? ' / $eartagLabel' : ''}${deviceText.isNotEmpty ? ' / $deviceText' : ''}',
+                                        style: const TextStyle(fontSize: 13),
+                                      ),
+                                      subtitle:
+                                          colorText.isNotEmpty
+                                              ? Text(
                                                 '${l10n.color}: $colorText / ${l10n.castrated}: ${option['castrated'] == true ? l10n.yes : l10n.no} / ${l10n.hasHorns}: ${option['hasHorn'] == true ? l10n.yes : l10n.no}',
                                                 style: const TextStyle(
                                                   fontSize: 11,
                                                 ),
                                               )
-                                            : null,
+                                              : null,
                                       onTap: () {
                                         onSelected(option);
                                       },

@@ -150,6 +150,22 @@
 
 
   "home_title": "Home",
+  "dashboard_title": "Dashboard",
+  "@dashboard_title": { "description": "Title for the Dashboard option and screen." },
+  "dashboard_welcome": "Farm overview",
+  "@dashboard_welcome": { "description": "Main heading for the dashboard." },
+  "dashboard_description": "Review the cattle map and the reports available to your user.",
+  "@dashboard_description": { "description": "Dashboard description." },
+  "dashboard_cattleMapTitle": "Cattle map",
+  "@dashboard_cattleMapTitle": { "description": "Title for the cattle map section in the dashboard." },
+  "dashboard_cattleMapSubtitle": "Last reported location for each tracked animal.",
+  "@dashboard_cattleMapSubtitle": { "description": "Subtitle for the cattle map section." },
+  "dashboard_reportsTitle": "Reports",
+  "@dashboard_reportsTitle": { "description": "Title for the reports section in the dashboard." },
+  "dashboard_reportsSubtitle": "Report widgets filtered by role and permissions.",
+  "@dashboard_reportsSubtitle": { "description": "Subtitle for the reports section." },
+  "dashboard_reportsPending": "Reusable report widgets will appear here as they are implemented. Each report keeps its own access filter.",
+  "@dashboard_reportsPending": { "description": "Temporary reports section message in the dashboard." },
 
   "date": "Date",
   "dateSomething": "{object} Date",
@@ -572,6 +588,8 @@
   "@locations_map_empty": { "description": "Message shown when there are no locations to display on the map." },
   "locations_map_lastLocationTitle": "Last location",
   "@locations_map_lastLocationTitle": { "description": "Dialog/overlay title for last known location." },
+  "locations_map_cattleCount": "Showing {count} cattle",
+  "@locations_map_cattleCount": { "description": "Counter for cattle visible in the locations map.", "placeholders": { "count": {} } },
   "locations_map_osmAttribution": "© OpenStreetMap contributors",
   "@locations_map_osmAttribution": { "description": "Required OpenStreetMap attribution text." }
 

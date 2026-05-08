@@ -614,6 +614,54 @@ abstract class AppLocalizations {
   /// **'Home'**
   String get home_title;
 
+  /// Title for the Dashboard option and screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Dashboard'**
+  String get dashboard_title;
+
+  /// Main heading for the dashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Farm overview'**
+  String get dashboard_welcome;
+
+  /// Dashboard description.
+  ///
+  /// In en, this message translates to:
+  /// **'Review the cattle map and the reports available to your user.'**
+  String get dashboard_description;
+
+  /// Title for the cattle map section in the dashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Cattle map'**
+  String get dashboard_cattleMapTitle;
+
+  /// Subtitle for the cattle map section.
+  ///
+  /// In en, this message translates to:
+  /// **'Last reported location for each tracked animal.'**
+  String get dashboard_cattleMapSubtitle;
+
+  /// Title for the reports section in the dashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Reports'**
+  String get dashboard_reportsTitle;
+
+  /// Subtitle for the reports section.
+  ///
+  /// In en, this message translates to:
+  /// **'Report widgets filtered by role and permissions.'**
+  String get dashboard_reportsSubtitle;
+
+  /// Temporary reports section message in the dashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Reusable report widgets will appear here as they are implemented. Each report keeps its own access filter.'**
+  String get dashboard_reportsPending;
+
   /// No description provided for @date.
   ///
   /// In en, this message translates to:
@@ -2617,6 +2665,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Last location'**
   String get locations_map_lastLocationTitle;
+
+  /// Counter for cattle visible in the locations map.
+  ///
+  /// In en, this message translates to:
+  /// **'Showing {count} cattle'**
+  String locations_map_cattleCount(Object count);
 
   /// Required OpenStreetMap attribution text.
   ///

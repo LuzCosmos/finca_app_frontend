@@ -150,6 +150,22 @@
 
 
   "home_title": "Inicio",
+  "dashboard_title": "Dashboard",
+  "@dashboard_title": { "description": "Título de la opción y pantalla de Dashboard." },
+  "dashboard_welcome": "Resumen de la finca",
+  "@dashboard_welcome": { "description": "Encabezado principal del dashboard." },
+  "dashboard_description": "Consulta el mapa de ganado y los reportes disponibles para tu usuario.",
+  "@dashboard_description": { "description": "Descripción del dashboard." },
+  "dashboard_cattleMapTitle": "Mapa de ganado",
+  "@dashboard_cattleMapTitle": { "description": "Título de la sección de mapa de ganado en dashboard." },
+  "dashboard_cattleMapSubtitle": "Última ubicación reportada por cada res con rastreador.",
+  "@dashboard_cattleMapSubtitle": { "description": "Subtítulo de la sección de mapa de ganado." },
+  "dashboard_reportsTitle": "Reportes",
+  "@dashboard_reportsTitle": { "description": "Título de la sección de reportes en dashboard." },
+  "dashboard_reportsSubtitle": "Widgets de reportes filtrados por rol y permisos.",
+  "@dashboard_reportsSubtitle": { "description": "Subtítulo de la sección de reportes." },
+  "dashboard_reportsPending": "Los widgets de reportes reutilizables se mostrarán aquí conforme se implementen. Cada reporte conserva su propio filtro de acceso.",
+  "@dashboard_reportsPending": { "description": "Mensaje temporal de sección de reportes en dashboard." },
 
   "date": "Fecha",
   "dateSomething": "Fecha de {object}",
@@ -572,6 +588,8 @@
   "@locations_map_empty": { "description": "Mensaje cuando no existen ubicaciones para mostrar en el mapa." },
   "locations_map_lastLocationTitle": "Última ubicación",
   "@locations_map_lastLocationTitle": { "description": "Título del diálogo/overlay para la última ubicación." },
+  "locations_map_cattleCount": "Mostrando {count} reses",
+  "@locations_map_cattleCount": { "description": "Contador de reses visibles en el mapa de ubicaciones.", "placeholders": { "count": {} } },
   "locations_map_osmAttribution": "© OpenStreetMap contributors",
   "@locations_map_osmAttribution": { "description": "Texto de atribución requerido por OpenStreetMap." }
 

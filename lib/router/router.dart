@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:finca_app_frontend/core/services/auth_service.dart';
+import 'package:finca_app_frontend/modules/shared/features/dashboard/page/dashboard_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/auth/page/login_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/home/page/home_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/loading/loading_page.dart';
@@ -41,10 +42,13 @@ GoRouter createAppRouter({
     routes: [
       GoRoute(
         path: '/login',
-        builder: (context, state) =>
-            LoginPage(authService: loginAuthService),
+        builder: (context, state) => LoginPage(authService: loginAuthService),
       ),
       GoRoute(path: '/home', builder: (context, state) => const HomePage()),
+      GoRoute(
+        path: '/dashboard',
+        builder: (context, state) => const DashboardPage(),
+      ),
       GoRoute(
         path: '/purchases/create',
         builder: (context, state) => const PurchaseFormPage(),
@@ -57,8 +61,7 @@ GoRouter createAppRouter({
       GoRoute(
         path: '/purchases/pending',
         name: 'purchasesPending',
-        builder: (_, _) =>
-            const PurchasesListPage(initialStatusFilter: 'open'),
+        builder: (_, _) => const PurchasesListPage(initialStatusFilter: 'open'),
       ),
 
       GoRoute(
@@ -130,10 +133,7 @@ GoRouter createAppRouter({
       }
 
       final permissions = SessionService.permissionsSnapshotForRouteGuard;
-      if (loggedIn &&
-          !loggingIn &&
-          !loading &&
-          permissions != null) {
+      if (loggedIn && !loggingIn && !loading && permissions != null) {
         final denied = routeAccessDeniedRedirect(
           path: path,
           permissions: permissions,
