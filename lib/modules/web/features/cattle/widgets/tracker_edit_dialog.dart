@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-// import 'package:flutter/scheduler.dart';
+import 'package:go_router/go_router.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
+import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/devices/models/device_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/devices/services/device_api_service.dart';
+import 'package:finca_app_frontend/modules/web/features/cattle/widgets/tracker_remote_config_icon_button.dart';
 
 class TrackerEditDialog extends StatefulWidget {
   final String? initialValue;
@@ -25,13 +27,23 @@ class _TrackerEditDialogState extends State<TrackerEditDialog> {
   // List<DeviceModel> _options = [];
   bool _isLoading = false;
   Timer? _debounce;
-  Completer<List<DeviceModel>>? _lastCompleter;
+  bool _remoteConfigRead = false;
   String? _errorText;
 
   @override
   void initState() {
     super.initState();
     _controller.text = widget.initialValue ?? '';
+    _loadRemoteConfigPermission();
+  }
+
+  Future<void> _loadRemoteConfigPermission() async {
+    final ok = await SessionService.hasActionPermission(
+      'PROD_CENTER',
+      'remote_config',
+      'read',
+    );
+    if (mounted) setState(() => _remoteConfigRead = ok);
   }
 
   @override
@@ -47,7 +59,7 @@ class _TrackerEditDialogState extends State<TrackerEditDialog> {
     final l10n = AppLocalizations.of(context)!;
 
     return AlertDialog(
-      title: Text(l10n.tracker), 
+      title: Text(l10n.tracker),
       content: SizedBox(
         width: 300,
         child: Column(
@@ -70,49 +82,66 @@ class _TrackerEditDialogState extends State<TrackerEditDialog> {
                   if (!mounted) return;
                   // Only set loading if not already loading to avoid unnecessary rebuilds
                   if (!_isLoading) setState(() => _isLoading = true);
-                  
+
                   try {
-                    final results = await DeviceApiService.searchDevices(textEditingValue.text);
+                    final results = await DeviceApiService.searchDevices(
+                      textEditingValue.text,
+                    );
                     if (mounted) {
-                       setState(() {
-                         _isLoading = false;
-                         _errorText = null;
-                       });
+                      setState(() {
+                        _isLoading = false;
+                        _errorText = null;
+                      });
                     }
                     if (!completer.isCompleted) completer.complete(results);
                   } catch (e) {
-                     if (mounted) {
-                        setState(() {
-                            _isLoading = false;
-                            _errorText = e.toString();
-                        });
-                     }
-                     if (!completer.isCompleted) completer.complete(const Iterable<DeviceModel>.empty().toList());
+                    if (mounted) {
+                      setState(() {
+                        _isLoading = false;
+                        _errorText = e.toString();
+                      });
+                    }
+                    if (!completer.isCompleted)
+                      completer.complete(
+                        const Iterable<DeviceModel>.empty().toList(),
+                      );
                   }
                 });
 
                 return completer.future;
               },
               displayStringForOption: (DeviceModel option) => option.name,
-              fieldViewBuilder: (context, controller, focusNode, onFieldSubmitted) {
+              fieldViewBuilder: (
+                context,
+                controller,
+                focusNode,
+                onFieldSubmitted,
+              ) {
                 return TextField(
                   controller: controller,
                   focusNode: focusNode,
                   autofocus: true,
                   decoration: InputDecoration(
                     labelText: l10n.searchTracker,
-                    hintText: 'Min 3 chars...',
+                    hintText: l10n.trackerSearch_minCharsHint(3),
                     border: const OutlineInputBorder(),
-                    suffixIcon: _isLoading
-                        ? const Padding(
-                            padding: EdgeInsets.all(12.0),
-                            child: SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)),
-                          )
-                        : null,
+                    suffixIcon:
+                        _isLoading
+                            ? const Padding(
+                              padding: EdgeInsets.all(12.0),
+                              child: SizedBox(
+                                width: 16,
+                                height: 16,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              ),
+                            )
+                            : null,
                     errorText: _errorText,
                   ),
                   onSubmitted: (value) {
-                     // Submit can be handled if needed
+                    // Submit can be handled if needed
                   },
                 );
               },
@@ -122,7 +151,10 @@ class _TrackerEditDialogState extends State<TrackerEditDialog> {
                   child: Material(
                     elevation: 4.0,
                     child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxHeight: 200, maxWidth: 300),
+                      constraints: const BoxConstraints(
+                        maxHeight: 200,
+                        maxWidth: 360,
+                      ),
                       child: ListView.builder(
                         padding: EdgeInsets.zero,
                         shrinkWrap: true,
@@ -132,6 +164,27 @@ class _TrackerEditDialogState extends State<TrackerEditDialog> {
                           return ListTile(
                             title: Text(option.name),
                             subtitle: Text(option.deveui),
+                            /*
+                            //Edit Device by downlinks button
+                            trailing: TrackerRemoteConfigIconButton(
+                              deveui: option.deveui,
+                              deviceDisplayName: option.name,
+                              hasRemoteConfigAccess: _remoteConfigRead,
+                              onOpenRemoteConfig: () {
+                                final router = GoRouter.of(context);
+                                Navigator.of(context).pop();
+                                Future.microtask(() {
+                                  router.pushNamed(
+                                    'deviceRemoteConfig',
+                                    pathParameters: {'deveui': option.deveui},
+                                    queryParameters: {
+                                      if (option.name.isNotEmpty)
+                                        'name': option.name,
+                                    },
+                                  );
+                                });
+                              },
+                            ),*/
                             onTap: () => onSelected(option),
                           );
                         },

@@ -7,6 +7,7 @@ import 'package:finca_app_frontend/modules/shared/features/devices/models/device
 import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'dart:async';
 import 'package:finca_app_frontend/modules/web/features/cattle/widgets/tracker_edit_dialog.dart';
+import 'package:finca_app_frontend/modules/web/features/cattle/widgets/tracker_remote_config_icon_button.dart';
 import 'package:finca_app_frontend/modules/web/features/cattle/widgets/characteristics_edit_dialog.dart';
 import 'package:finca_app_frontend/modules/shared/enums/cattle_enums.dart';
 import 'package:finca_app_frontend/modules/shared/widgets/message_banner.dart';
@@ -32,6 +33,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
       CattleCharacteristic.values.map((e) => e.name).toList();
   bool isLoading = true;
   bool _hasEditPermission = false;
+  bool _hasRemoteConfigReadPermission = false;
   bool _isSaving = false;
   String? _globalErrorMessage;
   String? _globalSuccessMessage;
@@ -47,6 +49,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
   List<PlutoColumn> _cachedColumns = [];
   String _cachedLocaleKey = '';
   bool _cachedEditPermission = false;
+  bool _cachedRemoteConfigPermission = false;
 
   void _showSuccess(String message) {
     if (mounted) {
@@ -86,8 +89,16 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
       'cattle',
       'update',
     );
-    if (canEdit) {
-      setState(() => _hasEditPermission = true);
+    final canReadRemoteConfig = await SessionService.hasActionPermission(
+      'PROD_CENTER',
+      'remote_config',
+      'read',
+    );
+    if (mounted) {
+      setState(() {
+        _hasEditPermission = canEdit;
+        _hasRemoteConfigReadPermission = canReadRemoteConfig;
+      });
     }
   }
 
@@ -144,7 +155,8 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
         try {
           stateManager.setShowLoading(false);
         } catch (_) {}
-        _showError('Error: $e');
+        final l10n = AppLocalizations.of(context)!;
+        _showError(l10n.error_savingField('$e'));
       }
     }
   }
@@ -229,13 +241,14 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                       fallback: '',
                     );
                     // Rebuscar la fila y celda actuales tras el async (la referencia puede quedar obsoleta)
+                    final l10n = AppLocalizations.of(context)!;
                     PlutoRow? row;
                     try {
                       row = stateManager.rows.firstWhere(
                         (r) => r.key == rowKey,
                       );
                     } catch (_) {
-                      if (mounted) _showError('No se encontró la fila');
+                      if (mounted) _showError(l10n.cattleGrid_rowNotFound);
                       return;
                     }
                     final targetCell = row.cells[field];
@@ -251,9 +264,9 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                     if (rowId.isNotEmpty && rowId != 'New') {
                       try {
                         await _service.updateCattle(rowId, {field: formatted});
-                        if (mounted) _showSuccess('Saved');
+                        if (mounted) _showSuccess(l10n.cattleGrid_savedSuccess);
                       } catch (e) {
-                        if (mounted) _showError('Error: $e');
+                        if (mounted) _showError(l10n.error_savingField('$e'));
                       }
                     }
                   },
@@ -292,7 +305,12 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
   }
 
   bool _isIgnoredChangeField(String field) {
-    return const ['tracker', 'characteristics', 'idDevice'].contains(field);
+    return const [
+      'tracker',
+      'characteristics',
+      'idDevice',
+      'deveui',
+    ].contains(field);
   }
 
   bool _isInvalidWeightValue(String field, dynamic value) {
@@ -390,17 +408,28 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
     final shouldRebuildColumns =
         _cachedColumns.isEmpty ||
         _cachedLocaleKey != localeKey ||
-        _cachedEditPermission != _hasEditPermission;
+        _cachedEditPermission != _hasEditPermission ||
+        _cachedRemoteConfigPermission != _hasRemoteConfigReadPermission;
 
     if (shouldRebuildColumns) {
       _cachedLocaleKey = localeKey;
       _cachedEditPermission = _hasEditPermission;
-      _gridKey = ValueKey('cattle-grid-$localeKey-$_hasEditPermission');
+      _cachedRemoteConfigPermission = _hasRemoteConfigReadPermission;
+      _gridKey = ValueKey(
+        'cattle-grid-$localeKey-$_hasEditPermission-$_hasRemoteConfigReadPermission',
+      );
 
       _cachedColumns = [
         PlutoColumn(
           title: 'Id',
           field: 'id',
+          type: PlutoColumnType.text(),
+          hide: true,
+          width: 0,
+        ),
+        PlutoColumn(
+          title: 'deveui',
+          field: 'deveui',
           type: PlutoColumnType.text(),
           hide: true,
           width: 0,
@@ -656,12 +685,12 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                                 setState(
                                   () {},
                                 ); // Trigger local widget rebuild just in case
-                                _showSuccess('Saved');
+                                _showSuccess(l10n.cattleGrid_savedSuccess);
                               }
                             } catch (e) {
                               debugPrint("Error saving characteristics: $e");
                               if (mounted) {
-                                _showError('Error saving: $e');
+                                _showError(l10n.error_savingField('$e'));
                               }
                             }
                           } else {
@@ -743,6 +772,9 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
           width: 170,
           enableEditingMode: false,
           renderer: (rendererContext) {
+            final trackerName = rendererContext.cell.value.toString();
+            final deveui =
+                rendererContext.row.cells['deveui']?.value?.toString() ?? '';
             return InkWell(
               onTap:
                   !_hasEditPermission
@@ -782,16 +814,24 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                                 if (mounted) {
                                   activeRow.cells['tracker']!.value = '';
                                   activeRow.cells['idDevice']!.value = '';
+                                  if (activeRow.cells.containsKey('deveui')) {
+                                    activeRow.cells['deveui']!.value = '';
+                                  }
                                   stateManager.notifyListeners();
-                                  _showSuccess('Removed');
+                                  _showSuccess(l10n.cattleGrid_trackerRemoved);
                                 }
                               } catch (e) {
-                                if (mounted) _showError('Error: $e');
+                                if (mounted) {
+                                  _showError(l10n.error_savingField('$e'));
+                                }
                               }
                             } else {
                               // For new rows
                               activeRow.cells['tracker']!.value = '';
                               activeRow.cells['idDevice']!.value = '';
+                              if (activeRow.cells.containsKey('deveui')) {
+                                activeRow.cells['deveui']!.value = '';
+                              }
                             }
                           } else if (result is DeviceModel) {
                             // Logic to add tracker (existing)
@@ -812,6 +852,11 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                                         );
                                     oldOwnerRow.cells['tracker']!.value = '';
                                     oldOwnerRow.cells['idDevice']!.value = '';
+                                    if (oldOwnerRow.cells.containsKey(
+                                      'deveui',
+                                    )) {
+                                      oldOwnerRow.cells['deveui']!.value = '';
+                                    }
                                   } catch (e) {
                                     // No previous owner found
                                   }
@@ -819,11 +864,17 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                                       result.name;
                                   activeRow.cells['idDevice']!.value =
                                       result.id;
+                                  if (activeRow.cells.containsKey('deveui')) {
+                                    activeRow.cells['deveui']!.value =
+                                        result.deveui;
+                                  }
                                   stateManager.notifyListeners();
-                                  _showSuccess('Saved');
+                                  _showSuccess(l10n.cattleGrid_savedSuccess);
                                 }
                               } catch (e) {
-                                if (mounted) _showError('Error: $e');
+                                if (mounted) {
+                                  _showError(l10n.error_savingField('$e'));
+                                }
                               }
                             } else {
                               activeRow.cells['tracker']!.value = result.name;
@@ -831,13 +882,17 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                                 activeRow.cells['idDevice']!,
                                 result.id,
                               );
+                              if (activeRow.cells.containsKey('deveui')) {
+                                activeRow.cells['deveui']!.value =
+                                    result.deveui;
+                              }
                             }
                           }
                         }
                       },
               child: Row(
                 children: [
-                  if (rendererContext.cell.value.toString().isNotEmpty)
+                  if (trackerName.isNotEmpty)
                     const Icon(
                       Icons.location_on,
                       size: 16,
@@ -845,11 +900,16 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                     ),
                   const SizedBox(width: 4),
                   Expanded(
-                    child: Text(
-                      rendererContext.cell.value.toString(),
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                    child: Text(trackerName, overflow: TextOverflow.ellipsis),
                   ),
+                  /*
+                  //Edit Device by downlinks button
+                  TrackerRemoteConfigIconButton(
+                    deveui: deveui,
+                    deviceDisplayName:
+                        trackerName.isNotEmpty ? trackerName : null,
+                    hasRemoteConfigAccess: _hasRemoteConfigReadPermission,
+                  ),*/
                   const Icon(Icons.edit, size: 14, color: Colors.grey),
                 ],
               ),
@@ -1117,7 +1177,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                                   );
                                 }
                               }
-                              _showSuccess('Saved');
+                              _showSuccess(l10n.cattleGrid_savedSuccess);
                             }
                           } on ApiException catch (e) {
                             if (!context.mounted) return;
@@ -1223,6 +1283,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
           'newFeedStartDate': PlutoCell(value: ''),
           'tracker': PlutoCell(value: ''),
           'idDevice': PlutoCell(value: ''),
+          'deveui': PlutoCell(value: ''),
           'comments': PlutoCell(value: ''),
           'purchaseWeight': PlutoCell(value: 0),
           'purchasePrice': PlutoCell(value: 0),
@@ -1292,6 +1353,12 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                 cattle['device'] != null
                     ? cattle['device']['id']
                     : ((cattle['idDevice'] as String?) ?? ''),
+          ),
+          'deveui': PlutoCell(
+            value:
+                cattle['device'] != null
+                    ? (cattle['device']['deveui'] ?? '')
+                    : '',
           ),
           'comments': PlutoCell(value: cattle['comments'] ?? ''),
           'purchaseWeight': PlutoCell(value: cattle['purchaseWeight'] ?? 0),
