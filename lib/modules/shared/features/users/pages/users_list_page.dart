@@ -8,7 +8,9 @@ import '../services/users_api_service.dart';
 import 'user_form_page.dart';
 
 class UsersListPage extends StatefulWidget {
-  const UsersListPage({super.key});
+  const UsersListPage({super.key, this.embedded = false});
+
+  final bool embedded;
 
   @override
   State<UsersListPage> createState() => _UsersListPageState();
@@ -140,6 +142,7 @@ class _UsersListPageState extends State<UsersListPage> {
 
     return FincaScaffold(
       title: l10n.listSomething(l10n.users),
+      embedded: widget.embedded,
       body: Padding(
         padding: const EdgeInsets.all(12),
         child: Column(

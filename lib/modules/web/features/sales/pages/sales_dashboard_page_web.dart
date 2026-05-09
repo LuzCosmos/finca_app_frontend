@@ -15,7 +15,9 @@ import 'package:finca_app_frontend/core/services/sale_sync_notifier.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
 
 class SaleDashboardPage extends StatelessWidget {
-  const SaleDashboardPage({super.key});
+  const SaleDashboardPage({super.key, this.embedded = false});
+
+  final bool embedded;
 
   @override
   Widget build(BuildContext context) {
@@ -24,13 +26,15 @@ class SaleDashboardPage extends StatelessWidget {
           (context) =>
               SalesWebBloc(dataSource: createSalesDataSource())
                 ..add(const LoadSalesWeb()),
-      child: const _SaleDashboardView(),
+      child: _SaleDashboardView(embedded: embedded),
     );
   }
 }
 
 class _SaleDashboardView extends StatefulWidget {
-  const _SaleDashboardView();
+  const _SaleDashboardView({required this.embedded});
+
+  final bool embedded;
 
   @override
   State<_SaleDashboardView> createState() => _SaleDashboardViewState();
@@ -273,6 +277,7 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
       },
       child: FincaScaffold(
         title: l10n.sales,
+        embedded: widget.embedded,
         body: BlocBuilder<SalesWebBloc, SalesWebState>(
           builder: (context, state) {
             if (state.status == SalesWebStatus.initial ||

@@ -18,7 +18,9 @@ import 'package:finca_app_frontend/modules/shared/features/massiveEvent/widgets/
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/widgets/processed_animals_table.dart';
 
 class MassiveEventPage extends StatefulWidget {
-  const MassiveEventPage({super.key});
+  const MassiveEventPage({super.key, this.embedded = false});
+
+  final bool embedded;
 
   @override
   State<MassiveEventPage> createState() => _MassiveEventPageState();
@@ -244,6 +246,7 @@ class _MassiveEventPageState extends State<MassiveEventPage> {
       },
       child: FincaScaffold(
         title: l10n.massiveEvent,
+        embedded: widget.embedded,
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

@@ -10,7 +10,9 @@ import 'package:finca_app_frontend/modules/shared/features/sales/data/sales_data
     if (dart.library.html) 'package:finca_app_frontend/modules/web/data/sales/sales_data_source_web_interface.dart';
 
 class SaleDashboardPage extends StatelessWidget {
-  const SaleDashboardPage({super.key});
+  const SaleDashboardPage({super.key, this.embedded = false});
+
+  final bool embedded;
 
   @override
   Widget build(BuildContext context) {
@@ -19,17 +21,82 @@ class SaleDashboardPage extends StatelessWidget {
           (context) =>
               SalesBloc(dataSource: createSalesDataSource())
                 ..add(LoadUnsyncedSales()),
-      child: const SaleDashboardView(),
+      child: SaleDashboardView(embedded: embedded),
     );
   }
 }
 
 class SaleDashboardView extends StatelessWidget {
-  const SaleDashboardView({super.key});
+  const SaleDashboardView({super.key, this.embedded = false});
+
+  final bool embedded;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final body = BlocBuilder<SalesBloc, SalesState>(
+      builder: (context, state) {
+        if (state is SalesLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (state is UnsyncedSalesLoaded) {
+          if (state.sales.isEmpty) {
+            return Center(child: Text(l10n.noOfflineSales));
+          }
+          return ListView.builder(
+            itemCount: state.sales.length,
+            itemBuilder: (context, index) {
+              final sale = state.sales[index];
+              return ListTile(
+                title: Text(
+                  l10n.saleWithDate(sale.transactionDate.toString()),
+                ),
+                subtitle: Text(
+                  l10n.totalWithAmount(sale.totalAmount.toString()),
+                ),
+                trailing: const Icon(
+                  Icons.sync_problem,
+                  color: Colors.orange,
+                ),
+              );
+            },
+          );
+        }
+        return const SizedBox.shrink();
+      },
+    );
+
+    if (embedded) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Material(
+            elevation: 1,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      l10n.salesDashboard,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.sync),
+                    onPressed: () {
+                      context.read<SalesBloc>().add(SyncSalesTransaction());
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Expanded(child: body),
+        ],
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.salesDashboard),
@@ -42,37 +109,7 @@ class SaleDashboardView extends StatelessWidget {
           ),
         ],
       ),
-      body: BlocBuilder<SalesBloc, SalesState>(
-        builder: (context, state) {
-          if (state is SalesLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (state is UnsyncedSalesLoaded) {
-            if (state.sales.isEmpty) {
-              return Center(child: Text(l10n.noOfflineSales));
-            }
-            return ListView.builder(
-              itemCount: state.sales.length,
-              itemBuilder: (context, index) {
-                final sale = state.sales[index];
-                return ListTile(
-                  title: Text(
-                    l10n.saleWithDate(sale.transactionDate.toString()),
-                  ),
-                  subtitle: Text(
-                    l10n.totalWithAmount(sale.totalAmount.toString()),
-                  ),
-                  trailing: const Icon(
-                    Icons.sync_problem,
-                    color: Colors.orange,
-                  ),
-                );
-              },
-            );
-          }
-          return const SizedBox.shrink();
-        },
-      ),
+      body: body,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
