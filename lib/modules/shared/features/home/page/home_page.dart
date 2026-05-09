@@ -490,12 +490,14 @@ class _HomePageState extends State<HomePage> {
                         );
                       }
 
-                      return Column(
-                        children: [
-                          _homeSyncHelper.buildSyncSection(context, l10n),
-                          Expanded(
-                            child: Center(
-                              child: Wrap(
+                      return KeyedSubtree(
+                        key: const ValueKey<String>('home-compact-layout'),
+                        child: Column(
+                          children: [
+                            _homeSyncHelper.buildSyncSection(context, l10n),
+                            Expanded(
+                              child: Center(
+                                child: Wrap(
                                 spacing: 16,
                                 runSpacing: 16,
                                 alignment: WrapAlignment.center,
@@ -566,6 +568,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                         ],
+                        ),
                       );
                     },
                   ),

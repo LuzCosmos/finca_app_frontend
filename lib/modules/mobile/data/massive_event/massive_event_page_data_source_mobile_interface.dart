@@ -1,4 +1,4 @@
-import 'package:finca_app_frontend/core/data/database/database_provider.dart';
+import 'package:finca_app_frontend/core/data/database/database_provider_io.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/data/massive_event_page_data_source.dart';
 import 'package:finca_app_frontend/core/data/database/repositories/animal_simple_event_repository.dart';
 import 'package:finca_app_frontend/core/data/database/repositories/simple_event_repository.dart';

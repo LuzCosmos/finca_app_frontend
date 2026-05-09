@@ -6,4 +6,6 @@
 class AppDatabase {
   // No implementa nada, solo sirve para compilar en web sin errores
   AppDatabase();
+
+  Future<void> close() async {}
 }

@@ -48,8 +48,9 @@ jobs:
           chrome-version: stable
 
       - name: Run web-only HomePage widget tests (Chrome)
-        # Primera compilación web puede superar el timeout por defecto (~12m); 30m reduce falsos negativos en CI.
-        run: flutter test --platform chrome --timeout=30m test/modules/shared/features/home/home_page_web_test.dart
+        # `--timeout` no cubre la fase "loading" del suite (~12m); `--ignore-timeouts` evita abortar en la 1.ª compilación web.
+        timeout-minutes: 45
+        run: flutter test --platform chrome --ignore-timeouts test/modules/shared/features/home/home_page_web_test.dart
         env:
           CHROME_EXECUTABLE: ${{ steps.setup-chrome.outputs.chrome-path }}
 
