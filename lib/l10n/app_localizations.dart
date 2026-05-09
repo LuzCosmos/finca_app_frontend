@@ -1436,6 +1436,102 @@ abstract class AppLocalizations {
   /// **'Approx. Birth Date'**
   String get approxBirthDate;
 
+  /// No description provided for @approxBirthEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Approx. birth date'**
+  String get approxBirthEditTitle;
+
+  /// No description provided for @birthAprxModeManual.
+  ///
+  /// In en, this message translates to:
+  /// **'Manual date'**
+  String get birthAprxModeManual;
+
+  /// No description provided for @birthAprxModeDentition.
+  ///
+  /// In en, this message translates to:
+  /// **'By dentition'**
+  String get birthAprxModeDentition;
+
+  /// No description provided for @milkTeethCountShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Milk teeth'**
+  String get milkTeethCountShort;
+
+  /// No description provided for @permanentTeethCountShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Permanent teeth'**
+  String get permanentTeethCountShort;
+
+  /// No description provided for @milkTeethWearShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Milk teeth wear'**
+  String get milkTeethWearShort;
+
+  /// No description provided for @permanentTeethWearShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Permanent teeth wear'**
+  String get permanentTeethWearShort;
+
+  /// No description provided for @teethWearGrade0.
+  ///
+  /// In en, this message translates to:
+  /// **'N/A / tooth not present'**
+  String get teethWearGrade0;
+
+  /// No description provided for @teethWearGrade1.
+  ///
+  /// In en, this message translates to:
+  /// **'Erupted, no visible wear'**
+  String get teethWearGrade1;
+
+  /// No description provided for @teethWearGrade2.
+  ///
+  /// In en, this message translates to:
+  /// **'Mild wear'**
+  String get teethWearGrade2;
+
+  /// No description provided for @teethWearGrade3.
+  ///
+  /// In en, this message translates to:
+  /// **'Surface wear clearly visible'**
+  String get teethWearGrade3;
+
+  /// No description provided for @teethWearGrade4.
+  ///
+  /// In en, this message translates to:
+  /// **'Leveling / flatter tooth'**
+  String get teethWearGrade4;
+
+  /// No description provided for @teethWearGrade5.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced shortening'**
+  String get teethWearGrade5;
+
+  /// No description provided for @dentalEvaluationDateShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Dental evaluation date'**
+  String get dentalEvaluationDateShort;
+
+  /// No description provided for @dentitionOptionalSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Dentition (optional)'**
+  String get dentitionOptionalSection;
+
+  /// No description provided for @dentitionCompleteAllOrNone.
+  ///
+  /// In en, this message translates to:
+  /// **'If using dentition, fill all five values and the evaluation date.'**
+  String get dentitionCompleteAllOrNone;
+
   /// No description provided for @newFeedStartDate.
   ///
   /// In en, this message translates to:

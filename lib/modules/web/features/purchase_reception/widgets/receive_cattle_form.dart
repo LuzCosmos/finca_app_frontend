@@ -8,6 +8,8 @@ import 'package:finca_app_frontend/modules/shared/features/devices/models/device
 import 'package:finca_app_frontend/modules/shared/features/devices/services/device_api_service.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'package:finca_app_frontend/modules/shared/enums/cattle_enums.dart';
+import 'package:finca_app_frontend/modules/web/features/purchase_reception/utils/dentition_receive_fields.dart';
+import 'package:finca_app_frontend/modules/web/features/cattle/widgets/teeth_wear_dropdown_items.dart';
 
 class ReceiveCattleForm extends StatefulWidget {
   final String? currentNumber;
@@ -30,6 +32,11 @@ class ReceiveCattleForm extends StatefulWidget {
   @override
   State<ReceiveCattleForm> createState() => _ReceiveCattleFormState();
 }
+
+String _localDateYmd(DateTime d) =>
+    '${d.year.toString().padLeft(4, '0')}-'
+    '${d.month.toString().padLeft(2, '0')}-'
+    '${d.day.toString().padLeft(2, '0')}';
 
 class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
   final _formKey = GlobalKey<FormState>();
@@ -69,11 +76,20 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
   bool hasHorns = false;
   bool isCastrated = false;
   final _birthDateAprxController = TextEditingController();
+  final _milkTeethCountController = TextEditingController();
+  final _permanentTeethCountController = TextEditingController();
+  final _dentalEvaluationDateController = TextEditingController();
+  /// Desgaste escala 0–5 (SAPA); null = no seleccionado.
+  int? _milkTeethWearValue;
+  int? _permanentTeethWearValue;
   CattleGender _selectedGender = CattleGender.MALE;
 
   @override
   void initState() {
     super.initState();
+    _dentalEvaluationDateController.text = _localDateYmd(DateTime.now());
+    _milkTeethCountController.addListener(_syncWearFromTeethCounts);
+    _permanentTeethCountController.addListener(_syncWearFromTeethCounts);
     _numberController = TextEditingController(text: widget.currentNumber);
     _trackerController.addListener(() {
       if (_selectedDeviceId != null &&
@@ -96,8 +112,26 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
     }
   }
 
+  void _syncWearFromTeethCounts() {
+    if (!mounted) return;
+    final milk = int.tryParse(_milkTeethCountController.text.trim());
+    final perm = int.tryParse(_permanentTeethCountController.text.trim());
+    var changed = false;
+    if (milk == 0 && _milkTeethWearValue != 0) {
+      _milkTeethWearValue = 0;
+      changed = true;
+    }
+    if (perm == 0 && _permanentTeethWearValue != 0) {
+      _permanentTeethWearValue = 0;
+      changed = true;
+    }
+    if (changed) setState(() {});
+  }
+
   @override
   void dispose() {
+    _milkTeethCountController.removeListener(_syncWearFromTeethCounts);
+    _permanentTeethCountController.removeListener(_syncWearFromTeethCounts);
     _numberController.dispose();
     _weightController.dispose();
     _commentsController.dispose();
@@ -106,6 +140,9 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
     _trackerController.dispose();
     _trackerFocusNode.dispose();
     _birthDateAprxController.dispose();
+    _milkTeethCountController.dispose();
+    _permanentTeethCountController.dispose();
+    _dentalEvaluationDateController.dispose();
     _debounce?.cancel();
     _numberDebounce?.cancel();
     _eartagLeftDebounce?.cancel();
@@ -366,7 +403,6 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                   ),
 
                   // Eartag left
-
                   SizedBox(
                     width: 180,
                     child: TextFormField(
@@ -648,6 +684,100 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                   ),
                 ],
               ),
+
+              ExpansionTile(
+                title: Text(l10n.dentitionOptionalSection),
+                childrenPadding: const EdgeInsets.only(
+                  left: 8,
+                  right: 8,
+                  bottom: 12,
+                ),
+                children: [
+                  Text(
+                    l10n.dentitionCompleteAllOrNone,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 12,
+                    runSpacing: 12,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: 110,
+                        child: TextFormField(
+                          controller: _milkTeethCountController,
+                          decoration: InputDecoration(
+                            labelText: l10n.milkTeethCountShort,
+                            border: const OutlineInputBorder(),
+                          ),
+                          keyboardType: TextInputType.number,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 280,
+                        child: DropdownButtonFormField<int?>(
+                          key: ValueKey<Object?>(
+                            'milkWear_$_milkTeethWearValue',
+                          ),
+                          initialValue: _milkTeethWearValue,
+                          isExpanded: true,
+                          decoration: InputDecoration(
+                            labelText: l10n.milkTeethWearShort,
+                            border: const OutlineInputBorder(),
+                          ),
+                          items: teethWearDropdownItems(l10n),
+                          onChanged: (v) {
+                            setState(() => _milkTeethWearValue = v);
+                          },
+                        ),
+                      ),
+                      SizedBox(
+                        width: 110,
+                        child: TextFormField(
+                          controller: _permanentTeethCountController,
+                          decoration: InputDecoration(
+                            labelText: l10n.permanentTeethCountShort,
+                            border: const OutlineInputBorder(),
+                          ),
+                          keyboardType: TextInputType.number,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 280,
+                        child: DropdownButtonFormField<int?>(
+                          key: ValueKey<Object?>(
+                            'permWear_$_permanentTeethWearValue',
+                          ),
+                          initialValue: _permanentTeethWearValue,
+                          isExpanded: true,
+                          decoration: InputDecoration(
+                            labelText: l10n.permanentTeethWearShort,
+                            border: const OutlineInputBorder(),
+                          ),
+                          items: teethWearDropdownItems(l10n),
+                          onChanged: (v) {
+                            setState(() => _permanentTeethWearValue = v);
+                          },
+                        ),
+                      ),
+                      SizedBox(
+                        width: 170,
+                        child: TextFormField(
+                          controller: _dentalEvaluationDateController,
+                          readOnly: true,
+                          decoration: InputDecoration(
+                            labelText: l10n.dentalEvaluationDateShort,
+                            border: const OutlineInputBorder(),
+                            suffixIcon: const Icon(Icons.calendar_today),
+                          ),
+                          onTap: _pickDentalEvaluationDate,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ],
           ),
         ),
@@ -826,10 +956,40 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
     );
   }
 
+  Future<void> _pickDentalEvaluationDate() async {
+    final now = DateTime.now();
+    final initial =
+        DateTime.tryParse(_dentalEvaluationDateController.text) ?? now;
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: initial,
+      firstDate: DateTime(1990),
+      lastDate: now,
+    );
+    if (picked == null) return;
+    final y = picked.year.toString().padLeft(4, '0');
+    final m = picked.month.toString().padLeft(2, '0');
+    final d = picked.day.toString().padLeft(2, '0');
+    _dentalEvaluationDateController.text = '$y-$m-$d';
+  }
+
   void _submitForm() async {
+    final l10n = AppLocalizations.of(context)!;
     // Clear previous server errors
     if (!_formKey.currentState!.validate()) {
       debugPrint('DEBUG: Validation failed');
+      return;
+    }
+
+    final dentParts = [
+      _milkTeethCountController.text.trim(),
+      _permanentTeethCountController.text.trim(),
+      _milkTeethWearValue != null ? '$_milkTeethWearValue' : '',
+      _permanentTeethWearValue != null ? '$_permanentTeethWearValue' : '',
+      _dentalEvaluationDateController.text.trim(),
+    ];
+    if (dentitionHasPartialError(dentParts)) {
+      widget.onError?.call(l10n.dentitionCompleteAllOrNone);
       return;
     }
     double? purchaseWeight = 0;
@@ -873,6 +1033,24 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
       }
     }
 
+    int? milkC;
+    int? permC;
+    int? milkW;
+    int? permW;
+    if (dentitionIsCompleteFive(dentParts)) {
+      milkC = int.tryParse(_milkTeethCountController.text.trim());
+      permC = int.tryParse(_permanentTeethCountController.text.trim());
+      milkW = _milkTeethWearValue;
+      permW = _permanentTeethWearValue;
+      if (milkC == null ||
+          permC == null ||
+          milkW == null ||
+          permW == null) {
+        widget.onError?.call(l10n.invalidValue);
+        return;
+      }
+    }
+
     final cattleData = {
       'number': _numberController.text.trim(),
       'receivedWeight': double.tryParse(_weightController.text.trim()),
@@ -881,10 +1059,18 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
       'idLot': selectedLotId,
       'hasHorns': hasHorns,
       'isCastrated': isCastrated,
-      'birthDateAprx':
-          _birthDateAprxController.text.trim().isEmpty
-              ? null
-              : _birthDateAprxController.text.trim(),
+      if (dentitionIsCompleteFive(dentParts)) ...{
+        'milkTeethCount': milkC,
+        'permanentTeethCount': permC,
+        'milkTeethWear': milkW,
+        'permanentTeethWear': permW,
+        'dentalEvaluationDate': _dentalEvaluationDateController.text.trim(),
+      } else ...{
+        'birthDateAprx':
+            _birthDateAprxController.text.trim().isEmpty
+                ? null
+                : _birthDateAprxController.text.trim(),
+      },
       'gender': _selectedGender.name,
       'color': selectedColorId,
       'characteristics': selectedCharacteristicIds,

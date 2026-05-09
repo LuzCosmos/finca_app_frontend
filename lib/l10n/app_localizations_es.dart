@@ -728,6 +728,55 @@ class AppLocalizationsEs extends AppLocalizations {
   String get approxBirthDate => 'Fecha aprox. de nacimiento';
 
   @override
+  String get approxBirthEditTitle => 'Fecha aprox. de nacimiento';
+
+  @override
+  String get birthAprxModeManual => 'Fecha manual';
+
+  @override
+  String get birthAprxModeDentition => 'Por dentición';
+
+  @override
+  String get milkTeethCountShort => 'Dientes de leche';
+
+  @override
+  String get permanentTeethCountShort => 'Dientes permanentes';
+
+  @override
+  String get milkTeethWearShort => 'Desgaste leche';
+
+  @override
+  String get permanentTeethWearShort => 'Desgaste permanentes';
+
+  @override
+  String get teethWearGrade0 => 'No aplica / diente no presente';
+
+  @override
+  String get teethWearGrade1 => 'Erupcionado, sin desgaste visible';
+
+  @override
+  String get teethWearGrade2 => 'Desgaste leve';
+
+  @override
+  String get teethWearGrade3 => 'Rasamiento o desgaste claro de la superficie';
+
+  @override
+  String get teethWearGrade4 => 'Nivelamiento / diente más plano';
+
+  @override
+  String get teethWearGrade5 => 'Acortamiento avanzado';
+
+  @override
+  String get dentalEvaluationDateShort => 'Fecha evaluación dental';
+
+  @override
+  String get dentitionOptionalSection => 'Dentición (opcional)';
+
+  @override
+  String get dentitionCompleteAllOrNone =>
+      'Si usa dentición, complete los cinco valores y la fecha de evaluación.';
+
+  @override
   String get newFeedStartDate => 'Inicio nueva alimentación';
 
   @override
