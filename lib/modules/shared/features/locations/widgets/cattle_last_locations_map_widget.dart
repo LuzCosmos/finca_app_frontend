@@ -8,6 +8,16 @@ import 'package:finca_app_frontend/modules/shared/features/locations/services/lo
 import 'package:finca_app_frontend/modules/shared/features/locations/utils/location_time_formatter.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+/// Widget tests (`flutter test`, incl. `-p chrome`) no definen siempre `FLUTTER_TEST`
+/// como `dart-define`: detectamos también el binding de test.
+bool _useCattleMapTestPlaceholder() {
+  if (const bool.fromEnvironment('FLUTTER_TEST')) {
+    return true;
+  }
+  final bindingName = WidgetsBinding.instance.runtimeType.toString();
+  return bindingName.contains('AutomatedTestWidgetsFlutterBinding');
+}
+
 class CattleLastLocationsMapWidget extends StatefulWidget {
   final double height;
   final double initialZoom;
@@ -30,6 +40,19 @@ class _CattleLastLocationsMapWidgetState
 
   @override
   Widget build(BuildContext context) {
+    // En widget tests evitamos montar el mapa real (tiles, timers, renders continuos).
+    if (_useCattleMapTestPlaceholder()) {
+      return SizedBox(
+        height: widget.height,
+        child: const Center(
+          child: KeyedSubtree(
+            key: ValueKey<String>('cattle-last-locations-map-test-placeholder'),
+            child: Text('Map Placeholder (test)'),
+          ),
+        ),
+      );
+    }
+
     final l10n = AppLocalizations.of(context)!;
     return SizedBox(
       height: widget.height,

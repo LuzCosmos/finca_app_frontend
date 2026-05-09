@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:finca_app_frontend/core/data/database/database_provider.dart';
+import 'package:finca_app_frontend/core/data/database/database_provider_io.dart';
 import 'package:finca_app_frontend/core/data/database/repositories/animal_simple_event_repository.dart';
 import 'package:finca_app_frontend/core/data/database/repositories/brand_repository.dart';
 import 'package:finca_app_frontend/core/data/database/repositories/massive_event_repository.dart';

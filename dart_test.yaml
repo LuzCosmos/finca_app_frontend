@@ -1,0 +1,9 @@
+# Configuración del runner `test` / `flutter test`.
+#
+# La CLI `--timeout` no amplía el tiempo máximo de la fase "loading …" del suite
+# (sigue valiendo el límite por defecto del paquete `test`, típicamente ~12 min).
+# Para compilaciones web lentas o máquinas cargadas, usa además en la terminal:
+#   flutter test --platform chrome --ignore-timeouts …
+#
+# Ver: https://pub.dev/packages/test#whole-package-configuration
+timeout: 45m

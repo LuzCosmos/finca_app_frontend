@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
+import 'package:finca_app_frontend/modules/mobile/bloc/sync_bloc.dart';
+import 'package:finca_app_frontend/modules/mobile/services/sync_service.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/shared/features/home/page/home_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/pages/massive_event_page.dart';
@@ -11,6 +16,8 @@ import 'package:finca_app_frontend/router/router.dart';
 
 import '../../../../support/app_test_host.dart';
 import '../../../../support/router_test_host.dart';
+
+class _MockSyncServiceForHome extends Mock implements SyncService {}
 
 // Bajo prueba:
 // - lib/modules/shared/features/home/page/home_page.dart
@@ -20,6 +27,7 @@ import '../../../../support/router_test_host.dart';
 void main() {
   setUp(() {
     SessionService.resetForTesting();
+    BasicApiService.resetForTesting();
     SharedPreferences.setMockInitialValues({});
   });
 
@@ -317,6 +325,97 @@ void main() {
 
     expect(
       find.byKey(const ValueKey<String>('users-route-stub')),
+      findsOneWidget,
+    );
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('layout ancho: muestra rail lateral y panel', (tester) async {
+    await SessionService.saveSession(
+      token: 't.ok',
+      permissions: {
+        'MASSIVE_EVENTS': {'massive_events': true},
+        'EMP_MGMT': {'users': true},
+      },
+      idTenant: 'tid',
+      idUser: 'uid',
+    );
+    BasicApiService.setBaseUrl('http://127.0.0.1:9');
+
+    addTearDown(() async {
+      await tester.binding.setSurfaceSize(null);
+    });
+    await tester.binding.setSurfaceSize(const Size(1100, 800));
+
+    await tester.pumpWidget(
+      pumpLocalizedMaterialShell(home: const HomePage()),
+    );
+    await tester.pumpAndSettle();
+
+    final l10nWide =
+        AppLocalizations.of(
+          tester.element(find.byKey(const ValueKey<String>('home-page'))),
+        )!;
+    expect(
+      find.descendant(
+        of: find.byType(AppBar),
+        matching: find.text(l10nWide.dashboard_title),
+      ),
+      findsOneWidget,
+    );
+
+    expect(find.byKey(const ValueKey<String>('home-wide-layout')), findsOneWidget);
+    expect(find.byKey(const ValueKey<String>('home-wide-side-menu')), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey<String>('home-wide-panel-dashboard')),
+      findsOneWidget,
+    );
+    expect(find.byKey(const ValueKey<String>('dashboard-page')), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('layout ancho: al tocar evento masivo el panel muestra MassiveEventPage', (
+    tester,
+  ) async {
+    final syncMock = _MockSyncServiceForHome();
+    when(
+      () => syncMock.syncAllInOrder(any()),
+    ).thenAnswer((_) async => <SyncResult>[]);
+
+    await SessionService.saveSession(
+      token: 't.ok',
+      permissions: {
+        'MASSIVE_EVENTS': {'massive_events': true},
+      },
+      idTenant: 'tid',
+      idUser: 'uid',
+    );
+
+    addTearDown(() async {
+      await tester.binding.setSurfaceSize(null);
+    });
+    await tester.binding.setSurfaceSize(const Size(1100, 800));
+
+    await tester.pumpWidget(
+      BlocProvider<SyncBloc>(
+        create: (_) => SyncBloc(syncMock),
+        child: pumpLocalizedMaterialShell(
+          home: Builder(
+            builder: (context) {
+              return const HomePage();
+            },
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const ValueKey<String>('home-side-item-massive_events')));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(MassiveEventPage), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey<String>('home-wide-panel-massive_events')),
       findsOneWidget,
     );
     expect(tester.takeException(), isNull);

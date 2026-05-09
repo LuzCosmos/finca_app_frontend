@@ -5,7 +5,9 @@ import 'package:finca_app_frontend/modules/shared/features/locations/widgets/cat
 import 'package:finca_app_frontend/modules/shared/widgets/finca_scaffold.dart';
 
 class DashboardPage extends StatelessWidget {
-  const DashboardPage({super.key});
+  const DashboardPage({super.key, this.embedded = false});
+
+  final bool embedded;
 
   @override
   Widget build(BuildContext context) {
@@ -13,6 +15,7 @@ class DashboardPage extends StatelessWidget {
 
     return FincaScaffold(
       title: l10n.dashboard_title,
+      embedded: embedded,
       body: LayoutBuilder(
         builder: (context, constraints) {
           return SingleChildScrollView(

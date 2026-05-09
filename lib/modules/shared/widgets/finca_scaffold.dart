@@ -12,12 +12,50 @@ class FincaScaffold extends StatefulWidget {
   final String? title;
   final bool showHomeButton;
 
+  /// Si es true, solo se renderiza [body] (sin [Scaffold] ni AppBar).
+  /// Útil al embeber la pantalla dentro del panel derecho del home en layout ancho.
+  final bool embedded;
+
+  /// Si no es null, el icono inicio ejecuta solo este callback (p. ej. [HomePage] rail: volver al
+  /// dashboard del panel sin solo depender del router).
+  ///
+  /// Si es null (**típico en móvil angosto**: `/users`, formularios a pantalla completa, etc.),
+  /// el comportamiento es [navigateToHomeRemovingOverlays]: primero cierra overlays de
+  /// [Navigator.push], luego **siempre** [GoRouter.go]('/home') — ese `go` no se quitó; sigue siendo
+  /// el que lleva desde rutas declarativas al inicio.
+  final VoidCallback? onHomePressed;
+
   const FincaScaffold({
     super.key,
     required this.body,
     this.title,
     this.showHomeButton = true,
+    this.embedded = false,
+    this.onHomePressed,
   });
+
+  /// Cierra rutas empiladas con [Navigator.push] (formularios modales, etc.).
+  /// Sin esto, [GoRouter.go]('/home') no hace nada si la ubicación ya era `/home`
+  /// y la pantalla seguía visible encima.
+  static void popNavigatorOverlays(BuildContext context) {
+    for (final root in [false, true]) {
+      final navigator = Navigator.maybeOf(context, rootNavigator: root);
+      if (navigator == null) {
+        continue;
+      }
+      while (navigator.canPop()) {
+        navigator.pop();
+      }
+    }
+  }
+
+  /// 1. Cierra rutas locales [Navigator.push] (modales sobre la misma ubicación declarativa).
+  /// 2. **Siempre** [GoRouter.go]('/home') — necesario en pantalla estrecha/móvil al volver desde
+  /// `/sales`, `/users`, etc.; en web desktop también al salir de pantallas sin rail.
+  static void navigateToHomeRemovingOverlays(BuildContext context) {
+    popNavigatorOverlays(context);
+    GoRouter.of(context).go('/home');
+  }
 
   @override
   State<FincaScaffold> createState() => _FincaScaffoldState();
@@ -34,6 +72,10 @@ class _FincaScaffoldState extends State<FincaScaffold> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.embedded) {
+      return widget.body;
+    }
+
     return FutureBuilder<bool>(
       future: _isAuthenticatedFuture,
       builder: (context, snapshot) {
@@ -60,8 +102,13 @@ class _FincaScaffoldState extends State<FincaScaffold> {
                 if (widget.showHomeButton) ...[
                   IconButton(
                     icon: const Icon(Icons.home, color: Colors.white, size: 20),
+                    tooltip: AppLocalizations.of(context)!.home_title,
                     onPressed: () {
-                      context.go('/home');
+                      if (widget.onHomePressed != null) {
+                        widget.onHomePressed!();
+                      } else {
+                        FincaScaffold.navigateToHomeRemovingOverlays(context);
+                      }
                     },
                   ),
                 ],

@@ -14,7 +14,13 @@ import 'package:finca_app_frontend/modules/web/features/cattle_purchase/pages/pu
 
 class PurchasesListPage extends StatefulWidget {
   final String? initialStatusFilter; // 'all'|'open'|'received'
-  const PurchasesListPage({super.key, this.initialStatusFilter = 'all'});
+  final bool embedded;
+
+  const PurchasesListPage({
+    super.key,
+    this.initialStatusFilter = 'all',
+    this.embedded = false,
+  });
 
   @override
   State<PurchasesListPage> createState() => _PurchasesListPageState();
@@ -160,6 +166,7 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
     final labels = _statusLabels(context);
     return FincaScaffold(
       title: l10n.cattlePurchase,
+      embedded: widget.embedded,
       body: Padding(
         padding: const EdgeInsets.all(12),
         child: Column(
