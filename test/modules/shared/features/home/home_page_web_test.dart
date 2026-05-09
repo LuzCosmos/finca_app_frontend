@@ -268,5 +268,113 @@ void main() {
       },
       skip: !kIsWeb,
     );
+
+    testWidgets(
+      'viewport estrecho: rail compacto (solo iconos) mantiene selección y tooltips',
+      (tester) async {
+        await SessionService.saveSession(
+          token: 't',
+          permissions: {
+            'COMMERCE': {'purchases': true},
+          },
+          idTenant: 'tid',
+          idUser: 'uid',
+        );
+        BasicApiService.setBaseUrl('http://127.0.0.1:9');
+
+        addTearDown(() async {
+          await tester.binding.setSurfaceSize(null);
+        });
+        await tester.binding.setSurfaceSize(const Size(420, 700));
+
+        late AppLocalizations l10n;
+        await tester.pumpWidget(
+          pumpLocalizedMaterialShell(
+            home: Builder(
+              builder: (context) {
+                l10n = AppLocalizations.of(context)!;
+                return const HomePage();
+              },
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.byKey(const ValueKey<String>('home-wide-layout')), findsOneWidget);
+        expect(
+          find.byKey(const ValueKey<String>('home-wide-side-menu-compact')),
+          findsOneWidget,
+        );
+
+        // En modo compacto no renderizamos textos en el rail.
+        expect(find.text(l10n.purchase), findsNothing);
+
+        // Tap en el ítem compacto de compras debe cambiar el panel y el título del AppBar.
+        await tester.tap(
+          find.byKey(const ValueKey<String>('home-side-item-compact-purchases')),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.byKey(const ValueKey<String>('home-wide-panel-purchases')), findsOneWidget);
+        expect(
+          find.descendant(
+            of: find.byType(AppBar),
+            matching: find.text(l10n.purchase),
+          ),
+          findsOneWidget,
+        );
+        expect(tester.takeException(), isNull);
+      },
+      skip: !kIsWeb,
+    );
+
+    testWidgets(
+      'hamburguesa: colapsa el rail en web cuando hay ancho suficiente',
+      (tester) async {
+        await SessionService.saveSession(
+          token: 't',
+          permissions: {
+            'COMMERCE': {'purchases': true},
+          },
+          idTenant: 'tid',
+          idUser: 'uid',
+        );
+        BasicApiService.setBaseUrl('http://127.0.0.1:9');
+
+        addTearDown(() async {
+          await tester.binding.setSurfaceSize(null);
+        });
+        await tester.binding.setSurfaceSize(const Size(1200, 800));
+
+        late AppLocalizations l10n;
+        await tester.pumpWidget(
+          pumpLocalizedMaterialShell(
+            home: Builder(
+              builder: (context) {
+                l10n = AppLocalizations.of(context)!;
+                return const HomePage();
+              },
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        // Arranca extendido.
+        expect(find.byKey(const ValueKey<String>('home-wide-side-menu')), findsOneWidget);
+        expect(find.text(l10n.purchase), findsOneWidget);
+
+        // Toggle → compacto.
+        await tester.tap(find.byKey(const ValueKey<String>('home-rail-toggle')));
+        await tester.pumpAndSettle();
+
+        expect(
+          find.byKey(const ValueKey<String>('home-wide-side-menu-compact')),
+          findsOneWidget,
+        );
+        expect(find.text(l10n.purchase), findsNothing);
+        expect(tester.takeException(), isNull);
+      },
+      skip: !kIsWeb,
+    );
   });
 }

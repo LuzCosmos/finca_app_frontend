@@ -396,14 +396,12 @@ void main() {
     });
     await tester.binding.setSurfaceSize(const Size(1100, 800));
 
-    late AppLocalizations l10n;
     await tester.pumpWidget(
       BlocProvider<SyncBloc>(
         create: (_) => SyncBloc(syncMock),
         child: pumpLocalizedMaterialShell(
           home: Builder(
             builder: (context) {
-              l10n = AppLocalizations.of(context)!;
               return const HomePage();
             },
           ),

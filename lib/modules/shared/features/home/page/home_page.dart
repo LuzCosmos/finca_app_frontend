@@ -54,11 +54,22 @@ class _HomePageState extends State<HomePage> {
   /// Opción activa en layout ancho (sidebar + panel).
   String _wideSelectedId = 'dashboard';
 
+  /// Estado del rail en web (memoria por sesión). Vive mientras la app está abierta.
+  /// - null: automático por ancho
+  /// - true: forzar compacto
+  /// - false: forzar extendido (si el ancho lo permite)
+  static bool? _webRailUserCollapsedSession;
+
+  /// En web: el usuario puede forzar rail compacto/extendido con el botón hamburguesa.
+  /// Si es null, el rail sigue el comportamiento automático por ancho.
+  bool? _webRailUserCollapsed;
+
   @override
   void initState() {
     super.initState();
     _homeSyncHelper = createHomeSyncHelper();
     _permissionsFuture = SessionService.getPermissions();
+    _webRailUserCollapsed = _webRailUserCollapsedSession;
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => _homeSyncHelper.onPostFrame(this),
     );
@@ -191,6 +202,127 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  bool _isWebRailExtended(BoxConstraints constraints) {
+    if (!_forceWideLayoutOnWeb) return true;
+    const horizontalPadding = 32.0;
+    final usableW = constraints.maxWidth - horizontalPadding;
+    return usableW >= kHomeWebRailExtendedBreakpoint;
+  }
+
+  bool _effectiveWebRailExtended(BoxConstraints constraints) {
+    if (!_forceWideLayoutOnWeb) return true;
+    final canExtendByWidth = _isWebRailExtended(constraints);
+    // Si el viewport es demasiado angosto, no permitimos “expandir” para evitar overflow.
+    if (!canExtendByWidth) return false;
+    // Si el usuario lo colapsó, mantenemos compacto.
+    if (_webRailUserCollapsed == true) return false;
+    return true;
+  }
+
+  Widget _buildRailHeader({
+    required BuildContext context,
+    required bool railExtended,
+  }) {
+    if (!_forceWideLayoutOnWeb) {
+      return const SizedBox.shrink();
+    }
+    final theme = Theme.of(context);
+    return Material(
+      color: theme.colorScheme.surface,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(color: theme.dividerColor, width: 1),
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          child: Row(
+            children: [
+              IconButton(
+                key: const ValueKey<String>('home-rail-toggle'),
+                tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+                icon: const Icon(Icons.menu),
+                onPressed: () {
+                  setState(() {
+                    // Si estamos extendidos, colapsar. Si estamos compactos, intentar expandir.
+                    if (railExtended) {
+                      _webRailUserCollapsed = true;
+                    } else {
+                      // Si el ancho lo permite, expandimos; si no, nos quedamos compacto.
+                      _webRailUserCollapsed = false;
+                    }
+                    _webRailUserCollapsedSession = _webRailUserCollapsed;
+                  });
+                },
+              ),
+              if (railExtended) ...[
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    'Finca App',
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.titleSmall,
+                  ),
+                ),
+              ] else ...[
+                const Spacer(),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildWebCompactRail({
+    required BuildContext context,
+    required List<_HomeMenuItem> visible,
+    required String panelId,
+  }) {
+    final theme = Theme.of(context);
+    return Column(
+      children: [
+        _buildRailHeader(context: context, railExtended: false),
+        Expanded(
+          child: ListView(
+            key: const ValueKey<String>('home-wide-side-menu-compact'),
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            children: [
+              for (final e in visible)
+                Tooltip(
+                  message: e.title,
+                  child: InkWell(
+                    key: ValueKey<String>('home-side-item-compact-${e.id}'),
+                    onTap: () => setState(() => _wideSelectedId = e.id),
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 6,
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      decoration: BoxDecoration(
+                        color: panelId == e.id
+                            ? theme.colorScheme.primaryContainer.withValues(
+                              alpha: 0.35,
+                            )
+                            : null,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(
+                        e.icon,
+                        color: panelId == e.id ? theme.colorScheme.primary : null,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -257,6 +389,10 @@ class _HomePageState extends State<HomePage> {
                           constraints.maxWidth >= kHomeWideLayoutBreakpoint;
 
                       if (isWide) {
+                        final railExtended =
+                            _forceWideLayoutOnWeb
+                                ? _effectiveWebRailExtended(constraints)
+                                : true;
                         return KeyedSubtree(
                           key: const ValueKey<String>('home-wide-layout'),
                           child: Column(
@@ -269,45 +405,68 @@ class _HomePageState extends State<HomePage> {
                                       CrossAxisAlignment.stretch,
                                   children: [
                                     SizedBox(
-                                      width: 280,
+                                      width: railExtended
+                                          ? kHomeWideRailWidth
+                                          : kHomeCompactRailWidth,
                                       child: Material(
                                         elevation: 1,
                                         borderRadius: BorderRadius.circular(12),
                                         clipBehavior: Clip.antiAlias,
-                                        child: ListView(
-                                          key: const ValueKey<String>(
-                                            'home-wide-side-menu',
-                                          ),
-                                          padding: const EdgeInsets.symmetric(
-                                            vertical: 8,
-                                          ),
-                                          children: [
-                                            for (final e in visible)
-                                              ListTile(
-                                                key: ValueKey<String>(
-                                                  'home-side-item-${e.id}',
+                                        child: railExtended
+                                            ? Column(
+                                              children: [
+                                                _buildRailHeader(
+                                                  context: context,
+                                                  railExtended: true,
                                                 ),
-                                                leading: Icon(e.icon),
-                                                title: Text(e.title),
-                                                selected: panelId == e.id,
-                                                selectedTileColor: Theme.of(
-                                                      context,
-                                                    )
-                                                    .colorScheme
-                                                    .primaryContainer
-                                                    .withValues(alpha: 0.35),
-                                                onTap: () {
-                                                  setState(
-                                                    () =>
-                                                        _wideSelectedId = e.id,
-                                                  );
-                                                },
-                                              ),
-                                          ],
-                                        ),
+                                                Expanded(
+                                                  child: ListView(
+                                                    key: const ValueKey<String>(
+                                                      'home-wide-side-menu',
+                                                    ),
+                                                    padding:
+                                                        const EdgeInsets.symmetric(
+                                                          vertical: 8,
+                                                        ),
+                                                    children: [
+                                                      for (final e in visible)
+                                                        ListTile(
+                                                          key: ValueKey<String>(
+                                                            'home-side-item-${e.id}',
+                                                          ),
+                                                          leading: Icon(e.icon),
+                                                          title: Text(e.title),
+                                                          selected: panelId == e.id,
+                                                          selectedTileColor: Theme.of(
+                                                                context,
+                                                              )
+                                                              .colorScheme
+                                                              .primaryContainer
+                                                              .withValues(alpha: 0.35),
+                                                          onTap: () {
+                                                            setState(
+                                                              () => _wideSelectedId =
+                                                                  e.id,
+                                                            );
+                                                          },
+                                                        ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                            : _buildWebCompactRail(
+                                              context: context,
+                                              visible: visible,
+                                              panelId: panelId,
+                                            ),
                                       ),
                                     ),
-                                    const VerticalDivider(width: 1),
+                                    VerticalDivider(
+                                      width: 24,
+                                      thickness: 1,
+                                      color: Theme.of(context).dividerColor,
+                                    ),
                                     Expanded(
                                       child: ClipRect(
                                         child: KeyedSubtree(
