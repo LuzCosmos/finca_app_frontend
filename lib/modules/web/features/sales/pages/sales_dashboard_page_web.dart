@@ -85,21 +85,23 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
     }
   }
 
-  void _applyDateFilter() {
-    if (_startDate == null || _endDate == null) return;
-
+  /// Misma semántica que compras: fechas opcionales + botón Actualizar.
+  void _reloadWithDateFilters() {
     final bloc = context.read<SalesWebBloc>();
-    final currentQuery = bloc.state.query;
-
+    final q = bloc.state.query;
+    final fmt = DateFormat('yyyy-MM-dd');
     bloc.add(
       LoadSalesWeb(
         query: SalesQuery(
           skip: 0,
-          take: currentQuery.take,
-          orderBy: currentQuery.orderBy,
-          order: currentQuery.order,
-          startDate: _startDate!.toIso8601String(),
-          endDate: _endDate!.toIso8601String(),
+          take: q.take,
+          orderBy: q.orderBy,
+          order: q.order,
+          startDate:
+              _startDate != null ? fmt.format(_startDate!) : null,
+          endDate: _endDate != null ? fmt.format(_endDate!) : null,
+          buyerId: q.buyerId,
+          status: q.status,
         ),
       ),
     );
@@ -115,24 +117,35 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
     bloc.add(LoadSalesWeb(query: SalesQuery(take: bloc.state.query.take)));
   }
 
-  Future<void> _selectDateRange(BuildContext context) async {
-    final DateTimeRange? picked = await showDateRangePicker(
-      context: context,
-      firstDate: DateTime(2020),
-      lastDate: DateTime.now(),
-      initialDateRange:
-          _startDate != null && _endDate != null
-              ? DateTimeRange(start: _startDate!, end: _endDate!)
-              : null,
+  Widget _datePicker(
+    String label,
+    DateTime? value,
+    ValueChanged<DateTime?> onChanged,
+  ) {
+    return SizedBox(
+      width: 180,
+      child: InkWell(
+        onTap: () async {
+          final now = DateTime.now();
+          final picked = await showDatePicker(
+            context: context,
+            initialDate: value ?? now,
+            firstDate: DateTime(now.year - 5),
+            lastDate: DateTime(now.year + 1),
+          );
+          onChanged(picked);
+        },
+        child: InputDecorator(
+          decoration: InputDecoration(
+            labelText: label,
+            suffixIcon: const Icon(Icons.calendar_today),
+          ),
+          child: Text(
+            value == null ? '—' : DateFormat('yyyy/MM/dd').format(value),
+          ),
+        ),
+      ),
     );
-
-    if (picked != null) {
-      setState(() {
-        _startDate = picked.start;
-        _endDate = picked.end;
-      });
-      _applyDateFilter();
-    }
   }
 
   void _showEditDialog(
@@ -317,60 +330,56 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
             final total = state.sales?.total ?? 0;
             final query = state.query;
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // Top Bar: Filters and Add Button
-                Container(
-                  padding: const EdgeInsets.all(16.0),
-                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                  child: Row(
-                    children: [
-                      // Date Range Filter
-                      OutlinedButton.icon(
-                        onPressed: () => _selectDateRange(context),
-                        icon: const Icon(Icons.date_range),
-                        label: Text(
-                          _startDate != null && _endDate != null
-                              ? '${DateFormat('MMM d').format(_startDate!)} - ${DateFormat('MMM d').format(_endDate!)}'
-                              : l10n.sales_dateRange,
-                        ),
+            return Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (canCreate)
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: FilledButton.icon(
+                        onPressed: () => context.push('/sales/create'),
+                        icon: const Icon(Icons.add),
+                        label: Text(l10n.createSomething(l10n.sale)),
                       ),
-                      const SizedBox(width: 8),
-                      // Clear Filters
-                      if (_startDate != null || _endDate != null)
-                        IconButton(
-                          onPressed: _clearFilters,
-                          icon: const Icon(Icons.clear),
-                          tooltip: l10n.clearFilters,
-                        ),
-                      const Spacer(),
-                      // Add Sale Button
-                      if (canCreate)
-                        ElevatedButton.icon(
-                          onPressed: () => context.push('/sales/create'),
-                          icon: const Icon(Icons.add),
-                          label: Text(l10n.createSomething(l10n.sale)),
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 24,
-                              vertical: 12,
-                            ),
+                    ),
+                  if (canCreate) const SizedBox(height: 8),
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Wrap(
+                        runSpacing: 8,
+                        spacing: 12,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          _datePicker(
+                            l10n.from,
+                            _startDate,
+                            (d) => setState(() => _startDate = d),
                           ),
-                        )
-                      else
-                        const SizedBox.shrink(),
-                    ],
+                          _datePicker(
+                            l10n.to,
+                            _endDate,
+                            (d) => setState(() => _endDate = d),
+                          ),
+                          if (_startDate != null || _endDate != null)
+                            IconButton(
+                              onPressed: _clearFilters,
+                              icon: const Icon(Icons.clear),
+                              tooltip: l10n.clearFilters,
+                            ),
+                          FilledButton.icon(
+                            onPressed: _reloadWithDateFilters,
+                            icon: const Icon(Icons.refresh),
+                            label: Text(l10n.refresh),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-
-                // Pagination Controls
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  child: Row(
+                  const SizedBox(height: 8),
+                  Row(
                     children: [
                       Text(
                         l10n.rowsPerPage,
@@ -399,14 +408,6 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
                         },
                       ),
                       const Spacer(),
-                      IconButton(
-                        icon: const Icon(Icons.refresh),
-                        onPressed:
-                            () => context.read<SalesWebBloc>().add(
-                              const LoadSalesWeb(),
-                            ),
-                        tooltip: l10n.refresh,
-                      ),
                       if (state.status == SalesWebStatus.loading)
                         const SizedBox(
                           width: 20,
@@ -415,7 +416,7 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
                         ),
                     ],
                   ),
-                ),
+                  const SizedBox(height: 8),
 
                 // Table Content - Centered and Expanded
                 Expanded(
@@ -499,7 +500,8 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
                       ],
                     ),
                   ),
-              ],
+                ],
+              ),
             );
           },
         ),
