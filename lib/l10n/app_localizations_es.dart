@@ -728,6 +728,77 @@ class AppLocalizationsEs extends AppLocalizations {
   String get approxBirthDate => 'Fecha aprox. de nacimiento';
 
   @override
+  String get approxBirthEditTitle => 'Fecha aprox. de nacimiento';
+
+  @override
+  String get calculateBirthByDentition => 'Calcular por dentición…';
+
+  @override
+  String get approxBirthFilledViaDentitionHint =>
+      'Por dentición (se enviarán los datos del diálogo)';
+
+  @override
+  String get dentitionQuickFieldsSection => 'Dentición rápida (uso frecuente)';
+
+  @override
+  String get birthAprxModeManual => 'Fecha manual';
+
+  @override
+  String get birthAprxModeDentition => 'Por dentición';
+
+  @override
+  String get milkTeethCountShort => 'Dientes de leche';
+
+  @override
+  String get permanentTeethCountShort => 'Dientes permanentes';
+
+  @override
+  String get milkTeethWearShort => 'Desgaste leche';
+
+  @override
+  String get permanentTeethWearShort => 'Desgaste permanentes';
+
+  @override
+  String get teethWearGrade0 => 'No aplica / diente no presente';
+
+  @override
+  String get teethWearGrade1 => 'Erupcionado, sin desgaste visible';
+
+  @override
+  String get teethWearGrade2 => 'Desgaste leve';
+
+  @override
+  String get teethWearGrade3 => 'Rasamiento o desgaste claro de la superficie';
+
+  @override
+  String get teethWearGrade4 => 'Nivelamiento / diente más plano';
+
+  @override
+  String get teethWearGrade5 => 'Acortamiento avanzado';
+
+  @override
+  String get dentalEvaluationDateShort => 'Fecha evaluación dental';
+
+  @override
+  String get dentitionOptionalSection => 'Dentición (opcional)';
+
+  @override
+  String get dentitionCompleteAllOrNone =>
+      'Si usa dentición, complete los cinco valores y la fecha de evaluación.';
+
+  @override
+  String get dentitionWearCannotBeNaWhenMilkTeethPositive =>
+      'Si hay dientes de leche, el desgaste no puede ser «No aplica» (grado 0). Elija un grado del 1 al 5.';
+
+  @override
+  String get dentitionWearCannotBeNaWhenPermanentTeethPositive =>
+      'Si hay dientes permanentes, el desgaste no puede ser «No aplica» (grado 0). Elija un grado del 1 al 5.';
+
+  @override
+  String get dentitionWearGradeInvalidForTeethCounts =>
+      'Para esa cantidad de dientes de leche y permanentes, el grado de desgaste elegido no corresponde a la tabla SAPA (2014). Ajuste los conteos o los grados.';
+
+  @override
   String get newFeedStartDate => 'Inicio nueva alimentación';
 
   @override

@@ -12,6 +12,7 @@ import 'package:finca_app_frontend/modules/web/features/cattle/widgets/character
 import 'package:finca_app_frontend/modules/shared/enums/cattle_enums.dart';
 import 'package:finca_app_frontend/modules/shared/widgets/message_banner.dart';
 import 'package:finca_app_frontend/modules/web/features/cattle/widgets/cattle_history_dialogs.dart';
+import 'package:finca_app_frontend/modules/web/features/cattle/widgets/approx_birth_date_edit_dialog.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'package:finca_app_frontend/core/services/sale_sync_notifier.dart';
 import 'package:finca_app_frontend/core/utils/date_time_helper.dart';
@@ -200,6 +201,182 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
 
   String _buildCharacteristicsLabel(List<String> characteristicIds) {
     return characteristicIds.map(_localizedCharacteristicLabel).join(', ');
+  }
+
+  int? _plutoCellInt(PlutoRow row, String field) {
+    final c = row.cells[field];
+    if (c == null) return null;
+    final v = c.value;
+    if (v == null) return null;
+    if (v is int) return v;
+    return int.tryParse(v.toString());
+  }
+
+  PlutoColumn _buildApproxBirthDateColumn(AppLocalizations l10n) {
+    return PlutoColumn(
+      title: l10n.approxBirthDate,
+      field: 'birthDateAprx',
+      type: PlutoColumnType.text(),
+      width: 132,
+      enableEditingMode: false,
+      renderer: (rendererContext) {
+        final cell = rendererContext.cell;
+        final value = cell.value;
+        final displayText = DateTimeHelper.formatLocalDate(value, fallback: '');
+        return InkWell(
+          onTap:
+              !_hasEditPermission
+                  ? null
+                  : () async {
+                    final rowKey = rendererContext.row.key;
+                    late PlutoRow gridRow;
+                    try {
+                      gridRow = stateManager.rows.firstWhere(
+                        (r) => r.key == rowKey,
+                      );
+                    } catch (_) {
+                      if (mounted) {
+                        _showError(
+                          AppLocalizations.of(context)!.cattleGrid_rowNotFound,
+                        );
+                      }
+                      return;
+                    }
+                    final rowId = gridRow.cells['id']?.value.toString() ?? '';
+                    if (rowId.isEmpty || rowId == 'New') return;
+
+                    final dentalRaw =
+                        gridRow.cells['dentalEvaluationDate']?.value
+                            ?.toString();
+
+                    final patch = await showDialog<Map<String, dynamic>?>(
+                      context: context,
+                      builder:
+                          (ctx) => ApproxBirthDateEditDialog(
+                            initialBirthDateAprxDisplay:
+                                displayText.isEmpty ? null : displayText,
+                            milkTeethCount: _plutoCellInt(
+                              gridRow,
+                              'milkTeethCount',
+                            ),
+                            permanentTeethCount: _plutoCellInt(
+                              gridRow,
+                              'permanentTeethCount',
+                            ),
+                            milkTeethWear: _plutoCellInt(
+                              gridRow,
+                              'milkTeethWear',
+                            ),
+                            permanentTeethWear: _plutoCellInt(
+                              gridRow,
+                              'permanentTeethWear',
+                            ),
+                            dentalEvaluationDateRaw:
+                                (dentalRaw != null && dentalRaw.isNotEmpty)
+                                    ? dentalRaw
+                                    : null,
+                            previewBirthFromDentition:
+                                _service.previewBirthFromDentition,
+                          ),
+                    );
+                    if (patch == null || !mounted) return;
+
+                    final patchBody = Map<String, dynamic>.from(patch);
+                    patchBody.remove('birthDateAprxPreview');
+
+                    try {
+                      final updated = await _service.updateCattle(
+                        rowId,
+                        patchBody,
+                      );
+                      if (!mounted) return;
+                      if (updated != null) {
+                        late PlutoRow refreshedRow;
+                        try {
+                          refreshedRow = stateManager.rows.firstWhere(
+                            (r) => r.key == rowKey,
+                          );
+                        } catch (_) {
+                          return;
+                        }
+                        final birthFmt = DateTimeHelper.formatLocalDate(
+                          updated['birthDateAprx'] ?? updated['birth_date_aprx'],
+                          fallback: '',
+                        );
+                        stateManager.changeCellValue(
+                          refreshedRow.cells['birthDateAprx']!,
+                          birthFmt,
+                          force: true,
+                          callOnChangedEvent: false,
+                        );
+                        void setNum(String f, dynamic raw) {
+                          if (refreshedRow.cells[f] == null) return;
+                          stateManager.changeCellValue(
+                            refreshedRow.cells[f]!,
+                            raw,
+                            force: true,
+                            callOnChangedEvent: false,
+                          );
+                        }
+
+                        setNum(
+                          'milkTeethCount',
+                          updated['milkTeethCount'] ?? updated['milk_teeth_count'],
+                        );
+                        setNum(
+                          'permanentTeethCount',
+                          updated['permanentTeethCount'] ??
+                              updated['permanent_teeth_count'],
+                        );
+                        setNum(
+                          'milkTeethWear',
+                          updated['milkTeethWear'] ?? updated['milk_teeth_wear'],
+                        );
+                        setNum(
+                          'permanentTeethWear',
+                          updated['permanentTeethWear'] ??
+                              updated['permanent_teeth_wear'],
+                        );
+                        final de =
+                            updated['dentalEvaluationDate'] ??
+                            updated['dental_evaluation_date'];
+                        if (de != null &&
+                            refreshedRow.cells['dentalEvaluationDate'] != null) {
+                          stateManager.changeCellValue(
+                            refreshedRow.cells['dentalEvaluationDate']!,
+                            DateTimeHelper.formatLocalDate(de, fallback: ''),
+                            force: true,
+                            callOnChangedEvent: false,
+                          );
+                        }
+                        stateManager.notifyListeners();
+                      }
+                      _showSuccess(l10n.cattleGrid_savedSuccess);
+                    } catch (e) {
+                      if (mounted) {
+                        _showError(l10n.error_savingField('$e'));
+                      }
+                    }
+                  },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 2),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    displayText,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontSize: 13),
+                  ),
+                ),
+                if (_hasEditPermission)
+                  const Icon(Icons.edit, size: 14, color: Colors.grey),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   /// Columna de fecha que usa el DatePicker de Flutter (calendario bien dimensionado)
@@ -765,7 +942,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
             );
           },
         ),
-        _buildDateColumn(l10n.approxBirthDate, 'birthDateAprx', 120),
+        _buildApproxBirthDateColumn(l10n),
         _buildDateColumn(l10n.newFeedStartDate, 'newFeedStartDate', 140),
         PlutoColumn(
           title: l10n.tracker,
@@ -1283,6 +1460,11 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
           'characteristics': PlutoCell(value: ''),
           'gender': PlutoCell(value: 'MALE'),
           'birthDateAprx': PlutoCell(value: ''),
+          'milkTeethCount': PlutoCell(value: null),
+          'permanentTeethCount': PlutoCell(value: null),
+          'milkTeethWear': PlutoCell(value: null),
+          'permanentTeethWear': PlutoCell(value: null),
+          'dentalEvaluationDate': PlutoCell(value: ''),
           'newFeedStartDate': PlutoCell(value: ''),
           'tracker': PlutoCell(value: ''),
           'idDevice': PlutoCell(value: ''),
@@ -1336,6 +1518,29 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
           'birthDateAprx': PlutoCell(
             value: DateTimeHelper.formatLocalDate(
               cattle['birthDateAprx'] ?? cattle['birth_date_aprx'],
+              fallback: '',
+            ),
+          ),
+          'milkTeethCount': PlutoCell(
+            value: cattle['milkTeethCount'] ?? cattle['milk_teeth_count'],
+          ),
+          'permanentTeethCount': PlutoCell(
+            value:
+                cattle['permanentTeethCount'] ??
+                cattle['permanent_teeth_count'],
+          ),
+          'milkTeethWear': PlutoCell(
+            value: cattle['milkTeethWear'] ?? cattle['milk_teeth_wear'],
+          ),
+          'permanentTeethWear': PlutoCell(
+            value:
+                cattle['permanentTeethWear'] ??
+                cattle['permanent_teeth_wear'],
+          ),
+          'dentalEvaluationDate': PlutoCell(
+            value: DateTimeHelper.formatLocalDate(
+              cattle['dentalEvaluationDate'] ??
+                  cattle['dental_evaluation_date'],
               fallback: '',
             ),
           ),

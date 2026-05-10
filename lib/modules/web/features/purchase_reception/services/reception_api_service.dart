@@ -113,6 +113,11 @@ class ReceptionApiService {
     String? comments,
     String? gender,
     String? birthDateAprx,
+    int? milkTeethCount,
+    int? permanentTeethCount,
+    int? milkTeethWear,
+    int? permanentTeethWear,
+    String? dentalEvaluationDate,
     List<String>? idSimpleEvents,
   }) async {
     final body = {
@@ -125,6 +130,13 @@ class ReceptionApiService {
       'castrated': castrated,
       'gender': gender,
       'birthDateAprx': birthDateAprx,
+      if (milkTeethCount != null) 'milkTeethCount': milkTeethCount,
+      if (permanentTeethCount != null)
+        'permanentTeethCount': permanentTeethCount,
+      if (milkTeethWear != null) 'milkTeethWear': milkTeethWear,
+      if (permanentTeethWear != null) 'permanentTeethWear': permanentTeethWear,
+      if (dentalEvaluationDate != null)
+        'dentalEvaluationDate': dentalEvaluationDate,
       'idLot': idLot,
       'color': color,
       'characteristics': characteristics ?? [],
