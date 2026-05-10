@@ -25,6 +25,12 @@ import 'package:finca_app_frontend/router/route_access.dart';
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
+  /// Solo para tests: el colapso del rail persiste en estático y contaminaría el orden de ejecución.
+  @visibleForTesting
+  static void resetWideRailCollapseSessionForTesting() {
+    _HomePageState.resetWideRailCollapseSessionForTesting();
+  }
+
   @override
   State<HomePage> createState() => _HomePageState();
 }
@@ -48,28 +54,32 @@ class _HomeMenuItem {
 }
 
 class _HomePageState extends State<HomePage> {
+  @visibleForTesting
+  static void resetWideRailCollapseSessionForTesting() {
+    _wideRailUserCollapsedSession = null;
+  }
+
   late final Future<Map<String, dynamic>> _permissionsFuture;
   late final HomeSyncHelper _homeSyncHelper;
 
   /// Opción activa en layout ancho (sidebar + panel).
   String _wideSelectedId = 'dashboard';
 
-  /// Estado del rail en web (memoria por sesión). Vive mientras la app está abierta.
-  /// - null: automático por ancho
-  /// - true: forzar compacto
-  /// - false: forzar extendido (si el ancho lo permite)
-  static bool? _webRailUserCollapsedSession;
+  /// Preferencia de rail en layout **ancho** (web y nativo): memoria por sesión de la app.
+  /// - null: solo decide el ancho útil vs [kHomeWebRailExtendedBreakpoint]
+  /// - true: forzar compacto (hamburguesa)
+  /// - false: forzar extendido si el ancho lo permite
+  static bool? _wideRailUserCollapsedSession;
 
-  /// En web: el usuario puede forzar rail compacto/extendido con el botón hamburguesa.
-  /// Si es null, el rail sigue el comportamiento automático por ancho.
-  bool? _webRailUserCollapsed;
+  /// Preferencia explícita del usuario para el rail en modo dashboard (wide).
+  bool? _wideRailUserCollapsed;
 
   @override
   void initState() {
     super.initState();
     _homeSyncHelper = createHomeSyncHelper();
     _permissionsFuture = SessionService.getPermissions();
-    _webRailUserCollapsed = _webRailUserCollapsedSession;
+    _wideRailUserCollapsed = _wideRailUserCollapsedSession;
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => _homeSyncHelper.onPostFrame(this),
     );
@@ -202,20 +212,16 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  bool _isWebRailExtended(BoxConstraints constraints) {
-    if (!_forceWideLayoutOnWeb) return true;
+  bool _isRailExtendedByWidth(BoxConstraints constraints) {
     const horizontalPadding = 32.0;
     final usableW = constraints.maxWidth - horizontalPadding;
     return usableW >= kHomeWebRailExtendedBreakpoint;
   }
 
-  bool _effectiveWebRailExtended(BoxConstraints constraints) {
-    if (!_forceWideLayoutOnWeb) return true;
-    final canExtendByWidth = _isWebRailExtended(constraints);
-    // Si el viewport es demasiado angosto, no permitimos “expandir” para evitar overflow.
+  bool _effectiveRailExtended(BoxConstraints constraints) {
+    final canExtendByWidth = _isRailExtendedByWidth(constraints);
     if (!canExtendByWidth) return false;
-    // Si el usuario lo colapsó, mantenemos compacto.
-    if (_webRailUserCollapsed == true) return false;
+    if (_wideRailUserCollapsed == true) return false;
     return true;
   }
 
@@ -223,9 +229,6 @@ class _HomePageState extends State<HomePage> {
     required BuildContext context,
     required bool railExtended,
   }) {
-    if (!_forceWideLayoutOnWeb) {
-      return const SizedBox.shrink();
-    }
     final theme = Theme.of(context);
     return Material(
       color: theme.colorScheme.surface,
@@ -247,12 +250,11 @@ class _HomePageState extends State<HomePage> {
                   setState(() {
                     // Si estamos extendidos, colapsar. Si estamos compactos, intentar expandir.
                     if (railExtended) {
-                      _webRailUserCollapsed = true;
+                      _wideRailUserCollapsed = true;
                     } else {
-                      // Si el ancho lo permite, expandimos; si no, nos quedamos compacto.
-                      _webRailUserCollapsed = false;
+                      _wideRailUserCollapsed = false;
                     }
-                    _webRailUserCollapsedSession = _webRailUserCollapsed;
+                    _wideRailUserCollapsedSession = _wideRailUserCollapsed;
                   });
                 },
               ),
@@ -275,7 +277,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildWebCompactRail({
+  Widget _buildCompactRail({
     required BuildContext context,
     required List<_HomeMenuItem> visible,
     required String panelId,
@@ -389,10 +391,7 @@ class _HomePageState extends State<HomePage> {
                           constraints.maxWidth >= kHomeWideLayoutBreakpoint;
 
                       if (isWide) {
-                        final railExtended =
-                            _forceWideLayoutOnWeb
-                                ? _effectiveWebRailExtended(constraints)
-                                : true;
+                        final railExtended = _effectiveRailExtended(constraints);
                         return KeyedSubtree(
                           key: const ValueKey<String>('home-wide-layout'),
                           child: Column(
@@ -455,7 +454,7 @@ class _HomePageState extends State<HomePage> {
                                                 ),
                                               ],
                                             )
-                                            : _buildWebCompactRail(
+                                            : _buildCompactRail(
                                               context: context,
                                               visible: visible,
                                               panelId: panelId,

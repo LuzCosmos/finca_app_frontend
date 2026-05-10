@@ -29,6 +29,7 @@ void main() {
     SessionService.resetForTesting();
     BasicApiService.resetForTesting();
     SharedPreferences.setMockInitialValues({});
+    HomePage.resetWideRailCollapseSessionForTesting();
   });
 
   testWidgets('título L10n Inicio y opciones según permisos (móvil / no web)', (
@@ -371,6 +372,41 @@ void main() {
       findsOneWidget,
     );
     expect(find.byKey(const ValueKey<String>('dashboard-page')), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('layout ancho nativo: hamburguesa colapsa el rail', (tester) async {
+    await SessionService.saveSession(
+      token: 't.ok',
+      permissions: {
+        'MASSIVE_EVENTS': {'massive_events': true},
+      },
+      idTenant: 'tid',
+      idUser: 'uid',
+    );
+    BasicApiService.setBaseUrl('http://127.0.0.1:9');
+
+    addTearDown(() async {
+      await tester.binding.setSurfaceSize(null);
+    });
+    await tester.binding.setSurfaceSize(const Size(1200, 800));
+
+    await tester.pumpWidget(
+      pumpLocalizedMaterialShell(home: const HomePage()),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byKey(const ValueKey<String>('home-wide-side-menu')),
+      findsOneWidget,
+    );
+    await tester.tap(find.byKey(const ValueKey<String>('home-rail-toggle')));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byKey(const ValueKey<String>('home-wide-side-menu-compact')),
+      findsOneWidget,
+    );
     expect(tester.takeException(), isNull);
   });
 
