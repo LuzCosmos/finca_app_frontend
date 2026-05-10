@@ -15,6 +15,9 @@ abstract class SalesWebEvent extends Equatable {
 class LoadSalesWeb extends SalesWebEvent {
   final SalesQuery? query;
   const LoadSalesWeb({this.query});
+
+  @override
+  List<Object?> get props => [query];
 }
 
 class LoadProvidersEvent extends SalesWebEvent {

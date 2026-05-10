@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/models/sale_model.dart';
 
 class PaginatedSales {
@@ -14,7 +15,7 @@ class PaginatedSales {
   }
 }
 
-class SalesQuery {
+class SalesQuery extends Equatable {
   final int skip;
   final int take;
   final String? orderBy;
@@ -34,6 +35,10 @@ class SalesQuery {
     this.buyerId,
     this.status,
   });
+
+  @override
+  List<Object?> get props =>
+      [skip, take, orderBy, order, startDate, endDate, buyerId, status];
 
   Map<String, String> toQueryParameters() {
     final map = <String, String>{
