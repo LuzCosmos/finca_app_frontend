@@ -39,6 +39,7 @@ void main() {
     SessionService.resetForTesting();
     BasicApiService.resetForTesting();
     SharedPreferences.setMockInitialValues({});
+    HomePage.resetWideRailCollapseSessionForTesting();
   });
 
   Future<void> pumpWebFrames(WidgetTester tester) async {
@@ -382,7 +383,7 @@ void main() {
     );
 
     testWidgets(
-      'hamburguesa: colapsa el rail en web cuando hay ancho suficiente',
+      'hamburguesa: colapsa el rail cuando hay ancho suficiente (web)',
       (tester) async {
         await SessionService.saveSession(
           token: 't',

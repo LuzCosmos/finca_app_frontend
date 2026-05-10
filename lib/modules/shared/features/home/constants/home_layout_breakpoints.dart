@@ -10,14 +10,16 @@
 /// config, sustituir por una fuente única inyectada y seguir leyendo desde un solo sitio.
 const double kHomeWideLayoutBreakpoint = 900;
 
-/// En Flutter Web, el home usa siempre rail + panel. Esta constante decide si el rail
-/// se muestra **extendido** (ícono + texto) o **compacto** (solo íconos + tooltip).
+/// Umbral de ancho útil del **cuerpo** del home (tras padding horizontal) para mostrar el
+/// rail **extendido** (ícono + texto) frente al **compacto** (solo íconos + tooltip).
 ///
-/// Se evalúa contra el ancho útil del cuerpo (tras el padding horizontal del home).
+/// Aplica en **Flutter Web** (siempre layout rail + panel) y en **nativo** cuando ya se
+/// eligió el layout ancho (`home-wide`). Por debajo de este valor el rail va compacto salvo
+/// que no quepa ni eso (el layout wide ya no aplicaría en nativo).
 const double kHomeWebRailExtendedBreakpoint = 900;
 
 /// Ancho del rail cuando está extendido (web + nativo en modo rail).
 const double kHomeWideRailWidth = 280;
 
-/// Ancho del rail en modo compacto (web angosto).
+/// Ancho del rail en modo compacto (web angosto o nativo ancho con rail colapsado).
 const double kHomeCompactRailWidth = 72;
