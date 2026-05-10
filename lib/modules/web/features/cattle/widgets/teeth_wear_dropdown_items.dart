@@ -4,7 +4,12 @@ import 'package:finca_app_frontend/l10n/app_localizations.dart';
 
 /// Ítems para desgaste incisivos (API: entero 0–5). Textos según escala práctica
 /// de desgaste (tabla edad bovinos / dentición).
-List<DropdownMenuItem<int?>> teethWearDropdownItems(AppLocalizations l10n) {
+///
+/// Si [allowedGrades] es null o vacío, se muestran todos los grados 0–5.
+List<DropdownMenuItem<int?>> teethWearDropdownItems(
+  AppLocalizations l10n, {
+  Set<int>? allowedGrades,
+}) {
   final labels = <String>[
     l10n.teethWearGrade0,
     l10n.teethWearGrade1,
@@ -13,13 +18,17 @@ List<DropdownMenuItem<int?>> teethWearDropdownItems(AppLocalizations l10n) {
     l10n.teethWearGrade4,
     l10n.teethWearGrade5,
   ];
+  final grades =
+      (allowedGrades == null || allowedGrades.isEmpty)
+          ? <int>{0, 1, 2, 3, 4, 5}
+          : allowedGrades;
+  final sorted = grades.toList()..sort();
   return [
     const DropdownMenuItem<int?>(
       value: null,
       child: Text('—'),
     ),
-    ...List.generate(
-      labels.length,
+    ...sorted.map(
       (i) => DropdownMenuItem<int?>(
         value: i,
         child: Text(

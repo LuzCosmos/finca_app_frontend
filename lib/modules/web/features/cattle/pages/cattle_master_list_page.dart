@@ -275,12 +275,20 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                                 (dentalRaw != null && dentalRaw.isNotEmpty)
                                     ? dentalRaw
                                     : null,
+                            previewBirthFromDentition:
+                                _service.previewBirthFromDentition,
                           ),
                     );
                     if (patch == null || !mounted) return;
 
+                    final patchBody = Map<String, dynamic>.from(patch);
+                    patchBody.remove('birthDateAprxPreview');
+
                     try {
-                      final updated = await _service.updateCattle(rowId, patch);
+                      final updated = await _service.updateCattle(
+                        rowId,
+                        patchBody,
+                      );
                       if (!mounted) return;
                       if (updated != null) {
                         late PlutoRow refreshedRow;

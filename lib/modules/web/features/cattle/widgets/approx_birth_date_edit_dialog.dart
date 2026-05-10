@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/core/utils/date_time_helper.dart';
+import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'package:finca_app_frontend/modules/web/features/purchase_reception/utils/dentition_receive_fields.dart';
+// Grados desgaste permitidos según tabla SAPA2014 — ver dentition_table_sapa2014.dart.
+import 'package:finca_app_frontend/modules/web/features/cattle/constants/dentition_table_sapa2014.dart';
 import 'package:finca_app_frontend/modules/web/features/cattle/widgets/teeth_wear_dropdown_items.dart';
 
 /// Resultado: mapa listo para `PATCH /cattle/:id` (fecha manual o campos de dentición).
+///
+/// En modo dentición, antes de cerrar se llama [previewBirthFromDentition] contra
+/// el backend para obtener la fecha estimada (`birthDateAprxPreview` en el mapa).
 class ApproxBirthDateEditDialog extends StatefulWidget {
   const ApproxBirthDateEditDialog({
     super.key,
@@ -14,6 +20,8 @@ class ApproxBirthDateEditDialog extends StatefulWidget {
     this.milkTeethWear,
     this.permanentTeethWear,
     this.dentalEvaluationDateRaw,
+    this.preferDentitionTab = false,
+    required this.previewBirthFromDentition,
   });
 
   final String? initialBirthDateAprxDisplay;
@@ -22,6 +30,13 @@ class ApproxBirthDateEditDialog extends StatefulWidget {
   final int? milkTeethWear;
   final int? permanentTeethWear;
   final String? dentalEvaluationDateRaw;
+
+  /// Si es true y no hay dentición ya completa, el diálogo abre en modo dentición.
+  final bool preferDentitionTab;
+
+  /// Consulta servidor: mismos insumos que guardado; respuesta incluye `birthDateAprx`.
+  final Future<Map<String, dynamic>> Function(Map<String, dynamic> body)
+      previewBirthFromDentition;
 
   @override
   State<ApproxBirthDateEditDialog> createState() =>
@@ -35,8 +50,12 @@ class _ApproxBirthDateEditDialogState extends State<ApproxBirthDateEditDialog> {
   final _permCount = TextEditingController();
   int? _milkWearValue;
   int? _permWearValue;
+  /// Último par (leche, permanente) ya normalizado; sirve para detectar cambios de conteos.
+  int? _lastNormalizedMc;
+  int? _lastNormalizedPc;
   String? _dentalEvalYmd;
   String? _error;
+  bool _consultingBirth = false;
 
   @override
   void initState() {
@@ -73,11 +92,71 @@ class _ApproxBirthDateEditDialogState extends State<ApproxBirthDateEditDialog> {
         widget.permanentTeethWear != null &&
         widget.dentalEvaluationDateRaw != null &&
         widget.dentalEvaluationDateRaw.toString().isNotEmpty;
-    _manual = !hasFullDentition;
+    if (hasFullDentition) {
+      _manual = false;
+    } else if (widget.preferDentitionTab) {
+      _manual = false;
+    } else {
+      _manual = true;
+    }
+
+    if (!_manual && (_dentalEvalYmd == null || _dentalEvalYmd!.isEmpty)) {
+      final n = DateTime.now();
+      _dentalEvalYmd =
+          '${n.year.toString().padLeft(4, '0')}-${n.month.toString().padLeft(2, '0')}-${n.day.toString().padLeft(2, '0')}';
+    }
+
+    _milkCount.addListener(_onDentitionCountsChanged);
+    _permCount.addListener(_onDentitionCountsChanged);
+    _normalizeWearSelectionsForCounts();
+  }
+
+  void _normalizeWearSelectionsForCounts() {
+    final mc = int.tryParse(_milkCount.text.trim());
+    final pc = int.tryParse(_permCount.text.trim());
+    if (mc == null || pc == null) return;
+    final milkAllowed = allowedMilkWearGradesForSapCounts(mc, pc);
+    final permAllowed = allowedPermanentWearGradesForSapCounts(mc, pc);
+    var milkV = _milkWearValue;
+    var permV = _permWearValue;
+
+    final hadPreviousPair =
+        _lastNormalizedMc != null && _lastNormalizedPc != null;
+    final countsChanged =
+        hadPreviousPair &&
+        (_lastNormalizedMc != mc || _lastNormalizedPc != pc);
+
+    if (mc == 0 && milkV != 0) milkV = 0;
+    if (pc == 0 && permV != 0) permV = 0;
+    if (mc > 0 && milkV == 0) milkV = null;
+    if (pc > 0 && permV == 0) permV = null;
+
+    /// Si cambió el par de conteos y hay más de un grado SAPA posible, no conservar
+    /// un desgaste previo como «preseleccionado»: el usuario debe elegir de nuevo.
+    if (countsChanged) {
+      if (milkAllowed.length > 1) milkV = null;
+      if (permAllowed.length > 1) permV = null;
+    }
+
+    if (milkV != null && !milkAllowed.contains(milkV)) milkV = null;
+    if (permV != null && !permAllowed.contains(permV)) permV = null;
+    if (milkV == null && milkAllowed.length == 1) milkV = milkAllowed.single;
+    if (permV == null && permAllowed.length == 1) permV = permAllowed.single;
+    _milkWearValue = milkV;
+    _permWearValue = permV;
+    _lastNormalizedMc = mc;
+    _lastNormalizedPc = pc;
+  }
+
+  void _onDentitionCountsChanged() {
+    if (!mounted || _manual) return;
+    setState(_normalizeWearSelectionsForCounts);
   }
 
   @override
   void dispose() {
+    _milkCount.removeListener(_onDentitionCountsChanged);
+    _permCount.removeListener(_onDentitionCountsChanged);
     _milkCount.dispose();
     _permCount.dispose();
     super.dispose();
@@ -119,7 +198,7 @@ class _ApproxBirthDateEditDialogState extends State<ApproxBirthDateEditDialog> {
     });
   }
 
-  void _submit() {
+  Future<void> _submit() async {
     final l10n = AppLocalizations.of(context)!;
     if (_manual) {
       if (_manualDateYmd == null || _manualDateYmd!.isEmpty) {
@@ -163,18 +242,83 @@ class _ApproxBirthDateEditDialogState extends State<ApproxBirthDateEditDialog> {
       return;
     }
 
-    Navigator.of(context).pop(<String, dynamic>{
-      'milkTeethCount': mc,
-      'permanentTeethCount': pc,
-      'milkTeethWear': mw,
-      'permanentTeethWear': pw,
-      'dentalEvaluationDate': _dentalEvalYmd,
+    final wearIssue = dentitionWearVsCountIssue(
+      milkTeethCount: mc,
+      permanentTeethCount: pc,
+      milkTeethWear: mw,
+      permanentTeethWear: pw,
+    );
+    if (wearIssue != null) {
+      setState(() {
+        _error =
+            wearIssue == DentitionWearVsCountIssue.milkWearNaWithTeeth
+                ? l10n.dentitionWearCannotBeNaWhenMilkTeethPositive
+                : l10n.dentitionWearCannotBeNaWhenPermanentTeethPositive;
+      });
+      return;
+    }
+
+    if (!dentitionWearGradesAllowedForSapCounts(
+      milkTeethCount: mc,
+      permanentTeethCount: pc,
+      milkTeethWear: mw,
+      permanentTeethWear: pw,
+    )) {
+      setState(() => _error = l10n.dentitionWearGradeInvalidForTeethCounts);
+      return;
+    }
+
+    setState(() {
+      _consultingBirth = true;
+      _error = null;
     });
+    try {
+      final previewRes = await widget.previewBirthFromDentition({
+        'milkTeethCount': mc,
+        'permanentTeethCount': pc,
+        'milkTeethWear': mw,
+        'permanentTeethWear': pw,
+        'dentalEvaluationDate': _dentalEvalYmd,
+      });
+      if (!mounted) return;
+      final previewYmd = previewRes['birthDateAprx'] as String?;
+      Navigator.of(context).pop(<String, dynamic>{
+        'milkTeethCount': mc,
+        'permanentTeethCount': pc,
+        'milkTeethWear': mw,
+        'permanentTeethWear': pw,
+        'dentalEvaluationDate': _dentalEvalYmd,
+        if (previewYmd != null && previewYmd.isNotEmpty)
+          'birthDateAprxPreview': previewYmd,
+      });
+    } catch (e) {
+      if (!mounted) return;
+      final msg =
+          e is ApiException && e.message.isNotEmpty
+              ? e.message
+              : e.toString();
+      setState(() {
+        _consultingBirth = false;
+        _error = msg;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final mcParsed = int.tryParse(_milkCount.text.trim());
+    final pcParsed = int.tryParse(_permCount.text.trim());
+    final milkAllowed =
+        mcParsed != null && pcParsed != null
+            ? allowedMilkWearGradesForSapCounts(mcParsed, pcParsed)
+            : null;
+    final permAllowed =
+        mcParsed != null && pcParsed != null
+            ? allowedPermanentWearGradesForSapCounts(mcParsed, pcParsed)
+            : null;
+    String sapKey(Set<int>? s) =>
+        s == null ? '' : (s.toList()..sort()).join(',');
     return AlertDialog(
       title: Text(l10n.approxBirthEditTitle),
       content: SizedBox(
@@ -197,6 +341,7 @@ class _ApproxBirthDateEditDialogState extends State<ApproxBirthDateEditDialog> {
                 ],
                 selected: {_manual},
                 onSelectionChanged: (s) {
+                  if (_consultingBirth) return;
                   setState(() {
                     _manual = s.first;
                     _error = null;
@@ -249,13 +394,19 @@ class _ApproxBirthDateEditDialogState extends State<ApproxBirthDateEditDialog> {
                     SizedBox(
                       width: 280,
                       child: DropdownButtonFormField<int?>(
+                        key: ValueKey<String>(
+                          'dlg_milkWear_${mcParsed}_${pcParsed}_${sapKey(milkAllowed)}_$_milkWearValue',
+                        ),
                         initialValue: _milkWearValue,
                         isExpanded: true,
                         decoration: InputDecoration(
                           labelText: l10n.milkTeethWearShort,
                           border: const OutlineInputBorder(),
                         ),
-                        items: teethWearDropdownItems(l10n),
+                        items: teethWearDropdownItems(
+                          l10n,
+                          allowedGrades: milkAllowed,
+                        ),
                         onChanged: (v) {
                           setState(() => _milkWearValue = v);
                         },
@@ -264,13 +415,19 @@ class _ApproxBirthDateEditDialogState extends State<ApproxBirthDateEditDialog> {
                     SizedBox(
                       width: 280,
                       child: DropdownButtonFormField<int?>(
+                        key: ValueKey<String>(
+                          'dlg_permWear_${mcParsed}_${pcParsed}_${sapKey(permAllowed)}_$_permWearValue',
+                        ),
                         initialValue: _permWearValue,
                         isExpanded: true,
                         decoration: InputDecoration(
                           labelText: l10n.permanentTeethWearShort,
                           border: const OutlineInputBorder(),
                         ),
-                        items: teethWearDropdownItems(l10n),
+                        items: teethWearDropdownItems(
+                          l10n,
+                          allowedGrades: permAllowed,
+                        ),
                         onChanged: (v) {
                           setState(() => _permWearValue = v);
                         },
@@ -302,10 +459,21 @@ class _ApproxBirthDateEditDialogState extends State<ApproxBirthDateEditDialog> {
       ),
       actions: [
         TextButton(
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed:
+              _consultingBirth ? null : () => Navigator.of(context).pop(),
           child: Text(l10n.cancel),
         ),
-        FilledButton(onPressed: _submit, child: Text(l10n.accept)),
+        FilledButton(
+          onPressed: _consultingBirth ? null : () => _submit(),
+          child:
+              _consultingBirth
+                  ? const SizedBox(
+                    height: 22,
+                    width: 22,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                  : Text(l10n.accept),
+        ),
       ],
     );
   }

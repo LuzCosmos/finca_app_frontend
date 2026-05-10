@@ -732,6 +732,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get approxBirthEditTitle => 'Approx. birth date';
 
   @override
+  String get calculateBirthByDentition => 'Calculate by dentition…';
+
+  @override
+  String get approxBirthFilledViaDentitionHint =>
+      'By dentition (dialog values will be sent)';
+
+  @override
+  String get dentitionQuickFieldsSection => 'Quick dentition (frequent use)';
+
+  @override
   String get birthAprxModeManual => 'Manual date';
 
   @override
@@ -776,6 +786,18 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get dentitionCompleteAllOrNone =>
       'If using dentition, fill all five values and the evaluation date.';
+
+  @override
+  String get dentitionWearCannotBeNaWhenMilkTeethPositive =>
+      'If there are milk teeth, wear cannot be \"N/A\" (grade 0). Choose a grade from 1 to 5.';
+
+  @override
+  String get dentitionWearCannotBeNaWhenPermanentTeethPositive =>
+      'If there are permanent teeth, wear cannot be \"N/A\" (grade 0). Choose a grade from 1 to 5.';
+
+  @override
+  String get dentitionWearGradeInvalidForTeethCounts =>
+      'For that milk and permanent tooth count, the selected wear grade does not match the SAPA (2014) table. Adjust counts or grades.';
 
   @override
   String get newFeedStartDate => 'New feed start date';

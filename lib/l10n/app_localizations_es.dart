@@ -731,6 +731,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get approxBirthEditTitle => 'Fecha aprox. de nacimiento';
 
   @override
+  String get calculateBirthByDentition => 'Calcular por dentición…';
+
+  @override
+  String get approxBirthFilledViaDentitionHint =>
+      'Por dentición (se enviarán los datos del diálogo)';
+
+  @override
+  String get dentitionQuickFieldsSection => 'Dentición rápida (uso frecuente)';
+
+  @override
   String get birthAprxModeManual => 'Fecha manual';
 
   @override
@@ -775,6 +785,18 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get dentitionCompleteAllOrNone =>
       'Si usa dentición, complete los cinco valores y la fecha de evaluación.';
+
+  @override
+  String get dentitionWearCannotBeNaWhenMilkTeethPositive =>
+      'Si hay dientes de leche, el desgaste no puede ser «No aplica» (grado 0). Elija un grado del 1 al 5.';
+
+  @override
+  String get dentitionWearCannotBeNaWhenPermanentTeethPositive =>
+      'Si hay dientes permanentes, el desgaste no puede ser «No aplica» (grado 0). Elija un grado del 1 al 5.';
+
+  @override
+  String get dentitionWearGradeInvalidForTeethCounts =>
+      'Para esa cantidad de dientes de leche y permanentes, el grado de desgaste elegido no corresponde a la tabla SAPA (2014). Ajuste los conteos o los grados.';
 
   @override
   String get newFeedStartDate => 'Inicio nueva alimentación';

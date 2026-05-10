@@ -59,6 +59,35 @@ class CattleMasterService {
     }
   }
 
+  /// Vista previa de fecha de nacimiento por dentición (`POST /cattle/preview-birth-from-dentition`).
+  Future<Map<String, dynamic>> previewBirthFromDentition(
+    Map<String, dynamic> body,
+  ) async {
+    final url = Uri.parse('$baseUrl/cattle/preview-birth-from-dentition');
+    try {
+      final response = await BasicApiService.authorizedPost(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(body),
+      );
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body) as Map<String, dynamic>;
+      }
+      BasicApiService.manageNotSuccessResponseCode(response);
+    } catch (e) {
+      if (e is SocketException || e is http.ClientException) {
+        throw ApiException(
+          'serverConnectionError',
+          'Error al estimar fecha por dentición: $e',
+        );
+      }
+      if (e is ApiException) {
+        rethrow;
+      }
+      throw ApiException('unknownError', '$e');
+    }
+  }
+
   /// Update cattle data
   Future<Map<String, dynamic>?> updateCattle(
     String id,

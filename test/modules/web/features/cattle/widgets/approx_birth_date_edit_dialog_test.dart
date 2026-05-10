@@ -13,6 +13,13 @@ Widget wrapEs(Widget child) {
   );
 }
 
+Future<Map<String, dynamic>> fakePreviewBirthFromDentition(
+  Map<String, dynamic> _,
+) async => <String, dynamic>{
+  'birthDateAprx': '2024-06-15',
+  'dentitionTableVersion': 'sapa2014-v1',
+};
+
 void main() {
   group('ApproxBirthDateEditDialog', () {
     testWidgets('modo manual con fecha inicial: Aceptar devuelve birthDateAprx', (
@@ -28,8 +35,10 @@ void main() {
                 popped = await showDialog<Map<String, dynamic>?>(
                   context: tester.element(find.byType(TextButton)),
                   builder:
-                      (_) => const ApproxBirthDateEditDialog(
+                      (_) => ApproxBirthDateEditDialog(
                         initialBirthDateAprxDisplay: '2020-03-15',
+                        previewBirthFromDentition:
+                            fakePreviewBirthFromDentition,
                       ),
                 );
               },
@@ -58,7 +67,11 @@ void main() {
               onPressed: () async {
                 await showDialog<void>(
                   context: tester.element(find.byType(TextButton)),
-                  builder: (_) => const ApproxBirthDateEditDialog(),
+                  builder:
+                      (_) => ApproxBirthDateEditDialog(
+                        previewBirthFromDentition:
+                            fakePreviewBirthFromDentition,
+                      ),
                 );
               },
               child: const Text('open'),
@@ -86,7 +99,11 @@ void main() {
               onPressed: () async {
                 await showDialog<void>(
                   context: tester.element(find.byType(TextButton)),
-                  builder: (_) => const ApproxBirthDateEditDialog(),
+                  builder:
+                      (_) => ApproxBirthDateEditDialog(
+                        previewBirthFromDentition:
+                            fakePreviewBirthFromDentition,
+                      ),
                 );
               },
               child: const Text('open'),
@@ -127,12 +144,14 @@ void main() {
                   popped = await showDialog<Map<String, dynamic>?>(
                     context: tester.element(find.byType(TextButton)),
                     builder:
-                        (_) => const ApproxBirthDateEditDialog(
+                        (_) => ApproxBirthDateEditDialog(
                           milkTeethCount: 8,
                           permanentTeethCount: 0,
                           milkTeethWear: 3,
-                          permanentTeethWear: 2,
+                          permanentTeethWear: 0,
                           dentalEvaluationDateRaw: '2024-06-15',
+                          previewBirthFromDentition:
+                              fakePreviewBirthFromDentition,
                         ),
                   );
                 },
@@ -152,9 +171,59 @@ void main() {
           'milkTeethCount': 8,
           'permanentTeethCount': 0,
           'milkTeethWear': 3,
-          'permanentTeethWear': 2,
+          'permanentTeethWear': 0,
           'dentalEvaluationDate': '2024-06-15',
+          'birthDateAprxPreview': '2024-06-15',
         });
+      },
+    );
+
+    testWidgets(
+      'dentición: leche>0 con desgaste leche 0 muestra error sin llamar preview',
+      (tester) async {
+        var previewCalls = 0;
+        Future<Map<String, dynamic>> countingPreview(
+          Map<String, dynamic> body,
+        ) async {
+          previewCalls++;
+          return fakePreviewBirthFromDentition(body);
+        }
+
+        await tester.pumpWidget(
+          wrapEs(
+            Scaffold(
+              body: TextButton(
+                onPressed: () async {
+                  await showDialog<void>(
+                    context: tester.element(find.byType(TextButton)),
+                    builder:
+                        (_) => ApproxBirthDateEditDialog(
+                          milkTeethCount: 8,
+                          permanentTeethCount: 0,
+                          milkTeethWear: 0,
+                          permanentTeethWear: 0,
+                          dentalEvaluationDateRaw: '2024-06-15',
+                          previewBirthFromDentition: countingPreview,
+                        ),
+                  );
+                },
+                child: const Text('open'),
+              ),
+            ),
+          ),
+        );
+
+        await tester.tap(find.text('open'));
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text('Aceptar'));
+        await tester.pumpAndSettle();
+
+        expect(previewCalls, 0);
+        expect(
+          find.textContaining('No aplica'),
+          findsWidgets,
+        );
       },
     );
 
@@ -169,8 +238,10 @@ void main() {
                 popped = await showDialog<Map<String, dynamic>?>(
                   context: tester.element(find.byType(TextButton)),
                   builder:
-                      (_) => const ApproxBirthDateEditDialog(
+                      (_) => ApproxBirthDateEditDialog(
                         initialBirthDateAprxDisplay: '2021-01-01',
+                        previewBirthFromDentition:
+                            fakePreviewBirthFromDentition,
                       ),
                 );
               },

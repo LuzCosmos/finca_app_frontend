@@ -1442,6 +1442,24 @@ abstract class AppLocalizations {
   /// **'Approx. birth date'**
   String get approxBirthEditTitle;
 
+  /// No description provided for @calculateBirthByDentition.
+  ///
+  /// In en, this message translates to:
+  /// **'Calculate by dentition…'**
+  String get calculateBirthByDentition;
+
+  /// No description provided for @approxBirthFilledViaDentitionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'By dentition (dialog values will be sent)'**
+  String get approxBirthFilledViaDentitionHint;
+
+  /// No description provided for @dentitionQuickFieldsSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick dentition (frequent use)'**
+  String get dentitionQuickFieldsSection;
+
   /// No description provided for @birthAprxModeManual.
   ///
   /// In en, this message translates to:
@@ -1531,6 +1549,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'If using dentition, fill all five values and the evaluation date.'**
   String get dentitionCompleteAllOrNone;
+
+  /// No description provided for @dentitionWearCannotBeNaWhenMilkTeethPositive.
+  ///
+  /// In en, this message translates to:
+  /// **'If there are milk teeth, wear cannot be \"N/A\" (grade 0). Choose a grade from 1 to 5.'**
+  String get dentitionWearCannotBeNaWhenMilkTeethPositive;
+
+  /// No description provided for @dentitionWearCannotBeNaWhenPermanentTeethPositive.
+  ///
+  /// In en, this message translates to:
+  /// **'If there are permanent teeth, wear cannot be \"N/A\" (grade 0). Choose a grade from 1 to 5.'**
+  String get dentitionWearCannotBeNaWhenPermanentTeethPositive;
+
+  /// No description provided for @dentitionWearGradeInvalidForTeethCounts.
+  ///
+  /// In en, this message translates to:
+  /// **'For that milk and permanent tooth count, the selected wear grade does not match the SAPA (2014) table. Adjust counts or grades.'**
+  String get dentitionWearGradeInvalidForTeethCounts;
 
   /// No description provided for @newFeedStartDate.
   ///
