@@ -729,6 +729,77 @@ class AppLocalizationsEn extends AppLocalizations {
   String get approxBirthDate => 'Approx. Birth Date';
 
   @override
+  String get approxBirthEditTitle => 'Approx. birth date';
+
+  @override
+  String get calculateBirthByDentition => 'Calculate by dentition…';
+
+  @override
+  String get approxBirthFilledViaDentitionHint =>
+      'By dentition (dialog values will be sent)';
+
+  @override
+  String get dentitionQuickFieldsSection => 'Quick dentition (frequent use)';
+
+  @override
+  String get birthAprxModeManual => 'Manual date';
+
+  @override
+  String get birthAprxModeDentition => 'By dentition';
+
+  @override
+  String get milkTeethCountShort => 'Milk teeth';
+
+  @override
+  String get permanentTeethCountShort => 'Permanent teeth';
+
+  @override
+  String get milkTeethWearShort => 'Milk teeth wear';
+
+  @override
+  String get permanentTeethWearShort => 'Permanent teeth wear';
+
+  @override
+  String get teethWearGrade0 => 'N/A / tooth not present';
+
+  @override
+  String get teethWearGrade1 => 'Erupted, no visible wear';
+
+  @override
+  String get teethWearGrade2 => 'Mild wear';
+
+  @override
+  String get teethWearGrade3 => 'Surface wear clearly visible';
+
+  @override
+  String get teethWearGrade4 => 'Leveling / flatter tooth';
+
+  @override
+  String get teethWearGrade5 => 'Advanced shortening';
+
+  @override
+  String get dentalEvaluationDateShort => 'Dental evaluation date';
+
+  @override
+  String get dentitionOptionalSection => 'Dentition (optional)';
+
+  @override
+  String get dentitionCompleteAllOrNone =>
+      'If using dentition, fill all five values and the evaluation date.';
+
+  @override
+  String get dentitionWearCannotBeNaWhenMilkTeethPositive =>
+      'If there are milk teeth, wear cannot be \"N/A\" (grade 0). Choose a grade from 1 to 5.';
+
+  @override
+  String get dentitionWearCannotBeNaWhenPermanentTeethPositive =>
+      'If there are permanent teeth, wear cannot be \"N/A\" (grade 0). Choose a grade from 1 to 5.';
+
+  @override
+  String get dentitionWearGradeInvalidForTeethCounts =>
+      'For that milk and permanent tooth count, the selected wear grade does not match the SAPA (2014) table. Adjust counts or grades.';
+
+  @override
   String get newFeedStartDate => 'New feed start date';
 
   @override

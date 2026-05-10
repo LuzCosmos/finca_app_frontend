@@ -1436,6 +1436,138 @@ abstract class AppLocalizations {
   /// **'Approx. Birth Date'**
   String get approxBirthDate;
 
+  /// No description provided for @approxBirthEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Approx. birth date'**
+  String get approxBirthEditTitle;
+
+  /// No description provided for @calculateBirthByDentition.
+  ///
+  /// In en, this message translates to:
+  /// **'Calculate by dentition…'**
+  String get calculateBirthByDentition;
+
+  /// No description provided for @approxBirthFilledViaDentitionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'By dentition (dialog values will be sent)'**
+  String get approxBirthFilledViaDentitionHint;
+
+  /// No description provided for @dentitionQuickFieldsSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick dentition (frequent use)'**
+  String get dentitionQuickFieldsSection;
+
+  /// No description provided for @birthAprxModeManual.
+  ///
+  /// In en, this message translates to:
+  /// **'Manual date'**
+  String get birthAprxModeManual;
+
+  /// No description provided for @birthAprxModeDentition.
+  ///
+  /// In en, this message translates to:
+  /// **'By dentition'**
+  String get birthAprxModeDentition;
+
+  /// No description provided for @milkTeethCountShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Milk teeth'**
+  String get milkTeethCountShort;
+
+  /// No description provided for @permanentTeethCountShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Permanent teeth'**
+  String get permanentTeethCountShort;
+
+  /// No description provided for @milkTeethWearShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Milk teeth wear'**
+  String get milkTeethWearShort;
+
+  /// No description provided for @permanentTeethWearShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Permanent teeth wear'**
+  String get permanentTeethWearShort;
+
+  /// No description provided for @teethWearGrade0.
+  ///
+  /// In en, this message translates to:
+  /// **'N/A / tooth not present'**
+  String get teethWearGrade0;
+
+  /// No description provided for @teethWearGrade1.
+  ///
+  /// In en, this message translates to:
+  /// **'Erupted, no visible wear'**
+  String get teethWearGrade1;
+
+  /// No description provided for @teethWearGrade2.
+  ///
+  /// In en, this message translates to:
+  /// **'Mild wear'**
+  String get teethWearGrade2;
+
+  /// No description provided for @teethWearGrade3.
+  ///
+  /// In en, this message translates to:
+  /// **'Surface wear clearly visible'**
+  String get teethWearGrade3;
+
+  /// No description provided for @teethWearGrade4.
+  ///
+  /// In en, this message translates to:
+  /// **'Leveling / flatter tooth'**
+  String get teethWearGrade4;
+
+  /// No description provided for @teethWearGrade5.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced shortening'**
+  String get teethWearGrade5;
+
+  /// No description provided for @dentalEvaluationDateShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Dental evaluation date'**
+  String get dentalEvaluationDateShort;
+
+  /// No description provided for @dentitionOptionalSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Dentition (optional)'**
+  String get dentitionOptionalSection;
+
+  /// No description provided for @dentitionCompleteAllOrNone.
+  ///
+  /// In en, this message translates to:
+  /// **'If using dentition, fill all five values and the evaluation date.'**
+  String get dentitionCompleteAllOrNone;
+
+  /// No description provided for @dentitionWearCannotBeNaWhenMilkTeethPositive.
+  ///
+  /// In en, this message translates to:
+  /// **'If there are milk teeth, wear cannot be \"N/A\" (grade 0). Choose a grade from 1 to 5.'**
+  String get dentitionWearCannotBeNaWhenMilkTeethPositive;
+
+  /// No description provided for @dentitionWearCannotBeNaWhenPermanentTeethPositive.
+  ///
+  /// In en, this message translates to:
+  /// **'If there are permanent teeth, wear cannot be \"N/A\" (grade 0). Choose a grade from 1 to 5.'**
+  String get dentitionWearCannotBeNaWhenPermanentTeethPositive;
+
+  /// No description provided for @dentitionWearGradeInvalidForTeethCounts.
+  ///
+  /// In en, this message translates to:
+  /// **'For that milk and permanent tooth count, the selected wear grade does not match the SAPA (2014) table. Adjust counts or grades.'**
+  String get dentitionWearGradeInvalidForTeethCounts;
+
   /// No description provided for @newFeedStartDate.
   ///
   /// In en, this message translates to:
