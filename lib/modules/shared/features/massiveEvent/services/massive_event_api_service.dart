@@ -7,6 +7,22 @@ import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'dart:io';
 import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 
+class MassiveEventsPageResult {
+  MassiveEventsPageResult(
+    this.page,
+    this.limit,
+    this.total,
+    this.hasMore,
+    this.items,
+  );
+
+  final int page;
+  final int limit;
+  final int total;
+  final bool hasMore;
+  final List<MassiveEventModel> items;
+}
+
 class MassiveEventApiService {
   static Future<MassiveEventModel> createMassiveEvent({
     required MassiveEventModel massiveEvent,
@@ -176,6 +192,110 @@ class MassiveEventApiService {
     if (response.statusCode != 204) {
       BasicApiService.manageNotSuccessResponseCode(response);
     }
+  }
+
+  static Future<MassiveEventsPageResult> listStandaloneMassiveEventsPaged({
+    required int page,
+    required int limit,
+    String? from,
+    String? to,
+    String? name,
+    String status = 'all',
+  }) async {
+    final String baseUrl = BasicApiService.getApiBaseUrl();
+    final uri = Uri.parse('$baseUrl/massive-events').replace(
+      queryParameters: {
+        'page': '$page',
+        'limit': '$limit',
+        if (from != null && from.isNotEmpty) 'from': from,
+        if (to != null && to.isNotEmpty) 'to': to,
+        if (name != null && name.isNotEmpty) 'name': name,
+        if (status.isNotEmpty) 'status': status,
+      },
+    );
+
+    late http.Response response;
+    try {
+      response = await BasicApiService.authorizedGet(
+        uri,
+        headers: {'Accept': 'application/json'},
+      );
+    } catch (e) {
+      if (e is SocketException || e is http.ClientException) {
+        throw ApiException(
+          'serverConnectionError',
+          'Error al listar eventos masivos: $e',
+        );
+      }
+      throw ApiException(
+        'readingObjectError',
+        'Error al listar eventos masivos: $e',
+      );
+    }
+
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      BasicApiService.manageNotSuccessResponseCode(response);
+    }
+
+    final decoded = jsonDecode(response.body);
+    if (decoded is! Map<String, dynamic>) {
+      throw ApiException(
+        'readingObjectError',
+        'Formato de respuesta no soportado',
+      );
+    }
+    final rawList = (decoded['items'] as List? ?? const []);
+    final items =
+        rawList
+            .map<MassiveEventModel>(
+              (e) => MassiveEventModel.fromJson(e as Map<String, dynamic>),
+            )
+            .toList();
+    final outPage = int.tryParse('${decoded['page'] ?? page}') ?? page;
+    final outLimit =
+        int.tryParse('${decoded['limit'] ?? limit}') ?? limit;
+    final outTotal =
+        int.tryParse('${decoded['total'] ?? items.length}') ?? items.length;
+    final outHasMore = decoded['hasMore'] == true;
+    return MassiveEventsPageResult(
+      outPage,
+      outLimit,
+      outTotal,
+      outHasMore,
+      items,
+    );
+  }
+
+  /// Todas las páginas del listado autónomo (hasta 500 filas por petición).
+  ///
+  /// [from], [to], [name] y [status] se envían en cada página (misma semántica
+  /// que en [listStandaloneMassiveEventsPaged]).
+  static Future<List<MassiveEventModel>> listStandaloneMassiveEvents({
+    String? from,
+    String? to,
+    String? name,
+    String status = 'all',
+  }) async {
+    final merged = <MassiveEventModel>[];
+    var page = 1;
+    const batch = 500;
+    const maxPages = 200;
+    while (page <= maxPages) {
+      final chunk = await listStandaloneMassiveEventsPaged(
+        page: page,
+        limit: batch,
+        from: from,
+        to: to,
+        name: name,
+        status: status,
+      );
+      merged.addAll(chunk.items);
+      if (!chunk.hasMore) {
+        break;
+      }
+      page++;
+    }
+    return merged;
   }
 
   static Future<SimpleEventModel> updateSimpleEvent({

@@ -397,6 +397,59 @@ class AppLocalizationsEn extends AppLocalizations {
       'This event is saved on the device and is pending synchronization with the server.';
 
   @override
+  String get massiveEventsListTitle => 'Massive events';
+
+  @override
+  String get massiveEventsListEmpty => 'There are no massive events to show.';
+
+  @override
+  String get massiveEvents_createFirstEvent =>
+      'Create your first massive event to get started';
+
+  @override
+  String get massiveEventsListLoadError =>
+      'Could not load the massive events list.';
+
+  @override
+  String get massiveEventsListOffline =>
+      'You are offline. Only data available on this device is shown.';
+
+  @override
+  String get massiveEventsNoListPermission =>
+      'You do not have permission to view the history. You can create a new event.';
+
+  @override
+  String get massiveEventsSearchNameOrId => 'Name or ID';
+
+  @override
+  String get massiveEventsNoMatchesFilter =>
+      'No massive events match the current filters.';
+
+  @override
+  String get massiveEventsColumnEventDate => 'Event date';
+
+  @override
+  String get massiveEventsColumnName => 'Name';
+
+  @override
+  String get massiveEventsColumnUpdatedAt => 'Last updated';
+
+  @override
+  String get massiveEventsColumnCreatedAt => 'Created at';
+
+  @override
+  String get massiveEventsColumnCreatedBy => 'Created by';
+
+  @override
+  String get massiveEventsColumnSync => 'Sync / source';
+
+  @override
+  String get massiveEventsSyncOnServer => 'Server';
+
+  @override
+  String get massiveEventsStatusClosedLabel => 'Closed';
+
+  @override
   String get syncNow => 'Sync now';
 
   @override
@@ -1027,6 +1080,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sales_createFirstSale => 'Create your first sale to get started';
+
+  @override
+  String get purchases_createFirstPurchase =>
+      'Create your first purchase to get started';
 
   @override
   String get sales_amount => 'Amount';

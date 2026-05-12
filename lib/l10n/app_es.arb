@@ -40,7 +40,7 @@
 
   "close":"Cerrar",
   "accept":"Aceptar",
-  "open":"Abrir",
+  "open":"Abierto",
   "view":"Ver",
   "search":"Buscar",
   "filter":"Filtrar",
@@ -190,6 +190,37 @@
   "massiveEventPendingSync": "Este evento está guardado en el dispositivo y pendiente de sincronizar con el servidor.",
   "@massiveEventPendingSync": {
     "description": "Mensaje móvil cuando el evento masivo existe en local pero no está sincronizado."
+  },
+  "massiveEventsListTitle": "Eventos masivos",
+  "massiveEventsListEmpty": "No hay eventos masivos que mostrar.",
+  "massiveEvents_createFirstEvent": "Crea tu primer evento masivo para comenzar",
+  "massiveEventsListLoadError": "No se pudo cargar la lista de eventos masivos.",
+  "massiveEventsListOffline": "Sin conexión. Solo se muestran los datos disponibles en el dispositivo.",
+  "massiveEventsNoListPermission": "No tiene permiso para ver el historial. Puede crear un evento nuevo.",
+  "massiveEventsSearchNameOrId": "Nombre o ID",
+  "@massiveEventsSearchNameOrId": {
+    "description": "Etiqueta del filtro de búsqueda en la lista web de eventos masivos."
+  },
+  "massiveEventsNoMatchesFilter": "Ningún evento masivo coincide con los filtros actuales.",
+  "@massiveEventsNoMatchesFilter": {
+    "description": "Mensaje cuando los filtros en cliente ocultan todas las filas."
+  },
+  "massiveEventsColumnEventDate": "Fecha del evento",
+  "massiveEventsColumnName": "Nombre",
+  "massiveEventsColumnUpdatedAt": "Última modificación",
+  "massiveEventsColumnCreatedAt": "Fecha de creación",
+  "massiveEventsColumnCreatedBy": "Creado por",
+  "massiveEventsColumnSync": "Sincronización / origen",
+  "@massiveEventsColumnSync": {
+    "description": "Columna: en lista web indica que el dato viene del servidor."
+  },
+  "massiveEventsSyncOnServer": "Servidor",
+  "@massiveEventsSyncOnServer": {
+    "description": "Lista web: la fila proviene de la API (vista siempre alineada con el servidor)."
+  },
+  "massiveEventsStatusClosedLabel": "Cerrado",
+  "@massiveEventsStatusClosedLabel": {
+    "description": "Estado de negocio cerrado (filtro / chip en lista)."
   },
   "syncNow": "Sincronizar ahora",
   "@syncNow": {
@@ -435,6 +466,8 @@
   "sales_dateRange": "Rango de Fechas",
 
   "sales_createFirstSale": "Crea tu primera venta para comenzar",
+
+  "purchases_createFirstPurchase": "Crea tu primera compra para comenzar",
 
   "sales_amount": "Monto",
   "sales_viewDetails": "Ver Detalles",

@@ -48,7 +48,6 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
   List<PurchaseListItemModel> _items = const [];
 
   bool _didInit = false;
-  bool _showEmptyInfo = false;
 
   String _coerceStatus(String? s) => _allowedStatuses.contains(s) ? s! : 'all';
 
@@ -110,7 +109,6 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
     setState(() {
       _loading = true;
       _error = _info = null;
-      _showEmptyInfo = false;
     });
     final l10n = AppLocalizations.of(context)!;
     try {
@@ -130,8 +128,6 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
         setState(() {
           _items = res.items;
           _total = res.total;
-          if (_items.isEmpty) _info = l10n.noPurchasesFound;
-          _showEmptyInfo = _items.isEmpty;
         });
       }
     } on ApiException catch (e) {
@@ -151,6 +147,81 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
     } finally {
       if (mounted) setState(() => _loading = false);
     }
+  }
+
+  bool get _hasActiveFilters =>
+      _from != null ||
+      _to != null ||
+      _providerCtrl.text.trim().isNotEmpty ||
+      _status != 'all';
+
+  void _clearFilters() {
+    setState(() {
+      _from = null;
+      _to = null;
+      _providerCtrl.clear();
+      _status = 'all';
+      _page = 1;
+    });
+    _load();
+  }
+
+  Widget _buildEmptyState(BuildContext context, AppLocalizations l10n) {
+    final hasFilters = _hasActiveFilters;
+
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.inbox,
+            size: 80,
+            color: Theme.of(
+              context,
+            ).colorScheme.onSurface.withValues(alpha: 0.3),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            hasFilters
+                ? l10n.noDataFiltered(l10n.cattlePurchase)
+                : l10n.noDataSomething(l10n.cattlePurchase),
+            style: Theme.of(context).textTheme.titleLarge,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            hasFilters
+                ? l10n.tryAdjustFilters
+                : l10n.purchases_createFirstPurchase,
+            style: Theme.of(context).textTheme.bodyMedium,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 24),
+          ElevatedButton.icon(
+            onPressed:
+                hasFilters
+                    ? _clearFilters
+                    : (_canCreatePurchase
+                        ? () {
+                          Navigator.of(context)
+                              .push(
+                                MaterialPageRoute(
+                                  builder: (_) => const PurchaseFormPage(),
+                                ),
+                              )
+                              .then((_) => _load());
+                        }
+                        : null),
+            icon: Icon(hasFilters ? Icons.clear : Icons.add),
+            label: Text(
+              hasFilters
+                  ? l10n.clearFilters
+                  : l10n.addSomething(l10n.purchase),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   int get _pageCount => (_total == 0) ? 1 : ((_total + _limit - 1) ~/ _limit);
@@ -215,6 +286,7 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
                           labelText: l10n.provider,
                           prefixIcon: const Icon(Icons.search),
                         ),
+                        onChanged: (_) => setState(() {}),
                         onSubmitted: (_) {
                           _page = 1;
                           _load();
@@ -239,6 +311,12 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
                             );
                           }).toList(),
                     ),
+                    if (_hasActiveFilters)
+                      IconButton(
+                        onPressed: _clearFilters,
+                        icon: const Icon(Icons.clear),
+                        tooltip: l10n.clearFilters,
+                      ),
                     FilledButton.icon(
                       onPressed: () {
                         _page = 1;
@@ -257,13 +335,17 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
               child:
                   _loading
                       ? const Center(child: CircularProgressIndicator())
+                      : _items.isEmpty
+                      ? _buildEmptyState(context, l10n)
                       : Card(
-                        child:
-                            _items.isEmpty
-                                ? Center(child: Text(l10n.noPurchasesFound))
-                                : SingleChildScrollView(
+                        child: SingleChildScrollView(
                                   scrollDirection: Axis.horizontal,
                                   child: DataTable(
+                                    headingRowColor: WidgetStateProperty.all(
+                                      Theme.of(context)
+                                          .colorScheme
+                                          .surfaceContainerHigh,
+                                    ),
                                     columns: [
                                       DataColumn(label: Text(l10n.dateSomething(l10n.purchase))),
                                       DataColumn(label: Text(l10n.provider)),
@@ -456,63 +538,64 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
             const SizedBox(height: 8),
 
             // paginación
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // tamaño de página
-                Row(
-                  children: [
-                    Text(l10n.rowsPerPage),
-                    const SizedBox(width: 8),
-                    DropdownButton<int>(
-                      value: _coerceLimit(_limit),
-                      onChanged: (v) {
-                        if (v == null) return;
-                        setState(() {
-                          _limit = v;
-                          _page = 1;
-                        });
-                        _load();
-                      },
-                      items:
-                          _allowedPageSizes.map((n) {
-                            return DropdownMenuItem<int>(
-                              value: n,
-                              child: Text('$n'),
-                            );
-                          }).toList(),
-                    ),
-                  ],
-                ),
-                Text('${l10n.page} $_page / $_pageCount   ($_total ${l10n.results})'),
-                Row(
-                  children: [
-                    IconButton(
-                      onPressed:
-                          _page > 1
-                              ? () {
-                                setState(() => _page--);
-                                _load();
-                              }
-                              : null,
-                      icon: const Icon(Icons.chevron_left),
-                      tooltip: l10n.previous,
-                    ),
-                    IconButton(
-                      onPressed:
-                          _page < _pageCount
-                              ? () {
-                                setState(() => _page++);
-                                _load();
-                              }
-                              : null,
-                      icon: const Icon(Icons.chevron_right),
-                      tooltip: l10n.next,
-                    ),
-                  ],
-                ),
-              ],
-            ),
+            if (_items.isNotEmpty)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // tamaño de página
+                  Row(
+                    children: [
+                      Text(l10n.rowsPerPage),
+                      const SizedBox(width: 8),
+                      DropdownButton<int>(
+                        value: _coerceLimit(_limit),
+                        onChanged: (v) {
+                          if (v == null) return;
+                          setState(() {
+                            _limit = v;
+                            _page = 1;
+                          });
+                          _load();
+                        },
+                        items:
+                            _allowedPageSizes.map((n) {
+                              return DropdownMenuItem<int>(
+                                value: n,
+                                child: Text('$n'),
+                              );
+                            }).toList(),
+                      ),
+                    ],
+                  ),
+                  Text('${l10n.page} $_page / $_pageCount   ($_total ${l10n.results})'),
+                  Row(
+                    children: [
+                      IconButton(
+                        onPressed:
+                            _page > 1
+                                ? () {
+                                  setState(() => _page--);
+                                  _load();
+                                }
+                                : null,
+                        icon: const Icon(Icons.chevron_left),
+                        tooltip: l10n.previous,
+                      ),
+                      IconButton(
+                        onPressed:
+                            _page < _pageCount
+                                ? () {
+                                  setState(() => _page++);
+                                  _load();
+                                }
+                                : null,
+                        icon: const Icon(Icons.chevron_right),
+                        tooltip: l10n.next,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
           ],
         ),
       ),

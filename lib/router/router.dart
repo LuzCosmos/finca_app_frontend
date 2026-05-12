@@ -8,6 +8,7 @@ import 'package:finca_app_frontend/modules/shared/features/sales/pages/sale_dash
 import 'package:finca_app_frontend/modules/web/features/sales/pages/create_sale_page_web.dart';
 import 'package:finca_app_frontend/modules/web/features/cattle_purchase/pages/purchase_form_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/pages/massive_event_page.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/pages/massive_event_list_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/bloc/massive_event_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:finca_app_frontend/modules/web/features/purchase_reception/pages/purchase_reception_page.dart';
@@ -85,6 +86,10 @@ GoRouter createAppRouter({
             child: const MassiveEventPage(),
           );
         },
+      ),
+      GoRoute(
+        path: '/massive-events',
+        builder: (context, state) => const MassiveEventListPage(),
       ),
       GoRoute(
         path: '/users',

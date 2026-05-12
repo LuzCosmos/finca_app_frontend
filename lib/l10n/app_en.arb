@@ -191,6 +191,37 @@
   "@massiveEventPendingSync": {
     "description": "Shown on mobile when a massive event exists locally but is not yet synced."
   },
+  "massiveEventsListTitle": "Massive events",
+  "massiveEventsListEmpty": "There are no massive events to show.",
+  "massiveEvents_createFirstEvent": "Create your first massive event to get started",
+  "massiveEventsListLoadError": "Could not load the massive events list.",
+  "massiveEventsListOffline": "You are offline. Only data available on this device is shown.",
+  "massiveEventsNoListPermission": "You do not have permission to view the history. You can create a new event.",
+  "massiveEventsSearchNameOrId": "Name or ID",
+  "@massiveEventsSearchNameOrId": {
+    "description": "Label for the massive events list filter field (web)."
+  },
+  "massiveEventsNoMatchesFilter": "No massive events match the current filters.",
+  "@massiveEventsNoMatchesFilter": {
+    "description": "Info when client-side filters hide every row on the web list."
+  },
+  "massiveEventsColumnEventDate": "Event date",
+  "massiveEventsColumnName": "Name",
+  "massiveEventsColumnUpdatedAt": "Last updated",
+  "massiveEventsColumnCreatedAt": "Created at",
+  "massiveEventsColumnCreatedBy": "Created by",
+  "massiveEventsColumnSync": "Sync / source",
+  "@massiveEventsColumnSync": {
+    "description": "Table column: for server-backed web list this shows that data comes from the server."
+  },
+  "massiveEventsSyncOnServer": "Server",
+  "@massiveEventsSyncOnServer": {
+    "description": "Web list: row indicates data loaded from API (always synced with server for this view)."
+  },
+  "massiveEventsStatusClosedLabel": "Closed",
+  "@massiveEventsStatusClosedLabel": {
+    "description": "Massive event business status closed (list filter / chip)."
+  },
   "syncNow": "Sync now",
   "@syncNow": {
     "description": "Button label to trigger manual data sync on mobile."
@@ -435,6 +466,8 @@
   "sales_dateRange": "Date Range",
 
   "sales_createFirstSale": "Create your first sale to get started",
+
+  "purchases_createFirstPurchase": "Create your first purchase to get started",
 
   "sales_amount": "Amount",
   "sales_viewDetails": "View Details",

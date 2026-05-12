@@ -81,6 +81,21 @@ class $MassiveEventLocalTable extends MassiveEventLocal
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _linkedToPurchaseReceptionMeta =
+      const VerificationMeta('linkedToPurchaseReception');
+  @override
+  late final GeneratedColumn<bool> linkedToPurchaseReception =
+      GeneratedColumn<bool>(
+        'linked_to_purchase_reception',
+        aliasedName,
+        false,
+        type: DriftSqlType.bool,
+        requiredDuringInsert: false,
+        defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("linked_to_purchase_reception" IN (0, 1))',
+        ),
+        defaultValue: const Constant(false),
+      );
   static const VerificationMeta _isSyncedMeta = const VerificationMeta(
     'isSynced',
   );
@@ -127,6 +142,7 @@ class $MassiveEventLocalTable extends MassiveEventLocal
     eventDate,
     status,
     createdBy,
+    linkedToPurchaseReception,
     isSynced,
     createdAt,
     updatedAt,
@@ -188,6 +204,15 @@ class $MassiveEventLocalTable extends MassiveEventLocal
         createdBy.isAcceptableOrUnknown(data['created_by']!, _createdByMeta),
       );
     }
+    if (data.containsKey('linked_to_purchase_reception')) {
+      context.handle(
+        _linkedToPurchaseReceptionMeta,
+        linkedToPurchaseReception.isAcceptableOrUnknown(
+          data['linked_to_purchase_reception']!,
+          _linkedToPurchaseReceptionMeta,
+        ),
+      );
+    }
     if (data.containsKey('is_synced')) {
       context.handle(
         _isSyncedMeta,
@@ -247,6 +272,11 @@ class $MassiveEventLocalTable extends MassiveEventLocal
         DriftSqlType.string,
         data['${effectivePrefix}created_by'],
       ),
+      linkedToPurchaseReception:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.bool,
+            data['${effectivePrefix}linked_to_purchase_reception'],
+          )!,
       isSynced:
           attachedDatabase.typeMapping.read(
             DriftSqlType.bool,
@@ -277,6 +307,7 @@ class MassiveEvent extends DataClass implements Insertable<MassiveEvent> {
   final DateTime eventDate;
   final String status;
   final String? createdBy;
+  final bool linkedToPurchaseReception;
   final bool isSynced;
   final DateTime? createdAt;
   final DateTime? updatedAt;
@@ -288,6 +319,7 @@ class MassiveEvent extends DataClass implements Insertable<MassiveEvent> {
     required this.eventDate,
     required this.status,
     this.createdBy,
+    required this.linkedToPurchaseReception,
     required this.isSynced,
     this.createdAt,
     this.updatedAt,
@@ -308,6 +340,9 @@ class MassiveEvent extends DataClass implements Insertable<MassiveEvent> {
     if (!nullToAbsent || createdBy != null) {
       map['created_by'] = Variable<String>(createdBy);
     }
+    map['linked_to_purchase_reception'] = Variable<bool>(
+      linkedToPurchaseReception,
+    );
     map['is_synced'] = Variable<bool>(isSynced);
     if (!nullToAbsent || createdAt != null) {
       map['created_at'] = Variable<DateTime>(createdAt);
@@ -333,6 +368,7 @@ class MassiveEvent extends DataClass implements Insertable<MassiveEvent> {
           createdBy == null && nullToAbsent
               ? const Value.absent()
               : Value(createdBy),
+      linkedToPurchaseReception: Value(linkedToPurchaseReception),
       isSynced: Value(isSynced),
       createdAt:
           createdAt == null && nullToAbsent
@@ -358,6 +394,9 @@ class MassiveEvent extends DataClass implements Insertable<MassiveEvent> {
       eventDate: serializer.fromJson<DateTime>(json['eventDate']),
       status: serializer.fromJson<String>(json['status']),
       createdBy: serializer.fromJson<String?>(json['createdBy']),
+      linkedToPurchaseReception: serializer.fromJson<bool>(
+        json['linkedToPurchaseReception'],
+      ),
       isSynced: serializer.fromJson<bool>(json['isSynced']),
       createdAt: serializer.fromJson<DateTime?>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
@@ -374,6 +413,9 @@ class MassiveEvent extends DataClass implements Insertable<MassiveEvent> {
       'eventDate': serializer.toJson<DateTime>(eventDate),
       'status': serializer.toJson<String>(status),
       'createdBy': serializer.toJson<String?>(createdBy),
+      'linkedToPurchaseReception': serializer.toJson<bool>(
+        linkedToPurchaseReception,
+      ),
       'isSynced': serializer.toJson<bool>(isSynced),
       'createdAt': serializer.toJson<DateTime?>(createdAt),
       'updatedAt': serializer.toJson<DateTime?>(updatedAt),
@@ -388,6 +430,7 @@ class MassiveEvent extends DataClass implements Insertable<MassiveEvent> {
     DateTime? eventDate,
     String? status,
     Value<String?> createdBy = const Value.absent(),
+    bool? linkedToPurchaseReception,
     bool? isSynced,
     Value<DateTime?> createdAt = const Value.absent(),
     Value<DateTime?> updatedAt = const Value.absent(),
@@ -399,6 +442,8 @@ class MassiveEvent extends DataClass implements Insertable<MassiveEvent> {
     eventDate: eventDate ?? this.eventDate,
     status: status ?? this.status,
     createdBy: createdBy.present ? createdBy.value : this.createdBy,
+    linkedToPurchaseReception:
+        linkedToPurchaseReception ?? this.linkedToPurchaseReception,
     isSynced: isSynced ?? this.isSynced,
     createdAt: createdAt.present ? createdAt.value : this.createdAt,
     updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
@@ -412,6 +457,10 @@ class MassiveEvent extends DataClass implements Insertable<MassiveEvent> {
       eventDate: data.eventDate.present ? data.eventDate.value : this.eventDate,
       status: data.status.present ? data.status.value : this.status,
       createdBy: data.createdBy.present ? data.createdBy.value : this.createdBy,
+      linkedToPurchaseReception:
+          data.linkedToPurchaseReception.present
+              ? data.linkedToPurchaseReception.value
+              : this.linkedToPurchaseReception,
       isSynced: data.isSynced.present ? data.isSynced.value : this.isSynced,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
@@ -428,6 +477,7 @@ class MassiveEvent extends DataClass implements Insertable<MassiveEvent> {
           ..write('eventDate: $eventDate, ')
           ..write('status: $status, ')
           ..write('createdBy: $createdBy, ')
+          ..write('linkedToPurchaseReception: $linkedToPurchaseReception, ')
           ..write('isSynced: $isSynced, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
@@ -444,6 +494,7 @@ class MassiveEvent extends DataClass implements Insertable<MassiveEvent> {
     eventDate,
     status,
     createdBy,
+    linkedToPurchaseReception,
     isSynced,
     createdAt,
     updatedAt,
@@ -459,6 +510,7 @@ class MassiveEvent extends DataClass implements Insertable<MassiveEvent> {
           other.eventDate == this.eventDate &&
           other.status == this.status &&
           other.createdBy == this.createdBy &&
+          other.linkedToPurchaseReception == this.linkedToPurchaseReception &&
           other.isSynced == this.isSynced &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
@@ -472,6 +524,7 @@ class MassiveEventLocalCompanion extends UpdateCompanion<MassiveEvent> {
   final Value<DateTime> eventDate;
   final Value<String> status;
   final Value<String?> createdBy;
+  final Value<bool> linkedToPurchaseReception;
   final Value<bool> isSynced;
   final Value<DateTime?> createdAt;
   final Value<DateTime?> updatedAt;
@@ -484,6 +537,7 @@ class MassiveEventLocalCompanion extends UpdateCompanion<MassiveEvent> {
     this.eventDate = const Value.absent(),
     this.status = const Value.absent(),
     this.createdBy = const Value.absent(),
+    this.linkedToPurchaseReception = const Value.absent(),
     this.isSynced = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -497,6 +551,7 @@ class MassiveEventLocalCompanion extends UpdateCompanion<MassiveEvent> {
     required DateTime eventDate,
     this.status = const Value.absent(),
     this.createdBy = const Value.absent(),
+    this.linkedToPurchaseReception = const Value.absent(),
     this.isSynced = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -512,6 +567,7 @@ class MassiveEventLocalCompanion extends UpdateCompanion<MassiveEvent> {
     Expression<DateTime>? eventDate,
     Expression<String>? status,
     Expression<String>? createdBy,
+    Expression<bool>? linkedToPurchaseReception,
     Expression<bool>? isSynced,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
@@ -525,6 +581,8 @@ class MassiveEventLocalCompanion extends UpdateCompanion<MassiveEvent> {
       if (eventDate != null) 'event_date': eventDate,
       if (status != null) 'status': status,
       if (createdBy != null) 'created_by': createdBy,
+      if (linkedToPurchaseReception != null)
+        'linked_to_purchase_reception': linkedToPurchaseReception,
       if (isSynced != null) 'is_synced': isSynced,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
@@ -540,6 +598,7 @@ class MassiveEventLocalCompanion extends UpdateCompanion<MassiveEvent> {
     Value<DateTime>? eventDate,
     Value<String>? status,
     Value<String?>? createdBy,
+    Value<bool>? linkedToPurchaseReception,
     Value<bool>? isSynced,
     Value<DateTime?>? createdAt,
     Value<DateTime?>? updatedAt,
@@ -553,6 +612,8 @@ class MassiveEventLocalCompanion extends UpdateCompanion<MassiveEvent> {
       eventDate: eventDate ?? this.eventDate,
       status: status ?? this.status,
       createdBy: createdBy ?? this.createdBy,
+      linkedToPurchaseReception:
+          linkedToPurchaseReception ?? this.linkedToPurchaseReception,
       isSynced: isSynced ?? this.isSynced,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -584,6 +645,11 @@ class MassiveEventLocalCompanion extends UpdateCompanion<MassiveEvent> {
     if (createdBy.present) {
       map['created_by'] = Variable<String>(createdBy.value);
     }
+    if (linkedToPurchaseReception.present) {
+      map['linked_to_purchase_reception'] = Variable<bool>(
+        linkedToPurchaseReception.value,
+      );
+    }
     if (isSynced.present) {
       map['is_synced'] = Variable<bool>(isSynced.value);
     }
@@ -609,6 +675,7 @@ class MassiveEventLocalCompanion extends UpdateCompanion<MassiveEvent> {
           ..write('eventDate: $eventDate, ')
           ..write('status: $status, ')
           ..write('createdBy: $createdBy, ')
+          ..write('linkedToPurchaseReception: $linkedToPurchaseReception, ')
           ..write('isSynced: $isSynced, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
@@ -4787,6 +4854,7 @@ typedef $$MassiveEventLocalTableCreateCompanionBuilder =
       required DateTime eventDate,
       Value<String> status,
       Value<String?> createdBy,
+      Value<bool> linkedToPurchaseReception,
       Value<bool> isSynced,
       Value<DateTime?> createdAt,
       Value<DateTime?> updatedAt,
@@ -4801,6 +4869,7 @@ typedef $$MassiveEventLocalTableUpdateCompanionBuilder =
       Value<DateTime> eventDate,
       Value<String> status,
       Value<String?> createdBy,
+      Value<bool> linkedToPurchaseReception,
       Value<bool> isSynced,
       Value<DateTime?> createdAt,
       Value<DateTime?> updatedAt,
@@ -4848,6 +4917,11 @@ class $$MassiveEventLocalTableFilterComposer
 
   ColumnFilters<String> get createdBy => $composableBuilder(
     column: $table.createdBy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get linkedToPurchaseReception => $composableBuilder(
+    column: $table.linkedToPurchaseReception,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -4911,6 +4985,11 @@ class $$MassiveEventLocalTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<bool> get linkedToPurchaseReception => $composableBuilder(
+    column: $table.linkedToPurchaseReception,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<bool> get isSynced => $composableBuilder(
     column: $table.isSynced,
     builder: (column) => ColumnOrderings(column),
@@ -4956,6 +5035,11 @@ class $$MassiveEventLocalTableAnnotationComposer
 
   GeneratedColumn<String> get createdBy =>
       $composableBuilder(column: $table.createdBy, builder: (column) => column);
+
+  GeneratedColumn<bool> get linkedToPurchaseReception => $composableBuilder(
+    column: $table.linkedToPurchaseReception,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<bool> get isSynced =>
       $composableBuilder(column: $table.isSynced, builder: (column) => column);
@@ -5020,6 +5104,7 @@ class $$MassiveEventLocalTableTableManager
                 Value<DateTime> eventDate = const Value.absent(),
                 Value<String> status = const Value.absent(),
                 Value<String?> createdBy = const Value.absent(),
+                Value<bool> linkedToPurchaseReception = const Value.absent(),
                 Value<bool> isSynced = const Value.absent(),
                 Value<DateTime?> createdAt = const Value.absent(),
                 Value<DateTime?> updatedAt = const Value.absent(),
@@ -5032,6 +5117,7 @@ class $$MassiveEventLocalTableTableManager
                 eventDate: eventDate,
                 status: status,
                 createdBy: createdBy,
+                linkedToPurchaseReception: linkedToPurchaseReception,
                 isSynced: isSynced,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
@@ -5046,6 +5132,7 @@ class $$MassiveEventLocalTableTableManager
                 required DateTime eventDate,
                 Value<String> status = const Value.absent(),
                 Value<String?> createdBy = const Value.absent(),
+                Value<bool> linkedToPurchaseReception = const Value.absent(),
                 Value<bool> isSynced = const Value.absent(),
                 Value<DateTime?> createdAt = const Value.absent(),
                 Value<DateTime?> updatedAt = const Value.absent(),
@@ -5058,6 +5145,7 @@ class $$MassiveEventLocalTableTableManager
                 eventDate: eventDate,
                 status: status,
                 createdBy: createdBy,
+                linkedToPurchaseReception: linkedToPurchaseReception,
                 isSynced: isSynced,
                 createdAt: createdAt,
                 updatedAt: updatedAt,

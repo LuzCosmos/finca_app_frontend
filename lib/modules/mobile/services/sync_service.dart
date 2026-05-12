@@ -149,6 +149,7 @@ class SyncService {
               "createdBy": m.createdBy,
               "createdAt": m.createdAt?.toIso8601String(),
               "updatedAt": m.updatedAt?.toIso8601String(),
+              "linkedToPurchaseReception": m.linkedToPurchaseReception,
               "simpleEvents": simpleEventsJson,
             };
           }).toList();

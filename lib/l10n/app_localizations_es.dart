@@ -107,7 +107,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get accept => 'Aceptar';
 
   @override
-  String get open => 'Abrir';
+  String get open => 'Abierto';
 
   @override
   String get view => 'Ver';
@@ -393,6 +393,59 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get massiveEventPendingSync =>
       'Este evento está guardado en el dispositivo y pendiente de sincronizar con el servidor.';
+
+  @override
+  String get massiveEventsListTitle => 'Eventos masivos';
+
+  @override
+  String get massiveEventsListEmpty => 'No hay eventos masivos que mostrar.';
+
+  @override
+  String get massiveEvents_createFirstEvent =>
+      'Crea tu primer evento masivo para comenzar';
+
+  @override
+  String get massiveEventsListLoadError =>
+      'No se pudo cargar la lista de eventos masivos.';
+
+  @override
+  String get massiveEventsListOffline =>
+      'Sin conexión. Solo se muestran los datos disponibles en el dispositivo.';
+
+  @override
+  String get massiveEventsNoListPermission =>
+      'No tiene permiso para ver el historial. Puede crear un evento nuevo.';
+
+  @override
+  String get massiveEventsSearchNameOrId => 'Nombre o ID';
+
+  @override
+  String get massiveEventsNoMatchesFilter =>
+      'Ningún evento masivo coincide con los filtros actuales.';
+
+  @override
+  String get massiveEventsColumnEventDate => 'Fecha del evento';
+
+  @override
+  String get massiveEventsColumnName => 'Nombre';
+
+  @override
+  String get massiveEventsColumnUpdatedAt => 'Última modificación';
+
+  @override
+  String get massiveEventsColumnCreatedAt => 'Fecha de creación';
+
+  @override
+  String get massiveEventsColumnCreatedBy => 'Creado por';
+
+  @override
+  String get massiveEventsColumnSync => 'Sincronización / origen';
+
+  @override
+  String get massiveEventsSyncOnServer => 'Servidor';
+
+  @override
+  String get massiveEventsStatusClosedLabel => 'Cerrado';
 
   @override
   String get syncNow => 'Sincronizar ahora';
@@ -1026,6 +1079,10 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get sales_createFirstSale => 'Crea tu primera venta para comenzar';
+
+  @override
+  String get purchases_createFirstPurchase =>
+      'Crea tu primera compra para comenzar';
 
   @override
   String get sales_amount => 'Monto';

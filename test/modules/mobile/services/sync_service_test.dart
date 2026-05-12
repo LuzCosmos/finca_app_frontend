@@ -84,7 +84,11 @@ Brand _brand({bool synced = false, String id = 'b1'}) {
   );
 }
 
-MassiveEvent _massive({bool synced = false, String id = 'm1'}) {
+MassiveEvent _massive({
+  bool synced = false,
+  String id = 'm1',
+  bool linkedToPurchaseReception = false,
+}) {
   return MassiveEvent(
     id: id,
     idTenant: 'tid',
@@ -92,6 +96,7 @@ MassiveEvent _massive({bool synced = false, String id = 'm1'}) {
     eventDate: DateTime(2024, 1, 1),
     status: 'open',
     createdBy: 'u1',
+    linkedToPurchaseReception: linkedToPurchaseReception,
     isSynced: synced,
     createdAt: DateTime(2024, 1, 1),
   );
@@ -514,6 +519,74 @@ void main() {
           final body = jsonDecode(req.body) as Map<String, dynamic>;
           final arr = body['massiveEvents'] as List<dynamic>;
           expect((arr.first as Map)['simpleEvents'], isEmpty);
+          return http.Response('ok', 200);
+        });
+      });
+      verify(() => massiveRepo.markAsSynced('m1')).called(1);
+    });
+
+    test('payload incluye linkedToPurchaseReception (false y true)', () async {
+      final mStandalone = _massive(synced: false, id: 'm-std');
+      final mReception = _massive(
+        synced: false,
+        id: 'm-rcp',
+        linkedToPurchaseReception: true,
+      );
+      when(() => massiveRepo.getAll()).thenAnswer((_) async => [mStandalone, mReception]);
+      when(() => simpleRepo.getAllUnsynced()).thenAnswer((_) async => []);
+      when(() => massiveRepo.markAsSynced(any())).thenAnswer((_) async {});
+      when(() => simpleRepo.getByidMassiveEvent(any())).thenAnswer((_) async => []);
+      await _hydrateAuth();
+      final service = _service(
+        animalRepo: animalRepo,
+        brandRepo: brandRepo,
+        massiveRepo: massiveRepo,
+        simpleRepo: simpleRepo,
+      );
+      await http.runWithClient(() async {
+        await service.syncMassiveEvents('tid');
+      }, () {
+        return MockClient((req) async {
+          final body = jsonDecode(req.body) as Map<String, dynamic>;
+          final arr = body['massiveEvents'] as List<dynamic>;
+          expect(arr.length, 2);
+          final byId = {
+            for (final e in arr)
+              (e as Map<String, dynamic>)['id'] as String: e as Map<String, dynamic>,
+          };
+          expect(byId['m-std']!['linkedToPurchaseReception'], false);
+          expect(byId['m-rcp']!['linkedToPurchaseReception'], true);
+          return http.Response('ok', 200);
+        });
+      });
+      verify(() => massiveRepo.markAsSynced('m-std')).called(1);
+      verify(() => massiveRepo.markAsSynced('m-rcp')).called(1);
+    });
+
+    test('500 luego 200: reintenta y marca masivo', () async {
+      final m = _massive(synced: false);
+      when(() => massiveRepo.getAll()).thenAnswer((_) async => [m]);
+      when(() => simpleRepo.getAllUnsynced()).thenAnswer((_) async => []);
+      when(() => massiveRepo.markAsSynced('m1')).thenAnswer((_) async {});
+      when(() => simpleRepo.getByidMassiveEvent('m1')).thenAnswer((_) async => []);
+      await _hydrateAuth();
+      final service = _service(
+        animalRepo: animalRepo,
+        brandRepo: brandRepo,
+        massiveRepo: massiveRepo,
+        simpleRepo: simpleRepo,
+        maxRetries: 3,
+      );
+      var n = 0;
+      await http.runWithClient(() async {
+        final r = await service.syncMassiveEvents('tid');
+        expect(r.success, true);
+      }, () {
+        return MockClient((_) async {
+          n++;
+          if (n == 1) {
+            return http.Response('bad', 500);
+          }
           return http.Response('ok', 200);
         });
       });

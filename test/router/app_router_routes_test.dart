@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/dashboard/page/dashboard_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/bloc/massive_event_bloc.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/pages/massive_event_list_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/pages/massive_event_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/pages/sale_dashboard_page_export.dart';
 import 'package:finca_app_frontend/modules/shared/features/users/pages/users_list_page.dart';
@@ -102,6 +103,15 @@ void main() {
   testWidgets('autenticado: /sales/create', (tester) async {
     await pumpAuthenticated(tester, '/sales/create');
     expect(find.byType(CreateSalePage), findsOneWidget);
+  });
+
+  testWidgets('autenticado: /massive-events muestra MassiveEventListPage', (
+    tester,
+  ) async {
+    await pumpAuthenticated(tester, '/massive-events');
+    await tester.pump(const Duration(seconds: 2));
+    expect(find.byType(MassiveEventListPage), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('autenticado: /massive-events/create expone MassiveEventBloc', (
