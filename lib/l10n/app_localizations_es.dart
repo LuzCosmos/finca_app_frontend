@@ -413,6 +413,9 @@ class AppLocalizationsEs extends AppLocalizations {
       'Sin conexión. Solo se muestran los datos disponibles en el dispositivo.';
 
   @override
+  String get massiveEventsListFiltersTitle => 'Filtros';
+
+  @override
   String get massiveEventsNoListPermission =>
       'No tiene permiso para ver el historial. Puede crear un evento nuevo.';
 

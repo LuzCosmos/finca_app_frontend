@@ -415,6 +415,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'You are offline. Only data available on this device is shown.';
 
   @override
+  String get massiveEventsListFiltersTitle => 'Filters';
+
+  @override
   String get massiveEventsNoListPermission =>
       'You do not have permission to view the history. You can create a new event.';
 

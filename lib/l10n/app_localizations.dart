@@ -806,6 +806,12 @@ abstract class AppLocalizations {
   /// **'You are offline. Only data available on this device is shown.'**
   String get massiveEventsListOffline;
 
+  /// Title of the collapsible filter section on the mobile massive events list.
+  ///
+  /// In en, this message translates to:
+  /// **'Filters'**
+  String get massiveEventsListFiltersTitle;
+
   /// No description provided for @massiveEventsNoListPermission.
   ///
   /// In en, this message translates to:

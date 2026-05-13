@@ -196,6 +196,10 @@
   "massiveEvents_createFirstEvent": "Crea tu primer evento masivo para comenzar",
   "massiveEventsListLoadError": "No se pudo cargar la lista de eventos masivos.",
   "massiveEventsListOffline": "Sin conexión. Solo se muestran los datos disponibles en el dispositivo.",
+  "massiveEventsListFiltersTitle": "Filtros",
+  "@massiveEventsListFiltersTitle": {
+    "description": "Título de la sección colapsable de filtros en la lista móvil de eventos masivos."
+  },
   "massiveEventsNoListPermission": "No tiene permiso para ver el historial. Puede crear un evento nuevo.",
   "massiveEventsSearchNameOrId": "Nombre o ID",
   "@massiveEventsSearchNameOrId": {

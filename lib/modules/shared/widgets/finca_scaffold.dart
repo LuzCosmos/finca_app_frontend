@@ -25,6 +25,9 @@ class FincaScaffold extends StatefulWidget {
   /// el que lleva desde rutas declarativas al inicio.
   final VoidCallback? onHomePressed;
 
+  /// Botón flotante opcional (p. ej. crear en listas móviles).
+  final Widget? floatingActionButton;
+
   const FincaScaffold({
     super.key,
     required this.body,
@@ -32,6 +35,7 @@ class FincaScaffold extends StatefulWidget {
     this.showHomeButton = true,
     this.embedded = false,
     this.onHomePressed,
+    this.floatingActionButton,
   });
 
   /// Cierra rutas empiladas con [Navigator.push] (formularios modales, etc.).
@@ -117,6 +121,7 @@ class _FincaScaffoldState extends State<FincaScaffold> {
             ],
           ),
           body: widget.body,
+          floatingActionButton: widget.floatingActionButton,
         );
       },
     );

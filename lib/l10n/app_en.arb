@@ -196,6 +196,10 @@
   "massiveEvents_createFirstEvent": "Create your first massive event to get started",
   "massiveEventsListLoadError": "Could not load the massive events list.",
   "massiveEventsListOffline": "You are offline. Only data available on this device is shown.",
+  "massiveEventsListFiltersTitle": "Filters",
+  "@massiveEventsListFiltersTitle": {
+    "description": "Title of the collapsible filter section on the mobile massive events list."
+  },
   "massiveEventsNoListPermission": "You do not have permission to view the history. You can create a new event.",
   "massiveEventsSearchNameOrId": "Name or ID",
   "@massiveEventsSearchNameOrId": {
