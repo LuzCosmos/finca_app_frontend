@@ -451,6 +451,19 @@ class AppLocalizationsEs extends AppLocalizations {
   String get massiveEventsStatusClosedLabel => 'Cerrado';
 
   @override
+  String get massiveEventsDetailInternalId => 'Identificador';
+
+  @override
+  String get massiveEventsDateShortcutToday => 'Hoy';
+
+  @override
+  String get massiveEventsDateShortcutThisWeek => 'Esta semana';
+
+  @override
+  String get massiveEventsListUnprocessableEntityHint =>
+      'Revise los filtros o los datos enviados. Si el evento está vinculado a una recepción de compra, la operación puede no ser válida en el servidor.';
+
+  @override
   String get syncNow => 'Sincronizar ahora';
 
   @override

@@ -16,6 +16,7 @@ class MassiveEventStandaloneListMobileEventRow extends StatelessWidget {
     required this.dtf,
     required this.wide,
     required this.extraWide,
+    this.onTap,
   });
 
   final AppLocalizations l10n;
@@ -26,12 +27,14 @@ class MassiveEventStandaloneListMobileEventRow extends StatelessWidget {
   final DateFormat dtf;
   final bool wide;
   final bool extraWide;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final title = event.name?.isNotEmpty == true ? event.name! : event.id;
     if (!wide) {
       return ListTile(
+        onTap: onTap,
         isThreeLine: true,
         title: Text(title),
         subtitle: Column(
@@ -68,7 +71,9 @@ class MassiveEventStandaloneListMobileEventRow extends StatelessWidget {
     }
 
     if (extraWide) {
-      return Padding(
+      return InkWell(
+        onTap: onTap,
+        child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -149,10 +154,13 @@ class MassiveEventStandaloneListMobileEventRow extends StatelessWidget {
             ),
           ],
         ),
+        ),
       );
     }
 
-    return Padding(
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -216,6 +224,7 @@ class MassiveEventStandaloneListMobileEventRow extends StatelessWidget {
             ),
           ),
         ],
+      ),
       ),
     );
   }

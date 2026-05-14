@@ -226,6 +226,22 @@
   "@massiveEventsStatusClosedLabel": {
     "description": "Massive event business status closed (list filter / chip)."
   },
+  "massiveEventsDetailInternalId": "Identifier",
+  "@massiveEventsDetailInternalId": {
+    "description": "Label for the technical id in the read-only mobile list detail sheet."
+  },
+  "massiveEventsDateShortcutToday": "Today",
+  "@massiveEventsDateShortcutToday": {
+    "description": "Date filter shortcut: current calendar day."
+  },
+  "massiveEventsDateShortcutThisWeek": "This week",
+  "@massiveEventsDateShortcutThisWeek": {
+    "description": "Date filter shortcut: calendar week per locale."
+  },
+  "massiveEventsListUnprocessableEntityHint": "Check the filters or submitted data. If the event is linked to a purchase reception, the operation may not be valid on the server.",
+  "@massiveEventsListUnprocessableEntityHint": {
+    "description": "Extra copy when the list API returns 422 (unprocessable entity)."
+  },
   "syncNow": "Sync now",
   "@syncNow": {
     "description": "Button label to trigger manual data sync on mobile."

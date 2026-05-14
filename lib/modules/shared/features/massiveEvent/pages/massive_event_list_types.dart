@@ -1,4 +1,4 @@
-import 'package:finca_app_frontend/modules/shared/features/massiveEvent/services/massive_event_api_service.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/services/massive_events_page_result.dart';
 
 /// Misma forma que [SessionService.getPermissions]; sustituible en tests (D3 / fase 7).
 typedef MassiveEventsGetPermissions = Future<Map<String, dynamic>> Function();
@@ -13,4 +13,6 @@ typedef MassiveEventsStandalonePagedFetch =
       String? to,
       String? name,
       required String status,
+      String? sortBy,
+      String? sortDir,
     });

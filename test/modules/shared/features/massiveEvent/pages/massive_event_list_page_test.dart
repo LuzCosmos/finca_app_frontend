@@ -10,6 +10,7 @@ import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/massive_event_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/pages/massive_event_list_page.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/services/massive_events_page_result.dart';
 
 import '../../../../../support/app_test_host.dart';
 
@@ -436,9 +437,34 @@ void main() {
       final l10n = AppLocalizations.of(
         tester.element(find.byType(MassiveEventListPage)),
       )!;
-      expect(find.text(l10n.massiveEventsListLoadError), findsOneWidget);
+      expect(find.text(l10n.error_forbidden), findsOneWidget);
       expect(find.text(l10n.massiveEventsListOffline), findsNothing);
     });
+
+    testWidgets(
+      'ApiException unprocessableEntity: hint de lista 422',
+      (tester) async {
+        await savePerms('00001');
+        Future<List<MassiveEventModel>> fetch() async {
+          throw ApiException(ApiExceptionCode.unprocessableEntity.name, '');
+        }
+
+        await tester.pumpWidget(
+          pumpLocalizedMaterialShell(
+            home: MassiveEventListPage(
+              embedded: true,
+              fetchStandaloneOverride: fetch,
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        final l10n = AppLocalizations.of(
+          tester.element(find.byType(MassiveEventListPage)),
+        )!;
+        expect(find.text(l10n.massiveEventsListUnprocessableEntityHint), findsOneWidget);
+      },
+    );
 
     testWidgets('mensaje con ClientException en toString → offline', (
       tester,
@@ -487,6 +513,70 @@ void main() {
       )!;
       expect(find.text(l10n.massiveEventsListLoadError), findsOneWidget);
       expect(find.text(l10n.massiveEventsListOffline), findsNothing);
+    });
+  });
+
+  group('paginación móvil (scroll infinito)', () {
+    testWidgets('fetchStandalonePagedOverride: segunda página al desplazar', (
+      tester,
+    ) async {
+      await savePerms('00001');
+      await tester.pumpWidget(
+        pumpLocalizedMaterialShell(
+          home: Center(
+            child: SizedBox(
+              width: 400,
+              height: 640,
+              child: MassiveEventListPage(
+                embedded: true,
+                fetchStandalonePagedOverride:
+                    ({
+                      required int page,
+                      required int limit,
+                      String? from,
+                      String? to,
+                      String? name,
+                      required String status,
+                      String? sortBy,
+                      String? sortDir,
+                    }) async {
+                      if (page == 1) {
+                        final items =
+                            List<MassiveEventModel>.generate(
+                              20,
+                              (i) => sample(id: 'p1_$i', name: 'Fila móvil $i'),
+                            );
+                        return MassiveEventsPageResult(
+                          1,
+                          limit,
+                          40,
+                          true,
+                          items,
+                        );
+                      }
+                      expect(page, 2);
+                      return MassiveEventsPageResult(
+                        2,
+                        limit,
+                        40,
+                        false,
+                        [sample(id: 'p2', name: 'SEGUNDA_PAGINA')],
+                      );
+                    },
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Fila móvil 0'), findsOneWidget);
+      expect(find.text('SEGUNDA_PAGINA'), findsNothing);
+      await tester.scrollUntilVisible(
+        find.text('SEGUNDA_PAGINA'),
+        400,
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('SEGUNDA_PAGINA'), findsOneWidget);
     });
   });
 }

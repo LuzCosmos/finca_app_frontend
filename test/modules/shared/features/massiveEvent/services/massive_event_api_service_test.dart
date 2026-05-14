@@ -96,6 +96,27 @@ void main() {
           expect(req.url.path, contains('massive-events'));
           expect(req.url.queryParameters['page'], '1');
           expect(req.url.queryParameters['limit'], '10');
+          expect(req.url.queryParameters.containsKey('sortBy'), false);
+          expect(req.url.queryParameters.containsKey('sortDir'), false);
+          return http.Response(_pagedBody([]), 200);
+        });
+      });
+    });
+
+    test('200 + sortBy y sortDir en query', () async {
+      await _hydrateAuth();
+      await http.runWithClient(() async {
+        final r = await MassiveEventApiService.listStandaloneMassiveEventsPaged(
+          page: 1,
+          limit: 10,
+          sortBy: 'name',
+          sortDir: 'asc',
+        );
+        expect(r.items, isEmpty);
+      }, () {
+        return MockClient((req) async {
+          expect(req.url.queryParameters['sortBy'], 'name');
+          expect(req.url.queryParameters['sortDir'], 'asc');
           return http.Response(_pagedBody([]), 200);
         });
       });

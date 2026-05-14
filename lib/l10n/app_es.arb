@@ -226,6 +226,22 @@
   "@massiveEventsStatusClosedLabel": {
     "description": "Estado de negocio cerrado (filtro / chip en lista)."
   },
+  "massiveEventsDetailInternalId": "Identificador",
+  "@massiveEventsDetailInternalId": {
+    "description": "Etiqueta del id técnico en el detalle solo lectura del listado móvil."
+  },
+  "massiveEventsDateShortcutToday": "Hoy",
+  "@massiveEventsDateShortcutToday": {
+    "description": "Atajo de filtro de fechas: día actual."
+  },
+  "massiveEventsDateShortcutThisWeek": "Esta semana",
+  "@massiveEventsDateShortcutThisWeek": {
+    "description": "Atajo de filtro de fechas: semana calendario según locale."
+  },
+  "massiveEventsListUnprocessableEntityHint": "Revise los filtros o los datos enviados. Si el evento está vinculado a una recepción de compra, la operación puede no ser válida en el servidor.",
+  "@massiveEventsListUnprocessableEntityHint": {
+    "description": "Texto adicional cuando la lista devuelve 422 (entidad no procesable)."
+  },
   "syncNow": "Sincronizar ahora",
   "@syncNow": {
     "description": "Botón para disparar sincronización manual en móvil."

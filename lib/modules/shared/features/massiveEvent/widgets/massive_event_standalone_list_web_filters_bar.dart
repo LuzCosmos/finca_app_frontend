@@ -20,6 +20,8 @@ class MassiveEventStandaloneListWebFiltersBar extends StatelessWidget {
     required this.onStatusChanged,
     required this.onSearchPressed,
     required this.onClearFilters,
+    this.onShortcutToday,
+    this.onShortcutThisWeek,
   });
 
   final AppLocalizations l10n;
@@ -35,6 +37,8 @@ class MassiveEventStandaloneListWebFiltersBar extends StatelessWidget {
   final ValueChanged<String> onStatusChanged;
   final VoidCallback onSearchPressed;
   final VoidCallback onClearFilters;
+  final VoidCallback? onShortcutToday;
+  final VoidCallback? onShortcutThisWeek;
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +67,16 @@ class MassiveEventStandaloneListWebFiltersBar extends StatelessWidget {
               onChanged: onToChanged,
               width: 130,
             ),
+            if (onShortcutToday != null)
+              TextButton(
+                onPressed: onShortcutToday,
+                child: Text(l10n.massiveEventsDateShortcutToday),
+              ),
+            if (onShortcutThisWeek != null)
+              TextButton(
+                onPressed: onShortcutThisWeek,
+                child: Text(l10n.massiveEventsDateShortcutThisWeek),
+              ),
             SizedBox(
               width: 240,
               child: TextField(

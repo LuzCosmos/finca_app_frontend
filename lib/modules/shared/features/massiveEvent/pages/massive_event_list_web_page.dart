@@ -5,8 +5,10 @@ import 'package:go_router/go_router.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/massive_event_model.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/massive_event_standalone_list_date_shortcuts.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/massive_event_standalone_list_query.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/services/massive_event_api_service.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/services/massive_events_page_result.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/widgets/massive_event_list_row_widgets.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/widgets/massive_event_standalone_list_web_filters_bar.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/widgets/massive_event_standalone_list_shared_views.dart';
@@ -74,6 +76,10 @@ class _MassiveEventListWebState extends State<MassiveEventListWeb> {
   int _page = 1;
   int _limit = 10;
 
+  /// Índice de columna ordenable en [DataTable] (3 = «Creado por» no ordenable).
+  int _sortColumnIndex = 0;
+  bool _sortAscending = false;
+
   List<MassiveEventModel> _items = const [];
   int _total = 0;
   bool _loading = true;
@@ -95,6 +101,35 @@ class _MassiveEventListWebState extends State<MassiveEventListWeb> {
   int _coerceLimit(int? l) => _allowedPageSizes.contains(l) ? l! : 10;
 
   int get _pageCount => (_total == 0) ? 1 : ((_total + _limit - 1) ~/ _limit);
+
+  String _sortByForDataColumn(int columnIndex) {
+    switch (columnIndex) {
+      case 0:
+        return 'eventDate';
+      case 1:
+        return 'name';
+      case 2:
+        return 'status';
+      case 4:
+        return 'createdAt';
+      case 5:
+        return 'updatedAt';
+      default:
+        return 'eventDate';
+    }
+  }
+
+  void _onSortDataColumn(int columnIndex, bool ascending) {
+    if (columnIndex == 3) {
+      return;
+    }
+    setState(() {
+      _sortColumnIndex = columnIndex;
+      _sortAscending = ascending;
+      _page = 1;
+    });
+    _load();
+  }
 
   @override
   void initState() {
@@ -149,6 +184,8 @@ class _MassiveEventListWebState extends State<MassiveEventListWeb> {
           to: q.toForApi,
           name: q.nameForApi,
           status: q.statusForApi,
+          sortBy: _sortByForDataColumn(_sortColumnIndex),
+          sortDir: _sortAscending ? 'asc' : 'desc',
         );
       } else {
         res = await MassiveEventApiService.listStandaloneMassiveEventsPaged(
@@ -158,6 +195,8 @@ class _MassiveEventListWebState extends State<MassiveEventListWeb> {
           to: q.toForApi,
           name: q.nameForApi,
           status: q.statusForApi,
+          sortBy: _sortByForDataColumn(_sortColumnIndex),
+          sortDir: _sortAscending ? 'asc' : 'desc',
         );
       }
       if (!mounted) return;
@@ -168,7 +207,11 @@ class _MassiveEventListWebState extends State<MassiveEventListWeb> {
     } on ApiException catch (e) {
       final code = ApiExceptionCode.fromString(e.code);
       if (!mounted) return;
-      final errorText = code.asText(context, objectName: l10n.massiveEvent);
+      var errorText = code.asText(context, objectName: l10n.massiveEvent);
+      if (code == ApiExceptionCode.unprocessableEntity) {
+        errorText =
+            '$errorText\n${l10n.massiveEventsListUnprocessableEntityHint}';
+      }
       setState(() {
         _error = errorText;
         if (code == ApiExceptionCode.serverConnectionError) {
@@ -295,6 +338,25 @@ class _MassiveEventListWebState extends State<MassiveEventListWeb> {
               _load();
             },
             onClearFilters: _clearFilters,
+            onShortcutToday: () {
+              final r = MassiveEventStandaloneListDateShortcuts.todayLocal();
+              setState(() {
+                _from = r.$1;
+                _to = r.$2;
+                _page = 1;
+              });
+              _load();
+            },
+            onShortcutThisWeek: () {
+              final r =
+                  MassiveEventStandaloneListDateShortcuts.thisWeekLocal(context);
+              setState(() {
+                _from = r.$1;
+                _to = r.$2;
+                _page = 1;
+              });
+              _load();
+            },
           ),
           const SizedBox(height: 8),
           Expanded(
@@ -343,6 +405,8 @@ class _MassiveEventListWebState extends State<MassiveEventListWeb> {
                               theme.dataTableTheme.horizontalMargin ?? 24;
 
                           final dataTable = DataTable(
+                            sortColumnIndex: _sortColumnIndex,
+                            sortAscending: _sortAscending,
                             columnSpacing: spacing,
                             horizontalMargin: hMargin,
                             headingRowColor: WidgetStateProperty.all(
@@ -354,18 +418,21 @@ class _MassiveEventListWebState extends State<MassiveEventListWeb> {
                                   l10n.massiveEventsColumnEventDate,
                                   cw[0],
                                 ),
+                                onSort: _onSortDataColumn,
                               ),
                               DataColumn(
                                 label: _webMassiveHeaderLabel(
                                   l10n.massiveEventsColumnName,
                                   cw[1],
                                 ),
+                                onSort: _onSortDataColumn,
                               ),
                               DataColumn(
                                 label: _webMassiveHeaderLabel(
                                   l10n.status,
                                   cw[2],
                                 ),
+                                onSort: _onSortDataColumn,
                               ),
                               DataColumn(
                                 label: _webMassiveHeaderLabel(
@@ -378,12 +445,14 @@ class _MassiveEventListWebState extends State<MassiveEventListWeb> {
                                   l10n.massiveEventsColumnCreatedAt,
                                   cw[4],
                                 ),
+                                onSort: _onSortDataColumn,
                               ),
                               DataColumn(
                                 label: _webMassiveHeaderLabel(
                                   l10n.massiveEventsColumnUpdatedAt,
                                   cw[5],
                                 ),
+                                onSort: _onSortDataColumn,
                               ),
                             ],
                             rows:

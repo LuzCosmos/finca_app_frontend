@@ -3,25 +3,11 @@ import 'package:http/http.dart' as http;
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/animal_simple_event_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/massive_event_model.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/services/massive_event_standalone_remote_pages.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/services/massive_events_page_result.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'dart:io';
 import 'package:finca_app_frontend/core/services/basic_api_service.dart';
-
-class MassiveEventsPageResult {
-  MassiveEventsPageResult(
-    this.page,
-    this.limit,
-    this.total,
-    this.hasMore,
-    this.items,
-  );
-
-  final int page;
-  final int limit;
-  final int total;
-  final bool hasMore;
-  final List<MassiveEventModel> items;
-}
 
 class MassiveEventApiService {
   static Future<MassiveEventModel> createMassiveEvent({
@@ -201,6 +187,8 @@ class MassiveEventApiService {
     String? to,
     String? name,
     String status = 'all',
+    String? sortBy,
+    String? sortDir,
   }) async {
     final String baseUrl = BasicApiService.getApiBaseUrl();
     final uri = Uri.parse('$baseUrl/massive-events').replace(
@@ -211,6 +199,8 @@ class MassiveEventApiService {
         if (to != null && to.isNotEmpty) 'to': to,
         if (name != null && name.isNotEmpty) 'name': name,
         if (status.isNotEmpty) 'status': status,
+        if (sortBy != null && sortBy.isNotEmpty) 'sortBy': sortBy,
+        if (sortDir != null && sortDir.isNotEmpty) 'sortDir': sortDir,
       },
     );
 
@@ -275,27 +265,18 @@ class MassiveEventApiService {
     String? to,
     String? name,
     String status = 'all',
+    String? sortBy,
+    String? sortDir,
   }) async {
-    final merged = <MassiveEventModel>[];
-    var page = 1;
-    const batch = 500;
-    const maxPages = 200;
-    while (page <= maxPages) {
-      final chunk = await listStandaloneMassiveEventsPaged(
-        page: page,
-        limit: batch,
-        from: from,
-        to: to,
-        name: name,
-        status: status,
-      );
-      merged.addAll(chunk.items);
-      if (!chunk.hasMore) {
-        break;
-      }
-      page++;
-    }
-    return merged;
+    return MassiveEventStandaloneRemotePages.fetchAllStandalonePages(
+      from: from,
+      to: to,
+      name: name,
+      status: status,
+      sortBy: sortBy,
+      sortDir: sortDir,
+      pagedFetch: listStandaloneMassiveEventsPaged,
+    );
   }
 
   static Future<SimpleEventModel> updateSimpleEvent({

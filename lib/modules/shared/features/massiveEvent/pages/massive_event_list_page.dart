@@ -15,8 +15,8 @@ export 'massive_event_list_types.dart';
 /// `FilledButton.icon` alineado a la derecha (también en panel embebido),
 /// filtros en `Card`, tabla `DataTable`
 /// con scroll horizontal y paginación **en servidor** (`page`, `limit`, filtros
-/// en query). En **móvil** se usa `ListTile` con la **misma información** que
-/// la tabla web y **filtros** (fechas, nombre/id, estado) equivalentes a web.
+/// en query). En **móvil** hay scroll infinito (páginas en servidor), detalle al tocar
+/// fila y filtros equivalentes a web; [fetchStandaloneOverride] en tests fuerza lista única en cliente.
 class MassiveEventListPage extends StatelessWidget {
   const MassiveEventListPage({
     super.key,
@@ -28,10 +28,10 @@ class MassiveEventListPage extends StatelessWidget {
 
   final bool embedded;
 
-  /// Solo para tests **móvil**: sustituye la lista autónoma (todas las páginas agregadas).
+  /// Solo para tests **móvil**: sustituye la lista autónoma (todas las páginas agregadas en cliente).
   final Future<List<MassiveEventModel>> Function()? fetchStandaloneOverride;
 
-  /// Solo para tests **web**: sustituye el GET paginado.
+  /// Tests: sustituye el GET paginado (**web** o **móvil** con scroll infinito).
   final MassiveEventsStandalonePagedFetch? fetchStandalonePagedOverride;
 
   /// Tests o inyección: sustituye [SessionService.getPermissions] (D3 / fase 7).
@@ -49,6 +49,7 @@ class MassiveEventListPage extends StatelessWidget {
     return MassiveEventListMobile(
       embedded: embedded,
       fetchStandaloneOverride: fetchStandaloneOverride,
+      fetchStandalonePagedOverride: fetchStandalonePagedOverride,
       getPermissionsOverride: getPermissionsOverride,
     );
   }

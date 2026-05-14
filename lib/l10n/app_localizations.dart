@@ -878,6 +878,30 @@ abstract class AppLocalizations {
   /// **'Closed'**
   String get massiveEventsStatusClosedLabel;
 
+  /// Label for the technical id in the read-only mobile list detail sheet.
+  ///
+  /// In en, this message translates to:
+  /// **'Identifier'**
+  String get massiveEventsDetailInternalId;
+
+  /// Date filter shortcut: current calendar day.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get massiveEventsDateShortcutToday;
+
+  /// Date filter shortcut: calendar week per locale.
+  ///
+  /// In en, this message translates to:
+  /// **'This week'**
+  String get massiveEventsDateShortcutThisWeek;
+
+  /// Extra copy when the list API returns 422 (unprocessable entity).
+  ///
+  /// In en, this message translates to:
+  /// **'Check the filters or submitted data. If the event is linked to a purchase reception, the operation may not be valid on the server.'**
+  String get massiveEventsListUnprocessableEntityHint;
+
   /// Button label to trigger manual data sync on mobile.
   ///
   /// In en, this message translates to:

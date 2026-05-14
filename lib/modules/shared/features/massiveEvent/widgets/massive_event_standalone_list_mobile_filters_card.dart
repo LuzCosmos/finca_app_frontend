@@ -20,6 +20,8 @@ class MassiveEventStandaloneListMobileFiltersCard extends StatelessWidget {
     required this.onStatusChanged,
     required this.onSearch,
     required this.onClearFilters,
+    this.onShortcutToday,
+    this.onShortcutThisWeek,
   });
 
   final AppLocalizations l10n;
@@ -35,6 +37,8 @@ class MassiveEventStandaloneListMobileFiltersCard extends StatelessWidget {
   final ValueChanged<String> onStatusChanged;
   final VoidCallback onSearch;
   final VoidCallback onClearFilters;
+  final VoidCallback? onShortcutToday;
+  final VoidCallback? onShortcutThisWeek;
 
   @override
   Widget build(BuildContext context) {
@@ -83,6 +87,25 @@ class MassiveEventStandaloneListMobileFiltersCard extends StatelessWidget {
                 ),
               ],
             ),
+            if (onShortcutToday != null || onShortcutThisWeek != null) ...[
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 4,
+                children: [
+                  if (onShortcutToday != null)
+                    OutlinedButton(
+                      onPressed: onShortcutToday,
+                      child: Text(l10n.massiveEventsDateShortcutToday),
+                    ),
+                  if (onShortcutThisWeek != null)
+                    OutlinedButton(
+                      onPressed: onShortcutThisWeek,
+                      child: Text(l10n.massiveEventsDateShortcutThisWeek),
+                    ),
+                ],
+              ),
+            ],
             const SizedBox(height: 8),
             TextField(
               controller: nameController,
