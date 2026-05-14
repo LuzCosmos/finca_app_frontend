@@ -20,7 +20,7 @@ Documentación de producto: [`finca_app_docs/user_histories/uh-evento-masivo-lis
 | `services/massive_event_api_service.dart` | Cliente HTTP hacia `massive-events` (crear, cerrar, listado paginado, etc.). |
 | `models/` | `MassiveEventModel` (incluye `linkedToPurchaseReception`, `createdByUsername`), `SimpleEventModel`, `AnimalSimpleEventModel`, tipos. |
 | `bloc/` | `MassiveEventBloc` y estados/eventos de la pantalla de evento. |
-| `widgets/` | Formularios de evento, tabla de animales, paneles de configuración, **lista autónoma**: `MassiveEventStandaloneListMobileFiltersCard`, `MassiveEventStandaloneListWebFiltersBar`, `MassiveEventStandaloneListMobileEventRow`, `MassiveEventListDateFilterField`, `MassiveEventListStatusChip` (callbacks; sin `SessionService`). |
+| `widgets/` | Formularios de evento, tabla de animales, paneles de configuración, **lista autónoma**: `massive_event_standalone_list_shared_views.dart` (D7: vacío / sin list / error genérico), `MassiveEventStandaloneListMobileFiltersCard`, `MassiveEventStandaloneListWebFiltersBar`, `MassiveEventStandaloneListMobileEventRow`, `MassiveEventListDateFilterField`, `MassiveEventListStatusChip` (callbacks; sin `SessionService`). |
 | `data/massive_event_page_data_source*.dart` | Abstracción de persistencia/API por plataforma (móvil vs web). |
 
 Los data sources concretos viven bajo `lib/modules/mobile/data/massive_event/` y `lib/modules/web/data/massive_event/` (no en esta carpeta).

@@ -10,6 +10,7 @@ import 'package:finca_app_frontend/modules/shared/features/massiveEvent/massive_
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/services/massive_event_api_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/widgets/massive_event_list_row_widgets.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/widgets/massive_event_standalone_list_web_filters_bar.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/widgets/massive_event_standalone_list_shared_views.dart';
 import 'package:finca_app_frontend/modules/shared/widgets/finca_scaffold.dart';
 import 'package:finca_app_frontend/modules/shared/widgets/message_banner.dart';
 import 'package:finca_app_frontend/router/route_access.dart';
@@ -198,56 +199,6 @@ class _MassiveEventListWebState extends State<MassiveEventListWeb> {
     _load();
   }
 
-  Widget _buildEmptyState(BuildContext context, AppLocalizations l10n) {
-    final hasFilters = _hasActiveFilters;
-
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.inbox,
-            size: 80,
-            color: Theme.of(
-              context,
-            ).colorScheme.onSurface.withValues(alpha: 0.3),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            hasFilters
-                ? l10n.noDataFiltered(l10n.massiveEvents)
-                : l10n.noDataSomething(l10n.massiveEvents),
-            style: Theme.of(context).textTheme.titleLarge,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            hasFilters
-                ? l10n.tryAdjustFilters
-                : l10n.massiveEvents_createFirstEvent,
-            style: Theme.of(context).textTheme.bodyMedium,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 24),
-          ElevatedButton.icon(
-            onPressed:
-                hasFilters
-                    ? _clearFilters
-                    : (_canCreate
-                        ? () => context.push('/massive-events/create')
-                        : null),
-            icon: Icon(hasFilters ? Icons.clear : Icons.add),
-            label: Text(
-              hasFilters
-                  ? l10n.clearFilters
-                  : l10n.addSomething(l10n.massiveEvent),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _webMassiveHeaderLabel(String text, double w) {
     return SizedBox(
       width: w,
@@ -282,19 +233,11 @@ class _MassiveEventListWebState extends State<MassiveEventListWeb> {
 
   Widget _buildMainBody(AppLocalizations l10n) {
     if (!_canList && _canCreate) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Text(
-            l10n.massiveEventsNoListPermission,
-            textAlign: TextAlign.center,
-          ),
-        ),
-      );
+      return MassiveEventStandaloneListNoListPermissionView(l10n: l10n);
     }
 
     if (!_canList) {
-      return Center(child: Text(l10n.massiveEventsListLoadError));
+      return MassiveEventStandaloneListGenericLoadErrorView(l10n: l10n);
     }
 
     final locale = Localizations.localeOf(context).toString();
@@ -355,7 +298,15 @@ class _MassiveEventListWebState extends State<MassiveEventListWeb> {
                 _loading
                     ? const Center(child: CircularProgressIndicator())
                     : _items.isEmpty
-                    ? _buildEmptyState(context, l10n)
+                    ? MassiveEventStandaloneListEmptyState(
+                      l10n: l10n,
+                      hasActiveFilters: _hasActiveFilters,
+                      canCreate: _canCreate,
+                      onClearFilters: _clearFilters,
+                      onCreateMassiveEvent:
+                          () => context.push('/massive-events/create'),
+                      inboxIconSize: 80,
+                    )
                     : Card(
                       clipBehavior: Clip.antiAlias,
                       child: LayoutBuilder(

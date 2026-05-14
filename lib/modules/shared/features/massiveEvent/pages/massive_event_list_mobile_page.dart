@@ -10,6 +10,7 @@ import 'package:finca_app_frontend/modules/shared/features/massiveEvent/massive_
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/services/massive_event_api_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/widgets/massive_event_standalone_list_mobile_event_row.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/widgets/massive_event_standalone_list_mobile_filters_card.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/widgets/massive_event_standalone_list_shared_views.dart';
 import 'package:finca_app_frontend/modules/shared/widgets/finca_scaffold.dart';
 import 'package:finca_app_frontend/router/route_access.dart';
 import 'package:intl/intl.dart';
@@ -182,59 +183,6 @@ class _MassiveEventListMobileState extends State<MassiveEventListMobile> {
     );
   }
 
-  Widget _buildMobileEmptyState(AppLocalizations l10n, _MassiveListState s) {
-    final hasFilters = _hasActiveFilters;
-    return Center(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.inbox,
-              size: 64,
-              color: Theme.of(
-                context,
-              ).colorScheme.onSurface.withValues(alpha: 0.3),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              hasFilters
-                  ? l10n.noDataFiltered(l10n.massiveEvents)
-                  : l10n.noDataSomething(l10n.massiveEvents),
-              style: Theme.of(context).textTheme.titleLarge,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              hasFilters
-                  ? l10n.tryAdjustFilters
-                  : l10n.massiveEvents_createFirstEvent,
-              style: Theme.of(context).textTheme.bodyMedium,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton.icon(
-              onPressed:
-                  hasFilters
-                      ? _clearFilters
-                      : (s.canCreate
-                          ? () => context.push('/massive-events/create')
-                          : null),
-              icon: Icon(hasFilters ? Icons.clear : Icons.add),
-              label: Text(
-                hasFilters
-                    ? l10n.clearFilters
-                    : l10n.addSomething(l10n.massiveEvent),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _buildBody(AppLocalizations l10n, _MassiveListState s) {
     if (s.error != null) {
       return Center(
@@ -263,18 +211,18 @@ class _MassiveEventListMobileState extends State<MassiveEventListMobile> {
       );
     }
     if (!s.canList && s.canCreate) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Text(
-            l10n.massiveEventsNoListPermission,
-            textAlign: TextAlign.center,
-          ),
-        ),
-      );
+      return MassiveEventStandaloneListNoListPermissionView(l10n: l10n);
     }
     if (s.events.isEmpty) {
-      return _buildMobileEmptyState(l10n, s);
+      return MassiveEventStandaloneListEmptyState(
+        l10n: l10n,
+        hasActiveFilters: _hasActiveFilters,
+        canCreate: s.canCreate,
+        onClearFilters: _clearFilters,
+        onCreateMassiveEvent: () => context.push('/massive-events/create'),
+        inboxIconSize: 64,
+        scrollable: true,
+      );
     }
     final locale = Localizations.localeOf(context).toString();
     final df = DateFormat.yMMMd(locale);
@@ -324,7 +272,7 @@ class _MassiveEventListMobileState extends State<MassiveEventListMobile> {
             loading
                 ? const Center(child: CircularProgressIndicator())
                 : s == null
-                ? Center(child: Text(l10n.massiveEventsListLoadError))
+                ? MassiveEventStandaloneListGenericLoadErrorView(l10n: l10n)
                 : _buildBody(l10n, s);
 
         final padded = Padding(
