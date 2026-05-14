@@ -9,6 +9,10 @@ import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/massive_event_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/massive_event_standalone_list_query.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/services/massive_event_api_service.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/widgets/massive_event_list_row_widgets.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/widgets/massive_event_standalone_list_mobile_event_row.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/widgets/massive_event_standalone_list_mobile_filters_card.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/widgets/massive_event_standalone_list_web_filters_bar.dart';
 import 'package:finca_app_frontend/modules/shared/widgets/finca_scaffold.dart';
 import 'package:finca_app_frontend/modules/shared/widgets/message_banner.dart';
 import 'package:finca_app_frontend/router/route_access.dart';
@@ -25,35 +29,6 @@ typedef MassiveEventsStandalonePagedFetch =
       String? name,
       required String status,
     });
-
-/// Chip de estado (abierto/cerrado) alineado con la tabla web.
-Widget _massiveEventListStatusChip(AppLocalizations l10n, MassiveEventModel e) {
-  final open = e.status.toLowerCase() == 'open';
-  return Container(
-    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-    decoration: BoxDecoration(
-      color:
-          open
-              ? Colors.green.withValues(alpha: 0.1)
-              : Colors.grey.withValues(alpha: 0.1),
-      borderRadius: BorderRadius.circular(4),
-      border: Border.all(color: open ? Colors.green : Colors.grey),
-    ),
-    child: Text(
-      open ? l10n.open : l10n.massiveEventsStatusClosedLabel,
-      style: TextStyle(
-        color: open ? Colors.green[800] : Colors.grey[800],
-        fontWeight: FontWeight.bold,
-      ),
-    ),
-  );
-}
-
-String _massiveEventListDisplayCreatedByUsername(MassiveEventModel e) {
-  final u = e.createdByUsername?.trim();
-  if (u != null && u.isNotEmpty) return u;
-  return '—';
-}
 
 /// Misma lógica de filtro que el API (tests con [fetchStandaloneOverride]).
 List<MassiveEventModel> _filterMassiveEventsClient(
@@ -83,38 +58,6 @@ List<MassiveEventModel> _filterMassiveEventsClient(
     }
     return true;
   }).toList();
-}
-
-Widget _massiveEventListDateFilterField(
-  BuildContext context,
-  String label,
-  DateTime? value,
-  ValueChanged<DateTime?> onChanged, {
-  double? width,
-}) {
-  final inner = InkWell(
-    onTap: () async {
-      final now = DateTime.now();
-      final picked = await showDatePicker(
-        context: context,
-        initialDate: value ?? now,
-        firstDate: DateTime(now.year - 5),
-        lastDate: DateTime(now.year + 1),
-      );
-      onChanged(picked);
-    },
-    child: InputDecorator(
-      decoration: InputDecoration(
-        labelText: label,
-        suffixIcon: const Icon(Icons.calendar_today),
-      ),
-      child: Text(value == null ? '—' : DateFormat('yyyy/MM/dd').format(value)),
-    ),
-  );
-  if (width != null) {
-    return SizedBox(width: width, child: inner);
-  }
-  return inner;
 }
 
 /// Lista de eventos masivos (excluye recepciones en servidor). Punto de entrada del módulo.
@@ -305,101 +248,23 @@ class _MassiveEventListMobileState extends State<MassiveEventListMobile> {
   }
 
   Widget _buildMobileFilterCard(AppLocalizations l10n) {
-    final labels = <String, String>{
-      'all': l10n.all,
-      'open': l10n.open,
-      'closed': l10n.massiveEventsStatusClosedLabel,
-    };
-    final scheme = Theme.of(context).colorScheme;
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: Theme(
-        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-        child: ExpansionTile(
-          maintainState: true,
-          tilePadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          childrenPadding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-          leading: Icon(Icons.tune, color: scheme.primary),
-          title: Row(
-            children: [
-              Expanded(child: Text(l10n.massiveEventsListFiltersTitle)),
-              if (_hasActiveFilters)
-                Padding(
-                  padding: const EdgeInsets.only(right: 4),
-                  child: Icon(Icons.circle, size: 8, color: scheme.primary),
-                ),
-            ],
-          ),
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: _massiveEventListDateFilterField(
-                    context,
-                    l10n.from,
-                    _from,
-                    (d) => setState(() => _from = d),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: _massiveEventListDateFilterField(
-                    context,
-                    l10n.to,
-                    _to,
-                    (d) => setState(() => _to = d),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            TextField(
-              controller: _nameCtrl,
-              decoration: InputDecoration(
-                labelText: l10n.massiveEventsSearchNameOrId,
-                prefixIcon: const Icon(Icons.search),
-              ),
-              onChanged: (_) => setState(() {}),
-              onSubmitted: (_) => _reload(),
-            ),
-            const SizedBox(height: 8),
-            Text(l10n.status, style: Theme.of(context).textTheme.labelLarge),
-            DropdownButton<String>(
-              isExpanded: true,
-              value: MassiveEventStandaloneListQuery.coerceStatus(_status),
-              items:
-                  MassiveEventStandaloneListQuery.allowedStatusCodes.map((code) {
-                    return DropdownMenuItem<String>(
-                      value: code,
-                      child: Text(labels[code] ?? code),
-                    );
-                  }).toList(),
-              onChanged: (v) {
-                if (v == null) return;
-                setState(() => _status = v);
-                _reload();
-              },
-            ),
-            const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                if (_hasActiveFilters)
-                  IconButton(
-                    onPressed: _clearFilters,
-                    icon: const Icon(Icons.clear),
-                    tooltip: l10n.clearFilters,
-                  ),
-                FilledButton.icon(
-                  onPressed: _reload,
-                  icon: const Icon(Icons.search),
-                  label: Text(l10n.search),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
+    return MassiveEventStandaloneListMobileFiltersCard(
+      l10n: l10n,
+      from: _from,
+      to: _to,
+      nameController: _nameCtrl,
+      statusRaw: _status,
+      hasActiveFilters: _hasActiveFilters,
+      onFromChanged: (d) => setState(() => _from = d),
+      onToChanged: (d) => setState(() => _to = d),
+      onNameChanged: () => setState(() {}),
+      onNameSubmitted: _reload,
+      onStatusChanged: (v) {
+        setState(() => _status = v);
+        _reload();
+      },
+      onSearch: _reload,
+      onClearFilters: _clearFilters,
     );
   }
 
@@ -452,208 +317,6 @@ class _MassiveEventListMobileState extends State<MassiveEventListMobile> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  /// Fila compacta (teléfono) vs reparto horizontal (panel ancho / tablet).
-  Widget _buildMobileMassiveEventTile(
-    AppLocalizations l10n,
-    MassiveEventModel e,
-    ThemeData theme,
-    TextStyle? small,
-    DateFormat df,
-    DateFormat dtf, {
-    required bool wide,
-    required bool extraWide,
-  }) {
-    final title = e.name?.isNotEmpty == true ? e.name! : e.id;
-    if (!wide) {
-      return ListTile(
-        isThreeLine: true,
-        title: Text(title),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Wrap(
-              spacing: 8,
-              runSpacing: 4,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                Text(
-                  '${l10n.massiveEventsColumnEventDate}: ${df.format(e.eventDate)}',
-                  style: theme.textTheme.bodyMedium,
-                ),
-                _massiveEventListStatusChip(l10n, e),
-              ],
-            ),
-            Text(
-              '${l10n.massiveEventsColumnCreatedBy}: ${_massiveEventListDisplayCreatedByUsername(e)}',
-              style: small,
-            ),
-            Text(
-              '${l10n.massiveEventsColumnCreatedAt}: ${dtf.format(e.createdAt)}',
-              style: small,
-            ),
-            Text(
-              '${l10n.massiveEventsColumnUpdatedAt}: ${dtf.format(e.updatedAt)}',
-              style: small,
-            ),
-          ],
-        ),
-      );
-    }
-
-    if (extraWide) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              flex: 5,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    title,
-                    style: theme.textTheme.titleSmall,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 6),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 6,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: [
-                      Text(
-                        '${l10n.massiveEventsColumnEventDate}: ${df.format(e.eventDate)}',
-                        style: theme.textTheme.bodyMedium,
-                      ),
-                      _massiveEventListStatusChip(l10n, e),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              flex: 5,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    '${l10n.massiveEventsColumnCreatedBy}: ${_massiveEventListDisplayCreatedByUsername(e)}',
-                    style: small,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    '${l10n.massiveEventsColumnCreatedAt}: ${dtf.format(e.createdAt)}',
-                    style: small,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              flex: 4,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    l10n.massiveEventsColumnUpdatedAt,
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    dtf.format(e.updatedAt),
-                    style: theme.textTheme.bodyMedium,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            flex: 12,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  title,
-                  style: theme.textTheme.titleSmall,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 6),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 6,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: [
-                    Text(
-                      '${l10n.massiveEventsColumnEventDate}: ${df.format(e.eventDate)}',
-                      style: theme.textTheme.bodyMedium,
-                    ),
-                    _massiveEventListStatusChip(l10n, e),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            flex: 11,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  '${l10n.massiveEventsColumnCreatedBy}: ${_massiveEventListDisplayCreatedByUsername(e)}',
-                  style: small,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  '${l10n.massiveEventsColumnCreatedAt}: ${dtf.format(e.createdAt)}',
-                  style: small,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  '${l10n.massiveEventsColumnUpdatedAt}: ${dtf.format(e.updatedAt)}',
-                  style: small,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -713,13 +376,13 @@ class _MassiveEventListMobileState extends State<MassiveEventListMobile> {
           separatorBuilder: (_, _) => const Divider(height: 1),
           itemBuilder: (context, i) {
             final e = s.events[i];
-            return _buildMobileMassiveEventTile(
-              l10n,
-              e,
-              theme,
-              small,
-              df,
-              dtf,
+            return MassiveEventStandaloneListMobileEventRow(
+              l10n: l10n,
+              event: e,
+              theme: theme,
+              small: small,
+              df: df,
+              dtf: dtf,
               wide: wide,
               extraWide: extraWide,
             );
@@ -1028,20 +691,6 @@ class _MassiveEventListWebState extends State<MassiveEventListWeb> {
     );
   }
 
-  Widget _datePicker(
-    String label,
-    DateTime? value,
-    ValueChanged<DateTime?> onChanged,
-  ) {
-    return _massiveEventListDateFilterField(
-      context,
-      label,
-      value,
-      onChanged,
-      width: 130,
-    );
-  }
-
   /// Anchos de celdas (sin `horizontalMargin` ni `columnSpacing` del [DataTable]).
   static List<double> _webMassiveEventColumnInnerWidths(double usable) {
     const mins = <double>[72, 88, 64, 80, 88, 88];
@@ -1094,7 +743,7 @@ class _MassiveEventListWebState extends State<MassiveEventListWeb> {
         child: FittedBox(
           fit: BoxFit.scaleDown,
           alignment: Alignment.centerLeft,
-          child: _massiveEventListStatusChip(l10n, e),
+          child: MassiveEventListStatusChip(l10n: l10n, event: e),
         ),
       ),
     );
@@ -1121,12 +770,6 @@ class _MassiveEventListWebState extends State<MassiveEventListWeb> {
     final fmt = DateFormat.yMMMd(locale).add_Hm();
     final fmtDate = DateFormat.yMMMd(locale);
 
-    final labels = <String, String>{
-      'all': l10n.all,
-      'open': l10n.open,
-      'closed': l10n.massiveEventsStatusClosedLabel,
-    };
-
     return Padding(
       padding: const EdgeInsets.all(12),
       child: Column(
@@ -1148,72 +791,32 @@ class _MassiveEventListWebState extends State<MassiveEventListWeb> {
               ),
             ),
           const SizedBox(height: 8),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Wrap(
-                runSpacing: 8,
-                spacing: 12,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                children: [
-                  _datePicker(
-                    l10n.from,
-                    _from,
-                    (d) => setState(() => _from = d),
-                  ),
-                  _datePicker(l10n.to, _to, (d) => setState(() => _to = d)),
-                  SizedBox(
-                    width: 240,
-                    child: TextField(
-                      controller: _nameCtrl,
-                      decoration: InputDecoration(
-                        labelText: l10n.massiveEventsSearchNameOrId,
-                        prefixIcon: const Icon(Icons.search),
-                      ),
-                      onChanged: (_) => setState(() {}),
-                      onSubmitted: (_) {
-                        setState(() => _page = 1);
-                        _load();
-                      },
-                    ),
-                  ),
-                  DropdownButton<String>(
-                    value: MassiveEventStandaloneListQuery.coerceStatus(_status),
-                    onChanged: (v) {
-                      if (v == null) return;
-                      setState(() {
-                        _status = v;
-                        _page = 1;
-                      });
-                      _load();
-                    },
-                    items:
-                        MassiveEventStandaloneListQuery.allowedStatusCodes.map((
-                          code,
-                        ) {
-                          return DropdownMenuItem<String>(
-                            value: code,
-                            child: Text(labels[code] ?? code),
-                          );
-                        }).toList(),
-                  ),
-                  if (_hasActiveFilters)
-                    IconButton(
-                      onPressed: _clearFilters,
-                      icon: const Icon(Icons.clear),
-                      tooltip: l10n.clearFilters,
-                    ),
-                  FilledButton.icon(
-                    onPressed: () {
-                      setState(() => _page = 1);
-                      _load();
-                    },
-                    icon: const Icon(Icons.search),
-                    label: Text(l10n.search),
-                  ),
-                ],
-              ),
-            ),
+          MassiveEventStandaloneListWebFiltersBar(
+            l10n: l10n,
+            from: _from,
+            to: _to,
+            nameController: _nameCtrl,
+            statusRaw: _status,
+            hasActiveFilters: _hasActiveFilters,
+            onFromChanged: (d) => setState(() => _from = d),
+            onToChanged: (d) => setState(() => _to = d),
+            onNameChanged: () => setState(() {}),
+            onNameSubmitted: () {
+              setState(() => _page = 1);
+              _load();
+            },
+            onStatusChanged: (v) {
+              setState(() {
+                _status = v;
+                _page = 1;
+              });
+              _load();
+            },
+            onSearchPressed: () {
+              setState(() => _page = 1);
+              _load();
+            },
+            onClearFilters: _clearFilters,
           ),
           const SizedBox(height: 8),
           Expanded(
@@ -1325,7 +928,7 @@ class _MassiveEventListWebState extends State<MassiveEventListWeb> {
                                           ),
                                           DataCell(
                                             _webMassiveCellText(
-                                              _massiveEventListDisplayCreatedByUsername(
+                                              massiveEventListDisplayCreatedByUsername(
                                                 e,
                                               ),
                                               cw[3],

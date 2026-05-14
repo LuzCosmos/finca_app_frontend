@@ -10,13 +10,13 @@ Documentación de producto: [`finca_app_docs/user_histories/uh-evento-masivo-lis
 
 | Ruta | Rol |
 |------|-----|
-| `pages/massive_event_list_page.dart` | Entrada **lista** `/massive-events`: web (`MassiveEventListWeb`) vs móvil (`MassiveEventListMobile`), permisos bitmask, filtros y paginación servidor en web. |
+| `pages/massive_event_list_page.dart` | Entrada **lista** `/massive-events`: orquesta web (`MassiveEventListWeb`) vs móvil (`MassiveEventListMobile`); UI de filtros/fila en `widgets/` (fase D4). |
 | `pages/massive_event_page.dart` | Pantalla de creación / sesión de evento (bloc + formularios). |
 | `pages/massive_event_sync_listener*.dart` | Hooks de sincronización según plataforma. |
 | `services/massive_event_api_service.dart` | Cliente HTTP hacia `massive-events` (crear, cerrar, listado paginado, etc.). |
 | `models/` | `MassiveEventModel` (incluye `linkedToPurchaseReception`, `createdByUsername`), `SimpleEventModel`, `AnimalSimpleEventModel`, tipos. |
 | `bloc/` | `MassiveEventBloc` y estados/eventos de la pantalla de evento. |
-| `widgets/` | Formularios de evento, tabla de animales, paneles de configuración. |
+| `widgets/` | Formularios de evento, tabla de animales, paneles de configuración, **lista autónoma**: `MassiveEventStandaloneListMobileFiltersCard`, `MassiveEventStandaloneListWebFiltersBar`, `MassiveEventStandaloneListMobileEventRow`, `MassiveEventListDateFilterField`, `MassiveEventListStatusChip` (callbacks; sin `SessionService`). |
 | `data/massive_event_page_data_source*.dart` | Abstracción de persistencia/API por plataforma (móvil vs web). |
 
 Los data sources concretos viven bajo `lib/modules/mobile/data/massive_event/` y `lib/modules/web/data/massive_event/` (no en esta carpeta).
