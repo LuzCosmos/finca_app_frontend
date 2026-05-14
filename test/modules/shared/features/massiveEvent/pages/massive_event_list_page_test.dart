@@ -14,7 +14,8 @@ import 'package:finca_app_frontend/modules/shared/features/massiveEvent/pages/ma
 import '../../../../../support/app_test_host.dart';
 
 // Bajo prueba:
-// - lib/modules/shared/features/massiveEvent/pages/massive_event_list_page.dart
+// - massive_event_list_page.dart (router)
+// - massive_event_list_mobile_page.dart / massive_event_list_web_page.dart
 //   (permisos, vacío, carga, offline, errores, scaffold vs embebido, D5: ExpansionTile + ancho lista)
 
 void main() {
