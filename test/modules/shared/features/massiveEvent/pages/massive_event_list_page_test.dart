@@ -15,7 +15,7 @@ import '../../../../../support/app_test_host.dart';
 
 // Bajo prueba:
 // - lib/modules/shared/features/massiveEvent/pages/massive_event_list_page.dart
-//   (permisos, vacío, carga, offline, errores, scaffold vs embebido)
+//   (permisos, vacío, carga, offline, errores, scaffold vs embebido, D5: ExpansionTile + ancho lista)
 
 void main() {
   setUp(() {
@@ -119,22 +119,36 @@ void main() {
       expect(find.text(l10n.noDataSomething(l10n.massiveEvents)), findsOneWidget);
     });
 
-    testWidgets('varias filas: un ListTile por evento', (tester) async {
+    testWidgets('varias filas: un ListTile por evento en ListView (viewport estrecho)', (
+      tester,
+    ) async {
       await savePerms('00001');
       await tester.pumpWidget(
         pumpLocalizedMaterialShell(
-          home: MassiveEventListPage(
-            embedded: true,
-            fetchStandaloneOverride:
-                () async => [
-                  sample(id: 'a', name: 'A'),
-                  sample(id: 'b', name: 'B'),
-                ],
+          home: Center(
+            child: SizedBox(
+              width: 400,
+              height: 900,
+              child: MassiveEventListPage(
+                embedded: true,
+                fetchStandaloneOverride:
+                    () async => [
+                      sample(id: 'a', name: 'A'),
+                      sample(id: 'b', name: 'B'),
+                    ],
+              ),
+            ),
           ),
         ),
       );
       await tester.pumpAndSettle();
-      expect(find.byType(ListTile), findsNWidgets(2));
+      expect(
+        find.descendant(
+          of: find.byType(ListView),
+          matching: find.byType(ListTile),
+        ),
+        findsNWidgets(2),
+      );
     });
 
     testWidgets('sin nombre: título de fila es el id', (tester) async {
@@ -190,6 +204,133 @@ void main() {
         findsOneWidget,
       );
     });
+  });
+
+  /// Fase 2 / D5 (UH evento masivo lista): filtros colapsables y layout por ancho.
+  group('filtros ExpansionTile y ancho de lista (D5)', () {
+    Future<AppLocalizations> l10nFrom(WidgetTester tester) async {
+      await tester.pumpAndSettle();
+      return AppLocalizations.of(
+        tester.element(find.byType(MassiveEventListPage)),
+      )!;
+    }
+
+    testWidgets(
+      'colapsado: etiqueta Buscar del panel filtros no es hit-testable',
+      (tester) async {
+        await savePerms('10001');
+        await tester.pumpWidget(
+          pumpLocalizedMaterialShell(
+            home: Center(
+              child: SizedBox(
+                width: 480,
+                height: 900,
+                child: MassiveEventListPage(
+                  embedded: true,
+                  fetchStandaloneOverride:
+                      () async => [sample(name: 'Solo para lista')],
+                ),
+              ),
+            ),
+          ),
+        );
+        final l10n = await l10nFrom(tester);
+        expect(find.byType(ExpansionTile), findsOneWidget);
+        expect(find.text(l10n.search).hitTestable(), findsNothing);
+      },
+    );
+
+    testWidgets(
+      'expandido: Buscar del panel filtros es hit-testable tras abrir Filtros',
+      (tester) async {
+        await savePerms('10001');
+        await tester.pumpWidget(
+          pumpLocalizedMaterialShell(
+            home: Center(
+              child: SizedBox(
+                width: 480,
+                height: 900,
+                child: MassiveEventListPage(
+                  embedded: true,
+                  fetchStandaloneOverride:
+                      () async => [sample(name: 'Solo para lista')],
+                ),
+              ),
+            ),
+          ),
+        );
+        final l10n = await l10nFrom(tester);
+        await tester.tap(find.text(l10n.massiveEventsListFiltersTitle));
+        await tester.pumpAndSettle();
+        expect(find.text(l10n.search).hitTestable(), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'viewport 600px: filas de eventos en ListView no usan ListTile',
+      (tester) async {
+        await savePerms('00001');
+        await tester.pumpWidget(
+          pumpLocalizedMaterialShell(
+            home: Center(
+              child: SizedBox(
+                width: 600,
+                height: 900,
+                child: MassiveEventListPage(
+                  embedded: true,
+                  fetchStandaloneOverride:
+                      () async => [
+                        sample(id: 'w1', name: 'Wide uno'),
+                        sample(id: 'w2', name: 'Wide dos'),
+                      ],
+                ),
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(
+          find.descendant(
+            of: find.byType(ListView),
+            matching: find.byType(ListTile),
+          ),
+          findsNothing,
+        );
+        expect(find.text('Wide uno'), findsOneWidget);
+        expect(find.text('Wide dos'), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'viewport 850px: filas de eventos en ListView no usan ListTile (extra ancho)',
+      (tester) async {
+        await savePerms('00001');
+        await tester.pumpWidget(
+          pumpLocalizedMaterialShell(
+            home: Center(
+              child: SizedBox(
+                width: 850,
+                height: 900,
+                child: MassiveEventListPage(
+                  embedded: true,
+                  fetchStandaloneOverride:
+                      () async => [sample(id: 'xw', name: 'Extra ancho')],
+                ),
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(
+          find.descendant(
+            of: find.byType(ListView),
+            matching: find.byType(ListTile),
+          ),
+          findsNothing,
+        );
+        expect(find.text('Extra ancho'), findsOneWidget);
+      },
+    );
   });
 
   group('red y errores', () {

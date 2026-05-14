@@ -7,6 +7,7 @@ import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/massive_event_model.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/massive_event_standalone_list_query.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/services/massive_event_api_service.dart';
 import 'package:finca_app_frontend/modules/shared/widgets/finca_scaffold.dart';
 import 'package:finca_app_frontend/modules/shared/widgets/message_banner.dart';
@@ -189,8 +190,6 @@ class MassiveEventListMobile extends StatefulWidget {
 }
 
 class _MassiveEventListMobileState extends State<MassiveEventListMobile> {
-  static const _allowedStatuses = ['all', 'open', 'closed'];
-
   /// Ancho mínimo del listado para repartir la fila en columnas (panel ancho / tablet).
   static const double _wideListBreakpoint = 560;
 
@@ -216,13 +215,15 @@ class _MassiveEventListMobileState extends State<MassiveEventListMobile> {
     super.dispose();
   }
 
-  String _coerceStatus(String? s) => _allowedStatuses.contains(s) ? s! : 'all';
+  MassiveEventStandaloneListQuery get _listQuery =>
+      MassiveEventStandaloneListQuery(
+        eventFrom: _from,
+        eventTo: _to,
+        nameTrim: _nameCtrl.text.trim(),
+        statusRaw: _status,
+      );
 
-  bool get _hasActiveFilters =>
-      _from != null ||
-      _to != null ||
-      _nameCtrl.text.trim().isNotEmpty ||
-      _status != 'all';
+  bool get _hasActiveFilters => _listQuery.hasActiveFilters;
 
   void _clearFilters() {
     setState(() {
@@ -253,12 +254,8 @@ class _MassiveEventListMobileState extends State<MassiveEventListMobile> {
         canList: false,
       );
     }
-    final fmt = DateFormat('yyyy-MM-dd');
-    final fromStr = _from != null ? fmt.format(_from!) : null;
-    final toStr = _to != null ? fmt.format(_to!) : null;
-    final nameStr =
-        _nameCtrl.text.trim().isEmpty ? null : _nameCtrl.text.trim();
-    final status = _coerceStatus(_status);
+    final q = _listQuery;
+    final status = q.statusForApi;
     try {
       if (widget.fetchStandaloneOverride != null) {
         var events = await widget.fetchStandaloneOverride!();
@@ -266,7 +263,7 @@ class _MassiveEventListMobileState extends State<MassiveEventListMobile> {
           events,
           from: _from,
           to: _to,
-          nameTrim: _nameCtrl.text.trim(),
+          nameTrim: q.nameTrim,
           status: status,
         );
         return _MassiveListState(
@@ -278,9 +275,9 @@ class _MassiveEventListMobileState extends State<MassiveEventListMobile> {
         );
       }
       final events = await MassiveEventApiService.listStandaloneMassiveEvents(
-        from: fromStr,
-        to: toStr,
-        name: nameStr,
+        from: q.fromForApi,
+        to: q.toForApi,
+        name: q.nameForApi,
         status: status,
       );
       return _MassiveListState(
@@ -369,9 +366,9 @@ class _MassiveEventListMobileState extends State<MassiveEventListMobile> {
             Text(l10n.status, style: Theme.of(context).textTheme.labelLarge),
             DropdownButton<String>(
               isExpanded: true,
-              value: _coerceStatus(_status),
+              value: MassiveEventStandaloneListQuery.coerceStatus(_status),
               items:
-                  _allowedStatuses.map((code) {
+                  MassiveEventStandaloneListQuery.allowedStatusCodes.map((code) {
                     return DropdownMenuItem<String>(
                       value: code,
                       child: Text(labels[code] ?? code),
@@ -841,7 +838,6 @@ class MassiveEventListWeb extends StatefulWidget {
 }
 
 class _MassiveEventListWebState extends State<MassiveEventListWeb> {
-  static const _allowedStatuses = ['all', 'open', 'closed'];
   static const _allowedPageSizes = [10, 20, 50, 100];
 
   final _nameCtrl = TextEditingController();
@@ -865,7 +861,13 @@ class _MassiveEventListWebState extends State<MassiveEventListWeb> {
   bool _canList = false;
   bool _bootDone = false;
 
-  String _coerceStatus(String? s) => _allowedStatuses.contains(s) ? s! : 'all';
+  MassiveEventStandaloneListQuery get _listQuery =>
+      MassiveEventStandaloneListQuery(
+        eventFrom: _from,
+        eventTo: _to,
+        nameTrim: _nameCtrl.text.trim(),
+        statusRaw: _status,
+      );
 
   int _coerceLimit(int? l) => _allowedPageSizes.contains(l) ? l! : 10;
 
@@ -910,11 +912,7 @@ class _MassiveEventListWebState extends State<MassiveEventListWeb> {
     });
     final l10n = AppLocalizations.of(context)!;
     try {
-      final fmt = DateFormat('yyyy-MM-dd');
-      final fromStr = _from != null ? fmt.format(_from!) : null;
-      final toStr = _to != null ? fmt.format(_to!) : null;
-      final nameStr =
-          _nameCtrl.text.trim().isEmpty ? null : _nameCtrl.text.trim();
+      final q = _listQuery;
 
       final MassiveEventsPageResult res;
       final pagedFetch = widget.fetchStandalonePagedOverride;
@@ -922,19 +920,19 @@ class _MassiveEventListWebState extends State<MassiveEventListWeb> {
         res = await pagedFetch(
           page: _page,
           limit: _limit,
-          from: fromStr,
-          to: toStr,
-          name: nameStr,
-          status: _status,
+          from: q.fromForApi,
+          to: q.toForApi,
+          name: q.nameForApi,
+          status: q.statusForApi,
         );
       } else {
         res = await MassiveEventApiService.listStandaloneMassiveEventsPaged(
           page: _page,
           limit: _limit,
-          from: fromStr,
-          to: toStr,
-          name: nameStr,
-          status: _status,
+          from: q.fromForApi,
+          to: q.toForApi,
+          name: q.nameForApi,
+          status: q.statusForApi,
         );
       }
       if (!mounted) return;
@@ -967,11 +965,7 @@ class _MassiveEventListWebState extends State<MassiveEventListWeb> {
     }
   }
 
-  bool get _hasActiveFilters =>
-      _from != null ||
-      _to != null ||
-      _nameCtrl.text.trim().isNotEmpty ||
-      _status != 'all';
+  bool get _hasActiveFilters => _listQuery.hasActiveFilters;
 
   void _clearFilters() {
     setState(() {
@@ -1184,7 +1178,7 @@ class _MassiveEventListWebState extends State<MassiveEventListWeb> {
                     ),
                   ),
                   DropdownButton<String>(
-                    value: _coerceStatus(_status),
+                    value: MassiveEventStandaloneListQuery.coerceStatus(_status),
                     onChanged: (v) {
                       if (v == null) return;
                       setState(() {
@@ -1194,7 +1188,9 @@ class _MassiveEventListWebState extends State<MassiveEventListWeb> {
                       _load();
                     },
                     items:
-                        _allowedStatuses.map((code) {
+                        MassiveEventStandaloneListQuery.allowedStatusCodes.map((
+                          code,
+                        ) {
                           return DropdownMenuItem<String>(
                             value: code,
                             child: Text(labels[code] ?? code),
