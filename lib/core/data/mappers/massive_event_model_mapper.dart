@@ -15,6 +15,7 @@ extension ToCompanion on MassiveEventModel {
       name: name != null ? Value(name!) : const Value.absent(),
       status: Value(status),
       createdBy: createdBy != null ? Value(createdBy) : const Value.absent(),
+      linkedToPurchaseReception: Value(linkedToPurchaseReception),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
       isSynced: Value(isSynced),

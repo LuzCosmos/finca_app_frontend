@@ -11,7 +11,7 @@ import 'package:finca_app_frontend/modules/mobile/bloc/sync_bloc.dart';
 import 'package:finca_app_frontend/modules/mobile/services/sync_service.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/shared/features/home/page/home_page.dart';
-import 'package:finca_app_frontend/modules/shared/features/massiveEvent/pages/massive_event_page.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/pages/massive_event_list_page.dart';
 import 'package:finca_app_frontend/router/router.dart';
 
 import '../../../../support/app_test_host.dart';
@@ -253,7 +253,7 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('tap evento masivo navega a MassiveEventPage', (tester) async {
+  testWidgets('tap evento masivo navega a MassiveEventListPage', (tester) async {
     await SessionService.saveSession(
       token: 't',
       permissions: {
@@ -280,7 +280,7 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(seconds: 2));
 
-    expect(find.byType(MassiveEventPage), findsOneWidget);
+    expect(find.byType(MassiveEventListPage), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
@@ -410,7 +410,7 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('layout ancho: al tocar evento masivo el panel muestra MassiveEventPage', (
+  testWidgets('layout ancho: al tocar evento masivo el panel muestra MassiveEventListPage', (
     tester,
   ) async {
     final syncMock = _MockSyncServiceForHome();
@@ -449,7 +449,7 @@ void main() {
     await tester.tap(find.byKey(const ValueKey<String>('home-side-item-massive_events')));
     await tester.pumpAndSettle();
 
-    expect(find.byType(MassiveEventPage), findsOneWidget);
+    expect(find.byType(MassiveEventListPage), findsOneWidget);
     expect(
       find.byKey(const ValueKey<String>('home-wide-panel-massive_events')),
       findsOneWidget,

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:finca_app_frontend/core/services/platform_sevice.dart';
@@ -10,11 +9,7 @@ import 'package:finca_app_frontend/modules/shared/features/home/constants/home_l
 import 'package:finca_app_frontend/modules/shared/features/home/home_sync_helper_stub.dart'
     if (dart.library.io) 'package:finca_app_frontend/modules/shared/features/home/home_sync_helper_io.dart';
 import 'package:finca_app_frontend/modules/shared/features/home/widgets/home_option_with_permission.dart';
-import 'package:finca_app_frontend/modules/shared/features/massiveEvent/bloc/massive_event_bloc.dart';
-import 'package:finca_app_frontend/modules/shared/features/massiveEvent/data/massive_event_page_data_source_stub.dart'
-    if (dart.library.io) 'package:finca_app_frontend/modules/mobile/data/massive_event/massive_event_page_data_source_mobile_interface.dart'
-    if (dart.library.html) 'package:finca_app_frontend/modules/web/data/massive_event/massive_event_page_data_source_web_interface.dart';
-import 'package:finca_app_frontend/modules/shared/features/massiveEvent/pages/massive_event_page.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/pages/massive_event_list_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/pages/sale_dashboard_page_export.dart';
 import 'package:finca_app_frontend/modules/shared/features/users/pages/users_list_page.dart';
 import 'package:finca_app_frontend/modules/shared/widgets/finca_scaffold.dart';
@@ -115,7 +110,7 @@ class _HomePageState extends State<HomePage> {
         id: 'massive_events',
         title: l10n.massiveEvent,
         icon: CupertinoIcons.list_bullet,
-        route: '/massive-events/create',
+        route: '/massive-events',
         isVisible: homeStyleResourceAllowed(
           perms,
           'MASSIVE_EVENTS',
@@ -194,13 +189,7 @@ class _HomePageState extends State<HomePage> {
       case 'purchases':
         return const PurchasesListPage(embedded: true);
       case 'massive_events':
-        return BlocProvider(
-          create:
-              (_) => MassiveEventBloc(
-                dataSource: createMassiveEventPageDataSource(),
-              ),
-          child: const MassiveEventPage(embedded: true),
-        );
+        return const MassiveEventListPage(embedded: true);
       case 'sales':
         return const SaleDashboardPage(embedded: true);
       case 'users':
@@ -526,7 +515,7 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                     title: l10n.massiveEvent,
                                     icon: CupertinoIcons.list_bullet,
-                                    route: '/massive-events/create',
+                                    route: '/massive-events',
                                     forWebOnly: false,
                                   ),
                                   HomeOptionWithPermission(

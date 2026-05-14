@@ -24,6 +24,33 @@ bool homeStyleResourceAllowed(
   return false;
 }
 
+/// Bitmask CRUDL del recurso `massive_events` (posición 0 = create, 4 = list).
+/// Ver `docs/features/01-auth-module.md` §6.1.
+bool massiveEventsBitmaskAllowsCreate(Map<String, dynamic> permissions) {
+  return _massiveEventsBitmaskBit(permissions, 0);
+}
+
+bool massiveEventsBitmaskAllowsList(Map<String, dynamic> permissions) {
+  return _massiveEventsBitmaskBit(permissions, 4);
+}
+
+bool _massiveEventsBitmaskBit(Map<String, dynamic> permissions, int index) {
+  final moduleData = permissions['MASSIVE_EVENTS'];
+  if (moduleData is! Map) return false;
+  final value = moduleData['massive_events'];
+  if (value is bool) return value;
+  if (value is String) {
+    final lower = value.toLowerCase();
+    if (lower == 'true' || lower == '1') return true;
+    if (value.length > index &&
+        RegExp(r'^[01]+$').hasMatch(value) &&
+        value[index] == '1') {
+      return true;
+    }
+  }
+  return false;
+}
+
 /// Si la ruta [path] requiere permiso y el usuario no lo tiene, devuelve
 /// `/home`. Si no aplica restricción o hay permiso, devuelve `null`.
 String? routeAccessDeniedRedirect({
@@ -34,8 +61,21 @@ String? routeAccessDeniedRedirect({
   String? resource;
 
   if (path.startsWith('/massive-events')) {
-    module = 'MASSIVE_EVENTS';
-    resource = 'massive_events';
+    final canCreate = massiveEventsBitmaskAllowsCreate(permissions);
+    final canList = massiveEventsBitmaskAllowsList(permissions);
+    final isCreatePath =
+        path == '/massive-events/create' ||
+        path.startsWith('/massive-events/create/');
+    if (isCreatePath) {
+      if (!canCreate) {
+        return '/home';
+      }
+    } else {
+      if (!canList && !canCreate) {
+        return '/home';
+      }
+    }
+    return null;
   } else if (path.startsWith('/sales')) {
     module = 'COMMERCE';
     resource = 'sales';

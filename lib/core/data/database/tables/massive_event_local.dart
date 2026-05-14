@@ -9,6 +9,8 @@ class MassiveEventLocal extends Table {
   DateTimeColumn get eventDate => dateTime()();
   TextColumn get status => text().withDefault(const Constant('open'))();
   TextColumn get createdBy => text().nullable()();
+  BoolColumn get linkedToPurchaseReception =>
+      boolean().withDefault(const Constant(false))();
   BoolColumn get isSynced => boolean().withDefault(const Constant(false))();
   DateTimeColumn get createdAt => dateTime().nullable()();
   DateTimeColumn get updatedAt => dateTime().nullable()();

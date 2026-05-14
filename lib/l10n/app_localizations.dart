@@ -776,6 +776,132 @@ abstract class AppLocalizations {
   /// **'This event is saved on the device and is pending synchronization with the server.'**
   String get massiveEventPendingSync;
 
+  /// No description provided for @massiveEventsListTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Massive events'**
+  String get massiveEventsListTitle;
+
+  /// No description provided for @massiveEventsListEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'There are no massive events to show.'**
+  String get massiveEventsListEmpty;
+
+  /// No description provided for @massiveEvents_createFirstEvent.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your first massive event to get started'**
+  String get massiveEvents_createFirstEvent;
+
+  /// No description provided for @massiveEventsListLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load the massive events list.'**
+  String get massiveEventsListLoadError;
+
+  /// No description provided for @massiveEventsListOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'You are offline. Only data available on this device is shown.'**
+  String get massiveEventsListOffline;
+
+  /// Title of the collapsible filter section on the mobile massive events list.
+  ///
+  /// In en, this message translates to:
+  /// **'Filters'**
+  String get massiveEventsListFiltersTitle;
+
+  /// No description provided for @massiveEventsNoListPermission.
+  ///
+  /// In en, this message translates to:
+  /// **'You do not have permission to view the history. You can create a new event.'**
+  String get massiveEventsNoListPermission;
+
+  /// Label for the massive events list filter field (web).
+  ///
+  /// In en, this message translates to:
+  /// **'Name or ID'**
+  String get massiveEventsSearchNameOrId;
+
+  /// Info when client-side filters hide every row on the web list.
+  ///
+  /// In en, this message translates to:
+  /// **'No massive events match the current filters.'**
+  String get massiveEventsNoMatchesFilter;
+
+  /// No description provided for @massiveEventsColumnEventDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Event date'**
+  String get massiveEventsColumnEventDate;
+
+  /// No description provided for @massiveEventsColumnName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get massiveEventsColumnName;
+
+  /// No description provided for @massiveEventsColumnUpdatedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Last updated'**
+  String get massiveEventsColumnUpdatedAt;
+
+  /// No description provided for @massiveEventsColumnCreatedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Created at'**
+  String get massiveEventsColumnCreatedAt;
+
+  /// No description provided for @massiveEventsColumnCreatedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Created by'**
+  String get massiveEventsColumnCreatedBy;
+
+  /// Table column: for server-backed web list this shows that data comes from the server.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync / source'**
+  String get massiveEventsColumnSync;
+
+  /// Web list: row indicates data loaded from API (always synced with server for this view).
+  ///
+  /// In en, this message translates to:
+  /// **'Server'**
+  String get massiveEventsSyncOnServer;
+
+  /// Massive event business status closed (list filter / chip).
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get massiveEventsStatusClosedLabel;
+
+  /// Label for the technical id in the read-only mobile list detail sheet.
+  ///
+  /// In en, this message translates to:
+  /// **'Identifier'**
+  String get massiveEventsDetailInternalId;
+
+  /// Date filter shortcut: current calendar day.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get massiveEventsDateShortcutToday;
+
+  /// Date filter shortcut: calendar week per locale.
+  ///
+  /// In en, this message translates to:
+  /// **'This week'**
+  String get massiveEventsDateShortcutThisWeek;
+
+  /// Extra copy when the list API returns 422 (unprocessable entity).
+  ///
+  /// In en, this message translates to:
+  /// **'Check the filters or submitted data. If the event is linked to a purchase reception, the operation may not be valid on the server.'**
+  String get massiveEventsListUnprocessableEntityHint;
+
   /// Button label to trigger manual data sync on mobile.
   ///
   /// In en, this message translates to:
@@ -1981,6 +2107,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Create your first sale to get started'**
   String get sales_createFirstSale;
+
+  /// No description provided for @purchases_createFirstPurchase.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your first purchase to get started'**
+  String get purchases_createFirstPurchase;
 
   /// No description provided for @sales_amount.
   ///

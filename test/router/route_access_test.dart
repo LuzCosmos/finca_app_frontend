@@ -135,6 +135,39 @@ void main() {
       );
     });
 
+    test('/massive-events (lista) con create o list en máscara → null', () {
+      expect(
+        routeAccessDeniedRedirect(
+          path: '/massive-events',
+          permissions: {
+            'MASSIVE_EVENTS': <String, dynamic>{'massive_events': '10000'},
+          },
+        ),
+        isNull,
+      );
+      expect(
+        routeAccessDeniedRedirect(
+          path: '/massive-events',
+          permissions: {
+            'MASSIVE_EVENTS': <String, dynamic>{'massive_events': '00001'},
+          },
+        ),
+        isNull,
+      );
+    });
+
+    test('/massive-events/create solo con list (sin create) → /home', () {
+      expect(
+        routeAccessDeniedRedirect(
+          path: '/massive-events/create',
+          permissions: {
+            'MASSIVE_EVENTS': <String, dynamic>{'massive_events': '00001'},
+          },
+        ),
+        '/home',
+      );
+    });
+
     test('subrutas purchases y recepción usan COMMERCE.purchases', () {
       final onlySales = <String, dynamic>{
         'COMMERCE': <String, dynamic>{'sales': true},

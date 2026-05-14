@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:finca_app_frontend/core/data/database/database_provider.dart';
+import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/pages/massive_event_list_page.dart';
 import 'package:finca_app_frontend/main.dart';
 import 'package:finca_app_frontend/modules/mobile/bloc/sync_bloc_stub.dart'
     if (dart.library.io) 'package:finca_app_frontend/modules/mobile/bloc/sync_bloc.dart';
@@ -44,6 +46,7 @@ void main() {
   tearDown(() async {
     await DatabaseProvider.close();
     SessionService.resetForTesting();
+    BasicApiService.resetForTesting();
   });
 
   testWidgets('sin sesión: MainApp muestra login', (tester) async {
@@ -62,10 +65,11 @@ void main() {
   });
 
   testWidgets(
-    'sesión fake: home → tap Evento masivo → panel de configuración visible',
+    'sesión fake: home → tap Evento masivo → lista embebida (historial)',
     (tester) async {
       SessionService.resetForTesting();
       SharedPreferences.setMockInitialValues({});
+      BasicApiService.setBaseUrl('http://127.0.0.1:9');
 
       final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
       await SessionService.saveSession(
@@ -90,10 +94,13 @@ void main() {
       await tester.tap(find.text('Evento masivo'));
       await tester.pumpAndSettle(const Duration(seconds: 15));
 
+      expect(find.byType(MassiveEventListPage), findsOneWidget);
       expect(
-        find.byKey(const ValueKey<String>('eventConfigPanel_massiveEvent')),
+        find.byKey(const ValueKey<String>('massive-event-list-embedded')),
         findsOneWidget,
       );
+      expect(find.text('Eventos masivos'), findsWidgets);
+      expect(find.text('Reintentar'), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
   );

@@ -97,6 +97,16 @@ void main() {
     expect(find.byKey(const ValueKey<String>('login-page')), findsOneWidget);
   });
 
+  testWidgets('/massive-events sin sesión → login', (tester) async {
+    final router = createAppRouter(
+      hasValidToken: () => false,
+      initialLocation: '/massive-events',
+    );
+    await tester.pumpWidget(buildRouterTestHost(router));
+    await pumpRouterFrames(tester);
+    expect(find.byKey(const ValueKey<String>('login-page')), findsOneWidget);
+  });
+
   testWidgets('/massive-events/create sin sesión → login', (tester) async {
     final router = createAppRouter(
       hasValidToken: () => false,
