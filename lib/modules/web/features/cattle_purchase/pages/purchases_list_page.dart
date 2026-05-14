@@ -170,56 +170,60 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
     final hasFilters = _hasActiveFilters;
 
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.inbox,
-            size: 80,
-            color: Theme.of(
-              context,
-            ).colorScheme.onSurface.withValues(alpha: 0.3),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            hasFilters
-                ? l10n.noDataFiltered(l10n.cattlePurchase)
-                : l10n.noDataSomething(l10n.cattlePurchase),
-            style: Theme.of(context).textTheme.titleLarge,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            hasFilters
-                ? l10n.tryAdjustFilters
-                : l10n.purchases_createFirstPurchase,
-            style: Theme.of(context).textTheme.bodyMedium,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 24),
-          ElevatedButton.icon(
-            onPressed:
-                hasFilters
-                    ? _clearFilters
-                    : (_canCreatePurchase
-                        ? () {
-                          Navigator.of(context)
-                              .push(
-                                MaterialPageRoute(
-                                  builder: (_) => const PurchaseFormPage(),
-                                ),
-                              )
-                              .then((_) => _load());
-                        }
-                        : null),
-            icon: Icon(hasFilters ? Icons.clear : Icons.add),
-            label: Text(
-              hasFilters
-                  ? l10n.clearFilters
-                  : l10n.addSomething(l10n.purchase),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.inbox,
+              size: 80,
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.3),
             ),
-          ),
-        ],
+            const SizedBox(height: 16),
+            Text(
+              hasFilters
+                  ? l10n.noDataFiltered(l10n.cattlePurchase)
+                  : l10n.noDataSomething(l10n.cattlePurchase),
+              style: Theme.of(context).textTheme.titleLarge,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              hasFilters
+                  ? l10n.tryAdjustFilters
+                  : l10n.purchases_createFirstPurchase,
+              style: Theme.of(context).textTheme.bodyMedium,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton.icon(
+              onPressed:
+                  hasFilters
+                      ? _clearFilters
+                      : (_canCreatePurchase
+                          ? () {
+                            Navigator.of(context)
+                                .push(
+                                  MaterialPageRoute(
+                                    builder: (_) => const PurchaseFormPage(),
+                                  ),
+                                )
+                                .then((_) => _load());
+                          }
+                          : null),
+              icon: Icon(hasFilters ? Icons.clear : Icons.add),
+              label: Text(
+                hasFilters
+                    ? l10n.clearFilters
+                    : l10n.addSomething(l10n.purchase),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -23,6 +23,7 @@ class MassiveEventListPage extends StatelessWidget {
     this.embedded = false,
     this.fetchStandaloneOverride,
     this.fetchStandalonePagedOverride,
+    this.getPermissionsOverride,
   });
 
   final bool embedded;
@@ -33,17 +34,22 @@ class MassiveEventListPage extends StatelessWidget {
   /// Solo para tests **web**: sustituye el GET paginado.
   final MassiveEventsStandalonePagedFetch? fetchStandalonePagedOverride;
 
+  /// Tests o inyección: sustituye [SessionService.getPermissions] (D3 / fase 7).
+  final MassiveEventsGetPermissions? getPermissionsOverride;
+
   @override
   Widget build(BuildContext context) {
     if (kIsWeb) {
       return MassiveEventListWeb(
         embedded: embedded,
         fetchStandalonePagedOverride: fetchStandalonePagedOverride,
+        getPermissionsOverride: getPermissionsOverride,
       );
     }
     return MassiveEventListMobile(
       embedded: embedded,
       fetchStandaloneOverride: fetchStandaloneOverride,
+      getPermissionsOverride: getPermissionsOverride,
     );
   }
 }

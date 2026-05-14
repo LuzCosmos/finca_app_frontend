@@ -10,10 +10,11 @@ Documentación de producto: [`finca_app_docs/user_histories/uh-evento-masivo-lis
 
 | Ruta | Rol |
 |------|-----|
-| `pages/massive_event_list_page.dart` | Entrada **lista** `/massive-events`: solo **router** (`kIsWeb` → `MassiveEventListWeb` / móvil → `MassiveEventListMobile`) + `export` de `MassiveEventsStandalonePagedFetch`. |
+| `pages/massive_event_list_page.dart` | Entrada **lista** `/massive-events`: router (`kIsWeb` → web / móvil) + `export` de typedefs en `massive_event_list_types.dart`. |
 | `pages/massive_event_list_web_page.dart` | Lista **web**: tabla, filtros, paginación servidor. |
 | `pages/massive_event_list_mobile_page.dart` | Lista **móvil**: `FutureBuilder`, filtros, filas. |
-| `pages/massive_event_list_types.dart` | Typedef `MassiveEventsStandalonePagedFetch` (tests web). |
+| `pages/massive_event_list_permissions.dart` | `massiveEventListResolvePermissions`: delega en `SessionService` o en override (D3 / fase 7). |
+| `pages/massive_event_list_types.dart` | Typedefs `MassiveEventsStandalonePagedFetch`, `MassiveEventsGetPermissions` (tests / inyección). |
 | `pages/massive_event_list_client_filter.dart` | Filtro en cliente cuando hay `fetchStandaloneOverride` (misma semántica que API). |
 | `pages/massive_event_page.dart` | Pantalla de creación / sesión de evento (bloc + formularios). |
 | `pages/massive_event_sync_listener*.dart` | Hooks de sincronización según plataforma. |
@@ -48,7 +49,57 @@ Errores de red hacia el listado: `ApiException` con `serverConnectionError` / `r
 ## Lista (`MassiveEventListPage`)
 
 - **Rutas:** típicamente `/massive-events` (stack completo) y panel embebido desde home con `embedded: true`.
-- **Permisos:** bitmask entidad `massive_events` bajo módulo `MASSIVE_EVENTS`; helpers en `route_access.dart` (`massiveEventsBitmaskAllowsList`, `massiveEventsBitmaskAllowsCreate`).
+- **Permisos:** bitmask entidad `massive_events` bajo módulo `MASSIVE_EVENTS`; helpers en `route_access.dart` (`massiveEventsBitmaskAllowsList`, `massiveEventsBitmaskAllowsCreate`). Lectura vía `massiveEventListResolvePermissions` (`SessionService` por defecto; `getPermissionsOverride` en `MassiveEventListPage` para tests o DI explícita).
+
+### Lista autónoma — cuándo se recarga (D6)
+
+Referencia rápida para onboarding y revisiones de UX. Los métodos citados están en `massive_event_list_mobile_page.dart` y `massive_event_list_web_page.dart`.
+
+#### Móvil
+
+| Disparador | Efecto |
+|------------|--------|
+| `initState` | Primera asignación a `_future = _load()` (permisos + `listStandaloneMassiveEvents` o `fetchStandaloneOverride`). |
+| **Buscar** (`MassiveEventStandaloneListMobileFiltersCard` → `onSearch`) | `_reload()` → nuevo `_load()`. |
+| **Enter** en nombre/ID (`onNameSubmitted`) | `_reload()`. |
+| Cambio de **estado** en el desplegable (`onStatusChanged`) | `setState` del estado + `_reload()`. |
+| **Limpiar filtros** (`onClearFilters` en card / `_clearFilters` en página) | Reset de fechas, nombre y estado + `_reload()`. |
+| **Reintentar** en vista de error (`TextButton` en `_buildBody`) | `_reload()`. |
+
+Cambiar solo **desde** / **hasta** en los date pickers **no** dispara petición hasta usar **Buscar** u otro disparador de la tabla.
+
+`embedded: true` vs `FincaScaffold` solo cambia el cromo (FAB / panel); los disparadores de recarga son los mismos.
+
+#### Web
+
+| Disparador | Efecto |
+|------------|--------|
+| Tras `_bootstrap` si `canList` | Primera `_load()` (paginada o `fetchStandalonePagedOverride`). |
+| **Buscar** (`MassiveEventStandaloneListWebFiltersBar` → `onSearchPressed`) | `_page = 1` + `_load()`. |
+| **Enter** en nombre/ID (`onNameSubmitted`) | `_page = 1` + `_load()`. |
+| Cambio de **estado** (`onStatusChanged`) | `_page = 1` + `_load()`. |
+| **Limpiar filtros** (`onClearFilters` / `_clearFilters`) | Reset filtros, `_page = 1` + `_load()`. |
+| Cambio de **tamaño de página** (`DropdownButton` filas/página) | `_page = 1` + `_load()`. |
+| **Anterior / siguiente** paginación | `_page--` / `_page++` + `_load()`. |
+
+Igual que en móvil, ajustar solo fechas en UI **no** llama al servidor hasta **Buscar** (o acciones que ya combinan reset de página + `_load`).
+
+#### Diagrama (resumen)
+
+```mermaid
+flowchart LR
+  subgraph movil[Móvil]
+    M0[initState] --> ML[_load]
+    MB[Buscar / Enter / Estado / Limpiar] --> MR[_reload]
+    MRT[Retry error] --> MR
+    MR --> ML
+  end
+  subgraph web[Web]
+    W0[bootstrap + canList] --> WL[_load]
+    WF[Buscar / Enter / Estado / Limpiar] --> WL
+    WP[Página prev/sig / page size] --> WL
+  end
+```
 
 ### Web (`kIsWeb`)
 
@@ -66,6 +117,7 @@ Errores de red hacia el listado: `ApiException` con `serverConnectionError` / `r
 
 - `fetchStandaloneOverride`: solo **móvil** — devuelve `Future<List<MassiveEventModel>>`.
 - `fetchStandalonePagedOverride`: solo **web** — misma firma que `listStandaloneMassiveEventsPaged` agregada al typedef `MassiveEventsStandalonePagedFetch`.
+- `getPermissionsOverride` (**fase 7 / D3**): móvil y web — misma firma que `SessionService.getPermissions` (`MassiveEventsGetPermissions`); permite tests sin `saveSession` y futura inyección sin `InheritedWidget` ad-hoc en este feature.
 
 ---
 

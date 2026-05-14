@@ -67,6 +67,27 @@ void main() {
       expect(find.text(l10n.massiveEventsNoListPermission), findsOneWidget);
     });
 
+    testWidgets(
+      'getPermissionsOverride sin saveSession: mismo bitmask que solo create',
+      (tester) async {
+        await tester.pumpWidget(
+          pumpLocalizedMaterialShell(
+            home: MassiveEventListPage(
+              embedded: true,
+              getPermissionsOverride: () async => {
+                'MASSIVE_EVENTS': {'massive_events': '10000'},
+              },
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        final l10n = AppLocalizations.of(
+          tester.element(find.byType(MassiveEventListPage)),
+        )!;
+        expect(find.text(l10n.massiveEventsNoListPermission), findsOneWidget);
+      },
+    );
+
     testWidgets('solo list: sin botón añadir en cabecera embebida', (
       tester,
     ) async {

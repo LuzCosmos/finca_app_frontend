@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
-import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/massive_event_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/massive_event_standalone_list_query.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/services/massive_event_api_service.dart';
@@ -16,6 +15,8 @@ import 'package:finca_app_frontend/router/route_access.dart';
 import 'package:intl/intl.dart';
 
 import 'massive_event_list_client_filter.dart';
+import 'massive_event_list_permissions.dart';
+import 'massive_event_list_types.dart';
 
 class _MassiveListState {
   _MassiveListState({
@@ -38,10 +39,12 @@ class MassiveEventListMobile extends StatefulWidget {
     super.key,
     this.embedded = false,
     this.fetchStandaloneOverride,
+    this.getPermissionsOverride,
   });
 
   final bool embedded;
   final Future<List<MassiveEventModel>> Function()? fetchStandaloneOverride;
+  final MassiveEventsGetPermissions? getPermissionsOverride;
 
   @override
   State<MassiveEventListMobile> createState() => _MassiveEventListMobileState();
@@ -100,7 +103,9 @@ class _MassiveEventListMobileState extends State<MassiveEventListMobile> {
   }
 
   Future<_MassiveListState> _load() async {
-    final permissions = await SessionService.getPermissions();
+    final permissions = await massiveEventListResolvePermissions(
+      widget.getPermissionsOverride,
+    );
     final canCreate = massiveEventsBitmaskAllowsCreate(permissions);
     final canList = massiveEventsBitmaskAllowsList(permissions);
     if (!canList) {

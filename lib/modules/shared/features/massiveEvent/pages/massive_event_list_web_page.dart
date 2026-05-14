@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
-import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/massive_event_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/massive_event_standalone_list_query.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/services/massive_event_api_service.dart';
@@ -16,6 +15,7 @@ import 'package:finca_app_frontend/modules/shared/widgets/message_banner.dart';
 import 'package:finca_app_frontend/router/route_access.dart';
 import 'package:intl/intl.dart';
 
+import 'massive_event_list_permissions.dart';
 import 'massive_event_list_types.dart';
 
 /// Anchos de celdas (sin `horizontalMargin` ni `columnSpacing` del [DataTable]).
@@ -49,10 +49,12 @@ class MassiveEventListWeb extends StatefulWidget {
     super.key,
     this.embedded = false,
     this.fetchStandalonePagedOverride,
+    this.getPermissionsOverride,
   });
 
   final bool embedded;
   final MassiveEventsStandalonePagedFetch? fetchStandalonePagedOverride;
+  final MassiveEventsGetPermissions? getPermissionsOverride;
 
   @override
   State<MassiveEventListWeb> createState() => _MassiveEventListWebState();
@@ -109,7 +111,9 @@ class _MassiveEventListWebState extends State<MassiveEventListWeb> {
   }
 
   Future<void> _bootstrap() async {
-    final permissions = await SessionService.getPermissions();
+    final permissions = await massiveEventListResolvePermissions(
+      widget.getPermissionsOverride,
+    );
     if (!mounted) return;
     final canCreate = massiveEventsBitmaskAllowsCreate(permissions);
     final canList = massiveEventsBitmaskAllowsList(permissions);
