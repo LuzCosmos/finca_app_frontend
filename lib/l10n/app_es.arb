@@ -242,6 +242,74 @@
   "@massiveEventsListUnprocessableEntityHint": {
     "description": "Texto adicional cuando la lista devuelve 422 (entidad no procesable)."
   },
+  "massiveEventsEdit": "Editar",
+  "@massiveEventsEdit": {
+    "description": "Open existing massive event in the same flow as create (query id)."
+  },
+  "massiveEventCloseValidationTitle": "Corrija antes de finalizar",
+  "@massiveEventCloseValidationTitle": {
+    "description": "Dialog title when closing massive event with validation errors."
+  },
+  "massiveEventCloseValidationIntro": "Revise las siguientes filas:",
+  "@massiveEventCloseValidationIntro": {
+    "description": "Intro line above the list of validation issues."
+  },
+  "massiveEventValidationMissingWeight": "Animal {animalNumber}: el peso es obligatorio antes de finalizar.",
+  "@massiveEventValidationMissingWeight": {
+    "description": "Validation when weight simple event is active but row has no weight.",
+    "placeholders": {
+      "animalNumber": {"type": "String"}
+    }
+  },
+  "massiveEventValidationInvalidWeight": "Animal {animalNumber}: el peso está fuera del rango permitido.",
+  "@massiveEventValidationInvalidWeight": {
+    "description": "Validation when weight is not a plausible value.",
+    "placeholders": {
+      "animalNumber": {"type": "String"}
+    }
+  },
+  "massiveEventLoadSessionError": "No se pudo cargar este evento masivo. Compruebe la conexión o inténtelo de nuevo.",
+  "@massiveEventLoadSessionError": {
+    "description": "Shown when GET massive session fails on edit entry."
+  },
+  "massiveEventClosedReadOnly": "Este evento masivo está cerrado: puede revisarlo pero no modificarlo.",
+  "@massiveEventClosedReadOnly": {
+    "description": "Banner when opening a closed massive event from the list."
+  },
+  "massiveEventNoPreviousWeight": "Sin peso previo",
+  "@massiveEventNoPreviousWeight": {
+    "description": "Cell text when previous weight is unknown for analytics."
+  },
+  "massiveEventPreviousWeightShort": "Peso ant.",
+  "@massiveEventPreviousWeightShort": {
+    "description": "Column header for previous weight in processed animals table."
+  },
+  "massiveEventDeltaPctShort": "Δ%",
+  "@massiveEventDeltaPctShort": {
+    "description": "Column header for percent change vs previous weight."
+  },
+  "massiveEventWeightSummaryTitle": "Peso en esta sesión",
+  "@massiveEventWeightSummaryTitle": {
+    "description": "Title for mean/min/max summary of applied weights."
+  },
+  "massiveEventWeightSummaryStats": "Animales con peso: {count} · Media: {mean} · Mín: {min} · Máx: {max}",
+  "@massiveEventWeightSummaryStats": {
+    "description": "One-line stats; mean/min/max formatted with locale elsewhere.",
+    "placeholders": {
+      "count": {"type": "int"},
+      "mean": {"type": "String"},
+      "min": {"type": "String"},
+      "max": {"type": "String"}
+    }
+  },
+  "massiveEventWeightSummaryEmpty": "Aún no hay pesos registrados en esta sesión.",
+  "@massiveEventWeightSummaryEmpty": {
+    "description": "When there are no numeric weights to aggregate."
+  },
+  "dialogOk": "Aceptar",
+  "@dialogOk": {
+    "description": "Generic dismiss button for small dialogs."
+  },
   "syncNow": "Sincronizar ahora",
   "@syncNow": {
     "description": "Botón para disparar sincronización manual en móvil."

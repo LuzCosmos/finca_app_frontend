@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/massive_event_standalone_list_column_limits.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/massive_event_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/widgets/massive_event_list_row_widgets.dart';
 import 'package:intl/intl.dart';
@@ -17,6 +18,7 @@ class MassiveEventStandaloneListMobileEventRow extends StatelessWidget {
     required this.wide,
     required this.extraWide,
     this.onTap,
+    this.onEditOpen,
   });
 
   final AppLocalizations l10n;
@@ -28,6 +30,8 @@ class MassiveEventStandaloneListMobileEventRow extends StatelessWidget {
   final bool wide;
   final bool extraWide;
   final VoidCallback? onTap;
+  /// Editar masivo abierto (misma ruta que creación con `?id=`).
+  final VoidCallback? onEditOpen;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +40,24 @@ class MassiveEventStandaloneListMobileEventRow extends StatelessWidget {
       return ListTile(
         onTap: onTap,
         isThreeLine: true,
-        title: Text(title),
+        trailing:
+            onEditOpen != null
+                ? IconButton(
+                  icon: Icon(
+                    Icons.edit_outlined,
+                    size: 22,
+                    color: Colors.blue.shade700,
+                  ),
+                  tooltip: l10n.massiveEventsEdit,
+                  onPressed: onEditOpen,
+                )
+                : null,
+        title: ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxWidth: MassiveEventStandaloneListColumnLimits.mobileTitleMax,
+          ),
+          child: Text(title, maxLines: 2, overflow: TextOverflow.ellipsis),
+        ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -46,24 +67,61 @@ class MassiveEventStandaloneListMobileEventRow extends StatelessWidget {
               runSpacing: 4,
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
-                Text(
-                  '${l10n.massiveEventsColumnEventDate}: ${df.format(event.eventDate)}',
-                  style: theme.textTheme.bodyMedium,
+                ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    maxWidth:
+                        MassiveEventStandaloneListColumnLimits.mobileEventDateLineMax,
+                  ),
+                  child: Text(
+                    '${l10n.massiveEventsColumnEventDate}: ${df.format(event.eventDate)}',
+                    style: theme.textTheme.bodyMedium,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-                MassiveEventListStatusChip(l10n: l10n, event: event),
+                MassiveEventListStatusChip(
+                  l10n: l10n,
+                  event: event,
+                  maxWidth:
+                      MassiveEventStandaloneListColumnLimits.statusMax,
+                ),
               ],
             ),
-            Text(
-              '${l10n.massiveEventsColumnCreatedBy}: ${massiveEventListDisplayCreatedByUsername(event)}',
-              style: small,
+            ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxWidth:
+                    MassiveEventStandaloneListColumnLimits.mobileCreatedByLineMax,
+              ),
+              child: Text(
+                '${l10n.massiveEventsColumnCreatedBy}: ${massiveEventListDisplayCreatedByUsername(event)}',
+                style: small,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
-            Text(
-              '${l10n.massiveEventsColumnCreatedAt}: ${dtf.format(event.createdAt)}',
-              style: small,
+            ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxWidth:
+                    MassiveEventStandaloneListColumnLimits.mobileDateTimeLineMax,
+              ),
+              child: Text(
+                '${l10n.massiveEventsColumnCreatedAt}: ${dtf.format(event.createdAt)}',
+                style: small,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
-            Text(
-              '${l10n.massiveEventsColumnUpdatedAt}: ${dtf.format(event.updatedAt)}',
-              style: small,
+            ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxWidth:
+                    MassiveEventStandaloneListColumnLimits.mobileDateTimeLineMax,
+              ),
+              child: Text(
+                '${l10n.massiveEventsColumnUpdatedAt}: ${dtf.format(event.updatedAt)}',
+                style: small,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ],
         ),
@@ -84,11 +142,17 @@ class MassiveEventStandaloneListMobileEventRow extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    title,
-                    style: theme.textTheme.titleSmall,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(
+                      maxWidth:
+                          MassiveEventStandaloneListColumnLimits.mobileTitleMax,
+                    ),
+                    child: Text(
+                      title,
+                      style: theme.textTheme.titleSmall,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                   const SizedBox(height: 6),
                   Wrap(
@@ -96,11 +160,24 @@ class MassiveEventStandaloneListMobileEventRow extends StatelessWidget {
                     runSpacing: 6,
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
-                      Text(
-                        '${l10n.massiveEventsColumnEventDate}: ${df.format(event.eventDate)}',
-                        style: theme.textTheme.bodyMedium,
+                      ConstrainedBox(
+                        constraints: const BoxConstraints(
+                          maxWidth:
+                              MassiveEventStandaloneListColumnLimits.mobileEventDateLineMax,
+                        ),
+                        child: Text(
+                          '${l10n.massiveEventsColumnEventDate}: ${df.format(event.eventDate)}',
+                          style: theme.textTheme.bodyMedium,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
-                      MassiveEventListStatusChip(l10n: l10n, event: event),
+                      MassiveEventListStatusChip(
+                        l10n: l10n,
+                        event: event,
+                        maxWidth:
+                            MassiveEventStandaloneListColumnLimits.statusMax,
+                      ),
                     ],
                   ),
                 ],
@@ -113,18 +190,30 @@ class MassiveEventStandaloneListMobileEventRow extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    '${l10n.massiveEventsColumnCreatedBy}: ${massiveEventListDisplayCreatedByUsername(event)}',
-                    style: small,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(
+                      maxWidth:
+                          MassiveEventStandaloneListColumnLimits.mobileCreatedByLineMax,
+                    ),
+                    child: Text(
+                      '${l10n.massiveEventsColumnCreatedBy}: ${massiveEventListDisplayCreatedByUsername(event)}',
+                      style: small,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                   const SizedBox(height: 6),
-                  Text(
-                    '${l10n.massiveEventsColumnCreatedAt}: ${dtf.format(event.createdAt)}',
-                    style: small,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(
+                      maxWidth:
+                          MassiveEventStandaloneListColumnLimits.mobileDateTimeLineMax,
+                    ),
+                    child: Text(
+                      '${l10n.massiveEventsColumnCreatedAt}: ${dtf.format(event.createdAt)}',
+                      style: small,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ],
               ),
@@ -143,15 +232,30 @@ class MassiveEventStandaloneListMobileEventRow extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    dtf.format(event.updatedAt),
-                    style: theme.textTheme.bodyMedium,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(
+                      maxWidth:
+                          MassiveEventStandaloneListColumnLimits.mobileDateTimeLineMax,
+                    ),
+                    child: Text(
+                      dtf.format(event.updatedAt),
+                      style: theme.textTheme.bodyMedium,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ],
               ),
             ),
+            if (onEditOpen != null)
+              IconButton(
+                icon: Icon(
+                  Icons.edit_outlined,
+                  color: Colors.blue.shade700,
+                ),
+                tooltip: l10n.massiveEventsEdit,
+                onPressed: onEditOpen,
+              ),
           ],
         ),
         ),
@@ -171,11 +275,17 @@ class MassiveEventStandaloneListMobileEventRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  title,
-                  style: theme.textTheme.titleSmall,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+                ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    maxWidth:
+                        MassiveEventStandaloneListColumnLimits.mobileTitleMax,
+                  ),
+                  child: Text(
+                    title,
+                    style: theme.textTheme.titleSmall,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
                 const SizedBox(height: 6),
                 Wrap(
@@ -183,11 +293,24 @@ class MassiveEventStandaloneListMobileEventRow extends StatelessWidget {
                   runSpacing: 6,
                   crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
-                    Text(
-                      '${l10n.massiveEventsColumnEventDate}: ${df.format(event.eventDate)}',
-                      style: theme.textTheme.bodyMedium,
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(
+                        maxWidth:
+                            MassiveEventStandaloneListColumnLimits.mobileEventDateLineMax,
+                      ),
+                      child: Text(
+                        '${l10n.massiveEventsColumnEventDate}: ${df.format(event.eventDate)}',
+                        style: theme.textTheme.bodyMedium,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                    MassiveEventListStatusChip(l10n: l10n, event: event),
+                    MassiveEventListStatusChip(
+                      l10n: l10n,
+                      event: event,
+                      maxWidth:
+                          MassiveEventStandaloneListColumnLimits.statusMax,
+                    ),
                   ],
                 ),
               ],
@@ -200,29 +323,56 @@ class MassiveEventStandaloneListMobileEventRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  '${l10n.massiveEventsColumnCreatedBy}: ${massiveEventListDisplayCreatedByUsername(event)}',
-                  style: small,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+                ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    maxWidth:
+                        MassiveEventStandaloneListColumnLimits.mobileCreatedByLineMax,
+                  ),
+                  child: Text(
+                    '${l10n.massiveEventsColumnCreatedBy}: ${massiveEventListDisplayCreatedByUsername(event)}',
+                    style: small,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  '${l10n.massiveEventsColumnCreatedAt}: ${dtf.format(event.createdAt)}',
-                  style: small,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+                ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    maxWidth:
+                        MassiveEventStandaloneListColumnLimits.mobileDateTimeLineMax,
+                  ),
+                  child: Text(
+                    '${l10n.massiveEventsColumnCreatedAt}: ${dtf.format(event.createdAt)}',
+                    style: small,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  '${l10n.massiveEventsColumnUpdatedAt}: ${dtf.format(event.updatedAt)}',
-                  style: small,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+                ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    maxWidth:
+                        MassiveEventStandaloneListColumnLimits.mobileDateTimeLineMax,
+                  ),
+                  child: Text(
+                    '${l10n.massiveEventsColumnUpdatedAt}: ${dtf.format(event.updatedAt)}',
+                    style: small,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               ],
             ),
           ),
+          if (onEditOpen != null)
+            IconButton(
+              icon: Icon(
+                Icons.edit_outlined,
+                color: Colors.blue.shade700,
+              ),
+              tooltip: l10n.massiveEventsEdit,
+              onPressed: onEditOpen,
+            ),
         ],
       ),
       ),

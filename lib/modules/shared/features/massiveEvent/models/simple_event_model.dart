@@ -89,14 +89,35 @@ class SimpleEventModel {
   }
 
   factory SimpleEventModel.fromJson(Map<String, dynamic> json) {
+    final typeRaw = json['type'];
+    final typeName = typeRaw is String ? typeRaw : typeRaw?.toString();
     return SimpleEventModel(
       id: json['id'] as String,
-      idTenant: json['idTenant'] as String,
-      idMassiveEvent: json['idMassiveEvent'] as String?,
-      type: SimpleEventType.values.firstWhere((e) => e.name == json['type']),
+      idTenant: json['idTenant'] as String? ?? json['id_tenant'] as String?,
+      idMassiveEvent:
+          json['idMassiveEvent'] as String? ?? json['id_massive_event'] as String?,
+      type: SimpleEventType.values.firstWhere(
+        (e) => e.name == typeName,
+        orElse:
+            () =>
+                throw FormatException('SimpleEventModel: tipo desconocido "$typeName"'),
+      ),
       data: json['data'] != null ? jsonEncode(json['data']) : null,
-      createdAt: DateTime.parse(json['createdAt'] as String),
-      isActive: json['isActive'] as bool,
+      createdAt: DateTime.parse(
+        (json['createdAt'] ?? json['created_at']) as String,
+      ),
+      isActive: _jsonToBool(json['isActive'], defaultValue: true),
     );
+  }
+
+  static bool _jsonToBool(dynamic value, {required bool defaultValue}) {
+    if (value is bool) return value;
+    if (value is num) return value != 0;
+    if (value is String) {
+      final s = value.toLowerCase();
+      if (s == 'true' || s == '1') return true;
+      if (s == 'false' || s == '0') return false;
+    }
+    return defaultValue;
   }
 }

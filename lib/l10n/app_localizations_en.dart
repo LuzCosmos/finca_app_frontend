@@ -466,6 +466,63 @@ class AppLocalizationsEn extends AppLocalizations {
       'Check the filters or submitted data. If the event is linked to a purchase reception, the operation may not be valid on the server.';
 
   @override
+  String get massiveEventsEdit => 'Edit';
+
+  @override
+  String get massiveEventCloseValidationTitle => 'Fix before finishing';
+
+  @override
+  String get massiveEventCloseValidationIntro =>
+      'The following rows need attention:';
+
+  @override
+  String massiveEventValidationMissingWeight(String animalNumber) {
+    return 'Animal $animalNumber: weight is required before finishing.';
+  }
+
+  @override
+  String massiveEventValidationInvalidWeight(String animalNumber) {
+    return 'Animal $animalNumber: weight is out of allowed range.';
+  }
+
+  @override
+  String get massiveEventLoadSessionError =>
+      'Could not load this massive event. Check your connection or try again.';
+
+  @override
+  String get massiveEventClosedReadOnly =>
+      'This massive event is closed: you can review it but not change it.';
+
+  @override
+  String get massiveEventNoPreviousWeight => 'No previous weight';
+
+  @override
+  String get massiveEventPreviousWeightShort => 'Prev. kg';
+
+  @override
+  String get massiveEventDeltaPctShort => 'Δ%';
+
+  @override
+  String get massiveEventWeightSummaryTitle => 'Weight in this session';
+
+  @override
+  String massiveEventWeightSummaryStats(
+    int count,
+    String mean,
+    String min,
+    String max,
+  ) {
+    return 'Animals with weight: $count · Average: $mean · Min: $min · Max: $max';
+  }
+
+  @override
+  String get massiveEventWeightSummaryEmpty =>
+      'No weights recorded yet in this session.';
+
+  @override
+  String get dialogOk => 'OK';
+
+  @override
   String get syncNow => 'Sync now';
 
   @override

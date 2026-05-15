@@ -93,6 +93,53 @@ void main() {
     });
   });
 
+  group('massiveEventsBitmaskAllowsUpdate', () {
+    test('máscara "11111" y variantes con espacios / basura → update permitido', () {
+      final base = <String, dynamic>{
+        'MASSIVE_EVENTS': <String, dynamic>{'massive_events': '11111'},
+      };
+      expect(massiveEventsBitmaskAllowsUpdate(base), isTrue);
+      expect(
+        massiveEventsBitmaskAllowsUpdate({
+          'MASSIVE_EVENTS': <String, dynamic>{'massive_events': ' 11111 '},
+        }),
+        isTrue,
+      );
+      expect(
+        massiveEventsBitmaskAllowsUpdate({
+          'MASSIVE_EVENTS': <String, dynamic>{
+            'massive_events': '11\u200B111',
+          },
+        }),
+        isTrue,
+      );
+    });
+
+    test('solo bit update (00100) → true; sin update → false', () {
+      expect(
+        massiveEventsBitmaskAllowsUpdate({
+          'MASSIVE_EVENTS': <String, dynamic>{'massive_events': '00100'},
+        }),
+        isTrue,
+      );
+      expect(
+        massiveEventsBitmaskAllowsUpdate({
+          'MASSIVE_EVENTS': <String, dynamic>{'massive_events': '10001'},
+        }),
+        isFalse,
+      );
+    });
+
+    test('máscara legacy 2 bits "11" → update permitido (01100)', () {
+      expect(
+        massiveEventsBitmaskAllowsUpdate({
+          'MASSIVE_EVENTS': <String, dynamic>{'massive_events': '11'},
+        }),
+        isTrue,
+      );
+    });
+  });
+
   group('routeAccessDeniedRedirect', () {
     final fullPerms = <String, dynamic>{
       'COMMERCE': <String, dynamic>{'purchases': true, 'sales': true},
@@ -167,6 +214,54 @@ void main() {
         '/home',
       );
     });
+
+    test(
+      '/massive-events/edit?id= con solo create (sin update bitmask) → /home',
+      () {
+        expect(
+          routeAccessDeniedRedirect(
+            path: '/massive-events/edit',
+            permissions: {
+              'MASSIVE_EVENTS': <String, dynamic>{'massive_events': '10000'},
+            },
+            queryParameters: {'id': 'abc-uuid'},
+          ),
+          '/home',
+        );
+      },
+    );
+
+    test(
+      '/massive-events/edit?id= con solo list (sin create ni update) → /home',
+      () {
+        expect(
+          routeAccessDeniedRedirect(
+            path: '/massive-events/edit',
+            permissions: {
+              'MASSIVE_EVENTS': <String, dynamic>{'massive_events': '00001'},
+            },
+            queryParameters: {'id': 'abc-uuid'},
+          ),
+          '/home',
+        );
+      },
+    );
+
+    test(
+      '/massive-events/edit?id= con bit update en máscara → null',
+      () {
+        expect(
+          routeAccessDeniedRedirect(
+            path: '/massive-events/edit',
+            permissions: {
+              'MASSIVE_EVENTS': <String, dynamic>{'massive_events': '00100'},
+            },
+            queryParameters: {'id': 'abc-uuid'},
+          ),
+          isNull,
+        );
+      },
+    );
 
     test('subrutas purchases y recepción usan COMMERCE.purchases', () {
       final onlySales = <String, dynamic>{

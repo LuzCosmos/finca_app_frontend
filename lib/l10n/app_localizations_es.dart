@@ -464,6 +464,62 @@ class AppLocalizationsEs extends AppLocalizations {
       'Revise los filtros o los datos enviados. Si el evento está vinculado a una recepción de compra, la operación puede no ser válida en el servidor.';
 
   @override
+  String get massiveEventsEdit => 'Editar';
+
+  @override
+  String get massiveEventCloseValidationTitle => 'Corrija antes de finalizar';
+
+  @override
+  String get massiveEventCloseValidationIntro => 'Revise las siguientes filas:';
+
+  @override
+  String massiveEventValidationMissingWeight(String animalNumber) {
+    return 'Animal $animalNumber: el peso es obligatorio antes de finalizar.';
+  }
+
+  @override
+  String massiveEventValidationInvalidWeight(String animalNumber) {
+    return 'Animal $animalNumber: el peso está fuera del rango permitido.';
+  }
+
+  @override
+  String get massiveEventLoadSessionError =>
+      'No se pudo cargar este evento masivo. Compruebe la conexión o inténtelo de nuevo.';
+
+  @override
+  String get massiveEventClosedReadOnly =>
+      'Este evento masivo está cerrado: puede revisarlo pero no modificarlo.';
+
+  @override
+  String get massiveEventNoPreviousWeight => 'Sin peso previo';
+
+  @override
+  String get massiveEventPreviousWeightShort => 'Peso ant.';
+
+  @override
+  String get massiveEventDeltaPctShort => 'Δ%';
+
+  @override
+  String get massiveEventWeightSummaryTitle => 'Peso en esta sesión';
+
+  @override
+  String massiveEventWeightSummaryStats(
+    int count,
+    String mean,
+    String min,
+    String max,
+  ) {
+    return 'Animales con peso: $count · Media: $mean · Mín: $min · Máx: $max';
+  }
+
+  @override
+  String get massiveEventWeightSummaryEmpty =>
+      'Aún no hay pesos registrados en esta sesión.';
+
+  @override
+  String get dialogOk => 'Aceptar';
+
+  @override
   String get syncNow => 'Sincronizar ahora';
 
   @override

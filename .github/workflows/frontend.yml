@@ -38,7 +38,9 @@ jobs:
 
       # §5.6 Fase 4: integration_test no corre en `chrome`/web; en GHA usar `linux` + display virtual.
       - name: Run integration tests (Linux, headless)
-        run: xvfb-run -a flutter test integration_test/ -d linux --timeout=30m
+        # Un solo entrypoint: varios `.dart` en `integration_test/` relanzan el runner
+        # y en macOS/Linux pueden fallar el segundo attach al VM service.
+        run: xvfb-run -a flutter test integration_test/all_integration_tests.dart -d linux --timeout=30m
 
       # Fase 3 §5.6: home_page_web_test.dart usa kIsWeb; en VM los casos van en skip — ejecutarlos en Chrome en CI.
       - name: Setup Chrome (widget tests web)
