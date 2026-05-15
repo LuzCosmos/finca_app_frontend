@@ -6,12 +6,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:finca_app_frontend/core/blocs/locale/locale_bloc.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
+import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'package:finca_app_frontend/core/utils/language.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/mobile/bloc/sync_bloc.dart';
 import 'package:finca_app_frontend/modules/mobile/services/sync_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/bloc/massive_event_bloc.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/data/massive_event_page_data_source.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/domain/massive_event_session_load.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/animal_simple_event_table_row_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/massive_event_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_type.dart';
@@ -470,6 +473,73 @@ void main() {
 
       expect(find.text(l10n.error_generic), findsWidgets);
       expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'Finalizar masivo: fallo de red muestra error_serverConnection',
+    (tester) async {
+      when(
+        () => dataSource.loadMassiveEventSession(idMassiveEvent: 'me-1'),
+      ).thenAnswer((_) async {
+        final simple = SimpleEventModel.create(
+          name: 'w',
+          type: SimpleEventType.weight,
+          idMassiveEvent: 'me-1',
+          id: 'se-w',
+        );
+        final massive = MassiveEventModel(
+          id: 'me-1',
+          eventDate: DateTime(2025, 1, 2),
+          simpleEvents: [simple],
+          createdAt: DateTime(2025, 1, 1),
+          updatedAt: DateTime(2025, 1, 1),
+          status: 'open',
+        );
+        return MassiveSessionLoadResult(
+          massive: massive,
+          animalRows: {
+            '1': AnimalSimpleEventTableRowModel(animalNumber: '1', weight: 400),
+          },
+        );
+      });
+      when(
+        () => dataSource.closeMassiveEvent(idMassiveEvent: 'me-1'),
+      ).thenThrow(
+        ApiException(ApiExceptionCode.serverConnectionError.name, ''),
+      );
+
+      late AppLocalizations l10n;
+      await tester.pumpWidget(
+        MaterialApp(
+          locale: Language.spanish.localeValue,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Builder(
+            builder: (context) {
+              l10n = AppLocalizations.of(context)!;
+              return MultiBlocProvider(
+                providers: [
+                  BlocProvider(create: (_) => LocaleBloc()),
+                  BlocProvider(
+                    create: (_) => MassiveEventBloc(dataSource: dataSource),
+                  ),
+                  BlocProvider(create: (_) => SyncBloc(syncService)),
+                ],
+                child: const MassiveEventPage(initialMassiveEventId: 'me-1'),
+              );
+            },
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text(l10n.finish));
+      await tester.pumpAndSettle();
+
+      expect(find.text(l10n.error_serverConnection), findsOneWidget);
+      verify(() => dataSource.closeMassiveEvent(idMassiveEvent: 'me-1')).called(1);
     },
   );
 }

@@ -15,6 +15,7 @@ import 'package:finca_app_frontend/modules/mobile/bloc/sync_bloc_stub.dart'
 import 'package:finca_app_frontend/modules/mobile/bloc/sync_state.dart';
 import 'package:finca_app_frontend/modules/mobile/services/sync_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/pages/massive_event_list_page.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/pages/massive_event_page.dart';
 import 'package:finca_app_frontend/router/router.dart';
 
 import 'support/integration_fake_auth_service.dart';
@@ -84,6 +85,43 @@ void main() {
         findsOneWidget,
       );
       expect(find.text('Reintentar'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'ruta /massive-events/edit?id=…: carga de sesión falla con API inalcanzable y muestra banner',
+    (tester) async {
+      SessionService.resetForTesting();
+      SharedPreferences.setMockInitialValues({});
+      BasicApiService.setBaseUrl('http://127.0.0.1:9');
+
+      final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+      await SessionService.saveSession(
+        token: _jwtWithExp(now + 86400),
+        permissions: {
+          'MASSIVE_EVENTS': {'massive_events': true},
+        },
+        idTenant: 't-integration-edit',
+        idUser: 'u-integration-edit',
+        refreshToken: 'rt',
+      );
+      await SessionService.hydrateFromStorage();
+
+      const editId = '00000000-0000-0000-0000-00000000a001';
+      final router = createAppRouter(
+        hasValidToken: () => true,
+        initialLocation: '/massive-events/edit?id=$editId',
+      );
+
+      await tester.pumpWidget(MainApp(router: router));
+      await tester.pumpAndSettle(const Duration(seconds: 20));
+
+      expect(find.byType(MassiveEventPage), findsOneWidget);
+      expect(
+        find.textContaining('No se pudo cargar este evento masivo'),
+        findsOneWidget,
+      );
       expect(tester.takeException(), isNull);
     },
   );

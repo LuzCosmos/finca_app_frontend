@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:finca_app_frontend/core/bootstrap/massive_event_sync_status.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/domain/massive_event_close_failure_mapper.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/domain/massive_event_close_validation.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/domain/massive_event_weight_stats.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/pages/massive_event_sync_listener.dart';
@@ -178,6 +179,28 @@ class _MassiveEventPageState extends State<MassiveEventPage> {
     });
   }
 
+  String _localizedCloseFailure(AppLocalizations l10n, MassiveEventCloseFailureResult r) {
+    switch (r.kind) {
+      case MassiveEventCloseFailureKind.network:
+        return l10n.error_serverConnection;
+      case MassiveEventCloseFailureKind.alreadyClosed:
+        return l10n.error_massiveEventAlreadyClosed;
+      case MassiveEventCloseFailureKind.noSimpleEventsApplied:
+        return l10n.error_noSimpleEventsApplied;
+      case MassiveEventCloseFailureKind.purchaseReceptionBlocked:
+        return l10n.error_massiveEventClosePurchaseReception;
+      case MassiveEventCloseFailureKind.forbidden:
+      case MassiveEventCloseFailureKind.notFound:
+      case MassiveEventCloseFailureKind.serverError:
+      case MassiveEventCloseFailureKind.apiExceptionCode:
+      case MassiveEventCloseFailureKind.unprocessableEntityGeneric:
+        final ex = r.apiException!;
+        return ApiExceptionCode.fromString(ex.code).asText(context);
+      case MassiveEventCloseFailureKind.unknown:
+        return l10n.error_generic;
+    }
+  }
+
   void _closeMassiveEvent() async {
     final l10n = AppLocalizations.of(context)!;
     setGlobalError(null);
@@ -249,20 +272,10 @@ class _MassiveEventPageState extends State<MassiveEventPage> {
           context.go('/home');
         }
       });
-    } on ApiException catch (e) {
-      if (mounted) {
-        String? error = ApiExceptionCode.fromString(e.code).asText(context);
-        if (e.code == ApiExceptionCode.unprocessableEntity.name) {
-          if (e.message.contains('closed')) {
-            error = l10n.error_massiveEventAlreadyClosed;
-          } else {
-            error = l10n.error_noSimpleEventsApplied;
-          }
-        }
-        setGlobalError(error);
-      }
     } catch (e) {
-      setGlobalError(l10n.error_generic);
+      if (!mounted) return;
+      final mapped = mapMassiveEventCloseFailure(e);
+      setGlobalError(_localizedCloseFailure(l10n, mapped));
     }
   }
 

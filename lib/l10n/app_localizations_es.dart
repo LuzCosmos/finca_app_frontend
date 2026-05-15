@@ -1567,6 +1567,10 @@ class AppLocalizationsEs extends AppLocalizations {
       'Este evento masivo ya está cerrado y no puede modificarse.';
 
   @override
+  String get error_massiveEventClosePurchaseReception =>
+      'Este evento masivo está vinculado a una recepción de compra y no puede cerrarse desde el módulo de eventos masivos.';
+
+  @override
   String get event_finishSuccess =>
       'El evento masivo se finalizó correctamente.';
 

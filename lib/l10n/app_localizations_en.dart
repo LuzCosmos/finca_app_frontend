@@ -1565,6 +1565,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'This massive event is already closed and cannot be modified.';
 
   @override
+  String get error_massiveEventClosePurchaseReception =>
+      'This massive event is linked to a purchase reception and cannot be closed from the massive events module.';
+
+  @override
   String get event_finishSuccess =>
       'The massive event was finished successfully.';
 

@@ -706,6 +706,10 @@
   "@error_massiveEventAlreadyClosed": {
     "description": "Se muestra cuando el usuario intenta cerrar o modificar un evento masivo que ya fue cerrado."
   },
+  "error_massiveEventClosePurchaseReception": "Este evento masivo está vinculado a una recepción de compra y no puede cerrarse desde el módulo de eventos masivos.",
+  "@error_massiveEventClosePurchaseReception": {
+    "description": "Se muestra cuando el servidor devuelve MASSIVE_EVENT_FROM_PURCHASE_RECEPTION al cerrar."
+  },
   "event_finishSuccess": "El evento masivo se finalizó correctamente.",
   "@event_finishSuccess": {
     "description": "Se muestra cuando un evento masivo ha sido finalizado exitosamente."

@@ -2929,6 +2929,12 @@ abstract class AppLocalizations {
   /// **'This massive event is already closed and cannot be modified.'**
   String get error_massiveEventAlreadyClosed;
 
+  /// Shown when the server returns MASSIVE_EVENT_FROM_PURCHASE_RECEPTION on close.
+  ///
+  /// In en, this message translates to:
+  /// **'This massive event is linked to a purchase reception and cannot be closed from the massive events module.'**
+  String get error_massiveEventClosePurchaseReception;
+
   /// Shown when a massive event has been successfully finished.
   ///
   /// In en, this message translates to:

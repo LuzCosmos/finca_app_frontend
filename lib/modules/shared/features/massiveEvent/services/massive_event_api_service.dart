@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/animal_simple_event_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_model.dart';
@@ -269,12 +270,23 @@ class MassiveEventApiService {
     required String idMassiveEvent,
   }) async {
     final String baseUrl = BasicApiService.getApiBaseUrl();
-    final response = await BasicApiService.authorizedPut(
-      Uri.parse('$baseUrl/massive-events/close/$idMassiveEvent'),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    );
+    late http.Response response;
+    try {
+      response = await BasicApiService.authorizedPut(
+        Uri.parse('$baseUrl/massive-events/close/$idMassiveEvent'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+    } catch (e) {
+      if (e is SocketException || e is http.ClientException || e is TimeoutException) {
+        throw ApiException(
+          ApiExceptionCode.serverConnectionError.name,
+          'Error al cerrar evento masivo: $e',
+        );
+      }
+      throw ApiException('readingObjectError', 'Error al cerrar evento masivo: $e');
+    }
     if (response.statusCode != 204) {
       BasicApiService.manageNotSuccessResponseCode(response);
     }

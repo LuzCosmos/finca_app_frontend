@@ -706,6 +706,10 @@
   "@error_massiveEventAlreadyClosed": {
     "description": "Shown when the user tries to close or modify a massive event that has already been closed."
   },
+  "error_massiveEventClosePurchaseReception": "This massive event is linked to a purchase reception and cannot be closed from the massive events module.",
+  "@error_massiveEventClosePurchaseReception": {
+    "description": "Shown when the server returns MASSIVE_EVENT_FROM_PURCHASE_RECEPTION on close."
+  },
   "event_finishSuccess": "The massive event was finished successfully.",
   "@event_finishSuccess": {
     "description": "Shown when a massive event has been successfully finished."
