@@ -1,6 +1,7 @@
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/shared/features/brands/models/brand_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/bloc/massive_event_bloc.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_type.dart';
 import 'package:finca_app_frontend/modules/shared/features/brands/widgets/create_brand_dialog.dart';
 import 'package:flutter/material.dart';
@@ -11,10 +12,14 @@ class EventDetailForm extends StatefulWidget {
   final List<SimpleEventType> activeEventTypes;
   final ValueChanged<String?> onBrandsLoadError;
 
+  /// Si se indica, el formulario edita ese evento (solo medicación por ahora).
+  final SimpleEventModel? editingEvent;
+
   const EventDetailForm({
     super.key,
     required this.activeEventTypes,
     required this.onBrandsLoadError,
+    this.editingEvent,
   });
 
   @override
@@ -31,6 +36,8 @@ class _EventDetailFormState extends State<EventDetailForm> {
   BrandModel? selectedBrandObject;
   List<BrandModel> availableBrands = [];
   bool _initialized = false;
+
+  bool get _isEditMode => widget.editingEvent != null;
 
   @override
   void dispose() {
@@ -54,17 +61,34 @@ class _EventDetailFormState extends State<EventDetailForm> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (!_initialized) {
-      if (widget.activeEventTypes.isNotEmpty) {
+      if (_isEditMode) {
+        final event = widget.editingEvent!;
+        selectedType = event.type.name;
+        _prefillMedicationFields(event);
+      } else if (widget.activeEventTypes.isNotEmpty) {
         final availableTypes = _availableEventTypes(context);
         final defaultType = availableTypes.firstWhere(
           (e) => e.key == SimpleEventType.weight.name,
           orElse: () => availableTypes.first,
         );
-        setState(() => selectedType = defaultType.key);
+        selectedType = defaultType.key;
       }
       _initialized = true;
     }
     _loadBrands();
+  }
+
+  void _prefillMedicationFields(SimpleEventModel event) {
+    if (event.type != SimpleEventType.medication || event.data == null) {
+      return;
+    }
+    final dynamic raw = jsonDecode(event.data!);
+    final Map<String, dynamic> data =
+        raw is Map<String, dynamic> ? raw : Map<String, dynamic>.from(raw as Map);
+    _nameController.text = (data['medicationName'] ?? '').toString();
+    _dosageController.text = (data['dosage'] ?? '').toString();
+    _routeController.text = (data['route'] ?? '').toString();
+    _lotController.text = (data['lot'] ?? '').toString();
   }
 
   Future<void> _loadBrands() async {
@@ -89,22 +113,27 @@ class _EventDetailFormState extends State<EventDetailForm> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return AlertDialog(
-      title: Text(l10n.addSomething(l10n.event)),
+      title: Text(
+        _isEditMode
+            ? l10n.editSomething(l10n.event)
+            : l10n.addSomething(l10n.event),
+      ),
       content: SingleChildScrollView(
         child: Form(
           key: _formKey,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              DropdownButtonFormField<String>(
-                initialValue: selectedType,
-                onChanged: (value) {
-                  if (value == null) return;
-                  setState(() => selectedType = value);
-                },
-                items: _buildAvailableEventTypes(context),
-              ),
-              const SizedBox(height: 16),
+              if (!_isEditMode)
+                DropdownButtonFormField<String>(
+                  initialValue: selectedType,
+                  onChanged: (value) {
+                    if (value == null) return;
+                    setState(() => selectedType = value);
+                  },
+                  items: _buildAvailableEventTypes(context),
+                ),
+              if (!_isEditMode) const SizedBox(height: 16),
 
               // Campos específicos
               if (selectedType == SimpleEventType.medication.name) ...[
@@ -243,7 +272,7 @@ class _EventDetailFormState extends State<EventDetailForm> {
             }
             Navigator.pop(context, data);
           },
-          child: Text(l10n.add),
+          child: Text(_isEditMode ? l10n.save : l10n.add),
         ),
       ],
     );

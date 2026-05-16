@@ -44,7 +44,7 @@ class MassiveEventStandaloneListMobileEventRow extends StatelessWidget {
             onEditOpen != null
                 ? IconButton(
                   icon: Icon(
-                    Icons.edit_outlined,
+                    Icons.edit,
                     size: 22,
                     color: Colors.blue.shade700,
                   ),
@@ -250,7 +250,7 @@ class MassiveEventStandaloneListMobileEventRow extends StatelessWidget {
             if (onEditOpen != null)
               IconButton(
                 icon: Icon(
-                  Icons.edit_outlined,
+                  Icons.edit,
                   color: Colors.blue.shade700,
                 ),
                 tooltip: l10n.massiveEventsEdit,
@@ -367,7 +367,7 @@ class MassiveEventStandaloneListMobileEventRow extends StatelessWidget {
           if (onEditOpen != null)
             IconButton(
               icon: Icon(
-                Icons.edit_outlined,
+                Icons.edit,
                 color: Colors.blue.shade700,
               ),
               tooltip: l10n.massiveEventsEdit,

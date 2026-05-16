@@ -157,24 +157,82 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
     }
   }
 
+  String _simpleEventUpdateEndpoint() {
+    if (widget.key != null &&
+        widget.key is ValueKey<String> &&
+        (widget.key as ValueKey<String>).value.contains(
+          'eventConfigPanel_reception',
+        )) {
+      return 'purchase-receptions/update-simple-event';
+    }
+    return 'simple-events';
+  }
+
+  bool _canEditDetail(SimpleEventModel detail) {
+    return detail.type == SimpleEventType.medication && detail.data != null;
+  }
+
+  Future<void> _openEditMedicationDialog(SimpleEventModel detail) async {
+    if (!_canEditDetail(detail) || !mounted) return;
+    widget.showError(null);
+    final massiveBloc = context.read<MassiveEventBloc>();
+    final result = await showDialog<Map<String, dynamic>>(
+      context: context,
+      builder:
+          (outerContext) => BlocProvider.value(
+            value: massiveBloc,
+            child: EventDetailForm(
+              activeEventTypes: activeDetails.map((e) => e.type).toList(),
+              onBrandsLoadError: widget.showError,
+              editingEvent: detail,
+            ),
+          ),
+    );
+    if (result == null || !mounted) return;
+    final newData = result['data'];
+    if (newData is! String) return;
+
+    final allDetails = List<SimpleEventModel>.from(widget.simpleEvents);
+    final idx = allDetails.indexWhere((e) => e.id == detail.id);
+    if (idx == -1) return;
+
+    final previous = allDetails[idx];
+    final updated = previous.copyWith(data: newData);
+    allDetails[idx] = updated;
+    widget.onEventsChanged(allDetails);
+
+    try {
+      final dataSource = massiveBloc.dataSource;
+      await dataSource.updateSimpleEvent(
+        simpleEvent: updated,
+        endpoint: _simpleEventUpdateEndpoint(),
+      );
+    } on ApiException catch (e) {
+      if (!mounted) return;
+      allDetails[idx] = previous;
+      widget.onEventsChanged(allDetails);
+      final error = ApiExceptionCode.fromString(e.code).asText(context);
+      if (error.isNotEmpty) {
+        widget.showError(error);
+      }
+    } catch (_) {
+      if (!mounted) return;
+      allDetails[idx] = previous;
+      widget.onEventsChanged(allDetails);
+      widget.showError(AppLocalizations.of(context)!.error_generic);
+    }
+  }
+
   Future<void> _deactivateDetail(SimpleEventModel detail) async {
     final allDetails = widget.simpleEvents;
     final idx = allDetails.indexWhere((e) => e.id == detail.id);
     if (idx != -1) {
       allDetails[idx] = allDetails[idx].copyWith(isActive: false);
       widget.onEventsChanged(allDetails);
-      var endpoint = 'simple-events';
-      if (widget.key != null &&
-          widget.key is ValueKey<String> &&
-          (widget.key as ValueKey<String>).value.contains(
-            'eventConfigPanel_reception',
-          )) {
-        endpoint = 'purchase-receptions/update-simple-event';
-      }
       final dataSource = context.read<MassiveEventBloc>().dataSource;
       await dataSource.updateSimpleEvent(
         simpleEvent: allDetails[idx],
-        endpoint: endpoint,
+        endpoint: _simpleEventUpdateEndpoint(),
       );
     }
   }
@@ -187,18 +245,10 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
       widget.onEventsChanged(allDetails);
       final l10n = AppLocalizations.of(context)!;
       widget.showInfo(l10n.reactivatedInfo(detail.type.asText(context)));
-      var endpoint = 'simple-events';
-      if (widget.key != null &&
-          widget.key is ValueKey<String> &&
-          (widget.key as ValueKey<String>).value.contains(
-            'eventConfigPanel_reception',
-          )) {
-        endpoint = 'purchase-receptions/update-simple-event';
-      }
       final dataSource = context.read<MassiveEventBloc>().dataSource;
       await dataSource.updateSimpleEvent(
         simpleEvent: allDetails[idx],
-        endpoint: endpoint,
+        endpoint: _simpleEventUpdateEndpoint(),
       );
     }
   }
@@ -351,6 +401,25 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
                                                 ],
                                               ),
                                             ),
+                                            if (_canEditDetail(detail))
+                                              IconButton(
+                                                iconSize: 15,
+                                                icon: const Icon(
+                                                  Icons.edit,
+                                                  color: Colors.blue,
+                                                ),
+                                                onPressed:
+                                                    () =>
+                                                        _openEditMedicationDialog(
+                                                          detail,
+                                                        ),
+                                                tooltip: l10n.editSomething(
+                                                  l10n.event,
+                                                ),
+                                                padding: EdgeInsets.zero,
+                                                constraints:
+                                                    const BoxConstraints(),
+                                              ),
                                             IconButton(
                                               iconSize: 15,
                                               icon: const Icon(

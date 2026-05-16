@@ -12,6 +12,7 @@ Documentación de producto: [`finca_app_docs/user_histories/uh-evento-masivo-lis
 - **Ruta edición / continuar sesión:** `/massive-events/edit?id=<uuid_del_masivo>` (permiso bitmask **update**, índice 2 en `massive_events`). El router pasa `initialMassiveEventId` a `MassiveEventPage`, que llama a `IMassiveEventPageDataSource.loadMassiveEventSession`.
 - **Lista:** botón **Editar** en web y móvil solo si `massiveEventsBitmaskAllowsUpdate` y el evento está `open`.
 - **Cerrado (`status == closed`):** la pantalla carga en solo lectura (`AbsorbPointer` + mensajes i18n).
+- **Edición de medicación (configuración):** en `EventConfigPanel`, filas activas tipo `medication` → editar → `EventDetailForm(editingEvent: …)` → `updateSimpleEvent` (`simple-events` o `purchase-receptions/update-simple-event` en recepción). Ver UH Fase D y §7.5 en [`04-massive-events-module.md`](../../../../../../finca_app_docs/features/04-massive-events-module.md).
 - **Backend:** `GET /massive-events/:id/applied-animals` (declarado antes de `GET /massive-events/:id` en el controlador). Ver [`finca_app_docs/features/04-massive-events-module.md`](../../../../../../finca_app_docs/features/04-massive-events-module.md).
 
 ---
