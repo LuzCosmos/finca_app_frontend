@@ -21,18 +21,21 @@ import 'package:intl/intl.dart';
 import 'massive_event_list_permissions.dart';
 import 'massive_event_list_types.dart';
 
+const double _webTableColumnSpacing = 2.0;
+const double _webTableHorizontalMargin = 24.0;
+
 /// Anchos de celdas (sin `horizontalMargin` ni `columnSpacing` del [DataTable]).
 /// [columnCount] 6 sin columna de acciones, 7 con Editar (la columna 6 es ancho fijo).
 List<double> _webMassiveEventColumnInnerWidths(double usable, int columnCount) {
   final actionW =
       MassiveEventStandaloneListColumnLimits.webActionsColumnFixedWidth;
   double sum(List<double> x) => x.fold(0.0, (a, b) => a + b);
+  final ideals = <double>[90, 150, 70, 80, 130, 130];
+  final mins = <double>[60, 100, 60, 45, 45, 45];
+  final mSum = sum(mins);
+  final iSum = sum(ideals);
 
   if (columnCount < 7) {
-    final mins = <double>[72, 88, 60, 75, 88, 88];
-    final ideals = <double>[80, 220, 92, 100, 136, 136];
-    final mSum = sum(mins);
-    final iSum = sum(ideals);
     if (usable <= 0 || usable <= mSum) {
       return List<double>.from(mins);
     }
@@ -41,35 +44,45 @@ List<double> _webMassiveEventColumnInnerWidths(double usable, int columnCount) {
       return ideals.map((e) => e * scale).toList();
     }
     final t = (usable - mSum) / (iSum - mSum);
-    return List.generate(columnCount, (j) => mins[j] + (ideals[j] - mins[j]) * t);
+    return List.generate(
+      columnCount,
+      (j) => mins[j] + (ideals[j] - mins[j]) * t,
+    );
   }
-
-  final sixMins = <double>[72, 88, 60, 75, 88, 88];
-  final sixIdeals = <double>[80, 220, 92, 100, 136, 136];
-  final m6 = sum(sixMins);
-  final i6 = sum(sixIdeals);
-  final minTotal = m6 + actionW;
-  final idealTotal = i6 + actionW;
+  final minTotal = mSum + actionW;
+  final idealTotal = iSum + actionW;
   if (usable <= 0 || usable <= minTotal) {
-    return List<double>.from([...sixMins, actionW]);
+    return List<double>.from([...mins, actionW]);
   }
   final usableFlex = usable - actionW;
   if (usable >= idealTotal) {
-    final scale = usableFlex / i6;
-    return [...sixIdeals.map((e) => e * scale), actionW];
+    final scale = usableFlex / iSum;
+    final result = [...ideals.map((e) => e * scale), actionW];
+    for (var i = 0; i < result.length; i++) {
+      if (i == 6) {
+        continue;
+      } else if (i == 1) {
+        result[i] = result[i].clamp(
+          MassiveEventStandaloneListColumnLimits.webNameColumnMin,
+          double.infinity,
+        );
+      } else {
+        if (result[i] > ideals[i]) {
+          result[i] = ideals[i];
+        }
+      }
+    }
+    return result;
   }
-  final t = (usableFlex - m6) / (i6 - m6);
-  final first6 = List.generate(
-    6,
-    (j) => sixMins[j] + (sixIdeals[j] - sixMins[j]) * t,
-  );
+  final t = (usableFlex - mSum) / (iSum - mSum);
+  final first6 = List.generate(6, (j) => mins[j] + (ideals[j] - mins[j]) * t);
   return [...first6, actionW];
 }
 
 double _webMassiveEventDataTableInnerPad(ThemeData theme, int columnCount) {
   final dt = theme.dataTableTheme;
-  final spacing = dt.columnSpacing ?? 16;
-  final hMargin = dt.horizontalMargin ?? 24;
+  final spacing = _webTableColumnSpacing;
+  final hMargin = _webTableHorizontalMargin;
   return hMargin * 2 + spacing * (columnCount - 1);
 }
 
@@ -430,10 +443,12 @@ class _MassiveEventListWebState extends State<MassiveEventListWeb> {
                                 colCount,
                               );
                           final sortHeaderOverhead =
-                              MassiveEventStandaloneListColumnLimits
-                                  .webMassiveEventListWebSortHeaderOverhead(
-                                    colCount,
-                                  );
+                              MassiveEventStandaloneListColumnLimits.webMassiveEventListWebSortHeaderOverhead(
+                                colCount,
+                              );
+                          final usableCellWidths = (usableCols -
+                                  sortHeaderOverhead)
+                              .clamp(0.0, double.infinity);
                           final minComfortContentW =
                               idealWidths.fold<double>(0, (a, b) => a + b) +
                               sortHeaderOverhead;
@@ -444,7 +459,7 @@ class _MassiveEventListWebState extends State<MassiveEventListWeb> {
                               needHScroll
                                   ? List<double>.from(idealWidths)
                                   : _webMassiveEventColumnInnerWidths(
-                                    usableCols,
+                                    usableCellWidths,
                                     colCount,
                                   );
                           cw =
@@ -455,16 +470,15 @@ class _MassiveEventListWebState extends State<MassiveEventListWeb> {
                             cw =
                                 MassiveEventStandaloneListColumnLimits.expandWebNameColumnOnly(
                                   cw,
-                                  usableCols,
+                                  usableCellWidths,
                                   columnCount: colCount,
                                 );
                           }
                           if (colCount >= 7) {
                             cw =
-                                MassiveEventStandaloneListColumnLimits
-                                    .lockWebActionsColumnWidth(
-                                      cw,
-                                    );
+                                MassiveEventStandaloneListColumnLimits.lockWebActionsColumnWidth(
+                                  cw,
+                                );
                           }
                           final contentColsW =
                               cw.fold<double>(0, (a, b) => a + b) +
@@ -477,10 +491,8 @@ class _MassiveEventListWebState extends State<MassiveEventListWeb> {
                                   ? availOuter
                                   : contentTotalW;
 
-                          final spacing =
-                              theme.dataTableTheme.columnSpacing ?? 16;
-                          final hMargin =
-                              theme.dataTableTheme.horizontalMargin ?? 24;
+                          final spacing = _webTableColumnSpacing;
+                          final hMargin = _webTableHorizontalMargin;
 
                           final dataTable = DataTable(
                             sortColumnIndex: _sortColumnIndex,
@@ -598,22 +610,21 @@ class _MassiveEventListWebState extends State<MassiveEventListWeb> {
                                                       Alignment.centerLeft,
                                                   child:
                                                       e.isOpenForStandaloneListEdit
-                                                      ? IconButton(
-                                                        icon: Icon(
-                                                          Icons.edit_outlined,
-                                                          size: 20,
-                                                          color: Colors
-                                                              .blue
-                                                              .shade700,
-                                                        ),
-                                                        tooltip: l10n
-                                                            .massiveEventsEdit,
-                                                        onPressed:
-                                                            () => context.push(
-                                                              '/massive-events/edit?id=${e.id}',
+                                                          ? IconButton(
+                                                            icon: Icon(
+                                                              Icons.edit,
+                                                              size: 20,
+                                                              color:
+                                                                  Colors.blue,
                                                             ),
-                                                      )
-                                                      : const SizedBox.shrink(),
+                                                            tooltip:
+                                                                l10n.massiveEventsEdit,
+                                                            onPressed:
+                                                                () => context.push(
+                                                                  '/massive-events/edit?id=${e.id}',
+                                                                ),
+                                                          )
+                                                          : const SizedBox.shrink(),
                                                 ),
                                               ),
                                             ),

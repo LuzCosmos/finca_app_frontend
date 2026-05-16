@@ -209,10 +209,10 @@
   "@massiveEventsNoMatchesFilter": {
     "description": "Mensaje cuando los filtros en cliente ocultan todas las filas."
   },
-  "massiveEventsColumnEventDate": "Fecha del evento",
+  "massiveEventsColumnEventDate": "Fecha evento",
   "massiveEventsColumnName": "Nombre",
   "massiveEventsColumnUpdatedAt": "Última modificación",
-  "massiveEventsColumnCreatedAt": "Fecha de creación",
+  "massiveEventsColumnCreatedAt": "Fecha creación",
   "massiveEventsColumnCreatedBy": "Creado por",
   "massiveEventsColumnSync": "Sincronización / origen",
   "@massiveEventsColumnSync": {

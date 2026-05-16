@@ -73,6 +73,7 @@ abstract final class MassiveEventStandaloneListColumnLimits {
     void cap(int i, double m) {
       if (i < out.length && out[i] > m) out[i] = m;
     }
+
     cap(0, eventDateMax);
     cap(2, statusMax);
     cap(3, createdByUsernameMax);
