@@ -427,7 +427,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'Ningún evento masivo coincide con los filtros actuales.';
 
   @override
-  String get massiveEventsColumnEventDate => 'Fecha del evento';
+  String get massiveEventsColumnEventDate => 'Fecha evento';
 
   @override
   String get massiveEventsColumnName => 'Nombre';
@@ -436,7 +436,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get massiveEventsColumnUpdatedAt => 'Última modificación';
 
   @override
-  String get massiveEventsColumnCreatedAt => 'Fecha de creación';
+  String get massiveEventsColumnCreatedAt => 'Fecha creación';
 
   @override
   String get massiveEventsColumnCreatedBy => 'Creado por';
