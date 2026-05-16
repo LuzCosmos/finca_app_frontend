@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/bloc/massive_event_bloc.dart';
@@ -12,6 +13,9 @@ import 'event_detail_form.dart';
 class EventConfigPanel extends StatefulWidget {
   final bool isWide;
   final DateTime? eventDate;
+  final String eventName;
+  final bool eventNameReadOnly;
+  final bool eventDateEditable;
   final String? idMassiveEvent;
   final List<SimpleEventModel> simpleEvents;
   final ValueChanged<String> onMassiveEventCreated;
@@ -19,11 +23,17 @@ class EventConfigPanel extends StatefulWidget {
   final ValueChanged<String?> showSuccess;
   final ValueChanged<String?> showInfo;
   final ValueChanged<List<SimpleEventModel>> onEventsChanged;
+  final ValueChanged<String> onEventNameChanged;
+  final VoidCallback? onSelectEventDate;
+  final Future<void> Function(String normalizedName)? onEventNameCommitted;
 
   const EventConfigPanel({
     super.key,
     required this.isWide,
     required this.eventDate,
+    required this.eventName,
+    this.eventNameReadOnly = false,
+    this.eventDateEditable = true,
     this.idMassiveEvent,
     required this.simpleEvents,
     required this.onMassiveEventCreated,
@@ -31,6 +41,9 @@ class EventConfigPanel extends StatefulWidget {
     required this.showSuccess,
     required this.showInfo,
     required this.onEventsChanged,
+    required this.onEventNameChanged,
+    this.onSelectEventDate,
+    this.onEventNameCommitted,
   });
 
   @override
@@ -38,14 +51,59 @@ class EventConfigPanel extends StatefulWidget {
 }
 
 class _EventConfigPanelState extends State<EventConfigPanel> {
-  @override
-  void dispose() {
-    super.dispose();
-  }
+  late final TextEditingController _nameController;
+
+  bool get _isReception =>
+      widget.key != null &&
+      widget.key is ValueKey<String> &&
+      (widget.key as ValueKey<String>).value.contains(
+        'eventConfigPanel_reception',
+      );
 
   @override
   void initState() {
     super.initState();
+    _nameController = TextEditingController(text: widget.eventName);
+  }
+
+  @override
+  void didUpdateWidget(EventConfigPanel oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.eventName != widget.eventName &&
+        _nameController.text != widget.eventName) {
+      _nameController.text = widget.eventName;
+    }
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
+  }
+
+  String? _nameValidationMessage(AppLocalizations l10n) {
+    final err = validateMassiveEventName(_nameController.text);
+    if (err == null) return null;
+    switch (err) {
+      case MassiveEventNameValidationError.required:
+        return l10n.massiveEventNameRequired;
+      case MassiveEventNameValidationError.tooLong:
+        return l10n.massiveEventNameMaxLength;
+    }
+  }
+
+  bool _ensureValidNameForAction() {
+    final l10n = AppLocalizations.of(context)!;
+    final msg = _nameValidationMessage(l10n);
+    if (msg != null) {
+      widget.showError(msg);
+      return false;
+    }
+    final normalized = normalizeMassiveEventName(_nameController.text)!;
+    if (normalized != widget.eventName.trim()) {
+      widget.onEventNameChanged(normalized);
+    }
+    return true;
   }
 
   List<SimpleEventModel> get activeDetails {
@@ -73,6 +131,9 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
   void _openAddEventDialog() async {
     if (mounted) {
       widget.showError(null);
+      if (!_isReception && !_ensureValidNameForAction()) {
+        return;
+      }
       final massiveBloc = context.read<MassiveEventBloc>();
       final activeEventTypes = activeDetails.map((e) => e.type).toList();
       if (widget.key != null &&
@@ -109,8 +170,13 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
             if (!mounted) return;
             final dataSource = massiveBloc.dataSource;
             if (widget.idMassiveEvent == null) {
+              final displayName =
+                  _isReception
+                      ? kMassiveEventDefaultName
+                      : normalizeMassiveEventName(_nameController.text)!;
               var masEv = MassiveEventModel.create(
                 eventDate: widget.eventDate!,
+                name: displayName,
                 simpleEvents: [newSimpleEvent],
               );
               final newMassiveEvent = await dataSource.saveMassiveEvent(
@@ -142,7 +208,9 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
             widget.onEventsChanged(allDetails);
           } on ApiException catch (e) {
             if (mounted) {
-              String? error = ApiExceptionCode.fromString(e.code).asText(context);
+              String? error = ApiExceptionCode.fromString(
+                e.code,
+              ).asText(context);
               if (error.isNotEmpty) {
                 widget.showError(error);
               }
@@ -302,6 +370,66 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
     return true;
   }
 
+  Widget _buildStandaloneMetadata(AppLocalizations l10n) {
+    if (_isReception) return const SizedBox.shrink();
+    final date = widget.eventDate;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                l10n.dateSomething(l10n.event),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            const SizedBox(width: 8),
+            Flexible(
+              child: TextButton.icon(
+                icon: const Icon(Icons.calendar_today, size: 18),
+                label: Text(
+                  date != null ? DateFormat('yyyy-MM-dd').format(date) : '—',
+                  overflow: TextOverflow.ellipsis,
+                ),
+                onPressed:
+                    widget.eventDateEditable && widget.onSelectEventDate != null
+                        ? widget.onSelectEventDate
+                        : null,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 6),
+        TextFormField(
+          controller: _nameController,
+          readOnly: widget.eventNameReadOnly,
+          maxLength: kMassiveEventNameMaxLength,
+          decoration: InputDecoration(
+            labelText: l10n.massiveEventsColumnName,
+            counterText: '',
+            errorText: _nameValidationMessage(l10n),
+          ),
+          onChanged: (v) {
+            widget.onEventNameChanged(v);
+            setState(() {});
+          },
+          onFieldSubmitted: (_) => _commitEventName(),
+          onEditingComplete: _commitEventName,
+        ),
+        const SizedBox(height: 16),
+      ],
+    );
+  }
+
+  Future<void> _commitEventName() async {
+    if (_isReception || widget.onEventNameCommitted == null) return;
+    if (!_ensureValidNameForAction()) return;
+    final normalized = normalizeMassiveEventName(_nameController.text)!;
+    await widget.onEventNameCommitted!(normalized);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -312,6 +440,7 @@ class _EventConfigPanelState extends State<EventConfigPanel> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          _buildStandaloneMetadata(l10n),
           Text(
             l10n.eventConfigTitle,
             style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),

@@ -40,6 +40,7 @@ class MassiveEventPage extends StatefulWidget {
 class _MassiveEventPageState extends State<MassiveEventPage> {
   String? idMassiveEvent;
   DateTime _selectedDate = DateTime.now();
+  String _eventName = '';
   List<SimpleEventModel> simpleEvents = [];
   Map<String, AnimalSimpleEventTableRowModel> animalEventsAppliedMap = {};
   String? _globalErrorMessage;
@@ -73,6 +74,7 @@ class _MassiveEventPageState extends State<MassiveEventPage> {
       setState(() {
         idMassiveEvent = session.massive.id;
         _selectedDate = session.massive.eventDate;
+        _eventName = session.massive.name;
         simpleEvents = List<SimpleEventModel>.from(session.massive.simpleEvents);
         animalEventsAppliedMap = Map<String, AnimalSimpleEventTableRowModel>.from(
           session.animalRows,
@@ -116,6 +118,7 @@ class _MassiveEventPageState extends State<MassiveEventPage> {
   void dispose() {
     idMassiveEvent = null;
     _selectedDate = DateTime.now();
+    _eventName = '';
     simpleEvents.clear();
     animalEventsAppliedMap.clear();
     _globalErrorMessage = null;
@@ -153,6 +156,29 @@ class _MassiveEventPageState extends State<MassiveEventPage> {
       setState(() {
         _selectedDate = picked;
       });
+    }
+  }
+
+  Future<void> _commitEventName(String normalizedName) async {
+    if (idMassiveEvent == null || _sessionReadOnly) return;
+    try {
+      final ds = context.read<MassiveEventBloc>().dataSource;
+      await ds.updateMassiveEventName(
+        idMassiveEvent: idMassiveEvent!,
+        name: normalizedName,
+      );
+      if (mounted) {
+        setState(() => _eventName = normalizedName);
+      }
+    } catch (e) {
+      if (!mounted) return;
+      final l10n = AppLocalizations.of(context)!;
+      if (e is ApiException) {
+        final msg = ApiExceptionCode.fromString(e.code).asText(context);
+        setGlobalError(msg.isNotEmpty ? msg : l10n.error_generic);
+      } else {
+        setGlobalError(l10n.error_generic);
+      }
     }
   }
 
@@ -337,6 +363,9 @@ class _MassiveEventPageState extends State<MassiveEventPage> {
       key: const ValueKey('eventConfigPanel_massiveEvent'),
       isWide: isWide,
       eventDate: _selectedDate,
+      eventName: _eventName,
+      eventNameReadOnly: _sessionReadOnly,
+      eventDateEditable: idMassiveEvent == null,
       simpleEvents: simpleEvents,
       idMassiveEvent: idMassiveEvent,
       onMassiveEventCreated: (newId) {
@@ -349,6 +378,9 @@ class _MassiveEventPageState extends State<MassiveEventPage> {
       showSuccess: setGlobalSuccess,
       showInfo: setGlobalInfo,
       onEventsChanged: setEvents,
+      onEventNameChanged: (v) => setState(() => _eventName = v),
+      onSelectEventDate: _sessionReadOnly ? null : _selectDate,
+      onEventNameCommitted: _commitEventName,
     );
     final eventConfigPanel = AbsorbPointer(
       absorbing: _sessionReadOnly || _loadingSession,
@@ -428,47 +460,24 @@ class _MassiveEventPageState extends State<MassiveEventPage> {
             if (_sessionReadOnly)
               MessageBanner.info(l10n.massiveEventClosedReadOnly),
 
-            Container(
-              margin: const EdgeInsets.symmetric(
-                horizontal: 5.0,
-                vertical: 3.0,
+            if (idMassiveEvent != null)
+              Container(
+                margin: const EdgeInsets.symmetric(
+                  horizontal: 5.0,
+                  vertical: 3.0,
+                ),
+                alignment: Alignment.centerRight,
+                child: ElevatedButton.icon(
+                  onPressed:
+                      (_sessionReadOnly ||
+                              _loadingSession ||
+                              animalEventsAppliedMap.isEmpty)
+                          ? null
+                          : _closeMassiveEvent,
+                  icon: const Icon(Icons.task_rounded),
+                  label: Text(l10n.finish),
+                ),
               ),
-              child: Row(
-                children: [
-                  // Parte izquierda (textos y botón de fecha)
-                  Expanded(
-                    child: Row(
-                      children: [
-                        Text(l10n.dateSomething(l10n.event)),
-                        const SizedBox(width: 8),
-                        TextButton.icon(
-                          icon: const Icon(Icons.calendar_today),
-                          label: Text(
-                            DateFormat('yyyy-MM-dd').format(_selectedDate),
-                          ),
-                          onPressed:
-                              idMassiveEvent == null ? _selectDate : null,
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  // Parte derecha (botón de finalizar)
-                  if (idMassiveEvent != null)
-                    ElevatedButton.icon(
-                      onPressed:
-                          (_sessionReadOnly ||
-                                  _loadingSession ||
-                                  idMassiveEvent == null ||
-                                  animalEventsAppliedMap.isEmpty)
-                              ? null
-                              : _closeMassiveEvent,
-                      icon: const Icon(Icons.task_rounded),
-                      label: Text(l10n.finish),
-                    ),
-                ],
-              ),
-            ),
             Expanded(
               child:
                   isWide

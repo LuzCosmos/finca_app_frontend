@@ -420,7 +420,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'No tiene permiso para ver el historial. Puede crear un evento nuevo.';
 
   @override
-  String get massiveEventsSearchNameOrId => 'Nombre o ID';
+  String get massiveEventsSearchName => 'Nombre';
 
   @override
   String get massiveEventsNoMatchesFilter =>
@@ -430,7 +430,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get massiveEventsColumnEventDate => 'Fecha evento';
 
   @override
-  String get massiveEventsColumnName => 'Nombre';
+  String get massiveEventsColumnName => 'Nombre Evento';
+
+  @override
+  String get massiveEventNameRequired =>
+      'El nombre del evento masivo es obligatorio';
+
+  @override
+  String get massiveEventNameMaxLength =>
+      'El nombre no puede superar 100 caracteres';
 
   @override
   String get massiveEventsColumnUpdatedAt => 'Última modificación';

@@ -5,7 +5,7 @@ class MassiveEventLocal extends Table {
   TextColumn get id => text()(); // UUID
   TextColumn get serverId => text().nullable()();
   TextColumn get idTenant => text()();
-  TextColumn get name => text().nullable()();
+  TextColumn get name => text().withLength(min: 1, max: 100)();
   DateTimeColumn get eventDate => dateTime()();
   TextColumn get status => text().withDefault(const Constant('open'))();
   TextColumn get createdBy => text().nullable()();

@@ -497,6 +497,9 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
                                 ),
                                 isWide: true,
                                 eventDate: receptionDate ?? DateTime.now(),
+                                eventName: '',
+                                eventNameReadOnly: true,
+                                eventDateEditable: false,
                                 simpleEvents: simpleEvents,
                                 idMassiveEvent: idMassiveEvent,
                                 onMassiveEventCreated: (newId) {
@@ -506,6 +509,7 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
                                 showSuccess: setGlobalSuccess,
                                 showInfo: setGlobalInfo,
                                 onEventsChanged: setEvents,
+                                onEventNameChanged: (_) {},
                               ),
                             ),
                           ],

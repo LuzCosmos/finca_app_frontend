@@ -38,7 +38,7 @@ void main() {
 
   MassiveEventModel sample({
     String id = 'e1',
-    String? name,
+    String name = 'Evento prueba',
     DateTime? eventDate,
   }) {
     return MassiveEventModel(
@@ -103,7 +103,7 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(find.byIcon(Icons.add), findsNothing);
-      expect(find.text('e1'), findsOneWidget);
+      expect(find.text('Evento prueba'), findsOneWidget);
     });
 
     testWidgets('list + create: icono añadir visible con datos', (
@@ -174,19 +174,19 @@ void main() {
       );
     });
 
-    testWidgets('sin nombre: título de fila es el id', (tester) async {
+    testWidgets('nombre backfill: título de fila es el nombre', (tester) async {
       await savePerms('00001');
       await tester.pumpWidget(
         pumpLocalizedMaterialShell(
           home: MassiveEventListPage(
             embedded: true,
             fetchStandaloneOverride:
-                () async => [sample(id: 'uuid-sin-nombre', name: null)],
+                () async => [sample(id: 'uuid-sin-nombre', name: 'MassiveEvent')],
           ),
         ),
       );
       await tester.pumpAndSettle();
-      expect(find.text('uuid-sin-nombre'), findsOneWidget);
+      expect(find.text('MassiveEvent'), findsOneWidget);
     });
   });
 

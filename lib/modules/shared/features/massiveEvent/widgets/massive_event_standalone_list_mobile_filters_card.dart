@@ -110,7 +110,7 @@ class MassiveEventStandaloneListMobileFiltersCard extends StatelessWidget {
             TextField(
               controller: nameController,
               decoration: InputDecoration(
-                labelText: l10n.massiveEventsSearchNameOrId,
+                labelText: l10n.massiveEventsSearchName,
                 prefixIcon: const Icon(Icons.search),
               ),
               onChanged: (_) => onNameChanged(),
@@ -122,7 +122,9 @@ class MassiveEventStandaloneListMobileFiltersCard extends StatelessWidget {
               isExpanded: true,
               value: MassiveEventStandaloneListQuery.coerceStatus(statusRaw),
               items:
-                  MassiveEventStandaloneListQuery.allowedStatusCodes.map((code) {
+                  MassiveEventStandaloneListQuery.allowedStatusCodes.map((
+                    code,
+                  ) {
                     return DropdownMenuItem<String>(
                       value: code,
                       child: Text(labels[code] ?? code),

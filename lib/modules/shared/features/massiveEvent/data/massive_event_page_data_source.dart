@@ -62,4 +62,10 @@ abstract class IMassiveEventPageDataSource {
 
   /// Carga masivo + animales ya aplicados (edición / continuar sesión).
   Future<MassiveSessionLoadResult> loadMassiveEventSession({required String idMassiveEvent});
+
+  /// Actualiza el nombre del masivo (flujo autónomo).
+  Future<MassiveEventModel> updateMassiveEventName({
+    required String idMassiveEvent,
+    required String name,
+  });
 }

@@ -821,8 +821,8 @@ abstract class AppLocalizations {
   /// Label for the massive events list filter field (web).
   ///
   /// In en, this message translates to:
-  /// **'Name or ID'**
-  String get massiveEventsSearchNameOrId;
+  /// **'Name'**
+  String get massiveEventsSearchName;
 
   /// Info when client-side filters hide every row on the web list.
   ///
@@ -839,8 +839,20 @@ abstract class AppLocalizations {
   /// No description provided for @massiveEventsColumnName.
   ///
   /// In en, this message translates to:
-  /// **'Name'**
+  /// **'Event Name'**
   String get massiveEventsColumnName;
+
+  /// No description provided for @massiveEventNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Massive event name is required'**
+  String get massiveEventNameRequired;
+
+  /// No description provided for @massiveEventNameMaxLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Name cannot exceed 100 characters'**
+  String get massiveEventNameMaxLength;
 
   /// No description provided for @massiveEventsColumnUpdatedAt.
   ///

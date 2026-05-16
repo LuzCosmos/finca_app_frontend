@@ -71,6 +71,16 @@ class MassiveEventRepository {
     );
   }
 
+  Future<void> updateName(String id, String name) {
+    return _dao.updateMassiveEvent(
+      id,
+      MassiveEventLocalCompanion(
+        name: Value(name),
+        updatedAt: Value(DateTime.now()),
+      ),
+    );
+  }
+
   Future<void> delete(String id) {
     return _dao.deleteMassiveEvent(id);
   }

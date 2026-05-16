@@ -4,6 +4,7 @@ import 'package:drift/drift.dart';
 import 'package:finca_app_frontend/core/data/database/app_database_mobile.dart';
 import 'package:finca_app_frontend/core/data/database/repositories/massive_event_repository.dart';
 import 'package:finca_app_frontend/core/data/mappers/simple_event_model_mapper.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/massive_event_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_model.dart';
 
 class MassiveEventService {
@@ -22,6 +23,7 @@ class MassiveEventService {
     final eventCompanion = MassiveEventLocalCompanion.insert(
       id: uuid,
       idTenant: idTenant,
+      name: kMassiveEventDefaultName,
       eventDate: eventDate,
       status: Value('open'),
       createdBy: Value(createdBy),
