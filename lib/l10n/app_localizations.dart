@@ -902,6 +902,95 @@ abstract class AppLocalizations {
   /// **'Check the filters or submitted data. If the event is linked to a purchase reception, the operation may not be valid on the server.'**
   String get massiveEventsListUnprocessableEntityHint;
 
+  /// Open existing massive event in the same flow as create (query id).
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get massiveEventsEdit;
+
+  /// Dialog title when closing massive event with validation errors.
+  ///
+  /// In en, this message translates to:
+  /// **'Fix before finishing'**
+  String get massiveEventCloseValidationTitle;
+
+  /// Intro line above the list of validation issues.
+  ///
+  /// In en, this message translates to:
+  /// **'The following rows need attention:'**
+  String get massiveEventCloseValidationIntro;
+
+  /// Validation when weight simple event is active but row has no weight.
+  ///
+  /// In en, this message translates to:
+  /// **'Animal {animalNumber}: weight is required before finishing.'**
+  String massiveEventValidationMissingWeight(String animalNumber);
+
+  /// Validation when weight is not a plausible value.
+  ///
+  /// In en, this message translates to:
+  /// **'Animal {animalNumber}: weight is out of allowed range.'**
+  String massiveEventValidationInvalidWeight(String animalNumber);
+
+  /// Shown when GET massive session fails on edit entry.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load this massive event. Check your connection or try again.'**
+  String get massiveEventLoadSessionError;
+
+  /// Banner when opening a closed massive event from the list.
+  ///
+  /// In en, this message translates to:
+  /// **'This massive event is closed: you can review it but not change it.'**
+  String get massiveEventClosedReadOnly;
+
+  /// Cell text when previous weight is unknown for analytics.
+  ///
+  /// In en, this message translates to:
+  /// **'No previous weight'**
+  String get massiveEventNoPreviousWeight;
+
+  /// Column header for previous weight in processed animals table.
+  ///
+  /// In en, this message translates to:
+  /// **'Prev. kg'**
+  String get massiveEventPreviousWeightShort;
+
+  /// Column header for percent change vs previous weight.
+  ///
+  /// In en, this message translates to:
+  /// **'Δ%'**
+  String get massiveEventDeltaPctShort;
+
+  /// Title for mean/min/max summary of applied weights.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight in this session'**
+  String get massiveEventWeightSummaryTitle;
+
+  /// One-line stats; mean/min/max formatted with locale elsewhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Animals with weight: {count} · Average: {mean} · Min: {min} · Max: {max}'**
+  String massiveEventWeightSummaryStats(
+    int count,
+    String mean,
+    String min,
+    String max,
+  );
+
+  /// When there are no numeric weights to aggregate.
+  ///
+  /// In en, this message translates to:
+  /// **'No weights recorded yet in this session.'**
+  String get massiveEventWeightSummaryEmpty;
+
+  /// Generic dismiss button for small dialogs.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get dialogOk;
+
   /// Button label to trigger manual data sync on mobile.
   ///
   /// In en, this message translates to:
@@ -2839,6 +2928,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This massive event is already closed and cannot be modified.'**
   String get error_massiveEventAlreadyClosed;
+
+  /// Shown when the server returns MASSIVE_EVENT_FROM_PURCHASE_RECEPTION on close.
+  ///
+  /// In en, this message translates to:
+  /// **'This massive event is linked to a purchase reception and cannot be closed from the massive events module.'**
+  String get error_massiveEventClosePurchaseReception;
 
   /// Shown when a massive event has been successfully finished.
   ///

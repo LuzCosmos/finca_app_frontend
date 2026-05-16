@@ -49,4 +49,13 @@ class AnimalSimpleEventDao extends DatabaseAccessor<AppDatabase>
       (t) => t.idSimpleEvent.equals(oldSimpleId),
     )).write(AnimalSimpleEventLocalCompanion(idSimpleEvent: Value(newSimpleId)));
   }
+
+  /// Filas de animal_simple_event asociadas a un masivo (sesión local).
+  Future<List<AnimalSimpleEvent>> findByMassiveEventId(String idMassiveEvent) {
+    return (select(animalSimpleEventLocal)..where(
+      (t) =>
+          t.idMassiveEvent.equals(idMassiveEvent) |
+          t.recordedInMassiveEvent.equals(idMassiveEvent),
+    )).get();
+  }
 }

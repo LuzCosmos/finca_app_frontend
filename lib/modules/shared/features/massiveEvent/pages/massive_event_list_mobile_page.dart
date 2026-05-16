@@ -28,6 +28,7 @@ class _MassiveListState {
     required this.offline,
     required this.canCreate,
     required this.canList,
+    required this.canUpdate,
   });
 
   final List<MassiveEventModel> events;
@@ -35,6 +36,7 @@ class _MassiveListState {
   final bool offline;
   final bool canCreate;
   final bool canList;
+  final bool canUpdate;
 }
 
 class MassiveEventListMobile extends StatefulWidget {
@@ -77,6 +79,7 @@ class _MassiveEventListMobileState extends State<MassiveEventListMobile> {
   bool _bootDone = false;
   bool _canCreate = false;
   bool _canList = false;
+  bool _canUpdate = false;
 
   List<MassiveEventModel> _pagedItems = const [];
   bool _pagedLoading = true;
@@ -151,9 +154,11 @@ class _MassiveEventListMobileState extends State<MassiveEventListMobile> {
     if (!mounted) return;
     final canCreate = massiveEventsBitmaskAllowsCreate(permissions);
     final canList = massiveEventsBitmaskAllowsList(permissions);
+    final canUpdate = massiveEventsBitmaskAllowsUpdate(permissions);
     setState(() {
       _canCreate = canCreate;
       _canList = canList;
+      _canUpdate = canUpdate;
       _bootDone = true;
     });
     if (canList) {
@@ -263,6 +268,7 @@ class _MassiveEventListMobileState extends State<MassiveEventListMobile> {
     );
     final canCreate = massiveEventsBitmaskAllowsCreate(permissions);
     final canList = massiveEventsBitmaskAllowsList(permissions);
+    final canUpdate = massiveEventsBitmaskAllowsUpdate(permissions);
     if (!canList) {
       return _MassiveListState(
         events: const [],
@@ -270,6 +276,7 @@ class _MassiveEventListMobileState extends State<MassiveEventListMobile> {
         offline: false,
         canCreate: canCreate,
         canList: false,
+        canUpdate: canUpdate,
       );
     }
     final q = _listQuery;
@@ -289,6 +296,7 @@ class _MassiveEventListMobileState extends State<MassiveEventListMobile> {
         offline: false,
         canCreate: canCreate,
         canList: true,
+        canUpdate: canUpdate,
       );
     } catch (e) {
       final offline =
@@ -303,6 +311,7 @@ class _MassiveEventListMobileState extends State<MassiveEventListMobile> {
         offline: offline,
         canCreate: canCreate,
         canList: true,
+        canUpdate: canUpdate,
       );
     }
   }
@@ -418,6 +427,7 @@ class _MassiveEventListMobileState extends State<MassiveEventListMobile> {
     AppLocalizations l10n,
     List<MassiveEventModel> events, {
     required bool showTrailingLoader,
+    required bool canUpdate,
   }) {
     final locale = Localizations.localeOf(context).toString();
     final df = DateFormat.yMMMd(locale);
@@ -459,6 +469,10 @@ class _MassiveEventListMobileState extends State<MassiveEventListMobile> {
               wide: wide,
               extraWide: extraWide,
               onTap: () => openDetail(e),
+              onEditOpen:
+                  canUpdate && e.isOpenForStandaloneListEdit
+                      ? () => context.push('/massive-events/edit?id=${e.id}')
+                      : null,
             );
           },
         );
@@ -494,6 +508,7 @@ class _MassiveEventListMobileState extends State<MassiveEventListMobile> {
       l10n,
       _pagedItems,
       showTrailingLoader: _pagedLoadingMore && _pagedHasMore,
+      canUpdate: _canUpdate,
     );
   }
 
@@ -515,7 +530,12 @@ class _MassiveEventListMobileState extends State<MassiveEventListMobile> {
         scrollable: true,
       );
     }
-    return _buildEventList(l10n, s.events, showTrailingLoader: false);
+    return _buildEventList(
+      l10n,
+      s.events,
+      showTrailingLoader: false,
+      canUpdate: s.canUpdate,
+    );
   }
 
   @override

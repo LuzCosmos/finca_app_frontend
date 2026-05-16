@@ -242,6 +242,74 @@
   "@massiveEventsListUnprocessableEntityHint": {
     "description": "Extra copy when the list API returns 422 (unprocessable entity)."
   },
+  "massiveEventsEdit": "Edit",
+  "@massiveEventsEdit": {
+    "description": "Open existing massive event in the same flow as create (query id)."
+  },
+  "massiveEventCloseValidationTitle": "Fix before finishing",
+  "@massiveEventCloseValidationTitle": {
+    "description": "Dialog title when closing massive event with validation errors."
+  },
+  "massiveEventCloseValidationIntro": "The following rows need attention:",
+  "@massiveEventCloseValidationIntro": {
+    "description": "Intro line above the list of validation issues."
+  },
+  "massiveEventValidationMissingWeight": "Animal {animalNumber}: weight is required before finishing.",
+  "@massiveEventValidationMissingWeight": {
+    "description": "Validation when weight simple event is active but row has no weight.",
+    "placeholders": {
+      "animalNumber": {"type": "String"}
+    }
+  },
+  "massiveEventValidationInvalidWeight": "Animal {animalNumber}: weight is out of allowed range.",
+  "@massiveEventValidationInvalidWeight": {
+    "description": "Validation when weight is not a plausible value.",
+    "placeholders": {
+      "animalNumber": {"type": "String"}
+    }
+  },
+  "massiveEventLoadSessionError": "Could not load this massive event. Check your connection or try again.",
+  "@massiveEventLoadSessionError": {
+    "description": "Shown when GET massive session fails on edit entry."
+  },
+  "massiveEventClosedReadOnly": "This massive event is closed: you can review it but not change it.",
+  "@massiveEventClosedReadOnly": {
+    "description": "Banner when opening a closed massive event from the list."
+  },
+  "massiveEventNoPreviousWeight": "No previous weight",
+  "@massiveEventNoPreviousWeight": {
+    "description": "Cell text when previous weight is unknown for analytics."
+  },
+  "massiveEventPreviousWeightShort": "Prev. kg",
+  "@massiveEventPreviousWeightShort": {
+    "description": "Column header for previous weight in processed animals table."
+  },
+  "massiveEventDeltaPctShort": "Δ%",
+  "@massiveEventDeltaPctShort": {
+    "description": "Column header for percent change vs previous weight."
+  },
+  "massiveEventWeightSummaryTitle": "Weight in this session",
+  "@massiveEventWeightSummaryTitle": {
+    "description": "Title for mean/min/max summary of applied weights."
+  },
+  "massiveEventWeightSummaryStats": "Animals with weight: {count} · Average: {mean} · Min: {min} · Max: {max}",
+  "@massiveEventWeightSummaryStats": {
+    "description": "One-line stats; mean/min/max formatted with locale elsewhere.",
+    "placeholders": {
+      "count": {"type": "int"},
+      "mean": {"type": "String"},
+      "min": {"type": "String"},
+      "max": {"type": "String"}
+    }
+  },
+  "massiveEventWeightSummaryEmpty": "No weights recorded yet in this session.",
+  "@massiveEventWeightSummaryEmpty": {
+    "description": "When there are no numeric weights to aggregate."
+  },
+  "dialogOk": "OK",
+  "@dialogOk": {
+    "description": "Generic dismiss button for small dialogs."
+  },
   "syncNow": "Sync now",
   "@syncNow": {
     "description": "Button label to trigger manual data sync on mobile."
@@ -637,6 +705,10 @@
   "error_massiveEventAlreadyClosed": "This massive event is already closed and cannot be modified.",
   "@error_massiveEventAlreadyClosed": {
     "description": "Shown when the user tries to close or modify a massive event that has already been closed."
+  },
+  "error_massiveEventClosePurchaseReception": "This massive event is linked to a purchase reception and cannot be closed from the massive events module.",
+  "@error_massiveEventClosePurchaseReception": {
+    "description": "Shown when the server returns MASSIVE_EVENT_FROM_PURCHASE_RECEPTION on close."
   },
   "event_finishSuccess": "The massive event was finished successfully.",
   "@event_finishSuccess": {

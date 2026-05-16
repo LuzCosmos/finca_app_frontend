@@ -88,6 +88,17 @@ GoRouter createAppRouter({
         },
       ),
       GoRoute(
+        path: '/massive-events/edit',
+        builder: (context, state) {
+          final dataSource = createMassiveEventPageDataSource();
+          final editId = state.uri.queryParameters['id'];
+          return BlocProvider(
+            create: (_) => MassiveEventBloc(dataSource: dataSource),
+            child: MassiveEventPage(initialMassiveEventId: editId),
+          );
+        },
+      ),
+      GoRoute(
         path: '/massive-events',
         builder: (context, state) => const MassiveEventListPage(),
       ),
@@ -142,6 +153,7 @@ GoRouter createAppRouter({
         final denied = routeAccessDeniedRedirect(
           path: path,
           permissions: permissions,
+          queryParameters: state.uri.queryParameters,
         );
         if (denied != null) {
           return denied;

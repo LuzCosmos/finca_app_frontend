@@ -6,6 +6,7 @@ import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/massive_event_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/massive_event_standalone_list_date_shortcuts.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/massive_event_standalone_list_column_limits.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/massive_event_standalone_list_query.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/services/massive_event_api_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/services/massive_events_page_result.dart';
@@ -20,30 +21,69 @@ import 'package:intl/intl.dart';
 import 'massive_event_list_permissions.dart';
 import 'massive_event_list_types.dart';
 
+const double _webTableColumnSpacing = 2.0;
+const double _webTableHorizontalMargin = 24.0;
+
 /// Anchos de celdas (sin `horizontalMargin` ni `columnSpacing` del [DataTable]).
-List<double> _webMassiveEventColumnInnerWidths(double usable) {
-  const mins = <double>[72, 88, 60, 75, 88, 88];
-  const ideals = <double>[80, 220, 92, 100, 136, 136];
+/// [columnCount] 6 sin columna de acciones, 7 con Editar (la columna 6 es ancho fijo).
+List<double> _webMassiveEventColumnInnerWidths(double usable, int columnCount) {
+  final actionW =
+      MassiveEventStandaloneListColumnLimits.webActionsColumnFixedWidth;
   double sum(List<double> x) => x.fold(0.0, (a, b) => a + b);
+  final ideals = <double>[90, 150, 70, 80, 130, 130];
+  final mins = <double>[60, 100, 60, 45, 45, 45];
   final mSum = sum(mins);
   final iSum = sum(ideals);
-  if (usable <= 0 || usable <= mSum) {
-    return List<double>.from(mins);
+
+  if (columnCount < 7) {
+    if (usable <= 0 || usable <= mSum) {
+      return List<double>.from(mins);
+    }
+    if (usable >= iSum) {
+      final scale = usable / iSum;
+      return ideals.map((e) => e * scale).toList();
+    }
+    final t = (usable - mSum) / (iSum - mSum);
+    return List.generate(
+      columnCount,
+      (j) => mins[j] + (ideals[j] - mins[j]) * t,
+    );
   }
-  if (usable >= iSum) {
-    final scale = usable / iSum;
-    return ideals.map((e) => e * scale).toList();
+  final minTotal = mSum + actionW;
+  final idealTotal = iSum + actionW;
+  if (usable <= 0 || usable <= minTotal) {
+    return List<double>.from([...mins, actionW]);
   }
-  final t = (usable - mSum) / (iSum - mSum);
-  return List.generate(6, (j) => mins[j] + (ideals[j] - mins[j]) * t);
+  final usableFlex = usable - actionW;
+  if (usable >= idealTotal) {
+    final scale = usableFlex / iSum;
+    final result = [...ideals.map((e) => e * scale), actionW];
+    for (var i = 0; i < result.length; i++) {
+      if (i == 6) {
+        continue;
+      } else if (i == 1) {
+        result[i] = result[i].clamp(
+          MassiveEventStandaloneListColumnLimits.webNameColumnMin,
+          double.infinity,
+        );
+      } else {
+        if (result[i] > ideals[i]) {
+          result[i] = ideals[i];
+        }
+      }
+    }
+    return result;
+  }
+  final t = (usableFlex - mSum) / (iSum - mSum);
+  final first6 = List.generate(6, (j) => mins[j] + (ideals[j] - mins[j]) * t);
+  return [...first6, actionW];
 }
 
-double _webMassiveEventDataTableInnerPad(ThemeData theme) {
+double _webMassiveEventDataTableInnerPad(ThemeData theme, int columnCount) {
   final dt = theme.dataTableTheme;
-  const nCols = 6;
-  final spacing = dt.columnSpacing ?? 16;
-  final hMargin = dt.horizontalMargin ?? 24;
-  return hMargin * 2 + spacing * (nCols - 1);
+  final spacing = _webTableColumnSpacing;
+  final hMargin = _webTableHorizontalMargin;
+  return hMargin * 2 + spacing * (columnCount - 1);
 }
 
 class MassiveEventListWeb extends StatefulWidget {
@@ -88,6 +128,7 @@ class _MassiveEventListWebState extends State<MassiveEventListWeb> {
 
   bool _canCreate = false;
   bool _canList = false;
+  bool _canUpdate = false;
   bool _bootDone = false;
 
   MassiveEventStandaloneListQuery get _listQuery =>
@@ -152,9 +193,11 @@ class _MassiveEventListWebState extends State<MassiveEventListWeb> {
     if (!mounted) return;
     final canCreate = massiveEventsBitmaskAllowsCreate(permissions);
     final canList = massiveEventsBitmaskAllowsList(permissions);
+    final canUpdate = massiveEventsBitmaskAllowsUpdate(permissions);
     setState(() {
       _canCreate = canCreate;
       _canList = canList;
+      _canUpdate = canUpdate;
       _bootDone = true;
     });
     if (canList) {
@@ -272,7 +315,7 @@ class _MassiveEventListWebState extends State<MassiveEventListWeb> {
         child: FittedBox(
           fit: BoxFit.scaleDown,
           alignment: Alignment.centerLeft,
-          child: MassiveEventListStatusChip(l10n: l10n, event: e),
+          child: MassiveEventListStatusChip(l10n: l10n, event: e, maxWidth: w),
         ),
       ),
     );
@@ -348,8 +391,9 @@ class _MassiveEventListWebState extends State<MassiveEventListWeb> {
               _load();
             },
             onShortcutThisWeek: () {
-              final r =
-                  MassiveEventStandaloneListDateShortcuts.thisWeekLocal(context);
+              final r = MassiveEventStandaloneListDateShortcuts.thisWeekLocal(
+                context,
+              );
               setState(() {
                 _from = r.$1;
                 _to = r.$2;
@@ -378,8 +422,10 @@ class _MassiveEventListWebState extends State<MassiveEventListWeb> {
                       child: LayoutBuilder(
                         builder: (context, constraints) {
                           final theme = Theme.of(context);
+                          final colCount = _canUpdate ? 7 : 6;
                           final innerPad = _webMassiveEventDataTableInnerPad(
                             theme,
+                            colCount,
                           );
                           final availOuter =
                               constraints.hasBoundedWidth
@@ -389,20 +435,64 @@ class _MassiveEventListWebState extends State<MassiveEventListWeb> {
                             0.0,
                             double.infinity,
                           );
-                          final cw = _webMassiveEventColumnInnerWidths(
-                            usableCols,
-                          );
-                          final contentColsW = cw.fold<double>(
-                            0,
-                            (a, b) => a + b,
-                          );
+                          // Si las columnas se redimensionan solo con [usableCols], la suma
+                          // encaja en el viewport y casi nunca aparece scroll horizontal.
+                          // Forzamos scroll cuando el ancho mínimo “cómodo” supera el disponible.
+                          final idealWidths =
+                              MassiveEventStandaloneListColumnLimits.webIdealColumnWidths(
+                                colCount,
+                              );
+                          final sortHeaderOverhead =
+                              MassiveEventStandaloneListColumnLimits.webMassiveEventListWebSortHeaderOverhead(
+                                colCount,
+                              );
+                          final usableCellWidths = (usableCols -
+                                  sortHeaderOverhead)
+                              .clamp(0.0, double.infinity);
+                          final minComfortContentW =
+                              idealWidths.fold<double>(0, (a, b) => a + b) +
+                              sortHeaderOverhead;
+                          final needHScroll =
+                              (minComfortContentW + innerPad) >
+                              availOuter + 0.5;
+                          var cw =
+                              needHScroll
+                                  ? List<double>.from(idealWidths)
+                                  : _webMassiveEventColumnInnerWidths(
+                                    usableCellWidths,
+                                    colCount,
+                                  );
+                          cw =
+                              MassiveEventStandaloneListColumnLimits.capWebColumnWidths(
+                                cw,
+                              );
+                          if (!needHScroll) {
+                            cw =
+                                MassiveEventStandaloneListColumnLimits.expandWebNameColumnOnly(
+                                  cw,
+                                  usableCellWidths,
+                                  columnCount: colCount,
+                                );
+                          }
+                          if (colCount >= 7) {
+                            cw =
+                                MassiveEventStandaloneListColumnLimits.lockWebActionsColumnWidth(
+                                  cw,
+                                );
+                          }
+                          final contentColsW =
+                              cw.fold<double>(0, (a, b) => a + b) +
+                              sortHeaderOverhead;
                           final contentTotalW = contentColsW + innerPad;
-                          final needHScroll = contentTotalW > availOuter + 0.5;
+                          // Ancho mínimo del bloque: al menos el panel (tabla estirada) o el ancho
+                          // intrínseco si la tabla es más ancha → scroll horizontal activo.
+                          final tableWidth =
+                              availOuter > contentTotalW + 0.5
+                                  ? availOuter
+                                  : contentTotalW;
 
-                          final spacing =
-                              theme.dataTableTheme.columnSpacing ?? 16;
-                          final hMargin =
-                              theme.dataTableTheme.horizontalMargin ?? 24;
+                          final spacing = _webTableColumnSpacing;
+                          final hMargin = _webTableHorizontalMargin;
 
                           final dataTable = DataTable(
                             sortColumnIndex: _sortColumnIndex,
@@ -454,6 +544,14 @@ class _MassiveEventListWebState extends State<MassiveEventListWeb> {
                                 ),
                                 onSort: _onSortDataColumn,
                               ),
+                              if (_canUpdate)
+                                DataColumn(
+                                  label: _webMassiveHeaderLabel(
+                                    l10n.massiveEventsEdit,
+                                    MassiveEventStandaloneListColumnLimits
+                                        .webActionsColumnFixedWidth,
+                                  ),
+                                ),
                             ],
                             rows:
                                 _items
@@ -501,38 +599,66 @@ class _MassiveEventListWebState extends State<MassiveEventListWeb> {
                                               cw[5],
                                             ),
                                           ),
+                                          if (_canUpdate)
+                                            DataCell(
+                                              SizedBox(
+                                                width:
+                                                    MassiveEventStandaloneListColumnLimits
+                                                        .webActionsColumnFixedWidth,
+                                                child: Align(
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  child:
+                                                      e.isOpenForStandaloneListEdit
+                                                          ? IconButton(
+                                                            icon: Icon(
+                                                              Icons.edit,
+                                                              size: 20,
+                                                              color:
+                                                                  Colors.blue,
+                                                            ),
+                                                            tooltip:
+                                                                l10n.massiveEventsEdit,
+                                                            onPressed:
+                                                                () => context.push(
+                                                                  '/massive-events/edit?id=${e.id}',
+                                                                ),
+                                                          )
+                                                          : const SizedBox.shrink(),
+                                                ),
+                                              ),
+                                            ),
                                         ],
                                       ),
                                     )
                                     .toList(),
                           );
 
-                          final horizontalBlock =
-                              needHScroll
-                                  ? Scrollbar(
-                                    controller: _tableHScroll,
-                                    thumbVisibility: true,
-                                    child: SingleChildScrollView(
-                                      controller: _tableHScroll,
-                                      scrollDirection: Axis.horizontal,
-                                      child: SizedBox(
-                                        width: contentTotalW,
-                                        child: dataTable,
-                                      ),
-                                    ),
-                                  )
-                                  : SizedBox(
-                                    width: availOuter,
-                                    child: dataTable,
-                                  );
-
+                          // Horizontal **fuera**, vertical **dentro**: evita que el scroll
+                          // vertical robe los gestos del horizontal en web/trackpad.
                           return Scrollbar(
-                            controller: _tableVScroll,
+                            controller: _tableHScroll,
                             thumbVisibility: true,
                             child: SingleChildScrollView(
-                              controller: _tableVScroll,
-                              scrollDirection: Axis.vertical,
-                              child: horizontalBlock,
+                              controller: _tableHScroll,
+                              scrollDirection: Axis.horizontal,
+                              primary: false,
+                              child: SizedBox(
+                                width: tableWidth,
+                                child: Scrollbar(
+                                  controller: _tableVScroll,
+                                  thumbVisibility: true,
+                                  child: SingleChildScrollView(
+                                    controller: _tableVScroll,
+                                    scrollDirection: Axis.vertical,
+                                    primary: false,
+                                    child: SizedBox(
+                                      width: tableWidth,
+                                      child: dataTable,
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ),
                           );
                         },

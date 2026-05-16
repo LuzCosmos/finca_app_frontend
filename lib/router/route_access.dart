@@ -34,19 +34,33 @@ bool massiveEventsBitmaskAllowsList(Map<String, dynamic> permissions) {
   return _massiveEventsBitmaskBit(permissions, 4);
 }
 
+bool massiveEventsBitmaskAllowsUpdate(Map<String, dynamic> permissions) {
+  return _massiveEventsBitmaskBit(permissions, 2);
+}
+
+/// Alineado con `ApplicationPermissionsService.normalizeCrudlMask` (Nest):
+/// solo dígitos 0/1, recorte a 5 bits, máscaras cortas legacy de 2 bits.
+String? _normalizeMassiveEventsCrudlMask(String raw) {
+  final only01 = raw.trim().replaceAll(RegExp(r'[^01]'), '');
+  if (only01.isEmpty) return null;
+  if (only01.length >= 5) return only01.substring(0, 5);
+  if (only01.length == 2) {
+    return '0${only01[0]}${only01[1]}00';
+  }
+  return only01.padRight(5, '0');
+}
+
 bool _massiveEventsBitmaskBit(Map<String, dynamic> permissions, int index) {
   final moduleData = permissions['MASSIVE_EVENTS'];
   if (moduleData is! Map) return false;
   final value = moduleData['massive_events'];
   if (value is bool) return value;
   if (value is String) {
-    final lower = value.toLowerCase();
+    final lower = value.toLowerCase().trim();
     if (lower == 'true' || lower == '1') return true;
-    if (value.length > index &&
-        RegExp(r'^[01]+$').hasMatch(value) &&
-        value[index] == '1') {
-      return true;
-    }
+    final normalized = _normalizeMassiveEventsCrudlMask(value);
+    if (normalized == null || normalized.length <= index) return false;
+    return normalized[index] == '1';
   }
   return false;
 }
@@ -56,6 +70,7 @@ bool _massiveEventsBitmaskBit(Map<String, dynamic> permissions, int index) {
 String? routeAccessDeniedRedirect({
   required String path,
   required Map<String, dynamic> permissions,
+  Map<String, String> queryParameters = const {},
 }) {
   String? module;
   String? resource;
@@ -66,8 +81,15 @@ String? routeAccessDeniedRedirect({
     final isCreatePath =
         path == '/massive-events/create' ||
         path.startsWith('/massive-events/create/');
+    final isEditPath =
+        path == '/massive-events/edit' ||
+        path.startsWith('/massive-events/edit/');
     if (isCreatePath) {
-      if (!canCreate) {
+      if (!massiveEventsBitmaskAllowsCreate(permissions)) {
+        return '/home';
+      }
+    } else if (isEditPath) {
+      if (!massiveEventsBitmaskAllowsUpdate(permissions)) {
         return '/home';
       }
     } else {

@@ -1,0 +1,38 @@
+{
+  "groups": [
+    {
+      "animalNumber": "N-100",
+      "idAnimal": "cattle-uuid-1",
+      "previousWeight": 380,
+      "events": [
+        {
+          "id": "ase-1",
+          "idTenant": "tenant-1",
+          "idAnimal": "cattle-uuid-1",
+          "animalNumber": "N-100",
+          "type": "weight",
+          "data": { "weight": 420 },
+          "appliedAt": "2025-06-01T10:00:00.000Z",
+          "idMassiveEvent": "massive-1",
+          "idSimpleEvent": "se-1"
+        }
+      ]
+    },
+    {
+      "animalNumber": "PROV-1",
+      "previousWeight": null,
+      "events": [
+        {
+          "id": "ase-2",
+          "idTenant": "tenant-1",
+          "animalNumber": "PROV-1",
+          "type": "weight",
+          "data": { "weight": 300 },
+          "appliedAt": "2025-06-01T11:00:00.000Z",
+          "idMassiveEvent": "massive-1",
+          "idSimpleEvent": "se-1"
+        }
+      ]
+    }
+  ]
+}

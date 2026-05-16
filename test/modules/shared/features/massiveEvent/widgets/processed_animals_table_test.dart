@@ -81,4 +81,77 @@ void main() {
       expect(find.text(l10n.weightKg), findsOneWidget);
     },
   );
+
+  testWidgets(
+    'con previousWeight: muestra peso previo y delta %',
+    (tester) async {
+      late AppLocalizations l10n;
+      final row = AnimalSimpleEventTableRowModel(
+        animalNumber: 'N-100',
+        weight: 420,
+        isSynced: true,
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          locale: Language.spanish.localeValue,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Builder(
+            builder: (context) {
+              l10n = AppLocalizations.of(context)!;
+              return ProcessedAnimalsTable(
+                animalEventsAppliedMap: {'N-100': row},
+                simpleEventTypes: const [SimpleEventType.weight],
+                previousWeightByAnimal: const {'N-100': 380},
+                isWide: true,
+              );
+            },
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('380.0'), findsOneWidget);
+      // (420 - 380) / 380 * 100 ≈ 10.5%
+      expect(find.text('10.5%'), findsOneWidget);
+      expect(find.text(l10n.massiveEventPreviousWeightShort), findsOneWidget);
+      expect(find.text(l10n.massiveEventDeltaPctShort), findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    'previousWeight null en mapa: texto sin dato previo',
+    (tester) async {
+      late AppLocalizations l10n;
+      final row = AnimalSimpleEventTableRowModel(
+        animalNumber: 'N-200',
+        weight: 400,
+        isSynced: true,
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          locale: Language.spanish.localeValue,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Builder(
+            builder: (context) {
+              l10n = AppLocalizations.of(context)!;
+              return ProcessedAnimalsTable(
+                animalEventsAppliedMap: {'N-200': row},
+                simpleEventTypes: const [SimpleEventType.weight],
+                previousWeightByAnimal: const {'N-200': null},
+                isWide: true,
+              );
+            },
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text(l10n.massiveEventNoPreviousWeight), findsOneWidget);
+      expect(find.text('—'), findsOneWidget);
+    },
+  );
 }

@@ -10,6 +10,9 @@ import 'package:finca_app_frontend/modules/shared/features/massiveEvent/pages/ma
 import '../../../../../support/app_test_host.dart';
 
 /// Golden opcional D5: panel de filtros expandido (ExpansionTile + hit-test).
+///
+/// PNG: `goldens/massive_event_list_d5_filters_expanded.png`. Regenerar y notas
+/// de plataforma (Linux vs macOS): `docs/correr-tests.md` §Goldens lista masivos D5.
 void main() {
   setUp(() {
     SharedPreferences.setMockInitialValues({});

@@ -7,12 +7,15 @@ class ProcessedAnimalsTable extends StatefulWidget {
   final Map<String, AnimalSimpleEventTableRowModel> animalEventsAppliedMap;
   final List<SimpleEventType> simpleEventTypes;
   final bool isWide;
+  /// Si no es null (p. ej. sesión cargada desde lista), muestra peso previo y Δ% cuando hay columna de peso.
+  final Map<String, double?>? previousWeightByAnimal;
 
   const ProcessedAnimalsTable({
     super.key,
     required this.animalEventsAppliedMap,
     required this.simpleEventTypes,
     required this.isWide,
+    this.previousWeightByAnimal,
   });
   @override
   State<ProcessedAnimalsTable> createState() => _ProcessedAnimalsTableState();
@@ -20,6 +23,31 @@ class ProcessedAnimalsTable extends StatefulWidget {
 
 class _ProcessedAnimalsTableState extends State<ProcessedAnimalsTable> {
   final ScrollController _horizontalScroll = ScrollController();
+
+  bool get _showPrevWeightAnalytics =>
+      widget.previousWeightByAnimal != null &&
+      widget.simpleEventTypes.contains(SimpleEventType.weight);
+
+  String _previousWeightText(
+    AnimalSimpleEventTableRowModel row,
+    AppLocalizations l10n,
+  ) {
+    final m = widget.previousWeightByAnimal;
+    if (m == null) return '';
+    final p = m[row.animalNumber];
+    if (p == null) return l10n.massiveEventNoPreviousWeight;
+    return p.toString();
+  }
+
+  String _deltaPercentText(AnimalSimpleEventTableRowModel row) {
+    final m = widget.previousWeightByAnimal;
+    if (m == null) return '';
+    final p = m[row.animalNumber];
+    final w = row.weight;
+    if (p == null || w == null || p <= 0) return '—';
+    final pct = (w - p) / p * 100;
+    return '${pct.toStringAsFixed(1)}%';
+  }
 
   @override
   void dispose() {
@@ -112,6 +140,22 @@ class _ProcessedAnimalsTableState extends State<ProcessedAnimalsTable> {
               style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
             ),
           ),
+        if (_showPrevWeightAnalytics)
+          DataColumn(
+            label: Text(
+              l10n.massiveEventPreviousWeightShort,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+            ),
+          ),
+        if (_showPrevWeightAnalytics)
+          DataColumn(
+            label: Text(
+              l10n.massiveEventDeltaPctShort,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+            ),
+          ),
         if (widget.simpleEventTypes.contains(SimpleEventType.tracker))
           DataColumn(
             label: Text(
@@ -190,6 +234,26 @@ class _ProcessedAnimalsTableState extends State<ProcessedAnimalsTable> {
                         horizontal: 8,
                       ),
                       child: Text(animalRow.weight?.toString() ?? ''),
+                    ),
+                  ),
+                if (_showPrevWeightAnalytics)
+                  DataCell(
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 3,
+                        horizontal: 8,
+                      ),
+                      child: Text(_previousWeightText(animalRow, l10n)),
+                    ),
+                  ),
+                if (_showPrevWeightAnalytics)
+                  DataCell(
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 3,
+                        horizontal: 8,
+                      ),
+                      child: Text(_deltaPercentText(animalRow)),
                     ),
                   ),
                 if (widget.simpleEventTypes.contains(SimpleEventType.tracker))

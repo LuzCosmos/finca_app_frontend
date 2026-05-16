@@ -14,15 +14,18 @@ class MassiveEventListStatusChip extends StatelessWidget {
     super.key,
     required this.l10n,
     required this.event,
+    this.maxWidth,
   });
 
   final AppLocalizations l10n;
   final MassiveEventModel event;
+  /// Si no es null, limita el ancho del chip (lista móvil / celdas estrechas).
+  final double? maxWidth;
 
   @override
   Widget build(BuildContext context) {
     final open = event.status.toLowerCase() == 'open';
-    return Container(
+    final chip = Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color:
@@ -34,11 +37,20 @@ class MassiveEventListStatusChip extends StatelessWidget {
       ),
       child: Text(
         open ? l10n.open : l10n.massiveEventsStatusClosedLabel,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
         style: TextStyle(
           color: open ? Colors.green[800] : Colors.grey[800],
           fontWeight: FontWeight.bold,
         ),
       ),
     );
+    if (maxWidth != null) {
+      return ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: maxWidth!),
+        child: chip,
+      );
+    }
+    return chip;
   }
 }

@@ -2,6 +2,7 @@ import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/brands/models/brand_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/brands/services/brand_api_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/data/massive_event_page_data_source.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/domain/massive_event_session_load.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/animal_simple_event_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/massive_event_model.dart';
@@ -88,5 +89,18 @@ class MassiveEventPageDataSourceWeb implements IMassiveEventPageDataSource {
       simpleEvent: simpleEvent,
       endpoint: endpoint,
     );
+  }
+
+  @override
+  Future<MassiveSessionLoadResult> loadMassiveEventSession({
+    required String idMassiveEvent,
+  }) async {
+    final massive = await MassiveEventApiService.getMassiveEventByIdHydratingSimpleEvents(
+      idMassiveEvent: idMassiveEvent,
+    );
+    final appliedJson = await MassiveEventApiService.getAppliedAnimalsSession(
+      idMassiveEvent: idMassiveEvent,
+    );
+    return massiveSessionFromAppliedAnimalsJson(massive, appliedJson);
   }
 }

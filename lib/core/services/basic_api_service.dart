@@ -352,8 +352,20 @@ class BasicApiService {
       final message = body['message'] ?? 'Conflict';
       throw ApiException(ApiExceptionCode.conflictError.name, message);
     } else if (response.statusCode == 422) {
-      final body = jsonDecode(response.body);
-      final message = body['message'] ?? 'Unprocessable entity';
+      Object? rawMsg;
+      try {
+        final decoded = jsonDecode(response.body);
+        rawMsg =
+            decoded is Map<String, dynamic> ? decoded['message'] : null;
+      } catch (_) {
+        rawMsg = null;
+      }
+      final message = switch (rawMsg) {
+        null => 'Unprocessable entity',
+        final String s => s,
+        final Map m => jsonEncode(m),
+        final Object o => o.toString(),
+      };
       throw ApiException(ApiExceptionCode.unprocessableEntity.name, message);
     } else if (response.statusCode == 423) {
       throw ApiException(ApiExceptionCode.locked.name, 'Locked');

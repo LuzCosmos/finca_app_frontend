@@ -10,6 +10,7 @@ import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/brands/models/brand_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/brands/services/brand_api_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/data/massive_event_page_data_source.dart';
+import 'package:finca_app_frontend/modules/shared/features/massiveEvent/domain/massive_event_session_load.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/animal_simple_event_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/massive_event_model.dart';
@@ -59,6 +60,22 @@ MassiveEventModel _massiveModelFromDrift(MassiveEvent row, List<SimpleEventModel
     status: row.status,
     createdAt: row.createdAt ?? DateTime.now(),
     updatedAt: row.updatedAt ?? DateTime.now(),
+    linkedToPurchaseReception: row.linkedToPurchaseReception,
+  );
+}
+
+AnimalSimpleEventModel _animalModelFromLocalDrift(AnimalSimpleEvent r, String idMassive) {
+  return AnimalSimpleEventModel(
+    id: r.id,
+    idTenant: r.idTenant,
+    idAnimal: null,
+    animalNumber: r.animalNumber,
+    type: SimpleEventType.values.firstWhere((e) => e.name == r.type),
+    data: r.data,
+    appliedAt: r.appliedAt,
+    appliedBy: r.appliedBy,
+    idMassiveEvent: r.idMassiveEvent ?? idMassive,
+    idSimpleEvent: r.idSimpleEvent ?? '',
   );
 }
 
@@ -362,6 +379,42 @@ class MassiveEventPageDataSourceMobile implements IMassiveEventPageDataSource {
     await MassiveEventApiService.updateSimpleEvent(
       simpleEvent: simpleEvent,
       endpoint: endpoint,
+    );
+  }
+
+  @override
+  Future<MassiveSessionLoadResult> loadMassiveEventSession({
+    required String idMassiveEvent,
+  }) async {
+    if (await _networkService.hasNetwork()) {
+      try {
+        final massive = await MassiveEventApiService.getMassiveEventByIdHydratingSimpleEvents(
+          idMassiveEvent: idMassiveEvent,
+        );
+        final appliedJson = await MassiveEventApiService.getAppliedAnimalsSession(
+          idMassiveEvent: idMassiveEvent,
+        );
+        return massiveSessionFromAppliedAnimalsJson(massive, appliedJson);
+      } catch (e) {
+        if (!_isConnectionFailure(e)) rethrow;
+      }
+    }
+
+    final row = await _massiveEventRepository.getById(idMassiveEvent);
+    if (row == null) {
+      throw StateError('No existe el evento masivo en el dispositivo');
+    }
+    final simpleRows = await repo.getByidMassiveEvent(idMassiveEvent);
+    final simpleModels = simpleRows.map(_simpleModelFromDrift).toList();
+    final massive = _massiveModelFromDrift(row, simpleModels);
+    final animalRows = await _animalSimpleEventRepository.findByMassiveEventId(idMassiveEvent);
+    final models = animalRows.map((r) => _animalModelFromLocalDrift(r, idMassiveEvent)).toList();
+    final anyUnsynced = animalRows.any((r) => !r.isSynced);
+    return massiveSessionFromAnimalModels(
+      massive,
+      models,
+      const {},
+      markRowsSynced: !anyUnsynced,
     );
   }
 }

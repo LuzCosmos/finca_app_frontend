@@ -17,6 +17,10 @@ class MassiveEventModel {
   /// En servidor/recepción: masivo creado para recepción de compra (excluido de lista autónoma).
   bool linkedToPurchaseReception;
 
+  /// Listado autónomo: edición solo si el masivo sigue abierto (API puede variar mayúsculas).
+  bool get isOpenForStandaloneListEdit =>
+      status.toLowerCase().trim() == 'open';
+
   MassiveEventModel({
     required this.id,
     required this.eventDate,
@@ -62,6 +66,7 @@ class MassiveEventModel {
     String? createdBy,
     String? createdByUsername,
     String? idTenant,
+    List<SimpleEventModel>? simpleEvents,
   }) {
     return MassiveEventModel(
       id: id,
@@ -70,7 +75,7 @@ class MassiveEventModel {
       createdBy: createdBy ?? this.createdBy,
       createdByUsername: createdByUsername ?? this.createdByUsername,
       eventDate: eventDate,
-      simpleEvents: simpleEvents,
+      simpleEvents: simpleEvents ?? this.simpleEvents,
       status: status,
       createdAt: createdAt,
       updatedAt: updatedAt,
@@ -108,9 +113,10 @@ class MassiveEventModel {
     final simpleRaw = json['simpleEvents'];
     final simpleList =
         simpleRaw is List
-            ? simpleRaw
-                .map((e) => SimpleEventModel.fromJson(e as Map<String, dynamic>))
-                .toList()
+            ? simpleRaw.map((dynamic e) {
+                final m = Map<String, dynamic>.from(e as Map);
+                return SimpleEventModel.fromJson(m);
+              }).toList()
             : <SimpleEventModel>[];
     return MassiveEventModel(
       id: json['id'] as String,

@@ -21,4 +21,8 @@ class AnimalSimpleEventRepository {
   Future<void> markInvalid(String id) {
     return _dao.markAsInvalid(id);
   }
+
+  Future<List<AnimalSimpleEvent>> findByMassiveEventId(String idMassiveEvent) {
+    return _dao.findByMassiveEventId(idMassiveEvent);
+  }
 }

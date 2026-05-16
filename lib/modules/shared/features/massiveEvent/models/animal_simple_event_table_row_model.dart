@@ -33,6 +33,14 @@ class AnimalSimpleEventTableRowModel {
        brandNames = brandNames ?? [],
        idBrandsApplied = idBrandsApplied ?? [];
 
+  static double? _parseWeightFromData(dynamic data) {
+    if (data is! Map) return null;
+    final raw = data['weight'];
+    if (raw is num) return raw.toDouble();
+    if (raw is String) return double.tryParse(raw);
+    return null;
+  }
+
   static AnimalSimpleEventTableRowModel createFromAnimalSimpleEventList(
     List<AnimalSimpleEventModel> animalSimpleEvents,
   ) {
@@ -42,7 +50,7 @@ class AnimalSimpleEventTableRowModel {
 
     final weight =
         weightEvent != null
-            ? double.tryParse(jsonDecode(weightEvent.data!)['weight'])
+            ? _parseWeightFromData(jsonDecode(weightEvent.data!))
             : null;
 
     final trackerEvent = animalSimpleEvents.firstWhereOrNull(
@@ -114,7 +122,7 @@ class AnimalSimpleEventTableRowModel {
     );
     final weight =
         weightEvent != null
-            ? double.tryParse(jsonDecode(weightEvent.data!)['weight'])
+            ? _parseWeightFromData(jsonDecode(weightEvent.data!))
             : null;
     final trackerEvent = animalSimpleEvents.firstWhereOrNull(
       (e) => e.type == SimpleEventType.tracker && e.data != null,

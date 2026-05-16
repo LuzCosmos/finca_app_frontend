@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/animal_simple_event_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_model.dart';
@@ -117,6 +118,106 @@ class MassiveEventApiService {
     }
   }
 
+  static Future<MassiveEventModel> getMassiveEventById({
+    required String idMassiveEvent,
+  }) async {
+    final String baseUrl = BasicApiService.getApiBaseUrl();
+    late http.Response response;
+    try {
+      response = await BasicApiService.authorizedGet(
+        Uri.parse('$baseUrl/massive-events/$idMassiveEvent'),
+        headers: {'Accept': 'application/json'},
+      );
+    } catch (e) {
+      if (e is SocketException || e is http.ClientException) {
+        throw ApiException(
+          'serverConnectionError',
+          'Error al cargar evento masivo: $e',
+        );
+      }
+      throw ApiException('readingObjectError', 'Error al cargar evento masivo: $e');
+    }
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body) as Map<String, dynamic>;
+      return MassiveEventModel.fromJson(data);
+    }
+    BasicApiService.manageNotSuccessResponseCode(response);
+  }
+
+  /// Lista simple events del masivo (`GET .../simple-events/by-massive-event/:id`).
+  static Future<List<SimpleEventModel>> listSimpleEventsByMassiveEvent({
+    required String idMassiveEvent,
+  }) async {
+    final String baseUrl = BasicApiService.getApiBaseUrl();
+    late http.Response response;
+    try {
+      response = await BasicApiService.authorizedGet(
+        Uri.parse('$baseUrl/simple-events/by-massive-event/$idMassiveEvent'),
+        headers: {'Accept': 'application/json'},
+      );
+    } catch (e) {
+      if (e is SocketException || e is http.ClientException) {
+        throw ApiException(
+          'serverConnectionError',
+          'Error al cargar simple events: $e',
+        );
+      }
+      throw ApiException('readingObjectError', 'Error al cargar simple events: $e');
+    }
+    if (response.statusCode == 200) {
+      final decoded = jsonDecode(response.body);
+      if (decoded is! List) return const [];
+      return decoded
+          .map(
+            (dynamic e) =>
+                SimpleEventModel.fromJson(Map<String, dynamic>.from(e as Map)),
+          )
+          .toList();
+    }
+    BasicApiService.manageNotSuccessResponseCode(response);
+  }
+
+  /// Carga el masivo y, si `simpleEvents` viene vacío, rellena con el listado dedicado.
+  static Future<MassiveEventModel> getMassiveEventByIdHydratingSimpleEvents({
+    required String idMassiveEvent,
+  }) async {
+    final massive = await getMassiveEventById(idMassiveEvent: idMassiveEvent);
+    if (massive.simpleEvents.isNotEmpty) return massive;
+    try {
+      final simples =
+          await listSimpleEventsByMassiveEvent(idMassiveEvent: idMassiveEvent);
+      if (simples.isEmpty) return massive;
+      return massive.copyWith(simpleEvents: simples);
+    } catch (_) {
+      return massive;
+    }
+  }
+
+  static Future<Map<String, dynamic>> getAppliedAnimalsSession({
+    required String idMassiveEvent,
+  }) async {
+    final String baseUrl = BasicApiService.getApiBaseUrl();
+    late http.Response response;
+    try {
+      response = await BasicApiService.authorizedGet(
+        Uri.parse('$baseUrl/massive-events/$idMassiveEvent/applied-animals'),
+        headers: {'Accept': 'application/json'},
+      );
+    } catch (e) {
+      if (e is SocketException || e is http.ClientException) {
+        throw ApiException(
+          'serverConnectionError',
+          'Error al cargar animales aplicados: $e',
+        );
+      }
+      throw ApiException('readingObjectError', 'Error al cargar animales aplicados: $e');
+    }
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body) as Map<String, dynamic>;
+    }
+    BasicApiService.manageNotSuccessResponseCode(response);
+  }
+
   static Future<List<AnimalSimpleEventModel>> getAnimalSimpleEvents({
     required String idMassiveEvent,
   }) async {
@@ -169,12 +270,23 @@ class MassiveEventApiService {
     required String idMassiveEvent,
   }) async {
     final String baseUrl = BasicApiService.getApiBaseUrl();
-    final response = await BasicApiService.authorizedPut(
-      Uri.parse('$baseUrl/massive-events/close/$idMassiveEvent'),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    );
+    late http.Response response;
+    try {
+      response = await BasicApiService.authorizedPut(
+        Uri.parse('$baseUrl/massive-events/close/$idMassiveEvent'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+    } catch (e) {
+      if (e is SocketException || e is http.ClientException || e is TimeoutException) {
+        throw ApiException(
+          ApiExceptionCode.serverConnectionError.name,
+          'Error al cerrar evento masivo: $e',
+        );
+      }
+      throw ApiException('readingObjectError', 'Error al cerrar evento masivo: $e');
+    }
     if (response.statusCode != 204) {
       BasicApiService.manageNotSuccessResponseCode(response);
     }

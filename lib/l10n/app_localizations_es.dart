@@ -427,7 +427,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'Ningún evento masivo coincide con los filtros actuales.';
 
   @override
-  String get massiveEventsColumnEventDate => 'Fecha del evento';
+  String get massiveEventsColumnEventDate => 'Fecha evento';
 
   @override
   String get massiveEventsColumnName => 'Nombre';
@@ -436,7 +436,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get massiveEventsColumnUpdatedAt => 'Última modificación';
 
   @override
-  String get massiveEventsColumnCreatedAt => 'Fecha de creación';
+  String get massiveEventsColumnCreatedAt => 'Fecha creación';
 
   @override
   String get massiveEventsColumnCreatedBy => 'Creado por';
@@ -462,6 +462,62 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get massiveEventsListUnprocessableEntityHint =>
       'Revise los filtros o los datos enviados. Si el evento está vinculado a una recepción de compra, la operación puede no ser válida en el servidor.';
+
+  @override
+  String get massiveEventsEdit => 'Editar';
+
+  @override
+  String get massiveEventCloseValidationTitle => 'Corrija antes de finalizar';
+
+  @override
+  String get massiveEventCloseValidationIntro => 'Revise las siguientes filas:';
+
+  @override
+  String massiveEventValidationMissingWeight(String animalNumber) {
+    return 'Animal $animalNumber: el peso es obligatorio antes de finalizar.';
+  }
+
+  @override
+  String massiveEventValidationInvalidWeight(String animalNumber) {
+    return 'Animal $animalNumber: el peso está fuera del rango permitido.';
+  }
+
+  @override
+  String get massiveEventLoadSessionError =>
+      'No se pudo cargar este evento masivo. Compruebe la conexión o inténtelo de nuevo.';
+
+  @override
+  String get massiveEventClosedReadOnly =>
+      'Este evento masivo está cerrado: puede revisarlo pero no modificarlo.';
+
+  @override
+  String get massiveEventNoPreviousWeight => 'Sin peso previo';
+
+  @override
+  String get massiveEventPreviousWeightShort => 'Peso ant.';
+
+  @override
+  String get massiveEventDeltaPctShort => 'Δ%';
+
+  @override
+  String get massiveEventWeightSummaryTitle => 'Peso en esta sesión';
+
+  @override
+  String massiveEventWeightSummaryStats(
+    int count,
+    String mean,
+    String min,
+    String max,
+  ) {
+    return 'Animales con peso: $count · Media: $mean · Mín: $min · Máx: $max';
+  }
+
+  @override
+  String get massiveEventWeightSummaryEmpty =>
+      'Aún no hay pesos registrados en esta sesión.';
+
+  @override
+  String get dialogOk => 'Aceptar';
 
   @override
   String get syncNow => 'Sincronizar ahora';
@@ -1509,6 +1565,10 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get error_massiveEventAlreadyClosed =>
       'Este evento masivo ya está cerrado y no puede modificarse.';
+
+  @override
+  String get error_massiveEventClosePurchaseReception =>
+      'Este evento masivo está vinculado a una recepción de compra y no puede cerrarse desde el módulo de eventos masivos.';
 
   @override
   String get event_finishSuccess =>
