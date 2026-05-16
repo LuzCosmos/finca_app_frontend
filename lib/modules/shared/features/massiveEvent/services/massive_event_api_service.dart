@@ -18,6 +18,7 @@ class MassiveEventApiService {
     final String baseUrl = BasicApiService.getApiBaseUrl();
     final payload = {
       "eventDate": massiveEvent.eventDate.toIso8601String(),
+      "name": massiveEvent.name,
       "simpleEvents":
           massiveEvent.simpleEvents
               .map((e) => e.toJsonOnlineCreateApi())
@@ -64,6 +65,38 @@ class MassiveEventApiService {
         'Create MassiveEvent: Response is null.',
       );
     }
+  }
+
+  static Future<MassiveEventModel> updateMassiveEventName({
+    required String idMassiveEvent,
+    required String name,
+  }) async {
+    final String baseUrl = BasicApiService.getApiBaseUrl();
+    http.Response? response;
+    try {
+      response = await BasicApiService.authorizedPatch(
+        Uri.parse('$baseUrl/massive-events/$idMassiveEvent'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'name': name}),
+      );
+    } catch (e) {
+      if (e is SocketException || e is http.ClientException) {
+        throw ApiException(
+          'serverConnectionError',
+          'Error al actualizar MassiveEvent: $e',
+        );
+      }
+      throw ApiException(
+        'savingObjectError',
+        'Error al actualizar MassiveEvent: $e',
+      );
+    }
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return MassiveEventModel.fromJson(data as Map<String, dynamic>);
+    }
+    BasicApiService.manageNotSuccessResponseCode(response);
+    throw ApiException('savingObjectError', 'Update MassiveEvent failed');
   }
 
   static Future<SimpleEventModel> createSimpleEvent({

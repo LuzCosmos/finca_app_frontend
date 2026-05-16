@@ -60,6 +60,7 @@ MassiveEventModel fakeMassiveEvent({
   return MassiveEventModel(
     id: id,
     idTenant: 'tenant-1',
+    name: 'Masivo test',
     eventDate: DateTime(2024, 6, 2),
     simpleEvents: simpleEvents ?? [fakeSimpleEvent()],
     createdAt: DateTime(2024, 6, 1),

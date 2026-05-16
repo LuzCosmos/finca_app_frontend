@@ -33,6 +33,18 @@ class _MockMassiveEventDataSource extends Mock
 
 class _MockSyncService extends Mock implements SyncService {}
 
+Finder _massiveEventNameField() {
+  return find.descendant(
+    of: find.byKey(const ValueKey<String>('eventConfigPanel_massiveEvent')),
+    matching: find.byType(TextFormField),
+  );
+}
+
+Future<void> enterMassiveEventName(WidgetTester tester, String name) async {
+  await tester.enterText(_massiveEventNameField(), name);
+  await tester.pump();
+}
+
 void main() {
   late _MockMassiveEventDataSource dataSource;
   late _MockSyncService syncService;
@@ -41,6 +53,7 @@ void main() {
     registerFallbackValue(
       MassiveEventModel.create(
         eventDate: DateTime(2020, 1, 1),
+        name: 'Evento test',
         simpleEvents: [
           SimpleEventModel.create(name: 'fb', type: SimpleEventType.weight),
         ],
@@ -97,6 +110,7 @@ void main() {
     );
     expect(find.byKey(const ValueKey<String>('animalEntryForm')), findsOneWidget);
     expect(find.byKey(const ValueKey<String>('processedAnimalsTable')), findsOneWidget);
+    expect(find.text(l10n.massiveEventsColumnName), findsOneWidget);
 
     final bloc = tester.element(find.byType(MassiveEventPage)).read<MassiveEventBloc>();
     expect(bloc.dataSource, same(dataSource));
@@ -104,50 +118,50 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('sin nombre válido no llama saveMassiveEvent al agregar evento', (
+    tester,
+  ) async {
+    when(() => dataSource.getAllBrands()).thenAnswer((_) async => []);
+
+    late AppLocalizations l10n;
+    await tester.pumpWidget(
+      MaterialApp(
+        locale: Language.spanish.localeValue,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Builder(
+          builder: (context) {
+            l10n = AppLocalizations.of(context)!;
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider(create: (_) => LocaleBloc()),
+                BlocProvider(
+                  create: (_) => MassiveEventBloc(dataSource: dataSource),
+                ),
+                BlocProvider(create: (_) => SyncBloc(syncService)),
+              ],
+              child: const MassiveEventPage(),
+            );
+          },
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text(l10n.addSomething(l10n.event)));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(AlertDialog), findsNothing);
+    expect(find.text(l10n.massiveEventNameRequired), findsWidgets);
+    verifyNever(
+      () => dataSource.saveMassiveEvent(massiveEvent: any(named: 'massiveEvent')),
+    );
+  });
+
   testWidgets(
     'flujo largo: diálogo peso crea masivo; segundo detalle (tipo chapa) vía saveSimpleEvent',
     (tester) async {
       when(() => dataSource.getAllBrands()).thenAnswer((_) async => []);
-
-      when(() => dataSource.saveMassiveEvent(
-            massiveEvent: any(named: 'massiveEvent'),
-          )).thenAnswer((
-        inv,
-      ) async {
-        final MassiveEventModel m =
-            inv.namedArguments[#massiveEvent] as MassiveEventModel;
-        final simples =
-            m.simpleEvents
-                .map(
-                  (e) => SimpleEventModel(
-                    id: e.id,
-                    idTenant: e.idTenant,
-                    idMassiveEvent: 'mid-1',
-                    type: e.type,
-                    data: e.data,
-                    createdAt: e.createdAt,
-                    isActive: e.isActive,
-                  ),
-                )
-                .toList();
-        return MassiveEventModel(
-          id: 'mid-1',
-          eventDate: m.eventDate,
-          simpleEvents: simples,
-          createdAt: m.createdAt,
-          updatedAt: m.updatedAt,
-        );
-      });
-
-      when(() => dataSource.saveSimpleEvent(
-            simpleEvent: any(named: 'simpleEvent'),
-          )).thenAnswer((
-        inv,
-      ) async {
-        final SimpleEventModel s =
-            inv.namedArguments[#simpleEvent] as SimpleEventModel;
-        return SaveSimpleEventResult(saved: s);
-      });
 
       late AppLocalizations l10n;
       await tester.pumpWidget(
@@ -172,8 +186,49 @@ void main() {
           ),
         ),
       );
-
       await tester.pumpAndSettle();
+      await enterMassiveEventName(tester, 'Vacunación marzo');
+
+      when(() => dataSource.saveMassiveEvent(
+            massiveEvent: any(named: 'massiveEvent'),
+          )).thenAnswer((
+        inv,
+      ) async {
+        final MassiveEventModel m =
+            inv.namedArguments[#massiveEvent] as MassiveEventModel;
+        final simples =
+            m.simpleEvents
+                .map(
+                  (e) => SimpleEventModel(
+                    id: e.id,
+                    idTenant: e.idTenant,
+                    idMassiveEvent: 'mid-1',
+                    type: e.type,
+                    data: e.data,
+                    createdAt: e.createdAt,
+                    isActive: e.isActive,
+                  ),
+                )
+                .toList();
+        return MassiveEventModel(
+          id: 'mid-1',
+          name: m.name,
+          eventDate: m.eventDate,
+          simpleEvents: simples,
+          createdAt: m.createdAt,
+          updatedAt: m.updatedAt,
+        );
+      });
+
+      when(() => dataSource.saveSimpleEvent(
+            simpleEvent: any(named: 'simpleEvent'),
+          )).thenAnswer((
+        inv,
+      ) async {
+        final SimpleEventModel s =
+            inv.namedArguments[#simpleEvent] as SimpleEventModel;
+        return SaveSimpleEventResult(saved: s);
+      });
 
       Future<void> tapAddEventInPanel() async {
         await tester.tap(find.text(l10n.addSomething(l10n.event)));
@@ -250,6 +305,7 @@ void main() {
     );
 
     await tester.pumpAndSettle();
+    await enterMassiveEventName(tester, 'Vacunación marzo');
 
     await tester.tap(find.text(l10n.addSomething(l10n.event)));
     await tester.pumpAndSettle();
@@ -294,6 +350,7 @@ void main() {
       );
 
       await tester.pumpAndSettle();
+      await enterMassiveEventName(tester, 'Vacunación marzo');
 
       await tester.tap(find.text(l10n.addSomething(l10n.event)));
       await tester.pumpAndSettle();
@@ -353,6 +410,7 @@ void main() {
     );
 
     await tester.pumpAndSettle();
+    await enterMassiveEventName(tester, 'Vacunación marzo');
 
     await tester.tap(find.text(l10n.addSomething(l10n.event)));
     await tester.pumpAndSettle();
@@ -386,6 +444,7 @@ void main() {
       final m = seen!;
       return MassiveEventModel(
         id: 'mid-payload',
+        name: m.name,
         eventDate: m.eventDate,
         simpleEvents: m.simpleEvents,
         createdAt: m.createdAt,
@@ -418,6 +477,7 @@ void main() {
     );
 
     await tester.pumpAndSettle();
+    await enterMassiveEventName(tester, 'Vacunación marzo');
 
     await tester.tap(find.text(l10n.addSomething(l10n.event)));
     await tester.pumpAndSettle();
@@ -431,6 +491,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(seen, isNotNull);
+    expect(seen!.name, 'Vacunación marzo');
     expect(seen!.simpleEvents.length, 1);
     expect(seen!.simpleEvents.first.type, SimpleEventType.weight);
   });
@@ -467,6 +528,7 @@ void main() {
       );
 
       await tester.pumpAndSettle();
+      await enterMassiveEventName(tester, 'Vacunación marzo');
       await tester.tap(find.text(l10n.addSomething(l10n.event)));
       await tester.pumpAndSettle();
       await tester.pump();
@@ -490,6 +552,7 @@ void main() {
         );
         final massive = MassiveEventModel(
           id: 'me-1',
+          name: 'Sesión cerrada',
           eventDate: DateTime(2025, 1, 2),
           simpleEvents: [simple],
           createdAt: DateTime(2025, 1, 1),

@@ -19,7 +19,7 @@ void main() {
     SessionService.resetForTesting();
   });
 
-  MassiveEventModel sample({String id = 'e1', String? name}) {
+  MassiveEventModel sample({String id = 'e1', String name = 'Golden'}) {
     return MassiveEventModel(
       id: id,
       eventDate: DateTime(2024, 5, 1),

@@ -45,9 +45,13 @@ class $MassiveEventLocalTable extends MassiveEventLocal
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
     'name',
     aliasedName,
-    true,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 100,
+    ),
     type: DriftSqlType.string,
-    requiredDuringInsert: false,
+    requiredDuringInsert: true,
   );
   static const VerificationMeta _eventDateMeta = const VerificationMeta(
     'eventDate',
@@ -183,6 +187,8 @@ class $MassiveEventLocalTable extends MassiveEventLocal
         _nameMeta,
         name.isAcceptableOrUnknown(data['name']!, _nameMeta),
       );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
     }
     if (data.containsKey('event_date')) {
       context.handle(
@@ -254,10 +260,11 @@ class $MassiveEventLocalTable extends MassiveEventLocal
             DriftSqlType.string,
             data['${effectivePrefix}id_tenant'],
           )!,
-      name: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}name'],
-      ),
+      name:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}name'],
+          )!,
       eventDate:
           attachedDatabase.typeMapping.read(
             DriftSqlType.dateTime,
@@ -303,7 +310,7 @@ class MassiveEvent extends DataClass implements Insertable<MassiveEvent> {
   final String id;
   final String? serverId;
   final String idTenant;
-  final String? name;
+  final String name;
   final DateTime eventDate;
   final String status;
   final String? createdBy;
@@ -315,7 +322,7 @@ class MassiveEvent extends DataClass implements Insertable<MassiveEvent> {
     required this.id,
     this.serverId,
     required this.idTenant,
-    this.name,
+    required this.name,
     required this.eventDate,
     required this.status,
     this.createdBy,
@@ -332,9 +339,7 @@ class MassiveEvent extends DataClass implements Insertable<MassiveEvent> {
       map['server_id'] = Variable<String>(serverId);
     }
     map['id_tenant'] = Variable<String>(idTenant);
-    if (!nullToAbsent || name != null) {
-      map['name'] = Variable<String>(name);
-    }
+    map['name'] = Variable<String>(name);
     map['event_date'] = Variable<DateTime>(eventDate);
     map['status'] = Variable<String>(status);
     if (!nullToAbsent || createdBy != null) {
@@ -361,7 +366,7 @@ class MassiveEvent extends DataClass implements Insertable<MassiveEvent> {
               ? const Value.absent()
               : Value(serverId),
       idTenant: Value(idTenant),
-      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
+      name: Value(name),
       eventDate: Value(eventDate),
       status: Value(status),
       createdBy:
@@ -390,7 +395,7 @@ class MassiveEvent extends DataClass implements Insertable<MassiveEvent> {
       id: serializer.fromJson<String>(json['id']),
       serverId: serializer.fromJson<String?>(json['serverId']),
       idTenant: serializer.fromJson<String>(json['idTenant']),
-      name: serializer.fromJson<String?>(json['name']),
+      name: serializer.fromJson<String>(json['name']),
       eventDate: serializer.fromJson<DateTime>(json['eventDate']),
       status: serializer.fromJson<String>(json['status']),
       createdBy: serializer.fromJson<String?>(json['createdBy']),
@@ -409,7 +414,7 @@ class MassiveEvent extends DataClass implements Insertable<MassiveEvent> {
       'id': serializer.toJson<String>(id),
       'serverId': serializer.toJson<String?>(serverId),
       'idTenant': serializer.toJson<String>(idTenant),
-      'name': serializer.toJson<String?>(name),
+      'name': serializer.toJson<String>(name),
       'eventDate': serializer.toJson<DateTime>(eventDate),
       'status': serializer.toJson<String>(status),
       'createdBy': serializer.toJson<String?>(createdBy),
@@ -426,7 +431,7 @@ class MassiveEvent extends DataClass implements Insertable<MassiveEvent> {
     String? id,
     Value<String?> serverId = const Value.absent(),
     String? idTenant,
-    Value<String?> name = const Value.absent(),
+    String? name,
     DateTime? eventDate,
     String? status,
     Value<String?> createdBy = const Value.absent(),
@@ -438,7 +443,7 @@ class MassiveEvent extends DataClass implements Insertable<MassiveEvent> {
     id: id ?? this.id,
     serverId: serverId.present ? serverId.value : this.serverId,
     idTenant: idTenant ?? this.idTenant,
-    name: name.present ? name.value : this.name,
+    name: name ?? this.name,
     eventDate: eventDate ?? this.eventDate,
     status: status ?? this.status,
     createdBy: createdBy.present ? createdBy.value : this.createdBy,
@@ -520,7 +525,7 @@ class MassiveEventLocalCompanion extends UpdateCompanion<MassiveEvent> {
   final Value<String> id;
   final Value<String?> serverId;
   final Value<String> idTenant;
-  final Value<String?> name;
+  final Value<String> name;
   final Value<DateTime> eventDate;
   final Value<String> status;
   final Value<String?> createdBy;
@@ -547,7 +552,7 @@ class MassiveEventLocalCompanion extends UpdateCompanion<MassiveEvent> {
     required String id,
     this.serverId = const Value.absent(),
     required String idTenant,
-    this.name = const Value.absent(),
+    required String name,
     required DateTime eventDate,
     this.status = const Value.absent(),
     this.createdBy = const Value.absent(),
@@ -558,6 +563,7 @@ class MassiveEventLocalCompanion extends UpdateCompanion<MassiveEvent> {
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        idTenant = Value(idTenant),
+       name = Value(name),
        eventDate = Value(eventDate);
   static Insertable<MassiveEvent> custom({
     Expression<String>? id,
@@ -594,7 +600,7 @@ class MassiveEventLocalCompanion extends UpdateCompanion<MassiveEvent> {
     Value<String>? id,
     Value<String?>? serverId,
     Value<String>? idTenant,
-    Value<String?>? name,
+    Value<String>? name,
     Value<DateTime>? eventDate,
     Value<String>? status,
     Value<String?>? createdBy,
@@ -4850,7 +4856,7 @@ typedef $$MassiveEventLocalTableCreateCompanionBuilder =
       required String id,
       Value<String?> serverId,
       required String idTenant,
-      Value<String?> name,
+      required String name,
       required DateTime eventDate,
       Value<String> status,
       Value<String?> createdBy,
@@ -4865,7 +4871,7 @@ typedef $$MassiveEventLocalTableUpdateCompanionBuilder =
       Value<String> id,
       Value<String?> serverId,
       Value<String> idTenant,
-      Value<String?> name,
+      Value<String> name,
       Value<DateTime> eventDate,
       Value<String> status,
       Value<String?> createdBy,
@@ -5100,7 +5106,7 @@ class $$MassiveEventLocalTableTableManager
                 Value<String> id = const Value.absent(),
                 Value<String?> serverId = const Value.absent(),
                 Value<String> idTenant = const Value.absent(),
-                Value<String?> name = const Value.absent(),
+                Value<String> name = const Value.absent(),
                 Value<DateTime> eventDate = const Value.absent(),
                 Value<String> status = const Value.absent(),
                 Value<String?> createdBy = const Value.absent(),
@@ -5128,7 +5134,7 @@ class $$MassiveEventLocalTableTableManager
                 required String id,
                 Value<String?> serverId = const Value.absent(),
                 required String idTenant,
-                Value<String?> name = const Value.absent(),
+                required String name,
                 required DateTime eventDate,
                 Value<String> status = const Value.absent(),
                 Value<String?> createdBy = const Value.absent(),

@@ -41,13 +41,13 @@ class SimpleEventModel {
     );
   }
 
-  /// Devuelve una copia con isActive modificado
-  SimpleEventModel copyWith({bool? isActive}) {
+  /// Devuelve una copia con campos opcionales modificados
+  SimpleEventModel copyWith({bool? isActive, String? data}) {
     return SimpleEventModel(
       id: id,
       idTenant: idTenant,
       type: type,
-      data: data,
+      data: data ?? this.data,
       isActive: isActive ?? this.isActive,
       createdAt: createdAt,
       idMassiveEvent: idMassiveEvent,

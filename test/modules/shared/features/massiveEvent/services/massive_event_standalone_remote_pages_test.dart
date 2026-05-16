@@ -27,6 +27,7 @@ void main() {
           [
             MassiveEventModel(
               id: '1',
+              name: 'Uno',
               eventDate: DateTime(2024),
               simpleEvents: const [],
               createdAt: DateTime(2024),
@@ -44,6 +45,7 @@ void main() {
         [
           MassiveEventModel(
             id: '2',
+            name: 'Dos',
             eventDate: DateTime(2024),
             simpleEvents: const [],
             createdAt: DateTime(2024),

@@ -201,8 +201,8 @@
     "description": "Título de la sección colapsable de filtros en la lista móvil de eventos masivos."
   },
   "massiveEventsNoListPermission": "No tiene permiso para ver el historial. Puede crear un evento nuevo.",
-  "massiveEventsSearchNameOrId": "Nombre o ID",
-  "@massiveEventsSearchNameOrId": {
+  "massiveEventsSearchName": "Nombre",
+  "@massiveEventsSearchName": {
     "description": "Etiqueta del filtro de búsqueda en la lista web de eventos masivos."
   },
   "massiveEventsNoMatchesFilter": "Ningún evento masivo coincide con los filtros actuales.",
@@ -210,7 +210,9 @@
     "description": "Mensaje cuando los filtros en cliente ocultan todas las filas."
   },
   "massiveEventsColumnEventDate": "Fecha evento",
-  "massiveEventsColumnName": "Nombre",
+  "massiveEventsColumnName": "Nombre Evento",
+  "massiveEventNameRequired": "El nombre del evento masivo es obligatorio",
+  "massiveEventNameMaxLength": "El nombre no puede superar 100 caracteres",
   "massiveEventsColumnUpdatedAt": "Última modificación",
   "massiveEventsColumnCreatedAt": "Fecha creación",
   "massiveEventsColumnCreatedBy": "Creado por",

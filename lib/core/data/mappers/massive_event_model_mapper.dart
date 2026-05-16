@@ -12,7 +12,7 @@ extension ToCompanion on MassiveEventModel {
       id: id,
       idTenant: idTenant,
       eventDate: eventDate,
-      name: name != null ? Value(name!) : const Value.absent(),
+      name: name,
       status: Value(status),
       createdBy: createdBy != null ? Value(createdBy) : const Value.absent(),
       linkedToPurchaseReception: Value(linkedToPurchaseReception),

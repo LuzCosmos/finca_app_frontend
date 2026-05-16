@@ -10,6 +10,7 @@ void main() {
     final massive = MassiveEventModel(
       id: 'massive-1',
       idTenant: 'tenant-1',
+      name: 'Sesión',
       eventDate: DateTime(2025, 6, 1),
       status: 'open',
       simpleEvents: const [],

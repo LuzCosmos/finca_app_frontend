@@ -92,6 +92,17 @@ class MassiveEventPageDataSourceWeb implements IMassiveEventPageDataSource {
   }
 
   @override
+  Future<MassiveEventModel> updateMassiveEventName({
+    required String idMassiveEvent,
+    required String name,
+  }) {
+    return MassiveEventApiService.updateMassiveEventName(
+      idMassiveEvent: idMassiveEvent,
+      name: name,
+    );
+  }
+
+  @override
   Future<MassiveSessionLoadResult> loadMassiveEventSession({
     required String idMassiveEvent,
   }) async {

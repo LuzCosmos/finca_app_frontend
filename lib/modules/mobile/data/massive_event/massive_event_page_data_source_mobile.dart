@@ -50,10 +50,11 @@ SimpleEventModel _simpleModelFromDrift(SimpleEvent row) {
 }
 
 MassiveEventModel _massiveModelFromDrift(MassiveEvent row, List<SimpleEventModel> simples) {
+  final rowName = row.name.trim();
   return MassiveEventModel(
     id: row.id,
     idTenant: row.idTenant,
-    name: row.name,
+    name: rowName.isNotEmpty ? rowName : kMassiveEventDefaultName,
     createdBy: row.createdBy,
     eventDate: row.eventDate,
     simpleEvents: simples,
@@ -380,6 +381,34 @@ class MassiveEventPageDataSourceMobile implements IMassiveEventPageDataSource {
       simpleEvent: simpleEvent,
       endpoint: endpoint,
     );
+  }
+
+  @override
+  Future<MassiveEventModel> updateMassiveEventName({
+    required String idMassiveEvent,
+    required String name,
+  }) async {
+    final row = await _massiveEventRepository.getById(idMassiveEvent);
+    if (row == null) {
+      throw StateError('No existe el evento masivo en el dispositivo');
+    }
+    await _massiveEventRepository.updateName(idMassiveEvent, name);
+
+    if (await _networkService.hasNetwork() && row.isSynced) {
+      try {
+        return await MassiveEventApiService.updateMassiveEventName(
+          idMassiveEvent: idMassiveEvent,
+          name: name,
+        );
+      } catch (e) {
+        if (!_isConnectionFailure(e)) rethrow;
+      }
+    }
+
+    final simpleRows = await repo.getByidMassiveEvent(idMassiveEvent);
+    final simpleModels = simpleRows.map(_simpleModelFromDrift).toList();
+    final updatedRow = (await _massiveEventRepository.getById(idMassiveEvent))!;
+    return _massiveModelFromDrift(updatedRow, simpleModels);
   }
 
   @override

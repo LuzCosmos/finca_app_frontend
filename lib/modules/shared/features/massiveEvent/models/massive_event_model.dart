@@ -2,12 +2,34 @@ import 'package:uuid/uuid.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_model.dart';
 import 'package:intl/intl.dart';
 
+/// Valor por defecto para registros legacy sin nombre (alineado con backfill BD).
+const String kMassiveEventDefaultName = 'MassiveEvent';
+
+const int kMassiveEventNameMaxLength = 100;
+
+enum MassiveEventNameValidationError { required, tooLong }
+
+/// Normaliza y valida el nombre de un evento masivo autónomo.
+MassiveEventNameValidationError? validateMassiveEventName(String raw) {
+  final trimmed = raw.trim();
+  if (trimmed.isEmpty) return MassiveEventNameValidationError.required;
+  if (trimmed.length > kMassiveEventNameMaxLength) {
+    return MassiveEventNameValidationError.tooLong;
+  }
+  return null;
+}
+
+String? normalizeMassiveEventName(String raw) {
+  if (validateMassiveEventName(raw) != null) return null;
+  return raw.trim();
+}
+
 class MassiveEventModel {
   final String id;
   final DateTime eventDate;
   final List<SimpleEventModel> simpleEvents;
   String? idTenant;
-  String? name;
+  final String name;
   String? createdBy;
   /// Username del creador (API); para mostrar en listas en lugar del UUID [createdBy].
   String? createdByUsername;
@@ -25,8 +47,8 @@ class MassiveEventModel {
     required this.id,
     required this.eventDate,
     required this.simpleEvents,
+    required this.name,
     this.idTenant,
-    this.name,
     this.createdBy,
     this.createdByUsername,
     this.status = 'open',
@@ -38,9 +60,9 @@ class MassiveEventModel {
   factory MassiveEventModel.create({
     required DateTime eventDate,
     required List<SimpleEventModel> simpleEvents,
+    required String name,
     String? idTenant,
     String? id,
-    String? name,
     String? createdBy,
     String status = 'open',
     bool linkedToPurchaseReception = false,
@@ -88,7 +110,7 @@ class MassiveEventModel {
     return {
       'id': id,
       'idTenant': idTenant,
-      if (name != null) 'name': name,
+      'name': name,
       if (createdBy != null) 'createdBy': createdBy,
       if (createdByUsername != null) 'createdByUsername': createdByUsername,
       'eventDate': formattedDate,
@@ -104,6 +126,7 @@ class MassiveEventModel {
     final formattedDate = DateFormat('yyyy-MM-dd').format(eventDate);
     return {
       'eventDate': formattedDate,
+      'name': name,
       'simpleEvents':
           simpleEvents.map((e) => e.toJsonOnlineCreateApi()).toList(),
     };
@@ -118,10 +141,13 @@ class MassiveEventModel {
                 return SimpleEventModel.fromJson(m);
               }).toList()
             : <SimpleEventModel>[];
+    final rawName = json['name'] as String?;
     return MassiveEventModel(
       id: json['id'] as String,
       idTenant: json['idTenant'] as String?,
-      name: json['name'] as String?,
+      name: (rawName != null && rawName.trim().isNotEmpty)
+          ? rawName.trim()
+          : kMassiveEventDefaultName,
       createdBy: json['createdBy'] as String?,
       createdByUsername: json['createdByUsername'] as String?,
       eventDate: DateTime.parse(json['eventDate'] as String),
