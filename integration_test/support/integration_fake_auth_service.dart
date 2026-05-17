@@ -40,6 +40,9 @@ class IntegrationFakeAuthService extends AuthService {
       'refreshToken': 'rt-integration-ui',
       'permissions': {
         'MASSIVE_EVENTS': {'massive_events': true},
+        'COMMERCE': {'purchases': true, 'sales': true},
+        'EMP_MGMT': {'users': true},
+        'FARM': {'cattle': true},
       },
       'idTenant': 't-integration',
     };

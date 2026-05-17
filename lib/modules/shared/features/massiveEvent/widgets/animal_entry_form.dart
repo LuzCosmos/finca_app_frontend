@@ -16,7 +16,7 @@ import 'dart:async';
 import 'package:flutter/scheduler.dart';
 import 'package:finca_app_frontend/modules/shared/features/devices/models/device_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/devices/services/device_api_service.dart';
-import 'package:finca_app_frontend/modules/web/features/cattle/services/cattle_master_service.dart';
+import 'package:finca_app_frontend/modules/shared/features/cattle/services/cattle_master_service.dart';
 
 class AnimalEntryForm extends StatefulWidget {
   final String? idMassiveEvent;

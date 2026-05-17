@@ -305,6 +305,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get home_title => 'Inicio';
 
   @override
+  String get onlineFeatureRequiresConnection =>
+      'Esta función requiere conexión a internet.';
+
+  @override
   String get dashboard_title => 'Dashboard';
 
   @override
@@ -528,7 +532,24 @@ class AppLocalizationsEs extends AppLocalizations {
   String get dialogOk => 'Aceptar';
 
   @override
-  String get syncNow => 'Sincronizar ahora';
+  String get syncNow => 'Sincronizar eventos masivos';
+
+  @override
+  String get syncMassiveEventsInProgress => 'Sincronizando eventos masivos…';
+
+  @override
+  String get syncMassiveEventsSuccess =>
+      'Eventos masivos actualizados en el servidor';
+
+  @override
+  String syncMassiveEventsFailure(String message) {
+    return 'No se pudieron sincronizar los eventos masivos: $message';
+  }
+
+  @override
+  String syncMassiveEventsWithPendingCount(int count) {
+    return 'Sincronizar eventos masivos ($count)';
+  }
 
   @override
   String get event => 'Evento';

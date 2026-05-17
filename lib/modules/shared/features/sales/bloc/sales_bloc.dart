@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/data/sales_data_source.dart';
-import 'package:finca_app_frontend/modules/web/features/cattle_purchase/models/provider.dart';
+import 'package:finca_app_frontend/modules/shared/features/cattle_purchase/models/provider.dart';
 import 'sales_event.dart';
 import 'sales_state.dart';
 

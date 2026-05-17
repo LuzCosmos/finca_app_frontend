@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/dashboard/page/dashboard_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/bloc/massive_event_bloc.dart';
@@ -10,30 +11,35 @@ import 'package:finca_app_frontend/modules/shared/features/massiveEvent/pages/ma
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/pages/massive_event_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/pages/sale_dashboard_page_export.dart';
 import 'package:finca_app_frontend/modules/shared/features/users/pages/users_list_page.dart';
-import 'package:finca_app_frontend/modules/web/features/cattle/pages/cattle_master_list_page.dart';
-import 'package:finca_app_frontend/modules/web/features/cattle_purchase/pages/purchase_form_page.dart';
-import 'package:finca_app_frontend/modules/web/features/cattle_purchase/pages/purchases_list_page.dart';
-import 'package:finca_app_frontend/modules/web/features/purchase_reception/pages/purchase_reception_page.dart';
-import 'package:finca_app_frontend/modules/web/features/sales/pages/create_sale_page_web.dart';
+import 'package:finca_app_frontend/modules/shared/features/cattle/pages/cattle_master_list_page.dart';
+import 'package:finca_app_frontend/modules/shared/features/cattle_purchase/pages/purchase_form_page.dart';
+import 'package:finca_app_frontend/modules/shared/features/cattle_purchase/pages/purchases_list_page.dart';
+import 'package:finca_app_frontend/modules/shared/features/purchase_reception/pages/purchase_reception_page.dart';
+import 'package:finca_app_frontend/modules/shared/features/sales/pages/create_sale_page.dart';
+import 'package:finca_app_frontend/modules/shared/features/home/services/home_connectivity_service.dart';
 import 'package:finca_app_frontend/router/router.dart';
 
 import '../support/router_test_host.dart';
+import '../support/test_l10n.dart';
 
 // Bajo prueba: lib/router/router.dart y builders que enlazan a:
 // - lib/modules/shared/features/massiveEvent/pages/massive_event_page.dart
 // - lib/modules/shared/features/dashboard/page/dashboard_page.dart
 // - lib/modules/shared/features/sales/pages/sale_dashboard_page_export.dart
 // - lib/modules/shared/features/users/pages/users_list_page.dart
-// - lib/modules/web/features/cattle/pages/cattle_master_list_page.dart
-// - lib/modules/web/features/cattle_purchase/pages/purchase_form_page.dart
-// - lib/modules/web/features/cattle_purchase/pages/purchases_list_page.dart
-// - lib/modules/web/features/purchase_reception/pages/purchase_reception_page.dart
-// - lib/modules/web/features/sales/pages/create_sale_page_web.dart
+// - lib/modules/shared/features/cattle/pages/cattle_master_list_page.dart
+// - lib/modules/shared/features/cattle_purchase/pages/purchase_form_page.dart
+// - lib/modules/shared/features/cattle_purchase/pages/purchases_list_page.dart
+// - lib/modules/shared/features/purchase_reception/pages/purchase_reception_page.dart
+// - lib/modules/shared/features/sales/pages/create_sale_page.dart
 // (y MassiveEventBloc en la ruta massive-events/create).
 
 void main() {
   setUp(() async {
     SessionService.resetForTesting();
+    BasicApiService.resetForTesting();
+    BasicApiService.setBaseUrl('http://127.0.0.1:9');
+    HomeConnectivityService.debugForceOnline = true;
     SharedPreferences.setMockInitialValues({});
     await SessionService.saveSession(
       token: 't',
@@ -46,6 +52,11 @@ void main() {
       idTenant: 'tid',
       idUser: 'uid',
     );
+  });
+
+  tearDown(() {
+    HomeConnectivityService.debugForceOnline = null;
+    BasicApiService.resetForTesting();
   });
 
   /// Sesión con permisos completos (setUp) + token válido vía [hasValidToken].
@@ -80,6 +91,23 @@ void main() {
     );
   });
 
+  testWidgets('sin conexión: /dashboard muestra aviso online', (tester) async {
+    HomeConnectivityService.debugForceOnline = false;
+
+    final router = createAppRouter(
+      hasValidToken: () => true,
+      initialLocation: '/dashboard',
+    );
+    await tester.pumpWidget(buildRouterTestHost(router));
+    await pumpRouterFrames(tester);
+    await tester.pumpAndSettle();
+
+    expect(find.byType(DashboardPage), findsNothing);
+    final l10n = l10nFromTester(tester);
+    expect(find.text(l10n.onlineFeatureRequiresConnection), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('autenticado: /purchases/create', (tester) async {
     await pumpAuthenticated(tester, '/purchases/create');
     expect(find.byType(PurchaseFormPage), findsOneWidget);
@@ -88,6 +116,26 @@ void main() {
   testWidgets('autenticado: /purchases', (tester) async {
     await pumpAuthenticated(tester, '/purchases');
     expect(find.byType(PurchasesListPage), findsOneWidget);
+  });
+
+  testWidgets('sin conexión: /purchases muestra aviso online, no la lista', (
+    tester,
+  ) async {
+    HomeConnectivityService.debugForceOnline = false;
+
+    final router = createAppRouter(
+      hasValidToken: () => true,
+      initialLocation: '/purchases',
+    );
+    await tester.pumpWidget(buildRouterTestHost(router));
+    await pumpRouterFrames(tester);
+    await tester.pumpAndSettle();
+
+    expect(find.byType(PurchasesListPage), findsNothing);
+    expect(find.byType(CircularProgressIndicator), findsNothing);
+    final l10n = l10nFromTester(tester);
+    expect(find.text(l10n.onlineFeatureRequiresConnection), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('autenticado: /purchases/pending', (tester) async {
@@ -132,7 +180,9 @@ void main() {
 
   testWidgets('autenticado: /users', (tester) async {
     await pumpAuthenticated(tester, '/users');
+    await tester.pump(const Duration(seconds: 1));
     expect(find.byType(UsersListPage), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('autenticado: /purchase/reception/:purchaseId recibe el id', (
@@ -153,7 +203,9 @@ void main() {
 
   testWidgets('autenticado: /cattle', (tester) async {
     await pumpAuthenticated(tester, '/cattle');
+    await tester.pump(const Duration(seconds: 1));
     expect(find.byType(CattleMasterListPage), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('goNamed purchasesList abre PurchasesListPage', (tester) async {
