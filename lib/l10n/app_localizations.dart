@@ -614,6 +614,12 @@ abstract class AppLocalizations {
   /// **'Home'**
   String get home_title;
 
+  /// Message when opening a 100% online module without network on mobile.
+  ///
+  /// In en, this message translates to:
+  /// **'This feature requires an internet connection.'**
+  String get onlineFeatureRequiresConnection;
+
   /// Title for the Dashboard option and screen.
   ///
   /// In en, this message translates to:
@@ -1003,11 +1009,35 @@ abstract class AppLocalizations {
   /// **'OK'**
   String get dialogOk;
 
-  /// Button label to trigger manual data sync on mobile.
+  /// Home (mobile) button to upload pending massive events on the device.
   ///
   /// In en, this message translates to:
-  /// **'Sync now'**
+  /// **'Sync massive events'**
   String get syncNow;
+
+  /// SnackBar while massive-event sync runs on mobile.
+  ///
+  /// In en, this message translates to:
+  /// **'Syncing massive events…'**
+  String get syncMassiveEventsInProgress;
+
+  /// SnackBar when massive-event sync completes successfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Massive events updated on the server'**
+  String get syncMassiveEventsSuccess;
+
+  /// SnackBar when massive-event sync fails.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not sync massive events: {message}'**
+  String syncMassiveEventsFailure(String message);
+
+  /// Sync button label including pending item count.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync massive events ({count})'**
+  String syncMassiveEventsWithPendingCount(int count);
 
   /// No description provided for @event.
   ///

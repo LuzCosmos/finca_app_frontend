@@ -307,6 +307,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get home_title => 'Home';
 
   @override
+  String get onlineFeatureRequiresConnection =>
+      'This feature requires an internet connection.';
+
+  @override
   String get dashboard_title => 'Dashboard';
 
   @override
@@ -529,7 +533,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dialogOk => 'OK';
 
   @override
-  String get syncNow => 'Sync now';
+  String get syncNow => 'Sync massive events';
+
+  @override
+  String get syncMassiveEventsInProgress => 'Syncing massive events…';
+
+  @override
+  String get syncMassiveEventsSuccess => 'Massive events updated on the server';
+
+  @override
+  String syncMassiveEventsFailure(String message) {
+    return 'Could not sync massive events: $message';
+  }
+
+  @override
+  String syncMassiveEventsWithPendingCount(int count) {
+    return 'Sync massive events ($count)';
+  }
 
   @override
   String get event => 'Event';

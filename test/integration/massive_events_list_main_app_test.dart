@@ -11,6 +11,8 @@ import 'package:finca_app_frontend/main.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/pages/massive_event_list_page.dart';
 import 'package:finca_app_frontend/router/router.dart';
 
+import '../support/test_l10n.dart';
+
 // Integración widget (VM / `flutter test` sin `-d`): MainApp + GoRouter + sesión,
 // API inalcanzable → lista a pantalla completa con reintento.
 
@@ -65,7 +67,8 @@ void main() {
         find.byKey(const ValueKey<String>('massive-event-list-page')),
         findsOneWidget,
       );
-      expect(find.text('Reintentar'), findsOneWidget);
+      final l10n = l10nFromTester(tester);
+      expect(find.text(l10n.retry), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
   );

@@ -271,9 +271,10 @@ class _UsersListPageState extends State<UsersListPage> {
 
              // Pagination
              Row(
-               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+               crossAxisAlignment: CrossAxisAlignment.center,
                children: [
                  Row(
+                   mainAxisSize: MainAxisSize.min,
                    children: [
                      Text(l10n.rowsPerPage),
                      const SizedBox(width: 8),
@@ -291,8 +292,16 @@ class _UsersListPageState extends State<UsersListPage> {
                      ),
                    ],
                  ),
-                 Text('${l10n.page} $_page / $_pageCount ($_total ${l10n.results})'),
+                 const SizedBox(width: 8),
+                 Expanded(
+                   child: Text(
+                     '${l10n.page} $_page / $_pageCount ($_total ${l10n.results})',
+                     overflow: TextOverflow.ellipsis,
+                     textAlign: TextAlign.center,
+                   ),
+                 ),
                  Row(
+                   mainAxisSize: MainAxisSize.min,
                    children: [
                      IconButton(
                        icon: const Icon(Icons.chevron_left),
@@ -309,7 +318,7 @@ class _UsersListPageState extends State<UsersListPage> {
                        } : null,
                      ),
                    ],
-                 )
+                 ),
                ],
              ),
           ],

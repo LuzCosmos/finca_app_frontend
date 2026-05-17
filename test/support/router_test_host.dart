@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:finca_app_frontend/core/blocs/locale/locale_bloc.dart';
+import 'package:finca_app_frontend/core/utils/language.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/mobile/bloc/sync_bloc.dart';
 import 'package:finca_app_frontend/modules/mobile/services/sync_service.dart';
@@ -25,6 +26,7 @@ Widget buildRouterTestHost(GoRouter router) {
     ],
     child: MaterialApp.router(
       routerConfig: router,
+      locale: Language.spanish.localeValue,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
     ),

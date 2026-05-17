@@ -11,6 +11,7 @@ import 'package:finca_app_frontend/modules/mobile/bloc/sync_bloc.dart';
 import 'package:finca_app_frontend/modules/mobile/services/sync_service.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/shared/features/home/page/home_page.dart';
+import 'package:finca_app_frontend/modules/shared/features/home/services/home_connectivity_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/pages/massive_event_list_page.dart';
 import 'package:finca_app_frontend/router/router.dart';
 
@@ -30,6 +31,11 @@ void main() {
     BasicApiService.resetForTesting();
     SharedPreferences.setMockInitialValues({});
     HomePage.resetWideRailCollapseSessionForTesting();
+    HomeConnectivityService.debugForceOnline = true;
+  });
+
+  tearDown(() {
+    HomeConnectivityService.debugForceOnline = null;
   });
 
   testWidgets('título L10n Inicio y opciones según permisos (móvil / no web)', (
@@ -65,7 +71,10 @@ void main() {
     expect(find.text(l10n.home_title), findsWidgets);
 
     expect(find.text(l10n.dashboard_title), findsOneWidget);
-    // En test VM kIsWeb es false: forWebOnly oculta compras/ventas/ganado.
+    // Módulos 100 % online visibles en móvil cuando hay conexión (forzada en tests).
+    expect(find.text(l10n.purchase), findsOneWidget);
+    expect(find.text(l10n.sale), findsOneWidget);
+    expect(find.text(l10n.masterListTitle), findsOneWidget);
     expect(find.text(l10n.massiveEvent), findsOneWidget);
     expect(find.text(l10n.users), findsOneWidget);
 
@@ -103,8 +112,51 @@ void main() {
 
       expect(find.byKey(const ValueKey<String>('home-page')), findsOneWidget);
       expect(find.text(l10n.dashboard_title), findsOneWidget);
+      expect(find.text(l10n.purchase), findsOneWidget);
+      expect(find.text(l10n.sale), findsOneWidget);
+      expect(find.text(l10n.masterListTitle), findsOneWidget);
       expect(find.text(l10n.massiveEvent), findsOneWidget);
       expect(find.text(l10n.users), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'sin conexión: oculta módulos requiresOnline (dashboard, comercio, usuarios, ganado)',
+    (tester) async {
+      HomeConnectivityService.debugForceOnline = false;
+
+      await SessionService.saveSession(
+        token: 't.ok',
+        permissions: {
+          'MASSIVE_EVENTS': {'massive_events': true},
+          'EMP_MGMT': {'users': true},
+          'COMMERCE': {'purchases': true, 'sales': true},
+          'FARM': {'cattle': true},
+        },
+        idTenant: 'tid',
+        idUser: 'uid',
+      );
+
+      late AppLocalizations l10n;
+      await tester.pumpWidget(
+        pumpLocalizedMaterialShell(
+          home: Builder(
+            builder: (context) {
+              l10n = AppLocalizations.of(context)!;
+              return const HomePage();
+            },
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text(l10n.massiveEvent), findsOneWidget);
+      expect(find.text(l10n.dashboard_title), findsNothing);
+      expect(find.text(l10n.users), findsNothing);
+      expect(find.text(l10n.purchase), findsNothing);
+      expect(find.text(l10n.sale), findsNothing);
+      expect(find.text(l10n.masterListTitle), findsNothing);
       expect(tester.takeException(), isNull);
     },
   );

@@ -7,18 +7,20 @@ import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:finca_app_frontend/core/data/database/database_provider.dart';
-import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/main.dart';
 import 'package:finca_app_frontend/modules/mobile/bloc/sync_bloc_stub.dart'
     if (dart.library.io) 'package:finca_app_frontend/modules/mobile/bloc/sync_bloc.dart';
 import 'package:finca_app_frontend/modules/mobile/bloc/sync_state.dart';
 import 'package:finca_app_frontend/modules/mobile/services/sync_service.dart';
+import 'package:finca_app_frontend/modules/shared/features/home/services/home_connectivity_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/pages/massive_event_list_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/pages/massive_event_page.dart';
 import 'package:finca_app_frontend/router/router.dart';
 
+import '../test/support/test_l10n.dart';
 import 'support/integration_fake_auth_service.dart';
+import 'support/integration_test_session.dart';
 import 'support/sync_bloc_factory.dart';
 
 // Suite única de integration_test: un solo bundle evita en macOS el fallo
@@ -46,10 +48,14 @@ void main() {
     registerFallbackValue('');
   });
 
+  setUp(() {
+    integrationBindOnlineApiForTests();
+  });
+
   tearDown(() async {
     await DatabaseProvider.close();
     SessionService.resetForTesting();
-    BasicApiService.resetForTesting();
+    integrationResetOnlineApiForTests();
   });
 
   testWidgets(
@@ -57,7 +63,6 @@ void main() {
     (tester) async {
       SessionService.resetForTesting();
       SharedPreferences.setMockInitialValues({});
-      BasicApiService.setBaseUrl('http://127.0.0.1:9');
 
       final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
       await SessionService.saveSession(
@@ -84,7 +89,8 @@ void main() {
         find.byKey(const ValueKey<String>('massive-event-list-page')),
         findsOneWidget,
       );
-      expect(find.text('Reintentar'), findsOneWidget);
+      final l10n = l10nFromTester(tester);
+      expect(find.text(l10n.retry), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
   );
@@ -94,7 +100,6 @@ void main() {
     (tester) async {
       SessionService.resetForTesting();
       SharedPreferences.setMockInitialValues({});
-      BasicApiService.setBaseUrl('http://127.0.0.1:9');
 
       final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
       await SessionService.saveSession(
@@ -118,10 +123,8 @@ void main() {
       await tester.pumpAndSettle(const Duration(seconds: 20));
 
       expect(find.byType(MassiveEventPage), findsOneWidget);
-      expect(
-        find.textContaining('No se pudo cargar este evento masivo'),
-        findsOneWidget,
-      );
+      final l10n = l10nFromTester(tester);
+      expect(find.textContaining(l10n.massiveEventLoadSessionError), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
   );
@@ -142,6 +145,75 @@ void main() {
   });
 
   testWidgets(
+    'home online: permisos completos muestran todas las opciones (rejilla compacta)',
+    (tester) async {
+      final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+      await pumpIntegrationHomeWithFullPermissions(
+        tester,
+        token: _jwtWithExp(now + 86400),
+      );
+
+      expect(find.byKey(const ValueKey<String>('home-page')), findsOneWidget);
+      expect(find.byKey(const ValueKey<String>('home-compact-layout')), findsOneWidget);
+
+      final l10n = l10nFromTester(tester);
+      expectAllHomeMenuOptionsVisible(l10n);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'home online ancho: rail lateral con todas las opciones',
+    (tester) async {
+      addTearDown(() async {
+        await tester.binding.setSurfaceSize(null);
+      });
+      await tester.binding.setSurfaceSize(const Size(1280, 900));
+
+      final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+      await pumpIntegrationHomeWithFullPermissions(
+        tester,
+        token: _jwtWithExp(now + 86400),
+      );
+
+      expect(find.byKey(const ValueKey<String>('home-wide-layout')), findsOneWidget);
+      final l10n = l10nFromTester(tester);
+      expect(find.text(l10n.dashboard_title), findsWidgets);
+      expect(find.text(l10n.purchase), findsOneWidget);
+      expect(find.text(l10n.massiveEvent), findsOneWidget);
+      expect(find.text(l10n.sale), findsOneWidget);
+      expect(find.text(l10n.users), findsOneWidget);
+      expect(find.text(l10n.masterListTitle), findsOneWidget);
+      expect(find.text(l10n.syncNow), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'home offline: solo evento masivo y sincronizar (requiresOnline oculto)',
+    (tester) async {
+      HomeConnectivityService.debugForceOnline = false;
+      integrationBindApiForTests();
+
+      final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+      await pumpIntegrationHomeWithFullPermissions(
+        tester,
+        token: _jwtWithExp(now + 86400),
+      );
+
+      final l10n = l10nFromTester(tester);
+      expect(find.text(l10n.massiveEvent), findsOneWidget);
+      expect(find.text(l10n.syncNow), findsOneWidget);
+      expect(find.text(l10n.dashboard_title), findsNothing);
+      expect(find.text(l10n.purchase), findsNothing);
+      expect(find.text(l10n.sale), findsNothing);
+      expect(find.text(l10n.users), findsNothing);
+      expect(find.text(l10n.masterListTitle), findsNothing);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
     'sesión fake: home → tap Evento masivo → lista embebida (historial)',
     (tester) async {
       // Home nativo solo embebe masivos con rail si el cuerpo es ancho
@@ -154,14 +226,11 @@ void main() {
 
       SessionService.resetForTesting();
       SharedPreferences.setMockInitialValues({});
-      BasicApiService.setBaseUrl('http://127.0.0.1:9');
 
       final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
       await SessionService.saveSession(
         token: _jwtWithExp(now + 86400),
-        permissions: {
-          'MASSIVE_EVENTS': {'massive_events': true},
-        },
+        permissions: integrationFullHomePermissions(),
         idTenant: 't-integration',
         idUser: 'u-integration',
         refreshToken: 'rt-integration',
@@ -176,7 +245,8 @@ void main() {
         findsOneWidget,
       );
 
-      await tester.tap(find.text('Evento masivo'));
+      final l10n = l10nFromTester(tester);
+      await tester.tap(find.text(l10n.massiveEvent));
       await tester.pumpAndSettle(const Duration(seconds: 15));
 
       expect(find.byType(MassiveEventListPage), findsOneWidget);
@@ -190,7 +260,7 @@ void main() {
         find.byKey(const ValueKey<String>('home-wide-panel-massive_events')),
         findsOneWidget,
       );
-      expect(find.text('Reintentar'), findsOneWidget);
+      expect(find.text(l10n.retry), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
   );
@@ -230,16 +300,20 @@ void main() {
         find.byKey(const Key('login-password-field')),
         'cualquiera',
       );
-      await tester.tap(find.text('Iniciar Sesión'));
+      final l10n = l10nFromTester(tester);
+      await tester.tap(find.text(l10n.login));
       await tester.pumpAndSettle(const Duration(seconds: 10));
 
       expect(find.byKey(const ValueKey<String>('home-page')), findsOneWidget);
+
+      final l10nHome = l10nFromTester(tester);
+      expectAllHomeMenuOptionsVisible(l10nHome);
       expect(tester.takeException(), isNull);
     },
   );
 
   testWidgets(
-    'sync mockeado: home → Sincronizar ahora → SyncSuccess (sin red)',
+    'sync mockeado: home → Sincronizar eventos masivos → SyncSuccess (sin red)',
     (tester) async {
       SessionService.resetForTesting();
       SharedPreferences.setMockInitialValues({});
@@ -247,9 +321,7 @@ void main() {
       final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
       await SessionService.saveSession(
         token: _jwtWithExp(now + 86400),
-        permissions: {
-          'MASSIVE_EVENTS': {'massive_events': true},
-        },
+        permissions: integrationFullHomePermissions(),
         idTenant: 't-integration',
         idUser: 'u-integration',
         refreshToken: 'rt-integration',
@@ -280,10 +352,11 @@ void main() {
 
       expect(find.byKey(const ValueKey<String>('home-page')), findsOneWidget);
 
+      final l10n = l10nFromTester(tester);
       final baseline = syncCalls;
 
       final success = syncBloc.stream.firstWhere((s) => s is SyncSuccess);
-      await tester.tap(find.text('Sincronizar ahora'));
+      await tester.tap(find.text(l10n.syncNow));
       await success.timeout(const Duration(seconds: 10));
       expect(syncCalls, greaterThan(baseline));
       expect(tester.takeException(), isNull);

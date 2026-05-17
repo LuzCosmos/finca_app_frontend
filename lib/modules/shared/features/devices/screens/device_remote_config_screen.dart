@@ -28,10 +28,11 @@ class DeviceRemoteConfigScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => DeviceRemoteConfigBloc(
-        dataSource: const DeviceRemoteConfigApiDataSource(),
-        l10n: AppLocalizations.of(context),
-      )..add(LoadDeviceRemoteConfig(deveui)),
+      create:
+          (_) => DeviceRemoteConfigBloc(
+            dataSource: const DeviceRemoteConfigApiDataSource(),
+            l10n: AppLocalizations.of(context),
+          )..add(LoadDeviceRemoteConfig(deveui)),
       child: _DeviceRemoteConfigView(deveui: deveui, deviceName: deviceName),
     );
   }
@@ -56,9 +57,10 @@ class _DeviceRemoteConfigView extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.refresh),
             tooltip: l10n.refresh,
-            onPressed: () => context
-                .read<DeviceRemoteConfigBloc>()
-                .add(LoadDeviceRemoteConfig(deveui)),
+            onPressed:
+                () => context.read<DeviceRemoteConfigBloc>().add(
+                  LoadDeviceRemoteConfig(deveui),
+                ),
           ),
         ],
       ),
@@ -81,9 +83,10 @@ class _DeviceRemoteConfigView extends StatelessWidget {
             );
           }
         },
-        listenWhen: (a, b) =>
-            a.errorMessage != b.errorMessage ||
-            a.lastSuccessMessage != b.lastSuccessMessage,
+        listenWhen:
+            (a, b) =>
+                a.errorMessage != b.errorMessage ||
+                a.lastSuccessMessage != b.lastSuccessMessage,
         builder: (context, state) {
           if (state.isLoading) {
             return const Center(child: CircularProgressIndicator());
@@ -129,7 +132,7 @@ class _StatusCard extends StatelessWidget {
     final status = state.status;
     final profileName =
         (status?.profileSnapshot['name'] as String?) ??
-            l10n.deviceRemoteConfig_noProfileApplied;
+        l10n.deviceRemoteConfig_noProfileApplied;
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -147,7 +150,8 @@ class _StatusCard extends StatelessWidget {
                   status?.isInSync == true
                       ? Icons.check_circle
                       : Icons.sync_problem,
-                  color: status?.isInSync == true ? Colors.green : Colors.orange,
+                  color:
+                      status?.isInSync == true ? Colors.green : Colors.orange,
                 ),
                 const SizedBox(width: 8),
                 Expanded(
@@ -155,9 +159,9 @@ class _StatusCard extends StatelessWidget {
                     status?.isInSync == true
                         ? l10n.deviceRemoteConfig_synced
                         : l10n.deviceRemoteConfig_waitingConfirmation(
-                            '${status?.desiredVersion ?? 0}',
-                            '${status?.confirmedVersion ?? 0}',
-                          ),
+                          '${status?.desiredVersion ?? 0}',
+                          '${status?.confirmedVersion ?? 0}',
+                        ),
                   ),
                 ),
               ],
@@ -200,73 +204,88 @@ class _ActionsCard extends StatelessWidget {
               runSpacing: 12,
               children: [
                 FilledButton.icon(
-                  icon: state.isApplyingProfile
-                      ? _smallSpinner()
-                      : const Icon(Icons.tune),
+                  icon:
+                      state.isApplyingProfile
+                          ? _smallSpinner()
+                          : const Icon(Icons.tune),
                   label: Text(l10n.deviceRemoteConfig_action_applyProfile),
-                  onPressed: state.isApplyingProfile
-                      ? null
-                      : () async {
-                          final selected = await ApplyProfileDialog.show(
-                            context,
-                            profiles: state.profiles,
-                            currentProfileId: state.status?.idProfile,
-                          );
-                          if (selected != null) {
-                            // ignore: use_build_context_synchronously
-                            context.read<DeviceRemoteConfigBloc>().add(
-                                  ApplyConfigurationProfileRequested(
-                                    deveui: deveui,
-                                    idProfile: selected,
-                                  ),
-                                );
-                          }
-                        },
+                  onPressed:
+                      state.isApplyingProfile
+                          ? null
+                          : () async {
+                            final selected = await ApplyProfileDialog.show(
+                              context,
+                              profiles: state.profiles,
+                              currentProfileId: state.status?.idProfile,
+                            );
+                            if (selected != null) {
+                              // ignore: use_build_context_synchronously
+                              context.read<DeviceRemoteConfigBloc>().add(
+                                ApplyConfigurationProfileRequested(
+                                  deveui: deveui,
+                                  idProfile: selected,
+                                ),
+                              );
+                            }
+                          },
                 ),
                 FilledButton.tonalIcon(
-                  icon: state.isRequestingPosition
-                      ? _smallSpinner()
-                      : const Icon(Icons.gps_fixed),
-                  label: Text(l10n.deviceRemoteConfig_action_requestPositionNow),
-                  onPressed: state.isRequestingPosition
-                      ? null
-                      : () => bloc.add(RequestDevicePositionEvent(deveui)),
+                  icon:
+                      state.isRequestingPosition
+                          ? _smallSpinner()
+                          : const Icon(Icons.gps_fixed),
+                  label: Text(
+                    l10n.deviceRemoteConfig_action_requestPositionNow,
+                  ),
+                  onPressed:
+                      state.isRequestingPosition
+                          ? null
+                          : () => bloc.add(RequestDevicePositionEvent(deveui)),
                 ),
                 FilledButton.tonalIcon(
-                  icon: state.isRequestingBattery
-                      ? _smallSpinner()
-                      : const Icon(Icons.battery_charging_full),
+                  icon:
+                      state.isRequestingBattery
+                          ? _smallSpinner()
+                          : const Icon(Icons.battery_charging_full),
                   label: Text(l10n.deviceRemoteConfig_action_requestBattery),
-                  onPressed: state.isRequestingBattery
-                      ? null
-                      : () => bloc.add(RequestBatteryConsumptionEvent(deveui)),
+                  onPressed:
+                      state.isRequestingBattery
+                          ? null
+                          : () =>
+                              bloc.add(RequestBatteryConsumptionEvent(deveui)),
                 ),
                 OutlinedButton.icon(
-                  icon: state.isClearingManDown
-                      ? _smallSpinner()
-                      : const Icon(Icons.directions_run),
+                  icon:
+                      state.isClearingManDown
+                          ? _smallSpinner()
+                          : const Icon(Icons.directions_run),
                   label: Text(l10n.deviceRemoteConfig_action_clearManDown),
-                  onPressed: state.isClearingManDown
-                      ? null
-                      : () => bloc.add(ClearManDownRequested(deveui)),
+                  onPressed:
+                      state.isClearingManDown
+                          ? null
+                          : () => bloc.add(ClearManDownRequested(deveui)),
                 ),
                 OutlinedButton.icon(
-                  icon: state.isConfiguring
-                      ? _smallSpinner()
-                      : const Icon(Icons.network_cell),
+                  icon:
+                      state.isConfiguring
+                          ? _smallSpinner()
+                          : const Icon(Icons.network_cell),
                   label: Text(l10n.deviceRemoteConfig_action_lorawanOnly),
-                  onPressed: state.isConfiguring
-                      ? null
-                      : () async {
-                          final confirmed =
-                              await _confirmLorawanOnly(context, l10n);
-                          if (confirmed == true) {
-                            // ignore: use_build_context_synchronously
-                            context.read<DeviceRemoteConfigBloc>().add(
-                                  SetLorawanOnlyPositioningRequested(deveui),
-                                );
-                          }
-                        },
+                  onPressed:
+                      state.isConfiguring
+                          ? null
+                          : () async {
+                            final confirmed = await _confirmLorawanOnly(
+                              context,
+                              l10n,
+                            );
+                            if (confirmed == true) {
+                              // ignore: use_build_context_synchronously
+                              context.read<DeviceRemoteConfigBloc>().add(
+                                SetLorawanOnlyPositioningRequested(deveui),
+                              );
+                            }
+                          },
                 ),
               ],
             ),
@@ -293,14 +312,19 @@ class _ActionsCard extends StatelessWidget {
               runSpacing: 12,
               children: [
                 OutlinedButton.icon(
-                  icon: state.isReadingAllSafeParameters
-                      ? _smallSpinner()
-                      : const Icon(Icons.manage_search),
-                  label: Text(l10n.deviceRemoteConfig_action_readAllSafeParameters),
-                  onPressed: state.isReadingAllSafeParameters ||
-                          state.readingSafeChunkIndex != null
-                      ? null
-                      : () => bloc.add(ReadAllSafeParametersRequested(deveui)),
+                  icon:
+                      state.isReadingAllSafeParameters
+                          ? _smallSpinner()
+                          : const Icon(Icons.manage_search),
+                  label: Text(
+                    l10n.deviceRemoteConfig_action_readAllSafeParameters,
+                  ),
+                  onPressed:
+                      state.isReadingAllSafeParameters ||
+                              state.readingSafeChunkIndex != null
+                          ? null
+                          : () =>
+                              bloc.add(ReadAllSafeParametersRequested(deveui)),
                 ),
               ],
             ),
@@ -311,10 +335,10 @@ class _ActionsCard extends StatelessWidget {
   }
 
   Widget _smallSpinner() => const SizedBox(
-        width: 16,
-        height: 16,
-        child: CircularProgressIndicator(strokeWidth: 2),
-      );
+    width: 16,
+    height: 16,
+    child: CircularProgressIndicator(strokeWidth: 2),
+  );
 
   /// Diálogo de confirmación antes de apagar GPS / WiFi / BT en el collar.
   /// Cambia 6 parámetros del firmware (las 6 position-strategy a 0x00) por lo que
@@ -325,20 +349,21 @@ class _ActionsCard extends StatelessWidget {
   ) {
     return showDialog<bool>(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(l10n.deviceRemoteConfig_lorawanOnly_dialog_title),
-        content: Text(l10n.deviceRemoteConfig_lorawanOnly_dialog_body),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: Text(l10n.deviceRemoteConfig_lorawanOnly_dialog_cancel),
+      builder:
+          (dialogContext) => AlertDialog(
+            title: Text(l10n.deviceRemoteConfig_lorawanOnly_dialog_title),
+            content: Text(l10n.deviceRemoteConfig_lorawanOnly_dialog_body),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(dialogContext).pop(false),
+                child: Text(l10n.deviceRemoteConfig_lorawanOnly_dialog_cancel),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.of(dialogContext).pop(true),
+                child: Text(l10n.deviceRemoteConfig_lorawanOnly_dialog_confirm),
+              ),
+            ],
           ),
-          FilledButton(
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: Text(l10n.deviceRemoteConfig_lorawanOnly_dialog_confirm),
-          ),
-        ],
-      ),
     );
   }
 }
@@ -383,17 +408,19 @@ class _SafeReadChunkButtons extends StatelessWidget {
             return Tooltip(
               message: tooltipParts.join('\n'),
               child: OutlinedButton.icon(
-                icon: state.readingSafeChunkIndex == preset.chunkIndex
-                    ? const SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Icon(Icons.layers_outlined),
+                icon:
+                    state.readingSafeChunkIndex == preset.chunkIndex
+                        ? const SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                        : const Icon(Icons.layers_outlined),
                 label: Text(preset.label),
-                onPressed: disableAll
-                    ? null
-                    : () => bloc.add(
+                onPressed:
+                    disableAll
+                        ? null
+                        : () => bloc.add(
                           ReadSafeParametersChunkRequested(
                             deveui: deveui,
                             chunkIndex: preset.chunkIndex,

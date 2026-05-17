@@ -150,6 +150,10 @@
 
 
   "home_title": "Inicio",
+  "onlineFeatureRequiresConnection": "Esta función requiere conexión a internet.",
+  "@onlineFeatureRequiresConnection": {
+    "description": "Mensaje cuando se abre un módulo 100 % online sin red en móvil."
+  },
   "dashboard_title": "Dashboard",
   "@dashboard_title": { "description": "Título de la opción y pantalla de Dashboard." },
   "dashboard_welcome": "Resumen de la finca",
@@ -312,9 +316,31 @@
   "@dialogOk": {
     "description": "Generic dismiss button for small dialogs."
   },
-  "syncNow": "Sincronizar ahora",
+  "syncNow": "Sincronizar eventos masivos",
   "@syncNow": {
-    "description": "Botón para disparar sincronización manual en móvil."
+    "description": "Botón en inicio (móvil) para subir eventos masivos pendientes en el dispositivo."
+  },
+  "syncMassiveEventsInProgress": "Sincronizando eventos masivos…",
+  "@syncMassiveEventsInProgress": {
+    "description": "SnackBar mientras corre la sincronización de eventos masivos en móvil."
+  },
+  "syncMassiveEventsSuccess": "Eventos masivos actualizados en el servidor",
+  "@syncMassiveEventsSuccess": {
+    "description": "SnackBar al terminar bien la sincronización de eventos masivos."
+  },
+  "syncMassiveEventsFailure": "No se pudieron sincronizar los eventos masivos: {message}",
+  "@syncMassiveEventsFailure": {
+    "description": "SnackBar cuando falla la sincronización de eventos masivos.",
+    "placeholders": {
+      "message": { "type": "String" }
+    }
+  },
+  "syncMassiveEventsWithPendingCount": "Sincronizar eventos masivos ({count})",
+  "@syncMassiveEventsWithPendingCount": {
+    "description": "Botón de sincronización con cantidad de pendientes.",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
   },
   "event": "Evento",
   "events": "Eventos",

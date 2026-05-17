@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/mobile/bloc/sync_bloc.dart';
 import 'package:finca_app_frontend/modules/mobile/bloc/sync_event.dart';
 import 'package:finca_app_frontend/modules/mobile/bloc/sync_state.dart';
@@ -43,22 +44,26 @@ class _SyncButtonWidgetState extends State<SyncButtonWidget> {
   Widget build(BuildContext context) {
     return BlocConsumer<SyncBloc, SyncState>(
       listener: (context, state) async {
+        final l10n = AppLocalizations.of(context)!;
         if (state is SyncInProgress) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Sincronizando datos...')),
+            SnackBar(content: Text(l10n.syncMassiveEventsInProgress)),
           );
         } else if (state is SyncSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Sincronización completa ✅')),
+            SnackBar(content: Text(l10n.syncMassiveEventsSuccess)),
           );
           await _loadPendingCount(); // recargar pendientes
         } else if (state is SyncFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error al sincronizar: ${state.message}')),
+            SnackBar(
+              content: Text(l10n.syncMassiveEventsFailure(state.message)),
+            ),
           );
         }
       },
       builder: (context, state) {
+        final l10n = AppLocalizations.of(context)!;
         final button = ElevatedButton.icon(
           icon: const Icon(Icons.sync),
           label:
@@ -73,8 +78,8 @@ class _SyncButtonWidgetState extends State<SyncButtonWidget> {
                   )
                   : Text(
                     _pendingCount > 0
-                        ? 'Sincronizar ($_pendingCount)'
-                        : 'Sincronizar',
+                        ? l10n.syncMassiveEventsWithPendingCount(_pendingCount)
+                        : l10n.syncNow,
                   ),
           onPressed: () {
             context.read<SyncBloc>().add(StartSync(widget.idTenant));

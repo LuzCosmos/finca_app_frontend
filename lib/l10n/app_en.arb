@@ -150,6 +150,10 @@
 
 
   "home_title": "Home",
+  "onlineFeatureRequiresConnection": "This feature requires an internet connection.",
+  "@onlineFeatureRequiresConnection": {
+    "description": "Message when opening a 100% online module without network on mobile."
+  },
   "dashboard_title": "Dashboard",
   "@dashboard_title": { "description": "Title for the Dashboard option and screen." },
   "dashboard_welcome": "Farm overview",
@@ -312,9 +316,31 @@
   "@dialogOk": {
     "description": "Generic dismiss button for small dialogs."
   },
-  "syncNow": "Sync now",
+  "syncNow": "Sync massive events",
   "@syncNow": {
-    "description": "Button label to trigger manual data sync on mobile."
+    "description": "Home (mobile) button to upload pending massive events on the device."
+  },
+  "syncMassiveEventsInProgress": "Syncing massive events…",
+  "@syncMassiveEventsInProgress": {
+    "description": "SnackBar while massive-event sync runs on mobile."
+  },
+  "syncMassiveEventsSuccess": "Massive events updated on the server",
+  "@syncMassiveEventsSuccess": {
+    "description": "SnackBar when massive-event sync completes successfully."
+  },
+  "syncMassiveEventsFailure": "Could not sync massive events: {message}",
+  "@syncMassiveEventsFailure": {
+    "description": "SnackBar when massive-event sync fails.",
+    "placeholders": {
+      "message": { "type": "String" }
+    }
+  },
+  "syncMassiveEventsWithPendingCount": "Sync massive events ({count})",
+  "@syncMassiveEventsWithPendingCount": {
+    "description": "Sync button label including pending item count.",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
   },
   "event": "Event",
   "events": "Events",
