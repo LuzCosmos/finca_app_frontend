@@ -1924,4 +1924,67 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cattleGrid_rowNotFound => 'Row not found';
+
+  @override
+  String get equipmentAndResource_title => 'Equipment and Resource';
+
+  @override
+  String get devicesList_pageTitle => 'Devices';
+
+  @override
+  String get devicesList_searchHint => 'Search by name or DevEUI';
+
+  @override
+  String devicesList_countLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count devices',
+      one: '1 device',
+      zero: 'No devices',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get devicesList_emptyTitle => 'No devices yet';
+
+  @override
+  String get devicesList_emptyMessage =>
+      'Registered LoRaWAN devices will appear here.';
+
+  @override
+  String get devicesList_errorGeneric =>
+      'Could not load devices. Please try again.';
+
+  @override
+  String get devicesList_forbidden =>
+      'You do not have permission to view devices.';
+
+  @override
+  String get devicesList_retry => 'Retry';
+
+  @override
+  String get devicesList_columnName => 'Name';
+
+  @override
+  String get devicesList_columnDeveui => 'DevEUI';
+
+  @override
+  String get devicesList_columnActive => 'Status';
+
+  @override
+  String get devicesList_columnBattery => 'Battery';
+
+  @override
+  String get devicesList_columnProfile => 'Profile';
+
+  @override
+  String get devicesList_active => 'Active';
+
+  @override
+  String get devicesList_inactive => 'Inactive';
+
+  @override
+  String get devicesList_noBatteryData => 'No data';
 }

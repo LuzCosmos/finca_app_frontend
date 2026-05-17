@@ -16,6 +16,7 @@ import 'package:finca_app_frontend/modules/shared/features/cattle_purchase/pages
 import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/users/pages/users_list_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/cattle/pages/cattle_master_list_page.dart';
+import 'package:finca_app_frontend/modules/shared/features/devices/pages/devices_list_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/devices/screens/device_remote_config_screen.dart';
 import 'package:finca_app_frontend/router/route_access.dart';
 import 'package:finca_app_frontend/modules/shared/widgets/online_feature_gate.dart';
@@ -137,6 +138,12 @@ GoRouter createAppRouter({
         builder:
             (context, state) =>
                 const OnlineFeatureGate(child: CattleMasterListPage()),
+      ),
+      GoRoute(
+        path: '/equipment-resources',
+        builder:
+            (context, state) =>
+                const OnlineFeatureGate(child: DevicesListPage()),
       ),
       GoRoute(
         path: '/devices/:deveui/remote-config',

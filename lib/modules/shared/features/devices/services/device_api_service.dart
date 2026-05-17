@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:finca_app_frontend/core/services/basic_api_service.dart';
+import 'package:finca_app_frontend/modules/shared/features/devices/models/device_list_item_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/devices/models/device_model.dart';
 
 class DeviceApiService {
@@ -17,6 +18,26 @@ class DeviceApiService {
   // I should probably make this service generic enough or point to the correct endpoint.
 
   static final String _baseUrl = BasicApiService.getApiBaseUrl();
+
+  /// Resumen para listado administrativo (`GET /devices/list-summary`).
+  static Future<List<DeviceListItemModel>> listSummary() async {
+    final url = Uri.parse('$_baseUrl/devices/list-summary');
+    final response = await BasicApiService.authorizedGet(
+      url,
+      headers: const {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> body = jsonDecode(response.body) as List<dynamic>;
+      return body
+          .map(
+            (dynamic item) =>
+                DeviceListItemModel.fromJson(item as Map<String, dynamic>),
+          )
+          .toList();
+    }
+    BasicApiService.manageNotSuccessResponseCode(response);
+  }
 
   static Future<List<DeviceModel>> searchDevices(String query) async {
     // Using the same endpoint as ReceptionApiService for now to ensure exact same behavior

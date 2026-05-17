@@ -111,6 +111,9 @@ String? routeAccessDeniedRedirect({
       path.startsWith('/purchases')) {
     module = 'COMMERCE';
     resource = 'purchases';
+  } else if (path.startsWith('/equipment-resources')) {
+    module = 'PROD_CENTER';
+    resource = 'devices';
   } else if (path.startsWith('/devices/') &&
       path.contains('/remote-config')) {
     // Configuración remota de dispositivos MOKO LW001-BG PRO.

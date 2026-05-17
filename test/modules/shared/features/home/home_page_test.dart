@@ -161,6 +161,35 @@ void main() {
     },
   );
 
+  testWidgets(
+    'muestra Equipment and Resource con PROD_CENTER.devices',
+    (tester) async {
+      await SessionService.saveSession(
+        token: 't.ok',
+        permissions: {
+          'PROD_CENTER': {'devices': '00001'},
+        },
+        idTenant: 'tid',
+        idUser: 'uid',
+      );
+
+      late AppLocalizations l10n;
+      await tester.pumpWidget(
+        pumpLocalizedMaterialShell(
+          home: Builder(
+            builder: (context) {
+              l10n = AppLocalizations.of(context)!;
+              return const HomePage();
+            },
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text(l10n.equipmentAndResource_title), findsOneWidget);
+    },
+  );
+
   testWidgets('sin permisos: no muestra tarjetas de módulo ni rompe', (
     tester,
   ) async {

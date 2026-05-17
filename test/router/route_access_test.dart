@@ -295,6 +295,27 @@ void main() {
       );
     });
 
+    test('/equipment-resources requiere PROD_CENTER.devices', () {
+      expect(
+        routeAccessDeniedRedirect(
+          path: '/equipment-resources',
+          permissions: {
+            'FARM': <String, dynamic>{'cattle': true},
+          },
+        ),
+        '/home',
+      );
+      expect(
+        routeAccessDeniedRedirect(
+          path: '/equipment-resources',
+          permissions: {
+            'PROD_CENTER': <String, dynamic>{'devices': '00001'},
+          },
+        ),
+        isNull,
+      );
+    });
+
     test('/sales/create requiere COMMERCE.sales', () {
       expect(
         routeAccessDeniedRedirect(

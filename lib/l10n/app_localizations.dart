@@ -3499,6 +3499,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Row not found'**
   String get cattleGrid_rowNotFound;
+
+  /// Home menu entry for production center devices inventory.
+  ///
+  /// In en, this message translates to:
+  /// **'Equipment and Resource'**
+  String get equipmentAndResource_title;
+
+  /// Title of the devices list screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Devices'**
+  String get devicesList_pageTitle;
+
+  /// Hint for local search field on devices list.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name or DevEUI'**
+  String get devicesList_searchHint;
+
+  /// Total devices loaded label.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No devices} =1{1 device} other{{count} devices}}'**
+  String devicesList_countLabel(int count);
+
+  /// Empty state title when tenant has no devices.
+  ///
+  /// In en, this message translates to:
+  /// **'No devices yet'**
+  String get devicesList_emptyTitle;
+
+  /// Empty state subtitle for devices list.
+  ///
+  /// In en, this message translates to:
+  /// **'Registered LoRaWAN devices will appear here.'**
+  String get devicesList_emptyMessage;
+
+  /// Generic error when devices list fetch fails.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load devices. Please try again.'**
+  String get devicesList_errorGeneric;
+
+  /// Error when API returns forbidden for devices list.
+  ///
+  /// In en, this message translates to:
+  /// **'You do not have permission to view devices.'**
+  String get devicesList_forbidden;
+
+  /// Button to retry loading devices list.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get devicesList_retry;
+
+  /// Devices table column: name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get devicesList_columnName;
+
+  /// Devices table column: DevEUI.
+  ///
+  /// In en, this message translates to:
+  /// **'DevEUI'**
+  String get devicesList_columnDeveui;
+
+  /// Devices table column: active flag.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get devicesList_columnActive;
+
+  /// Devices table column: battery.
+  ///
+  /// In en, this message translates to:
+  /// **'Battery'**
+  String get devicesList_columnBattery;
+
+  /// Devices table column: device profile name.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get devicesList_columnProfile;
+
+  /// Label for active device.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get devicesList_active;
+
+  /// Label for inactive device.
+  ///
+  /// In en, this message translates to:
+  /// **'Inactive'**
+  String get devicesList_inactive;
+
+  /// Shown when battery status is unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'No data'**
+  String get devicesList_noBatteryData;
 }
 
 class _AppLocalizationsDelegate
