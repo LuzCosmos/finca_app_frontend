@@ -1486,6 +1486,29 @@ class AppLocalizationsEn extends AppLocalizations {
   String get purchase_saveError => 'Purchase saving failed.';
 
   @override
+  String get purchase_editTitle => 'Edit purchase';
+
+  @override
+  String get purchase_editSuccess => 'Purchase updated successfully.';
+
+  @override
+  String get purchase_editLoadError => 'Could not load purchase for editing.';
+
+  @override
+  String get purchase_editSaveError => 'Could not save purchase.';
+
+  @override
+  String get purchase_editForbiddenReceived =>
+      'Received purchases cannot be edited.';
+
+  @override
+  String get purchase_editForbiddenReceptionStarted =>
+      'Cannot edit: reception has already started.';
+
+  @override
+  String get reception_cattleEditSuccess => 'Cattle data updated.';
+
+  @override
   String get cp_error_noLots => 'You must add at least one lot';
 
   @override

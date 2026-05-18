@@ -692,6 +692,13 @@
   "purchase_dateRequired": "You must select a purchase date.",
   "purchase_saveSuccess": "Purchase saved successfully.",
   "purchase_saveError": "Purchase saving failed.",
+  "purchase_editTitle": "Edit purchase",
+  "purchase_editSuccess": "Purchase updated successfully.",
+  "purchase_editLoadError": "Could not load purchase for editing.",
+  "purchase_editSaveError": "Could not save purchase.",
+  "purchase_editForbiddenReceived": "Received purchases cannot be edited.",
+  "purchase_editForbiddenReceptionStarted": "Cannot edit: reception has already started.",
+  "reception_cattleEditSuccess": "Cattle data updated.",
   
   "cp_error_noLots": "You must add at least one lot",
   "cp_error_providerRequired": "Please select or create a provider.",

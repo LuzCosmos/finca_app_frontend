@@ -60,6 +60,7 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
   };
 
   bool _canCreatePurchase = false;
+  bool _canUpdatePurchase = false;
   bool _canUpdateReception = false;
 
   @override
@@ -75,6 +76,11 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
       'purchases',
       'create',
     );
+    final hasPurchaseUpdate = await SessionService.hasActionPermission(
+      'COMMERCE',
+      'purchases',
+      'update',
+    );
     final hasUpdatePerm = await SessionService.hasActionPermission(
       'RECEPTION',
       'receptions',
@@ -83,9 +89,26 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
     if (mounted) {
       setState(() {
         _canCreatePurchase = hasCreatePerm;
+        _canUpdatePurchase = hasPurchaseUpdate;
         _canUpdateReception = hasUpdatePerm;
       });
     }
+  }
+
+  bool _isPurchaseEditable(PurchaseListItemModel p) =>
+      p.status == PurchaseStatus.open && p.receivedCattle == 0;
+
+  String? _purchaseEditDisabledTooltip(
+    PurchaseListItemModel p,
+    AppLocalizations l10n,
+  ) {
+    if (p.status == PurchaseStatus.received) {
+      return l10n.purchase_editForbiddenReceived;
+    }
+    if (p.receivedCattle > 0) {
+      return l10n.purchase_editForbiddenReceptionStarted;
+    }
+    return null;
   }
 
   @override
@@ -432,87 +455,129 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
                                           DataCell(
                                             Align(
                                               alignment: Alignment.centerRight,
-                                              child:
-                                                  _canUpdateReception
-                                                      ? IconButton(
-                                                        tooltip: l10n.reception,
-                                                        icon: const Icon(
-                                                          Icons.exit_to_app,
-                                                        ),
-                                                        onPressed: () async {
-                                                          final result =
-                                                              await context.push(
-                                                                '/purchase/reception/${p.id}',
-                                                              );
-                                                          if (result != null &&
-                                                              result
-                                                                  is Map<
-                                                                    String,
-                                                                    dynamic
-                                                                  > &&
-                                                              mounted) {
-                                                            final updatedReception =
-                                                                result;
-                                                            final purchaseId =
-                                                                updatedReception['purchaseId']
-                                                                    as String?;
-                                                            if (purchaseId ==
-                                                                p.id) {
-                                                              setState(() {
-                                                                final index = _items
-                                                                    .indexWhere(
-                                                                      (i) =>
-                                                                          i.id ==
-                                                                          purchaseId,
-                                                                    );
-                                                                if (index !=
-                                                                    -1) {
-                                                                  final oldItem =
-                                                                      _items[index];
-                                                                  final receivedCattle =
-                                                                      (updatedReception['receivedCattleCount'] ??
-                                                                              0)
-                                                                          as int;
-                                                                  final receivedWeight =
-                                                                      double.tryParse(
-                                                                        '${updatedReception['receivedTotalWeight'] ?? 0}',
-                                                                      ) ??
-                                                                      0.0;
-                                                                  // Only update received stats, keep total purchased stats same
-                                                                  final newItem = PurchaseListItemModel(
-                                                                    id:
-                                                                        oldItem
-                                                                            .id,
-                                                                    purchaseDate:
-                                                                        oldItem
-                                                                            .purchaseDate,
-                                                                    providerName:
-                                                                        oldItem
-                                                                            .providerName,
-                                                                    totalCattle:
-                                                                        oldItem
-                                                                            .totalCattle,
-                                                                    totalWeight:
-                                                                        oldItem
-                                                                            .totalWeight,
-                                                                    receivedCattle:
-                                                                        receivedCattle,
-                                                                    receivedWeight:
-                                                                        receivedWeight,
-                                                                    status:
-                                                                        oldItem
-                                                                            .status, // Keep status until refresh
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  if (_canUpdatePurchase)
+                                                    Builder(
+                                                      builder: (context) {
+                                                        final canEdit =
+                                                            _isPurchaseEditable(
+                                                              p,
+                                                            );
+                                                        final editColor =
+                                                            canEdit
+                                                                ? Colors.blue
+                                                                : Colors.grey;
+                                                        return Tooltip(
+                                                          message:
+                                                              _purchaseEditDisabledTooltip(
+                                                                p,
+                                                                l10n,
+                                                              ) ??
+                                                              l10n.edit,
+                                                          child: IconButton(
+                                                            icon: Icon(
+                                                              Icons.edit,
+                                                              color: editColor,
+                                                            ),
+                                                            onPressed:
+                                                                canEdit
+                                                                    ? () {
+                                                                      context.push(
+                                                                        '/purchases/edit/${p.id}',
+                                                                        extra: {
+                                                                          'providerName':
+                                                                              p.providerName,
+                                                                        },
+                                                                      );
+                                                                    }
+                                                                    : null,
+                                                          ),
+                                                        );
+                                                      },
+                                                    ),
+                                                  if (_canUpdateReception)
+                                                    IconButton(
+                                                      tooltip: l10n.reception,
+                                                      icon: const Icon(
+                                                        Icons.assignment,
+                                                        color: Colors.green,
+                                                      ),
+                                                      onPressed: () async {
+                                                        final result =
+                                                            await context.push(
+                                                              '/purchase/reception/${p.id}',
+                                                            );
+                                                        if (result != null &&
+                                                            result
+                                                                is Map<
+                                                                  String,
+                                                                  dynamic
+                                                                > &&
+                                                            mounted) {
+                                                          final updatedReception =
+                                                              result;
+                                                          final purchaseId =
+                                                              updatedReception['purchaseId']
+                                                                  as String?;
+                                                          if (purchaseId ==
+                                                              p.id) {
+                                                            setState(() {
+                                                              final index = _items
+                                                                  .indexWhere(
+                                                                    (i) =>
+                                                                        i.id ==
+                                                                        purchaseId,
                                                                   );
-                                                                  _items[index] =
-                                                                      newItem;
-                                                                }
-                                                              });
-                                                            }
-                                                            _load(); // Reload to get potential status change
+                                                              if (index !=
+                                                                  -1) {
+                                                                final oldItem =
+                                                                    _items[index];
+                                                                final receivedCattle =
+                                                                    (updatedReception['receivedCattleCount'] ??
+                                                                            0)
+                                                                        as int;
+                                                                final receivedWeight =
+                                                                    double.tryParse(
+                                                                      '${updatedReception['receivedTotalWeight'] ?? 0}',
+                                                                    ) ??
+                                                                    0.0;
+                                                                final newItem = PurchaseListItemModel(
+                                                                  id:
+                                                                      oldItem
+                                                                          .id,
+                                                                  purchaseDate:
+                                                                      oldItem
+                                                                          .purchaseDate,
+                                                                  providerName:
+                                                                      oldItem
+                                                                          .providerName,
+                                                                  totalCattle:
+                                                                      oldItem
+                                                                          .totalCattle,
+                                                                  totalWeight:
+                                                                      oldItem
+                                                                          .totalWeight,
+                                                                  receivedCattle:
+                                                                      receivedCattle,
+                                                                  receivedWeight:
+                                                                      receivedWeight,
+                                                                  status:
+                                                                      oldItem
+                                                                          .status,
+                                                                );
+                                                                _items[index] =
+                                                                    newItem;
+                                                              }
+                                                            });
                                                           }
-                                                        },
-                                                      )
-                                                      : null,
+                                                          _load();
+                                                        }
+                                                      },
+                                                    ),
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         ],

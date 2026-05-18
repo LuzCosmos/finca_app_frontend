@@ -135,4 +135,64 @@ class PurchasesApiService {
       BasicApiService.manageNotSuccessResponseCode(res);
     }
   }
+
+  Future<Map<String, dynamic>> getById(String id) async {
+    final uri = Uri.parse('$baseUrl/$id');
+    late http.Response res;
+    try {
+      res = await BasicApiService.authorizedGet(uri);
+    } catch (e) {
+      if (e is SocketException || e is http.ClientException) {
+        throw ApiException(
+          'serverConnectionError',
+          'Error al obtener compra: $e',
+        );
+      }
+      throw ApiException('readingObjectError', 'Error al obtener compra: $e');
+    }
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      final decoded = jsonDecode(res.body);
+      if (decoded is Map<String, dynamic>) return decoded;
+      throw ApiException('readingObjectError', 'Formato de compra no soportado');
+    }
+    BasicApiService.manageNotSuccessResponseCode(res);
+    throw ApiException('readingObjectError', 'Error al obtener compra');
+  }
+
+  Future<void> updatePurchase({
+    required String id,
+    required String idProvider,
+    required DateTime purchaseDate,
+    required List<Map<String, dynamic>> lots,
+  }) async {
+    final uri = Uri.parse('$baseUrl/$id');
+    final body = jsonEncode({
+      'idProvider': idProvider,
+      'purchaseDate': purchaseDate.toIso8601String(),
+      'lots': lots,
+    });
+    late http.Response response;
+    try {
+      response = await BasicApiService.authorizedPatch(
+        uri,
+        headers: {'Content-Type': 'application/json'},
+        body: body,
+      );
+    } catch (e) {
+      if (e is SocketException || e is http.ClientException) {
+        throw ApiException(
+          'serverConnectionError',
+          'Error al actualizar compra: $e',
+        );
+      }
+      throw ApiException(
+        'savingObjectError',
+        'Error al actualizar compra: $e',
+      );
+    }
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      return;
+    }
+    BasicApiService.manageNotSuccessResponseCode(response);
+  }
 }
