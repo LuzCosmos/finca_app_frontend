@@ -1932,4 +1932,193 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get cattleGrid_rowNotFound => 'No se encontró la fila';
+
+  @override
+  String get equipmentAndResource_title => 'Equipos y recursos';
+
+  @override
+  String get devicesList_pageTitle => 'Dispositivos';
+
+  @override
+  String get devicesList_searchHint => 'Buscar por nombre o DevEUI';
+
+  @override
+  String devicesList_countLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count dispositivos',
+      one: '1 dispositivo',
+      zero: 'Sin dispositivos',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get devicesList_emptyTitle => 'Aún no hay dispositivos';
+
+  @override
+  String get devicesList_emptyMessage =>
+      'Los dispositivos LoRaWAN registrados aparecerán aquí.';
+
+  @override
+  String get devicesList_errorGeneric =>
+      'No se pudieron cargar los dispositivos. Inténtelo de nuevo.';
+
+  @override
+  String get devicesList_forbidden => 'No tiene permiso para ver dispositivos.';
+
+  @override
+  String get devicesList_retry => 'Reintentar';
+
+  @override
+  String get devicesList_columnName => 'Nombre';
+
+  @override
+  String get devicesList_columnDeveui => 'DevEUI';
+
+  @override
+  String get devicesList_columnActive => 'Estado';
+
+  @override
+  String get devicesList_columnBattery => 'Batería';
+
+  @override
+  String get devicesList_columnProfile => 'Perfil';
+
+  @override
+  String get devicesList_active => 'Activo';
+
+  @override
+  String get devicesList_inactive => 'Inactivo';
+
+  @override
+  String get devicesList_noBatteryData => 'Sin dato';
+
+  @override
+  String get devicesList_importButton => 'Importar';
+
+  @override
+  String get importLw001_pageTitle => 'Importar dispositivos LW001-BG PRO';
+
+  @override
+  String get importLw001_helpIntro =>
+      'Suba una hoja con exactamente estas cabeceras en la fila 1, columnas A a D, en este orden:';
+
+  @override
+  String get importLw001_helpHeadersList =>
+      '1. devEui (obligatorio por fila)\n2. idDeviceProfile\n3. joineui\n4. appKey';
+
+  @override
+  String get importLw001_helpOptionalCells =>
+      'Si falta un valor en idDeviceProfile, joineui o appKey, se toma del perfil de dispositivo resuelto (por defecto abajo o el UUID de la columna B). Solo devEui es obligatorio en cada fila.';
+
+  @override
+  String get importLw001_helpMultiSheet =>
+      'En archivos .xlsx o .xls con varias hojas, se importan todas las que tengan datos (la fila 1 de cada hoja debe ser la cabecera indicada arriba). Las hojas vacías se omiten.';
+
+  @override
+  String get importLw001_selectFile =>
+      'Seleccionar archivo (.xlsx, .xls, .csv)';
+
+  @override
+  String get importLw001_defaultProfile => 'Perfil de dispositivo por defecto';
+
+  @override
+  String get importLw001_submit => 'Importar';
+
+  @override
+  String get importLw001_summaryTitle => 'Resumen de importación';
+
+  @override
+  String importLw001_summaryTotalRows(int count) {
+    return 'Filas procesadas: $count';
+  }
+
+  @override
+  String importLw001_summaryCreated(int count) {
+    return 'Creados: $count';
+  }
+
+  @override
+  String importLw001_summaryUpdated(int count) {
+    return 'Actualizados: $count';
+  }
+
+  @override
+  String importLw001_summaryDuplicates(String list) {
+    return 'DevEUI repetidos en archivo: $list';
+  }
+
+  @override
+  String importLw001_rowIssue(int row, String message) {
+    return 'Fila $row: $message';
+  }
+
+  @override
+  String get importLw001_backToList => 'Volver al listado';
+
+  @override
+  String get importLw001_profileRequired =>
+      'Seleccione un perfil por defecto cuando alguna fila pueda tener idDeviceProfile vacío.';
+
+  @override
+  String get importLw001_fileRequired => 'Seleccione un archivo para importar.';
+
+  @override
+  String get importLw001_reason_IMPORT_HEADERS_INVALID =>
+      'La fila de cabeceras no es válida. La fila 1 debe ser exactamente: devEui, idDeviceProfile, joineui, appKey.';
+
+  @override
+  String get importLw001_reason_DEVEUI_INVALID_LENGTH =>
+      'El DevEUI debe tener exactamente 16 caracteres hexadecimales.';
+
+  @override
+  String get importLw001_reason_DEVEUI_DUPLICATE_IN_FILE_UPDATED =>
+      'El DevEUI se repitió en el archivo; se actualizó el dispositivo.';
+
+  @override
+  String get importLw001_reason_DEVEUI_ALREADY_EXISTS_UPDATED =>
+      'El DevEUI ya existía en su tenant; se actualizó el dispositivo.';
+
+  @override
+  String get importLw001_reason_DEVICE_PROFILE_ID_REQUIRED =>
+      'Se requiere un perfil por defecto en el formulario.';
+
+  @override
+  String get importLw001_reason_DEVICE_PROFILE_ID_INVALID =>
+      'El perfil de dispositivo no existe o no es válido para este tenant.';
+
+  @override
+  String get importLw001_reason_JOINEUI_INVALID =>
+      'JoinEUI debe ser 16 caracteres hexadecimales.';
+
+  @override
+  String get importLw001_reason_APP_KEY_INVALID =>
+      'App Key debe ser 32 caracteres hexadecimales.';
+
+  @override
+  String get importLw001_reason_APP_KEY_SCIENTIFIC_NOTATION =>
+      'App Key parece notación científica de Excel; formatee la celda como texto.';
+
+  @override
+  String get importLw001_reason_NWK_KEY_INVALID =>
+      'La clave de red del perfil no es válida.';
+
+  @override
+  String get importLw001_reason_UNSUPPORTED_FILE_FORMAT =>
+      'Formato de archivo no soportado.';
+
+  @override
+  String get importLw001_reason_FILE_EMPTY =>
+      'El archivo no tiene filas de datos.';
+
+  @override
+  String get importLw001_reason_ROW_PROCESS_FAILED =>
+      'No se pudo procesar esta fila.';
+
+  @override
+  String importLw001_reason_unknown(String code) {
+    return 'Error de importación ($code).';
+  }
 }

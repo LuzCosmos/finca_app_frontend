@@ -19,6 +19,7 @@ import 'package:finca_app_frontend/modules/shared/features/users/pages/users_lis
 import 'package:finca_app_frontend/modules/shared/widgets/finca_scaffold.dart';
 import 'package:finca_app_frontend/modules/shared/features/cattle/pages/cattle_master_list_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/cattle_purchase/pages/purchases_list_page.dart';
+import 'package:finca_app_frontend/modules/shared/features/devices/pages/devices_list_page.dart';
 import 'package:finca_app_frontend/router/route_access.dart';
 
 class HomePage extends StatefulWidget {
@@ -162,6 +163,14 @@ class _HomePageState extends State<HomePage> {
         isVisible: homeStyleResourceAllowed(perms, 'FARM', 'cattle'),
         requiresOnline: true,
       ),
+      _HomeMenuItem(
+        id: 'equipment_resources',
+        title: l10n.equipmentAndResource_title,
+        icon: Icons.devices_other_outlined,
+        route: '/equipment-resources',
+        isVisible: homeStyleResourceAllowed(perms, 'PROD_CENTER', 'devices'),
+        requiresOnline: true,
+      ),
     ];
   }
 
@@ -227,6 +236,8 @@ class _HomePageState extends State<HomePage> {
         return const UsersListPage(embedded: true);
       case 'cattle':
         return const CattleMasterListPage(embedded: true);
+      case 'equipment_resources':
+        return const DevicesListPage(embedded: true);
       default:
         return const DashboardPage(embedded: true);
     }
@@ -586,6 +597,18 @@ class _HomePageState extends State<HomePage> {
                                     title: l10n.masterListTitle,
                                     icon: FontAwesomeIcons.cow,
                                     route: '/cattle',
+                                    requiresOnline: true,
+                                    online: _isOnline,
+                                  ),
+                                  HomeOptionWithPermission(
+                                    isVisible: homeStyleResourceAllowed(
+                                      permissions,
+                                      'PROD_CENTER',
+                                      'devices',
+                                    ),
+                                    title: l10n.equipmentAndResource_title,
+                                    icon: Icons.devices_other_outlined,
+                                    route: '/equipment-resources',
                                     requiresOnline: true,
                                     online: _isOnline,
                                   ),
