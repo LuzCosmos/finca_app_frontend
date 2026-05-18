@@ -17,6 +17,8 @@ import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/users/pages/users_list_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/cattle/pages/cattle_master_list_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/devices/pages/devices_list_page.dart';
+import 'package:finca_app_frontend/modules/shared/features/devices/pages/import_lw001_devices_page.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:finca_app_frontend/modules/shared/features/devices/screens/device_remote_config_screen.dart';
 import 'package:finca_app_frontend/router/route_access.dart';
 import 'package:finca_app_frontend/modules/shared/widgets/online_feature_gate.dart';
@@ -144,6 +146,15 @@ GoRouter createAppRouter({
         builder:
             (context, state) =>
                 const OnlineFeatureGate(child: DevicesListPage()),
+        routes: [
+          GoRoute(
+            path: 'import',
+            builder:
+                (context, state) => const OnlineFeatureGate(
+                  child: ImportLw001DevicesPage(),
+                ),
+          ),
+        ],
       ),
       GoRoute(
         path: '/devices/:deveui/remote-config',
@@ -166,6 +177,10 @@ GoRouter createAppRouter({
 
       if (loading) {
         return loggedIn ? '/home' : '/login';
+      }
+
+      if (path.startsWith('/equipment-resources/import') && !kIsWeb) {
+        return '/home';
       }
 
       if (!loggedIn && !loggingIn) {

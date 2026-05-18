@@ -1,7 +1,11 @@
 import 'dart:convert';
+
 import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/devices/models/device_list_item_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/devices/models/device_model.dart';
+import 'package:finca_app_frontend/modules/shared/features/devices/models/import_lw001_result_model.dart';
+import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 
 class DeviceApiService {
   // Assuming the search endpoint is shared/accessible. Currently it is under 'purchase-receptions'.
@@ -58,5 +62,77 @@ class DeviceApiService {
     } else {
       BasicApiService.manageNotSuccessResponseCode(response);
     }
+  }
+
+  static Future<List<DeviceProfileOption>> listDeviceProfiles() async {
+    final url = Uri.parse('$_baseUrl/device-profiles');
+    final response = await BasicApiService.authorizedGet(
+      url,
+      headers: const {'Content-Type': 'application/json'},
+    );
+    if (response.statusCode == 200) {
+      final List<dynamic> body = jsonDecode(response.body) as List<dynamic>;
+      return body
+          .map(
+            (dynamic item) =>
+                DeviceProfileOption.fromJson(item as Map<String, dynamic>),
+          )
+          .toList();
+    }
+    BasicApiService.manageNotSuccessResponseCode(response);
+  }
+
+  static Future<ImportLw001ResultModel> importLw001({
+    required List<int> fileBytes,
+    required String filename,
+    String? deviceProfileId,
+  }) async {
+    final uri = Uri.parse('$_baseUrl/devices/import');
+    final fields = <String, String>{};
+    if (deviceProfileId != null && deviceProfileId.trim().isNotEmpty) {
+      fields['deviceProfileId'] = deviceProfileId.trim();
+    }
+
+    final response = await BasicApiService.authorizedMultipart(
+      buildRequest: (token) {
+        final request = http.MultipartRequest('POST', uri)
+          ..headers['Authorization'] = 'Bearer $token'
+          ..fields.addAll(fields)
+          ..files.add(
+            http.MultipartFile.fromBytes(
+              'file',
+              fileBytes,
+              filename: filename,
+              contentType: _guessMediaType(filename),
+            ),
+          );
+        return request;
+      },
+    );
+
+    final httpResponse = await http.Response.fromStream(response);
+    if (httpResponse.statusCode == 200) {
+      final Map<String, dynamic> body =
+          jsonDecode(httpResponse.body) as Map<String, dynamic>;
+      return ImportLw001ResultModel.fromJson(body);
+    }
+    BasicApiService.manageNotSuccessResponseCode(httpResponse);
+  }
+
+  static MediaType _guessMediaType(String filename) {
+    final lower = filename.toLowerCase();
+    if (lower.endsWith('.csv')) {
+      return MediaType('text', 'csv');
+    }
+    if (lower.endsWith('.xls')) {
+      return MediaType(
+        'application',
+        '/vnd.ms-excel',
+      );
+    }
+    return MediaType(
+      'application',
+      'vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
   }
 }

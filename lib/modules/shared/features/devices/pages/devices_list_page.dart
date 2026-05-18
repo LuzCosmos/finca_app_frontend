@@ -1,6 +1,10 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
+import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
+import 'package:finca_app_frontend/router/route_access.dart';
 import 'package:finca_app_frontend/modules/shared/features/devices/models/device_list_item_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/devices/services/device_api_service.dart';
 import 'package:finca_app_frontend/modules/shared/widgets/finca_scaffold.dart';
@@ -27,6 +31,13 @@ class DevicesListPage extends StatefulWidget {
 class _DevicesListPageState extends State<DevicesListPage> {
   final _searchCtrl = TextEditingController();
 
+  bool get _showImportButton {
+    if (!kIsWeb) return false;
+    final permissions = SessionService.permissionsSnapshotForRouteGuard;
+    if (permissions == null) return false;
+    return devicesCrudlAllowsCreate(permissions);
+  }
+
   List<DeviceListItemModel> _allItems = [];
   bool _loading = true;
   String? _error;
@@ -45,6 +56,13 @@ class _DevicesListPageState extends State<DevicesListPage> {
   void dispose() {
     _searchCtrl.dispose();
     super.dispose();
+  }
+
+  Future<void> _openImport() async {
+    final refreshed = await context.push<bool>('/equipment-resources/import');
+    if (refreshed == true && mounted) {
+      await _load();
+    }
   }
 
   Future<void> _load() async {
@@ -102,6 +120,17 @@ class _DevicesListPageState extends State<DevicesListPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            if (_showImportButton) ...[
+              Align(
+                alignment: Alignment.centerRight,
+                child: OutlinedButton.icon(
+                  onPressed: _openImport,
+                  icon: const Icon(Icons.upload_file),
+                  label: Text(l10n.devicesList_importButton),
+                ),
+              ),
+              const SizedBox(height: 8),
+            ],
             if (_error != null) ...[
               MessageBanner.error(_error!),
               Align(

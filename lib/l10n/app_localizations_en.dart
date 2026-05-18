@@ -1987,4 +1987,129 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get devicesList_noBatteryData => 'No data';
+
+  @override
+  String get devicesList_importButton => 'Import';
+
+  @override
+  String get importLw001_pageTitle => 'Import LW001-BG PRO devices';
+
+  @override
+  String get importLw001_helpIntro =>
+      'Upload a spreadsheet with exactly these headers in row 1, columns A to D, in this order:';
+
+  @override
+  String get importLw001_helpHeadersList =>
+      '1. devEui (required per row)\n2. idDeviceProfile\n3. joineui\n4. appKey';
+
+  @override
+  String get importLw001_helpOptionalCells =>
+      'If idDeviceProfile, joineui or appKey is missing, the value is taken from the resolved device profile (default below or the UUID in column B). Only devEui is required per row.';
+
+  @override
+  String get importLw001_helpMultiSheet =>
+      'For .xlsx or .xls files with multiple worksheets, every sheet that contains data is imported (row 1 on each sheet must be the header row above). Empty sheets are skipped.';
+
+  @override
+  String get importLw001_selectFile => 'Select file (.xlsx, .xls, .csv)';
+
+  @override
+  String get importLw001_defaultProfile => 'Default device profile';
+
+  @override
+  String get importLw001_submit => 'Import';
+
+  @override
+  String get importLw001_summaryTitle => 'Import summary';
+
+  @override
+  String importLw001_summaryTotalRows(int count) {
+    return 'Rows processed: $count';
+  }
+
+  @override
+  String importLw001_summaryCreated(int count) {
+    return 'Created: $count';
+  }
+
+  @override
+  String importLw001_summaryUpdated(int count) {
+    return 'Updated: $count';
+  }
+
+  @override
+  String importLw001_summaryDuplicates(String list) {
+    return 'Duplicate DevEUIs in file: $list';
+  }
+
+  @override
+  String importLw001_rowIssue(int row, String message) {
+    return 'Row $row: $message';
+  }
+
+  @override
+  String get importLw001_backToList => 'Back to device list';
+
+  @override
+  String get importLw001_profileRequired =>
+      'Select a default profile when rows may have an empty idDeviceProfile column.';
+
+  @override
+  String get importLw001_fileRequired => 'Select a file to import.';
+
+  @override
+  String get importLw001_reason_IMPORT_HEADERS_INVALID =>
+      'The file header row is invalid. Row 1 must be exactly: devEui, idDeviceProfile, joineui, appKey.';
+
+  @override
+  String get importLw001_reason_DEVEUI_INVALID_LENGTH =>
+      'DevEUI must be exactly 16 hexadecimal characters.';
+
+  @override
+  String get importLw001_reason_DEVEUI_DUPLICATE_IN_FILE_UPDATED =>
+      'DevEUI was repeated in the file; device was updated.';
+
+  @override
+  String get importLw001_reason_DEVEUI_ALREADY_EXISTS_UPDATED =>
+      'DevEUI already existed in your tenant; device was updated.';
+
+  @override
+  String get importLw001_reason_DEVICE_PROFILE_ID_REQUIRED =>
+      'A default device profile is required in the form.';
+
+  @override
+  String get importLw001_reason_DEVICE_PROFILE_ID_INVALID =>
+      'Device profile is missing or invalid for this tenant.';
+
+  @override
+  String get importLw001_reason_JOINEUI_INVALID =>
+      'JoinEUI must be 16 hexadecimal characters.';
+
+  @override
+  String get importLw001_reason_APP_KEY_INVALID =>
+      'App Key must be 32 hexadecimal characters.';
+
+  @override
+  String get importLw001_reason_APP_KEY_SCIENTIFIC_NOTATION =>
+      'App Key looks like Excel scientific notation; format the cell as text.';
+
+  @override
+  String get importLw001_reason_NWK_KEY_INVALID =>
+      'Network key from the device profile is invalid.';
+
+  @override
+  String get importLw001_reason_UNSUPPORTED_FILE_FORMAT =>
+      'Unsupported file format.';
+
+  @override
+  String get importLw001_reason_FILE_EMPTY => 'The file has no data rows.';
+
+  @override
+  String get importLw001_reason_ROW_PROCESS_FAILED =>
+      'Could not process this row.';
+
+  @override
+  String importLw001_reason_unknown(String code) {
+    return 'Import error ($code).';
+  }
 }

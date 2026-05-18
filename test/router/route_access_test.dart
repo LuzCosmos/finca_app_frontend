@@ -295,6 +295,27 @@ void main() {
       );
     });
 
+    test('/equipment-resources/import requiere create en devices', () {
+      expect(
+        routeAccessDeniedRedirect(
+          path: '/equipment-resources/import',
+          permissions: {
+            'PROD_CENTER': <String, dynamic>{'devices': '00001'},
+          },
+        ),
+        '/home',
+      );
+      expect(
+        routeAccessDeniedRedirect(
+          path: '/equipment-resources/import',
+          permissions: {
+            'PROD_CENTER': <String, dynamic>{'devices': '10000'},
+          },
+        ),
+        isNull,
+      );
+    });
+
     test('/equipment-resources requiere PROD_CENTER.devices', () {
       expect(
         routeAccessDeniedRedirect(
