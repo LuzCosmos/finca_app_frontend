@@ -17,6 +17,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:finca_app_frontend/modules/shared/features/devices/models/device_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/devices/services/device_api_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/cattle/services/cattle_master_service.dart';
+import 'package:finca_app_frontend/modules/shared/features/hardware/widgets/live_scale_reading_panel.dart';
 
 class AnimalEntryForm extends StatefulWidget {
   final String? idMassiveEvent;
@@ -546,6 +547,14 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                   const SizedBox(width: 8),
                 ],
               ),
+              if (_activeTypes.contains(SimpleEventType.weight))
+                LiveScaleReadingPanel(
+                  enabled: _activeTypes.contains(SimpleEventType.weight),
+                  onApplyStableWeight: (_, formatted) {
+                    _weightController.text = formatted;
+                    setState(() {});
+                  },
+                ),
               const SizedBox(height: 4),
 
               Row(

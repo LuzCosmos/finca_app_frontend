@@ -16,6 +16,7 @@ import 'package:finca_app_frontend/modules/shared/features/cattle/widgets/approx
 import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'package:finca_app_frontend/core/services/sale_sync_notifier.dart';
 import 'package:finca_app_frontend/core/utils/date_time_helper.dart';
+import 'package:finca_app_frontend/modules/shared/features/hardware/widgets/live_scale_reading_panel.dart';
 
 class CattleMasterListPage extends StatefulWidget {
   const CattleMasterListPage({super.key, this.embedded = false});
@@ -1288,6 +1289,35 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
               ),
             ),*/
             const SizedBox(height: 12),
+            if (!isLoading)
+              LiveScaleReadingPanel(
+                enabled: _hasEditPermission,
+                onApplyStableWeight: (_, formatted) {
+                  if (!_hasEditPermission) return;
+                  try {
+                    final cell = stateManager.currentCell;
+                    const weightFields = [
+                      'lastWeight',
+                      'receivedWeight',
+                      'saleWeight',
+                    ];
+                    if (cell != null &&
+                        weightFields.contains(cell.column.field)) {
+                      stateManager.changeCellValue(
+                        cell,
+                        double.tryParse(formatted) ?? formatted,
+                        force: true,
+                        callOnChangedEvent: true,
+                      );
+                      return;
+                    }
+                  } catch (_) {}
+                  if (mounted) {
+                    final loc = AppLocalizations.of(context)!;
+                    _showError(loc.scale_selectWeightCell);
+                  }
+                },
+              ),
             Expanded(
               child:
                   isLoading

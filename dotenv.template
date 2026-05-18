@@ -2,3 +2,4 @@
 # No incluyas secretos aquí. En web, la API real va en window.ENV (docker-entrypoint).
 # Para desarrollo local: copia a .env y ajusta valores.
 API_BASE_URL=/api/v1
+SCALE_DEVICE_ID=default-scale

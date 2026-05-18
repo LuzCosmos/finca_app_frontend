@@ -14,6 +14,7 @@ import 'package:finca_app_frontend/modules/shared/features/sales/widgets/weight_
 import 'package:finca_app_frontend/modules/shared/features/sales/widgets/sale_confirmation_dialog.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/services/cattle_validation_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/cattle/services/cattle_master_service.dart';
+import 'package:finca_app_frontend/modules/shared/features/hardware/widgets/live_scale_reading_panel.dart';
 import 'package:uuid/uuid.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:finca_app_frontend/modules/shared/enums/cattle_enums.dart';
@@ -746,6 +747,13 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 24),
+            LiveScaleReadingPanel(
+              onApplyStableWeight: (_, formatted) {
+                _cattleWeightController.text = formatted;
+                setState(() {});
+              },
+            ),
+            const SizedBox(height: 12),
 
             // Add Cattle Form
             Row(

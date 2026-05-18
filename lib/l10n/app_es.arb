@@ -974,6 +974,19 @@
   "importLw001_reason_UNSUPPORTED_FILE_FORMAT": "Formato de archivo no soportado.",
   "importLw001_reason_FILE_EMPTY": "El archivo no tiene filas de datos.",
   "importLw001_reason_ROW_PROCESS_FAILED": "No se pudo procesar esta fila.",
-  "importLw001_reason_unknown": "Error de importación ({code})."
+  "importLw001_reason_unknown": "Error de importación ({code}).",
+
+  "scale_connected": "Pesa conectada",
+  "scale_disconnected": "Pesa desconectada",
+  "scale_reconnecting": "Reconectando pesa…",
+  "scale_error": "Error de pesa",
+  "scale_liveWeight": "En vivo: {weight} {unit}",
+  "scale_stable": "Estable",
+  "scale_unstable": "Inestable",
+  "scale_useStableWeight": "Usar peso estable",
+  "scale_notStable": "Espere una lectura estable antes de aplicar",
+  "scale_noReading": "Sin lectura aún",
+  "scale_weightApplied": "Peso aplicado: {weight} kg",
+  "scale_selectWeightCell": "Edite una celda de peso en la grilla antes de aplicar"
 
 }

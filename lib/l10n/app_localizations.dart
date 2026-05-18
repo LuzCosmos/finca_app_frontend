@@ -3793,6 +3793,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Import error ({code}).'**
   String importLw001_reason_unknown(String code);
+
+  /// Scale bridge connection status
+  ///
+  /// In en, this message translates to:
+  /// **'Scale connected'**
+  String get scale_connected;
+
+  /// Scale not connected
+  ///
+  /// In en, this message translates to:
+  /// **'Scale disconnected'**
+  String get scale_disconnected;
+
+  /// Scale reconnecting
+  ///
+  /// In en, this message translates to:
+  /// **'Scale reconnecting…'**
+  String get scale_reconnecting;
+
+  /// Scale connection error
+  ///
+  /// In en, this message translates to:
+  /// **'Scale error'**
+  String get scale_error;
+
+  /// Live weight from scale
+  ///
+  /// In en, this message translates to:
+  /// **'Live: {weight} {unit}'**
+  String scale_liveWeight(String weight, String unit);
+
+  /// Weight is stable
+  ///
+  /// In en, this message translates to:
+  /// **'Stable'**
+  String get scale_stable;
+
+  /// Weight not stable yet
+  ///
+  /// In en, this message translates to:
+  /// **'Unstable'**
+  String get scale_unstable;
+
+  /// Button to apply stable weight to form
+  ///
+  /// In en, this message translates to:
+  /// **'Use stable weight'**
+  String get scale_useStableWeight;
+
+  /// Stable weight not available
+  ///
+  /// In en, this message translates to:
+  /// **'Wait for a stable reading before applying'**
+  String get scale_notStable;
+
+  /// No scale data received
+  ///
+  /// In en, this message translates to:
+  /// **'No reading yet'**
+  String get scale_noReading;
+
+  /// Snackbar after applying weight
+  ///
+  /// In en, this message translates to:
+  /// **'Weight applied: {weight} kg'**
+  String scale_weightApplied(String weight);
+
+  /// PlutoGrid hint when no cell in edit
+  ///
+  /// In en, this message translates to:
+  /// **'Edit a weight column cell before applying scale weight'**
+  String get scale_selectWeightCell;
 }
 
 class _AppLocalizationsDelegate
