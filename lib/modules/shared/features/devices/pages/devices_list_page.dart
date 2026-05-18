@@ -90,10 +90,14 @@ class _DevicesListPageState extends State<DevicesListPage> {
     final l10n = AppLocalizations.of(context)!;
     final filtered = _filteredItems;
 
-    return FincaScaffold(
-      title: l10n.devicesList_pageTitle,
-      embedded: widget.embedded,
-      body: Padding(
+    return KeyedSubtree(
+      key: ValueKey<String>(
+        widget.embedded ? 'devices-list-embedded' : 'devices-list-page',
+      ),
+      child: FincaScaffold(
+        title: l10n.devicesList_pageTitle,
+        embedded: widget.embedded,
+        body: Padding(
         padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -127,6 +131,7 @@ class _DevicesListPageState extends State<DevicesListPage> {
             const SizedBox(height: 8),
             Expanded(child: _buildBody(context, l10n, filtered)),
           ],
+        ),
         ),
       ),
     );

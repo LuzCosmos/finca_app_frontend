@@ -14,6 +14,7 @@ import 'package:finca_app_frontend/modules/mobile/bloc/sync_bloc_stub.dart'
 import 'package:finca_app_frontend/modules/mobile/bloc/sync_state.dart';
 import 'package:finca_app_frontend/modules/mobile/services/sync_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/home/services/home_connectivity_service.dart';
+import 'package:finca_app_frontend/modules/shared/features/devices/pages/devices_list_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/pages/massive_event_list_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/pages/massive_event_page.dart';
 import 'package:finca_app_frontend/router/router.dart';
@@ -27,7 +28,7 @@ import 'support/sync_bloc_factory.dart';
 // "Unable to start the app on the device" / "log reader stopped" al ejecutar
 // `flutter test integration_test/ -d macos` con varios archivos (segundo launch).
 //
-// Bajo prueba: MainApp, router, sesión, lista masivos, login fake, SyncBloc.
+// Bajo prueba: MainApp, router, sesión, lista masivos, dispositivos (Equipment and Resource), login fake, SyncBloc.
 
 class _MockSyncService extends Mock implements SyncService {}
 
@@ -91,6 +92,43 @@ void main() {
       );
       final l10n = l10nFromTester(tester);
       expect(find.text(l10n.retry), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'ruta inicial /equipment-resources: lista a pantalla completa y reintento si API cae',
+    (tester) async {
+      SessionService.resetForTesting();
+      SharedPreferences.setMockInitialValues({});
+
+      final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+      await SessionService.saveSession(
+        token: _jwtWithExp(now + 86400),
+        permissions: {
+          'PROD_CENTER': {'devices': true},
+        },
+        idTenant: 't-integration-devices',
+        idUser: 'u-integration-devices',
+        refreshToken: 'rt',
+      );
+      await SessionService.hydrateFromStorage();
+
+      final router = createAppRouter(
+        hasValidToken: () => true,
+        initialLocation: '/equipment-resources',
+      );
+
+      await tester.pumpWidget(MainApp(router: router));
+      await tester.pumpAndSettle(const Duration(seconds: 20));
+
+      expect(find.byType(DevicesListPage), findsOneWidget);
+      expect(
+        find.byKey(const ValueKey<String>('devices-list-page')),
+        findsOneWidget,
+      );
+      final l10n = l10nFromTester(tester);
+      expect(find.text(l10n.devicesList_retry), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
   );
@@ -184,6 +222,7 @@ void main() {
       expect(find.text(l10n.sale), findsOneWidget);
       expect(find.text(l10n.users), findsOneWidget);
       expect(find.text(l10n.masterListTitle), findsOneWidget);
+      expect(find.text(l10n.equipmentAndResource_title), findsOneWidget);
       expect(find.text(l10n.syncNow), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
@@ -209,6 +248,51 @@ void main() {
       expect(find.text(l10n.sale), findsNothing);
       expect(find.text(l10n.users), findsNothing);
       expect(find.text(l10n.masterListTitle), findsNothing);
+      expect(find.text(l10n.equipmentAndResource_title), findsNothing);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'sesión fake: home → tap Equipment and Resource → lista embebida',
+    (tester) async {
+      addTearDown(() async {
+        await tester.binding.setSurfaceSize(null);
+      });
+      await tester.binding.setSurfaceSize(const Size(1280, 900));
+
+      SessionService.resetForTesting();
+      SharedPreferences.setMockInitialValues({});
+
+      final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+      await SessionService.saveSession(
+        token: _jwtWithExp(now + 86400),
+        permissions: integrationFullHomePermissions(),
+        idTenant: 't-integration',
+        idUser: 'u-integration',
+        refreshToken: 'rt-integration',
+      );
+      await SessionService.hydrateFromStorage();
+
+      await tester.pumpWidget(const MainApp());
+      await tester.pumpAndSettle(const Duration(seconds: 5));
+
+      expect(find.byKey(const ValueKey<String>('home-page')), findsOneWidget);
+
+      final l10n = l10nFromTester(tester);
+      await tester.tap(find.text(l10n.equipmentAndResource_title));
+      await tester.pumpAndSettle(const Duration(seconds: 15));
+
+      expect(find.byType(DevicesListPage), findsOneWidget);
+      expect(
+        find.byKey(const ValueKey<String>('devices-list-embedded')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const ValueKey<String>('home-wide-panel-equipment_resources')),
+        findsOneWidget,
+      );
+      expect(find.text(l10n.devicesList_retry), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
   );

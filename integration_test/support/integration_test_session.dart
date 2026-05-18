@@ -15,6 +15,7 @@ Map<String, dynamic> integrationFullHomePermissions() {
     'COMMERCE': {'purchases': true, 'sales': true},
     'EMP_MGMT': {'users': true},
     'FARM': {'cattle': true},
+    'PROD_CENTER': {'devices': true},
   };
 }
 
@@ -45,6 +46,7 @@ void expectAllHomeMenuOptionsVisible(AppLocalizations l10n) {
   expect(find.text(l10n.sale), findsOneWidget);
   expect(find.text(l10n.users), findsOneWidget);
   expect(find.text(l10n.masterListTitle), findsOneWidget);
+  expect(find.text(l10n.equipmentAndResource_title), findsOneWidget);
   expect(find.text(l10n.syncNow), findsOneWidget);
 }
 

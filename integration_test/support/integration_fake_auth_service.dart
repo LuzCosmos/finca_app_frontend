@@ -43,6 +43,7 @@ class IntegrationFakeAuthService extends AuthService {
         'COMMERCE': {'purchases': true, 'sales': true},
         'EMP_MGMT': {'users': true},
         'FARM': {'cattle': true},
+        'PROD_CENTER': {'devices': true},
       },
       'idTenant': 't-integration',
     };
