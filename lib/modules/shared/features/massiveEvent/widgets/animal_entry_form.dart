@@ -11,7 +11,6 @@ import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/s
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/animal_simple_event_table_row_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_type.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/bloc/massive_event_bloc.dart';
-import 'package:finca_app_frontend/modules/shared/validator/validator.dart';
 import 'dart:async';
 import 'package:flutter/scheduler.dart';
 import 'package:finca_app_frontend/modules/shared/features/devices/models/device_model.dart';
@@ -404,14 +403,17 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
                               controller: controller,
                               focusNode: focusNode,
                               style: const TextStyle(fontSize: 13),
-                              keyboardType: TextInputType.number,
-                              validator: Validator.validateNotEmpty(
-                                layoutL10n.fieldRequired,
-                                RegexPatterns.positiveIntegerNoZero,
-                              ),
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly,
-                              ],
+                              keyboardType: TextInputType.text,
+                              maxLength: 50,
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return layoutL10n.fieldRequired;
+                                }
+                                if (value.trim().length > 50) {
+                                  return layoutL10n.invalidValue;
+                                }
+                                return null;
+                              },
                               onFieldSubmitted: (_) => onFieldSubmitted(),
                               decoration: InputDecoration(
                                 isDense: true,

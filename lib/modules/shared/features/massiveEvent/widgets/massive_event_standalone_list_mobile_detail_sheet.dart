@@ -70,12 +70,6 @@ Future<void> showMassiveEventStandaloneReadOnlyDetail(
                 const SizedBox(height: 8),
                 _detailRow(
                   theme,
-                  l10n.massiveEventsColumnSync,
-                  l10n.massiveEventsSyncOnServer,
-                ),
-                const SizedBox(height: 8),
-                _detailRow(
-                  theme,
                   l10n.massiveEventsDetailInternalId,
                   event.id,
                 ),

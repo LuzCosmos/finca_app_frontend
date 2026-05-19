@@ -27,53 +27,28 @@ void main() {
     ).thenAnswer((_) async => <SyncResult>[]);
   });
 
-  testWidgets('SyncSuccess dispara onSyncSuccess (BlocListener SyncBloc)', (
-    tester,
-  ) async {
-    var calls = 0;
+  testWidgets(
+    'sync móvil desactivado: SyncSuccess no dispara onSyncSuccess',
+    (tester) async {
+      var calls = 0;
 
-    await tester.pumpWidget(
-      MaterialApp(
-        home: BlocProvider(
-          create: (_) => SyncBloc(syncService),
-          child: wrapMassiveEventPageSyncListener(
-            onSyncSuccess: () => calls++,
-            child: const SizedBox.shrink(),
+      await tester.pumpWidget(
+        MaterialApp(
+          home: BlocProvider(
+            create: (_) => SyncBloc(syncService),
+            child: wrapMassiveEventPageSyncListener(
+              onSyncSuccess: () => calls++,
+              child: const SizedBox.shrink(),
+            ),
           ),
         ),
-      ),
-    );
+      );
 
-    final sync = tester.element(find.byType(SizedBox)).read<SyncBloc>();
-    sync.add(const StartSync('tenant-1'));
-    await tester.pumpAndSettle();
+      final sync = tester.element(find.byType(SizedBox)).read<SyncBloc>();
+      sync.add(const StartSync('tenant-1'));
+      await tester.pumpAndSettle();
 
-    expect(calls, 1);
-  });
-
-  testWidgets('SyncFailure no dispara onSyncSuccess', (tester) async {
-    when(
-      () => syncService.syncAllInOrder(any()),
-    ).thenThrow(Exception('sync'));
-
-    var calls = 0;
-
-    await tester.pumpWidget(
-      MaterialApp(
-        home: BlocProvider(
-          create: (_) => SyncBloc(syncService),
-          child: wrapMassiveEventPageSyncListener(
-            onSyncSuccess: () => calls++,
-            child: const SizedBox.shrink(),
-          ),
-        ),
-      ),
-    );
-
-    final sync = tester.element(find.byType(SizedBox)).read<SyncBloc>();
-    sync.add(const StartSync('tenant-1'));
-    await tester.pumpAndSettle();
-
-    expect(calls, 0);
-  });
+      expect(calls, 0);
+    },
+  );
 }

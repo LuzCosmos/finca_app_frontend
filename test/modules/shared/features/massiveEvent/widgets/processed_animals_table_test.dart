@@ -76,7 +76,9 @@ void main() {
       expect(find.text(l10n.yes), findsOneWidget);
       expect(find.text('MedA'), findsOneWidget);
       expect(find.text('MarcaX'), findsOneWidget);
-      expect(find.byIcon(Icons.sync_problem), findsOneWidget);
+      // Columna de sync solo en web (móvil online-only).
+      expect(find.byIcon(Icons.sync_problem), findsNothing);
+      expect(find.text(l10n.tableSynced), findsNothing);
       expect(find.text(l10n.animal), findsOneWidget);
       expect(find.text(l10n.weightKg), findsOneWidget);
     },
