@@ -7,6 +7,7 @@ import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/shared/features/home/page/home_page.dart';
+import 'package:finca_app_frontend/modules/shared/features/home/services/home_connectivity_service.dart';
 
 import '../../../../support/app_test_host.dart';
 
@@ -40,6 +41,11 @@ void main() {
     BasicApiService.resetForTesting();
     SharedPreferences.setMockInitialValues({});
     HomePage.resetWideRailCollapseSessionForTesting();
+    HomeConnectivityService.debugForceOnline = true;
+  });
+
+  tearDown(() {
+    HomeConnectivityService.debugForceOnline = null;
   });
 
   Future<void> pumpWebFrames(WidgetTester tester) async {

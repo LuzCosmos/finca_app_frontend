@@ -1,7 +1,11 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:finca_app_frontend/core/services/platform_sevice.dart';
+import 'package:finca_app_frontend/modules/shared/features/home/services/home_connectivity_service.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/shared/features/dashboard/page/dashboard_page.dart';
@@ -13,8 +17,9 @@ import 'package:finca_app_frontend/modules/shared/features/massiveEvent/pages/ma
 import 'package:finca_app_frontend/modules/shared/features/sales/pages/sale_dashboard_page_export.dart';
 import 'package:finca_app_frontend/modules/shared/features/users/pages/users_list_page.dart';
 import 'package:finca_app_frontend/modules/shared/widgets/finca_scaffold.dart';
-import 'package:finca_app_frontend/modules/web/features/cattle/pages/cattle_master_list_page.dart';
-import 'package:finca_app_frontend/modules/web/features/cattle_purchase/pages/purchases_list_page.dart';
+import 'package:finca_app_frontend/modules/shared/features/cattle/pages/cattle_master_list_page.dart';
+import 'package:finca_app_frontend/modules/shared/features/cattle_purchase/pages/purchases_list_page.dart';
+import 'package:finca_app_frontend/modules/shared/features/devices/pages/devices_list_page.dart';
 import 'package:finca_app_frontend/router/route_access.dart';
 
 class HomePage extends StatefulWidget {
@@ -37,7 +42,7 @@ class _HomeMenuItem {
     required this.icon,
     required this.route,
     required this.isVisible,
-    this.forWebOnly = true,
+    this.requiresOnline = false,
   });
 
   final String id;
@@ -45,7 +50,9 @@ class _HomeMenuItem {
   final IconData icon;
   final String route;
   final bool isVisible;
-  final bool forWebOnly;
+
+  /// Módulo 100 % online: en móvil solo visible con conexión.
+  final bool requiresOnline;
 }
 
 class _HomePageState extends State<HomePage> {
@@ -56,6 +63,8 @@ class _HomePageState extends State<HomePage> {
 
   late final Future<Map<String, dynamic>> _permissionsFuture;
   late final HomeSyncHelper _homeSyncHelper;
+  StreamSubscription<bool>? _onlineSubscription;
+  bool _isOnline = true;
 
   /// Opción activa en layout ancho (sidebar + panel).
   String _wideSelectedId = 'dashboard';
@@ -75,6 +84,16 @@ class _HomePageState extends State<HomePage> {
     _homeSyncHelper = createHomeSyncHelper();
     _permissionsFuture = SessionService.getPermissions();
     _wideRailUserCollapsed = _wideRailUserCollapsedSession;
+    if (!kIsWeb) {
+      HomeConnectivityService.isOnline().then((online) {
+        if (mounted) setState(() => _isOnline = online);
+      });
+      _onlineSubscription = HomeConnectivityService.onlineStream().listen((
+        online,
+      ) {
+        if (mounted) setState(() => _isOnline = online);
+      });
+    }
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => _homeSyncHelper.onPostFrame(this),
     );
@@ -82,6 +101,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void dispose() {
+    _onlineSubscription?.cancel();
     _homeSyncHelper.dispose();
     super.dispose();
   }
@@ -97,7 +117,7 @@ class _HomePageState extends State<HomePage> {
         icon: Icons.dashboard_outlined,
         route: '/dashboard',
         isVisible: true,
-        forWebOnly: false,
+        requiresOnline: true,
       ),
       _HomeMenuItem(
         id: 'purchases',
@@ -105,6 +125,7 @@ class _HomePageState extends State<HomePage> {
         icon: Icons.shopping_cart,
         route: '/purchases',
         isVisible: homeStyleResourceAllowed(perms, 'COMMERCE', 'purchases'),
+        requiresOnline: true,
       ),
       _HomeMenuItem(
         id: 'massive_events',
@@ -116,7 +137,7 @@ class _HomePageState extends State<HomePage> {
           'MASSIVE_EVENTS',
           'massive_events',
         ),
-        forWebOnly: false,
+        requiresOnline: false,
       ),
       _HomeMenuItem(
         id: 'sales',
@@ -124,6 +145,7 @@ class _HomePageState extends State<HomePage> {
         icon: Icons.monetization_on,
         route: '/sales',
         isVisible: homeStyleResourceAllowed(perms, 'COMMERCE', 'sales'),
+        requiresOnline: true,
       ),
       _HomeMenuItem(
         id: 'users',
@@ -131,7 +153,7 @@ class _HomePageState extends State<HomePage> {
         icon: Icons.people,
         route: '/users',
         isVisible: homeStyleResourceAllowed(perms, 'EMP_MGMT', 'users'),
-        forWebOnly: false,
+        requiresOnline: true,
       ),
       _HomeMenuItem(
         id: 'cattle',
@@ -139,13 +161,31 @@ class _HomePageState extends State<HomePage> {
         icon: FontAwesomeIcons.cow,
         route: '/cattle',
         isVisible: homeStyleResourceAllowed(perms, 'FARM', 'cattle'),
+        requiresOnline: true,
+      ),
+      _HomeMenuItem(
+        id: 'equipment_resources',
+        title: l10n.equipmentAndResource_title,
+        icon: Icons.devices_other_outlined,
+        route: '/equipment-resources',
+        isVisible: homeStyleResourceAllowed(perms, 'PROD_CENTER', 'devices'),
+        requiresOnline: true,
       ),
     ];
   }
 
-  Iterable<_HomeMenuItem> _visibleForPlatform(List<_HomeMenuItem> items) {
-    final isWeb = PlatformService().isWeb();
-    return items.where((e) => e.isVisible && (!e.forWebOnly || isWeb));
+  Iterable<_HomeMenuItem> _visibleMenuItems(List<_HomeMenuItem> items) {
+    return items.where((e) {
+      if (!e.isVisible) return false;
+      if (e.requiresOnline && !kIsWeb && !_isOnline) return false;
+      return true;
+    });
+  }
+
+  /// Panel por defecto en layout ancho cuando la selección actual no está visible.
+  String _defaultWidePanelId(List<_HomeMenuItem> visible) {
+    if (visible.isEmpty) return 'dashboard';
+    return visible.first.id;
   }
 
   /// Título de la barra superior en layout ancho: nombre del módulo activo.
@@ -159,7 +199,7 @@ class _HomePageState extends State<HomePage> {
         return e.title;
       }
     }
-    return l10n.dashboard_title;
+    return visible.isNotEmpty ? visible.first.title : l10n.home_title;
   }
 
   /// En **web** siempre se usa el layout tipo dashboard (rail + panel), como en el mockup
@@ -196,6 +236,8 @@ class _HomePageState extends State<HomePage> {
         return const UsersListPage(embedded: true);
       case 'cattle':
         return const CattleMasterListPage(embedded: true);
+      case 'equipment_resources':
+        return const DevicesListPage(embedded: true);
       default:
         return const DashboardPage(embedded: true);
     }
@@ -337,11 +379,12 @@ class _HomePageState extends State<HomePage> {
 
               final permissions = snapshot.data ?? const <String, dynamic>{};
               final items = _menuItems(l10n, permissions);
-              final visible = _visibleForPlatform(items).toList();
+              final visible = _visibleMenuItems(items).toList();
+              final defaultPanelId = _defaultWidePanelId(visible);
               final panelId =
                   visible.any((e) => e.id == _wideSelectedId)
                       ? _wideSelectedId
-                      : 'dashboard';
+                      : defaultPanelId;
               if (panelId != _wideSelectedId) {
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   if (mounted) {
@@ -358,7 +401,7 @@ class _HomePageState extends State<HomePage> {
               /// Rail + panel: mismo motivo que [FincaScaffold.navigateToHomeRemovingOverlays]
               /// ante modales — aquí cerramos overlays y solo reseteamos el panel a Dashboard.
               final showShellHomeButton =
-                  shellWide && panelId != 'dashboard';
+                  shellWide && panelId != defaultPanelId;
 
               return FincaScaffold(
                 title: appBarTitle,
@@ -368,7 +411,7 @@ class _HomePageState extends State<HomePage> {
                         if (!mounted) return;
                         FincaScaffold.popNavigatorOverlays(context);
                         if (!mounted) return;
-                        setState(() => _wideSelectedId = 'dashboard');
+                        setState(() => _wideSelectedId = defaultPanelId);
                       }
                     : null,
                 body: Padding(
@@ -386,7 +429,7 @@ class _HomePageState extends State<HomePage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              _homeSyncHelper.buildSyncSection(context, l10n),
+                              //_homeSyncHelper.buildSyncSection(context, l10n),
                               Expanded(
                                 child: Row(
                                   crossAxisAlignment:
@@ -482,7 +525,7 @@ class _HomePageState extends State<HomePage> {
                         key: const ValueKey<String>('home-compact-layout'),
                         child: Column(
                           children: [
-                            _homeSyncHelper.buildSyncSection(context, l10n),
+//_homeSyncHelper.buildSyncSection(context, l10n),
                             Expanded(
                               child: Center(
                                 child: Wrap(
@@ -495,7 +538,8 @@ class _HomePageState extends State<HomePage> {
                                     title: l10n.dashboard_title,
                                     icon: Icons.dashboard_outlined,
                                     route: '/dashboard',
-                                    forWebOnly: false,
+                                    requiresOnline: true,
+                                    online: _isOnline,
                                   ),
                                   HomeOptionWithPermission(
                                     isVisible: homeStyleResourceAllowed(
@@ -506,6 +550,8 @@ class _HomePageState extends State<HomePage> {
                                     title: l10n.purchase,
                                     icon: Icons.shopping_cart,
                                     route: '/purchases',
+                                    requiresOnline: true,
+                                    online: _isOnline,
                                   ),
                                   HomeOptionWithPermission(
                                     isVisible: homeStyleResourceAllowed(
@@ -516,7 +562,7 @@ class _HomePageState extends State<HomePage> {
                                     title: l10n.massiveEvent,
                                     icon: CupertinoIcons.list_bullet,
                                     route: '/massive-events',
-                                    forWebOnly: false,
+                                    online: _isOnline,
                                   ),
                                   HomeOptionWithPermission(
                                     isVisible: homeStyleResourceAllowed(
@@ -527,7 +573,8 @@ class _HomePageState extends State<HomePage> {
                                     title: l10n.sale,
                                     icon: Icons.monetization_on,
                                     route: '/sales',
-                                    forWebOnly: true,
+                                    requiresOnline: true,
+                                    online: _isOnline,
                                   ),
                                   HomeOptionWithPermission(
                                     isVisible: homeStyleResourceAllowed(
@@ -538,7 +585,8 @@ class _HomePageState extends State<HomePage> {
                                     title: l10n.users,
                                     icon: Icons.people,
                                     route: '/users',
-                                    forWebOnly: false,
+                                    requiresOnline: true,
+                                    online: _isOnline,
                                   ),
                                   HomeOptionWithPermission(
                                     isVisible: homeStyleResourceAllowed(
@@ -549,7 +597,20 @@ class _HomePageState extends State<HomePage> {
                                     title: l10n.masterListTitle,
                                     icon: FontAwesomeIcons.cow,
                                     route: '/cattle',
-                                    forWebOnly: true,
+                                    requiresOnline: true,
+                                    online: _isOnline,
+                                  ),
+                                  HomeOptionWithPermission(
+                                    isVisible: homeStyleResourceAllowed(
+                                      permissions,
+                                      'PROD_CENTER',
+                                      'devices',
+                                    ),
+                                    title: l10n.equipmentAndResource_title,
+                                    icon: Icons.devices_other_outlined,
+                                    route: '/equipment-resources',
+                                    requiresOnline: true,
+                                    online: _isOnline,
                                   ),
                                 ],
                               ),

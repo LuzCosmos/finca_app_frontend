@@ -263,6 +263,27 @@ void main() {
       },
     );
 
+    test('/purchases/edit/:id requiere bit update en purchases', () {
+      expect(
+        routeAccessDeniedRedirect(
+          path: '/purchases/edit/abc',
+          permissions: {
+            'COMMERCE': <String, dynamic>{'purchases': '10001'},
+          },
+        ),
+        '/home',
+      );
+      expect(
+        routeAccessDeniedRedirect(
+          path: '/purchases/edit/abc',
+          permissions: {
+            'COMMERCE': <String, dynamic>{'purchases': '00100'},
+          },
+        ),
+        isNull,
+      );
+    });
+
     test('subrutas purchases y recepción usan COMMERCE.purchases', () {
       final onlySales = <String, dynamic>{
         'COMMERCE': <String, dynamic>{'sales': true},
@@ -290,6 +311,63 @@ void main() {
         routeAccessDeniedRedirect(
           path: '/purchase/reception/abc',
           permissions: purchases,
+        ),
+        isNull,
+      );
+    });
+
+    test('devicesCrudlAllowsCreate usa bit create del CRUDL devices', () {
+      expect(
+        devicesCrudlAllowsCreate({
+          'PROD_CENTER': <String, dynamic>{'devices': '10000'},
+        }),
+        isTrue,
+      );
+      expect(
+        devicesCrudlAllowsCreate({
+          'PROD_CENTER': <String, dynamic>{'devices': '01000'},
+        }),
+        isFalse,
+      );
+    });
+
+    test('/equipment-resources/import requiere create en devices', () {
+      expect(
+        routeAccessDeniedRedirect(
+          path: '/equipment-resources/import',
+          permissions: {
+            'PROD_CENTER': <String, dynamic>{'devices': '00001'},
+          },
+        ),
+        '/home',
+      );
+      expect(
+        routeAccessDeniedRedirect(
+          path: '/equipment-resources/import',
+          permissions: {
+            'PROD_CENTER': <String, dynamic>{'devices': '10000'},
+          },
+        ),
+        isNull,
+      );
+    });
+
+    test('/equipment-resources requiere PROD_CENTER.devices', () {
+      expect(
+        routeAccessDeniedRedirect(
+          path: '/equipment-resources',
+          permissions: {
+            'FARM': <String, dynamic>{'cattle': true},
+          },
+        ),
+        '/home',
+      );
+      expect(
+        routeAccessDeniedRedirect(
+          path: '/equipment-resources',
+          permissions: {
+            'PROD_CENTER': <String, dynamic>{'devices': '00001'},
+          },
         ),
         isNull,
       );

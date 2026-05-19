@@ -38,6 +38,46 @@ bool massiveEventsBitmaskAllowsUpdate(Map<String, dynamic> permissions) {
   return _massiveEventsBitmaskBit(permissions, 2);
 }
 
+/// Bit 2 (update) del CRUDL de `COMMERCE` / `purchases`.
+bool commercePurchasesAllowsUpdate(Map<String, dynamic> permissions) {
+  return _commercePurchasesCrudlBit(permissions, 2);
+}
+
+bool _commercePurchasesCrudlBit(Map<String, dynamic> permissions, int index) {
+  final moduleData = permissions['COMMERCE'];
+  if (moduleData is! Map) return false;
+  final value = moduleData['purchases'];
+  if (value is bool) return value;
+  if (value is String) {
+    final lower = value.toLowerCase().trim();
+    if (lower == 'true' || lower == '1') return true;
+    final normalized = _normalizeMassiveEventsCrudlMask(value);
+    if (normalized == null || normalized.length <= index) return false;
+    return normalized[index] == '1';
+  }
+  return false;
+}
+
+/// Bit 0 del CRUDL de `PROD_CENTER` / `devices` (create).
+bool devicesCrudlAllowsCreate(Map<String, dynamic> permissions) {
+  return _devicesCrudlBit(permissions, 0);
+}
+
+bool _devicesCrudlBit(Map<String, dynamic> permissions, int index) {
+  final moduleData = permissions['PROD_CENTER'];
+  if (moduleData is! Map) return false;
+  final value = moduleData['devices'];
+  if (value is bool) return value;
+  if (value is String) {
+    final lower = value.toLowerCase().trim();
+    if (lower == 'true' || lower == '1') return true;
+    final normalized = _normalizeMassiveEventsCrudlMask(value);
+    if (normalized == null || normalized.length <= index) return false;
+    return normalized[index] == '1';
+  }
+  return false;
+}
+
 /// Alineado con `ApplicationPermissionsService.normalizeCrudlMask` (Nest):
 /// solo dígitos 0/1, recorte a 5 bits, máscaras cortas legacy de 2 bits.
 String? _normalizeMassiveEventsCrudlMask(String raw) {
@@ -107,10 +147,23 @@ String? routeAccessDeniedRedirect({
   } else if (path.startsWith('/users')) {
     module = 'EMP_MGMT';
     resource = 'users';
+  } else if (path.startsWith('/purchases/edit/')) {
+    if (!commercePurchasesAllowsUpdate(permissions)) {
+      return '/home';
+    }
+    return null;
   } else if (path.startsWith('/purchase/reception') ||
       path.startsWith('/purchases')) {
     module = 'COMMERCE';
     resource = 'purchases';
+  } else if (path.startsWith('/equipment-resources/import')) {
+    if (!devicesCrudlAllowsCreate(permissions)) {
+      return '/home';
+    }
+    return null;
+  } else if (path.startsWith('/equipment-resources')) {
+    module = 'PROD_CENTER';
+    resource = 'devices';
   } else if (path.startsWith('/devices/') &&
       path.contains('/remote-config')) {
     // Configuración remota de dispositivos MOKO LW001-BG PRO.

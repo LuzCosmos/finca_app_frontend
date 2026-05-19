@@ -614,6 +614,12 @@ abstract class AppLocalizations {
   /// **'Home'**
   String get home_title;
 
+  /// Message when opening a 100% online module without network on mobile.
+  ///
+  /// In en, this message translates to:
+  /// **'This feature requires an internet connection.'**
+  String get onlineFeatureRequiresConnection;
+
   /// Title for the Dashboard option and screen.
   ///
   /// In en, this message translates to:
@@ -1003,11 +1009,35 @@ abstract class AppLocalizations {
   /// **'OK'**
   String get dialogOk;
 
-  /// Button label to trigger manual data sync on mobile.
+  /// Home (mobile) button to upload pending massive events on the device.
   ///
   /// In en, this message translates to:
-  /// **'Sync now'**
+  /// **'Sync massive events'**
   String get syncNow;
+
+  /// SnackBar while massive-event sync runs on mobile.
+  ///
+  /// In en, this message translates to:
+  /// **'Syncing massive events…'**
+  String get syncMassiveEventsInProgress;
+
+  /// SnackBar when massive-event sync completes successfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Massive events updated on the server'**
+  String get syncMassiveEventsSuccess;
+
+  /// SnackBar when massive-event sync fails.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not sync massive events: {message}'**
+  String syncMassiveEventsFailure(String message);
+
+  /// Sync button label including pending item count.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync massive events ({count})'**
+  String syncMassiveEventsWithPendingCount(int count);
 
   /// No description provided for @event.
   ///
@@ -2755,6 +2785,48 @@ abstract class AppLocalizations {
   /// **'Purchase saving failed.'**
   String get purchase_saveError;
 
+  /// No description provided for @purchase_editTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit purchase'**
+  String get purchase_editTitle;
+
+  /// No description provided for @purchase_editSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase updated successfully.'**
+  String get purchase_editSuccess;
+
+  /// No description provided for @purchase_editLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load purchase for editing.'**
+  String get purchase_editLoadError;
+
+  /// No description provided for @purchase_editSaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save purchase.'**
+  String get purchase_editSaveError;
+
+  /// No description provided for @purchase_editForbiddenReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Received purchases cannot be edited.'**
+  String get purchase_editForbiddenReceived;
+
+  /// No description provided for @purchase_editForbiddenReceptionStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot edit: reception has already started.'**
+  String get purchase_editForbiddenReceptionStarted;
+
+  /// No description provided for @reception_cattleEditSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Cattle data updated.'**
+  String get reception_cattleEditSuccess;
+
   /// No description provided for @cp_error_noLots.
   ///
   /// In en, this message translates to:
@@ -3469,6 +3541,306 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Row not found'**
   String get cattleGrid_rowNotFound;
+
+  /// Home menu entry for production center devices inventory.
+  ///
+  /// In en, this message translates to:
+  /// **'Equipment and Resource'**
+  String get equipmentAndResource_title;
+
+  /// Title of the devices list screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Devices'**
+  String get devicesList_pageTitle;
+
+  /// Hint for local search field on devices list.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name or DevEUI'**
+  String get devicesList_searchHint;
+
+  /// Total devices loaded label.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No devices} =1{1 device} other{{count} devices}}'**
+  String devicesList_countLabel(int count);
+
+  /// Empty state title when tenant has no devices.
+  ///
+  /// In en, this message translates to:
+  /// **'No devices yet'**
+  String get devicesList_emptyTitle;
+
+  /// Empty state subtitle for devices list.
+  ///
+  /// In en, this message translates to:
+  /// **'Registered LoRaWAN devices will appear here.'**
+  String get devicesList_emptyMessage;
+
+  /// Generic error when devices list fetch fails.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load devices. Please try again.'**
+  String get devicesList_errorGeneric;
+
+  /// Error when API returns forbidden for devices list.
+  ///
+  /// In en, this message translates to:
+  /// **'You do not have permission to view devices.'**
+  String get devicesList_forbidden;
+
+  /// Button to retry loading devices list.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get devicesList_retry;
+
+  /// Devices table column: name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get devicesList_columnName;
+
+  /// Devices table column: DevEUI.
+  ///
+  /// In en, this message translates to:
+  /// **'DevEUI'**
+  String get devicesList_columnDeveui;
+
+  /// Devices table column: active flag.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get devicesList_columnActive;
+
+  /// Devices table column: battery.
+  ///
+  /// In en, this message translates to:
+  /// **'Battery'**
+  String get devicesList_columnBattery;
+
+  /// Devices table column: device profile name.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get devicesList_columnProfile;
+
+  /// Label for active device.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get devicesList_active;
+
+  /// Label for inactive device.
+  ///
+  /// In en, this message translates to:
+  /// **'Inactive'**
+  String get devicesList_inactive;
+
+  /// Shown when battery status is unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'No data'**
+  String get devicesList_noBatteryData;
+
+  /// Button to open LW001 bulk import.
+  ///
+  /// In en, this message translates to:
+  /// **'Import'**
+  String get devicesList_importButton;
+
+  /// Title of bulk import screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Import LW001-BG PRO devices'**
+  String get importLw001_pageTitle;
+
+  /// Intro text before header list.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload a spreadsheet with exactly these headers in row 1, columns A to D, in this order:'**
+  String get importLw001_helpIntro;
+
+  /// Ordered header names for import template.
+  ///
+  /// In en, this message translates to:
+  /// **'1. devEui (required per row)\n2. idDeviceProfile\n3. joineui\n4. appKey'**
+  String get importLw001_helpHeadersList;
+
+  /// Help for optional columns.
+  ///
+  /// In en, this message translates to:
+  /// **'If idDeviceProfile, joineui or appKey is missing, the value is taken from the resolved device profile (default below or the UUID in column B). Only devEui is required per row.'**
+  String get importLw001_helpOptionalCells;
+
+  /// Help for multi-sheet Excel import.
+  ///
+  /// In en, this message translates to:
+  /// **'For .xlsx or .xls files with multiple worksheets, every sheet that contains data is imported (row 1 on each sheet must be the header row above). Empty sheets are skipped.'**
+  String get importLw001_helpMultiSheet;
+
+  /// File picker button label.
+  ///
+  /// In en, this message translates to:
+  /// **'Select file (.xlsx, .xls, .csv)'**
+  String get importLw001_selectFile;
+
+  /// Label for default profile dropdown.
+  ///
+  /// In en, this message translates to:
+  /// **'Default device profile'**
+  String get importLw001_defaultProfile;
+
+  /// Submit import button.
+  ///
+  /// In en, this message translates to:
+  /// **'Import'**
+  String get importLw001_submit;
+
+  /// Title after import completes.
+  ///
+  /// In en, this message translates to:
+  /// **'Import summary'**
+  String get importLw001_summaryTitle;
+
+  /// Total rows in summary.
+  ///
+  /// In en, this message translates to:
+  /// **'Rows processed: {count}'**
+  String importLw001_summaryTotalRows(int count);
+
+  /// Created count.
+  ///
+  /// In en, this message translates to:
+  /// **'Created: {count}'**
+  String importLw001_summaryCreated(int count);
+
+  /// Updated count.
+  ///
+  /// In en, this message translates to:
+  /// **'Updated: {count}'**
+  String importLw001_summaryUpdated(int count);
+
+  /// Duplicate deveuis list.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate DevEUIs in file: {list}'**
+  String importLw001_summaryDuplicates(String list);
+
+  /// Per-row warning or error.
+  ///
+  /// In en, this message translates to:
+  /// **'Row {row}: {message}'**
+  String importLw001_rowIssue(int row, String message);
+
+  /// Navigate back after import.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to device list'**
+  String get importLw001_backToList;
+
+  /// Validation when profile required.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a default profile when rows may have an empty idDeviceProfile column.'**
+  String get importLw001_profileRequired;
+
+  /// Validation when no file selected.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a file to import.'**
+  String get importLw001_fileRequired;
+
+  /// No description provided for @importLw001_reason_IMPORT_HEADERS_INVALID.
+  ///
+  /// In en, this message translates to:
+  /// **'The file header row is invalid. Row 1 must be exactly: devEui, idDeviceProfile, joineui, appKey.'**
+  String get importLw001_reason_IMPORT_HEADERS_INVALID;
+
+  /// No description provided for @importLw001_reason_DEVEUI_INVALID_LENGTH.
+  ///
+  /// In en, this message translates to:
+  /// **'DevEUI must be exactly 16 hexadecimal characters.'**
+  String get importLw001_reason_DEVEUI_INVALID_LENGTH;
+
+  /// No description provided for @importLw001_reason_DEVEUI_DUPLICATE_IN_FILE_UPDATED.
+  ///
+  /// In en, this message translates to:
+  /// **'DevEUI was repeated in the file; device was updated.'**
+  String get importLw001_reason_DEVEUI_DUPLICATE_IN_FILE_UPDATED;
+
+  /// No description provided for @importLw001_reason_DEVEUI_ALREADY_EXISTS_UPDATED.
+  ///
+  /// In en, this message translates to:
+  /// **'DevEUI already existed in your tenant; device was updated.'**
+  String get importLw001_reason_DEVEUI_ALREADY_EXISTS_UPDATED;
+
+  /// No description provided for @importLw001_reason_DEVICE_PROFILE_ID_REQUIRED.
+  ///
+  /// In en, this message translates to:
+  /// **'A default device profile is required in the form.'**
+  String get importLw001_reason_DEVICE_PROFILE_ID_REQUIRED;
+
+  /// No description provided for @importLw001_reason_DEVICE_PROFILE_ID_INVALID.
+  ///
+  /// In en, this message translates to:
+  /// **'Device profile is missing or invalid for this tenant.'**
+  String get importLw001_reason_DEVICE_PROFILE_ID_INVALID;
+
+  /// No description provided for @importLw001_reason_CHIRPSTACK_PROFILE_ID_REQUIRED.
+  ///
+  /// In en, this message translates to:
+  /// **'The device profile has no ChirpStack profile ID (idChipstack). Configure it before importing.'**
+  String get importLw001_reason_CHIRPSTACK_PROFILE_ID_REQUIRED;
+
+  /// No description provided for @importLw001_reason_JOINEUI_INVALID.
+  ///
+  /// In en, this message translates to:
+  /// **'JoinEUI must be 16 hexadecimal characters.'**
+  String get importLw001_reason_JOINEUI_INVALID;
+
+  /// No description provided for @importLw001_reason_APP_KEY_INVALID.
+  ///
+  /// In en, this message translates to:
+  /// **'App Key must be 32 hexadecimal characters.'**
+  String get importLw001_reason_APP_KEY_INVALID;
+
+  /// No description provided for @importLw001_reason_APP_KEY_SCIENTIFIC_NOTATION.
+  ///
+  /// In en, this message translates to:
+  /// **'App Key looks like Excel scientific notation; format the cell as text.'**
+  String get importLw001_reason_APP_KEY_SCIENTIFIC_NOTATION;
+
+  /// No description provided for @importLw001_reason_NWK_KEY_INVALID.
+  ///
+  /// In en, this message translates to:
+  /// **'Network key from the device profile is invalid.'**
+  String get importLw001_reason_NWK_KEY_INVALID;
+
+  /// No description provided for @importLw001_reason_UNSUPPORTED_FILE_FORMAT.
+  ///
+  /// In en, this message translates to:
+  /// **'Unsupported file format.'**
+  String get importLw001_reason_UNSUPPORTED_FILE_FORMAT;
+
+  /// No description provided for @importLw001_reason_FILE_EMPTY.
+  ///
+  /// In en, this message translates to:
+  /// **'The file has no data rows.'**
+  String get importLw001_reason_FILE_EMPTY;
+
+  /// No description provided for @importLw001_reason_ROW_PROCESS_FAILED.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not process this row.'**
+  String get importLw001_reason_ROW_PROCESS_FAILED;
+
+  /// Fallback for unknown reason codes.
+  ///
+  /// In en, this message translates to:
+  /// **'Import error ({code}).'**
+  String importLw001_reason_unknown(String code);
 }
 
 class _AppLocalizationsDelegate

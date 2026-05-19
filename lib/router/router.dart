@@ -5,19 +5,22 @@ import 'package:finca_app_frontend/modules/shared/features/auth/page/login_page.
 import 'package:finca_app_frontend/modules/shared/features/home/page/home_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/loading/loading_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/pages/sale_dashboard_page_export.dart';
-import 'package:finca_app_frontend/modules/web/features/sales/pages/create_sale_page_web.dart';
-import 'package:finca_app_frontend/modules/web/features/cattle_purchase/pages/purchase_form_page.dart';
+import 'package:finca_app_frontend/modules/shared/features/sales/pages/create_sale_page.dart';
+import 'package:finca_app_frontend/modules/shared/features/cattle_purchase/pages/purchase_form_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/pages/massive_event_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/pages/massive_event_list_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/bloc/massive_event_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:finca_app_frontend/modules/web/features/purchase_reception/pages/purchase_reception_page.dart';
-import 'package:finca_app_frontend/modules/web/features/cattle_purchase/pages/purchases_list_page.dart';
+import 'package:finca_app_frontend/modules/shared/features/purchase_reception/pages/purchase_reception_page.dart';
+import 'package:finca_app_frontend/modules/shared/features/cattle_purchase/pages/purchases_list_page.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/users/pages/users_list_page.dart';
-import 'package:finca_app_frontend/modules/web/features/cattle/pages/cattle_master_list_page.dart';
+import 'package:finca_app_frontend/modules/shared/features/cattle/pages/cattle_master_list_page.dart';
+import 'package:finca_app_frontend/modules/shared/features/devices/pages/devices_list_page.dart';
+import 'package:finca_app_frontend/modules/shared/features/devices/pages/import_lw001_devices_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/devices/screens/device_remote_config_screen.dart';
 import 'package:finca_app_frontend/router/route_access.dart';
+import 'package:finca_app_frontend/modules/shared/widgets/online_feature_gate.dart';
 
 // Conditional imports para data source específico de plataforma
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/data/massive_event_page_data_source_stub.dart'
@@ -48,30 +51,60 @@ GoRouter createAppRouter({
       GoRoute(path: '/home', builder: (context, state) => const HomePage()),
       GoRoute(
         path: '/dashboard',
-        builder: (context, state) => const DashboardPage(),
+        builder:
+            (context, state) =>
+                const OnlineFeatureGate(child: DashboardPage()),
       ),
       GoRoute(
         path: '/purchases/create',
-        builder: (context, state) => const PurchaseFormPage(),
+        builder:
+            (context, state) => const OnlineFeatureGate(
+              child: PurchaseFormPage(),
+            ),
+      ),
+      GoRoute(
+        path: '/purchases/edit/:id',
+        builder: (context, state) {
+          final id = state.pathParameters['id']!;
+          final extra = state.extra;
+          String? providerName;
+          if (extra is Map<String, dynamic>) {
+            providerName = extra['providerName'] as String?;
+          }
+          return OnlineFeatureGate(
+            child: PurchaseFormPage(
+              purchaseId: id,
+              initialProviderName: providerName,
+            ),
+          );
+        },
       ),
       GoRoute(
         path: '/purchases',
         name: 'purchasesList',
-        builder: (_, _) => const PurchasesListPage(),
+        builder:
+            (_, _) => const OnlineFeatureGate(child: PurchasesListPage()),
       ),
       GoRoute(
         path: '/purchases/pending',
         name: 'purchasesPending',
-        builder: (_, _) => const PurchasesListPage(initialStatusFilter: 'open'),
+        builder:
+            (_, _) => const OnlineFeatureGate(
+              child: PurchasesListPage(initialStatusFilter: 'open'),
+            ),
       ),
 
       GoRoute(
         path: '/sales',
-        builder: (context, state) => const SaleDashboardPage(),
+        builder:
+            (context, state) =>
+                const OnlineFeatureGate(child: SaleDashboardPage()),
       ),
       GoRoute(
         path: '/sales/create',
-        builder: (context, state) => const CreateSalePage(),
+        builder:
+            (context, state) =>
+                const OnlineFeatureGate(child: CreateSalePage()),
       ),
       GoRoute(
         path: '/loading',
@@ -104,19 +137,40 @@ GoRouter createAppRouter({
       ),
       GoRoute(
         path: '/users',
-        builder: (context, state) => const UsersListPage(),
+        builder:
+            (context, state) =>
+                const OnlineFeatureGate(child: UsersListPage()),
       ),
       GoRoute(
         path: '/purchase/reception/:purchaseId',
         name: 'purchaseReception',
         builder: (context, state) {
           final id = state.pathParameters['purchaseId']!;
-          return PurchaseReceptionPage(purchaseId: id);
+          return OnlineFeatureGate(
+            child: PurchaseReceptionPage(purchaseId: id),
+          );
         },
       ),
       GoRoute(
         path: '/cattle',
-        builder: (context, state) => const CattleMasterListPage(),
+        builder:
+            (context, state) =>
+                const OnlineFeatureGate(child: CattleMasterListPage()),
+      ),
+      GoRoute(
+        path: '/equipment-resources',
+        builder:
+            (context, state) =>
+                const OnlineFeatureGate(child: DevicesListPage()),
+        routes: [
+          GoRoute(
+            path: 'import',
+            builder:
+                (context, state) => const OnlineFeatureGate(
+                  child: ImportLw001DevicesPage(),
+                ),
+          ),
+        ],
       ),
       GoRoute(
         path: '/devices/:deveui/remote-config',
