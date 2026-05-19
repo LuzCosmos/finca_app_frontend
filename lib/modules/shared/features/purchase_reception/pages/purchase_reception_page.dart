@@ -199,31 +199,6 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
     setGlobalSuccess(l10n.receivedOk);
   }
 
-  Future<void> _assignLot(String cattleId, String lotId) async {
-    final l10n = AppLocalizations.of(context)!;
-    try {
-      await api.reassignLot(
-        purchaseId: widget.purchaseId,
-        animalId: cattleId,
-        lotId: lotId,
-      );
-      await _load();
-      setGlobalSuccess(l10n.lotAssignedSuccessfully);
-    } on ApiException catch (e) {
-      if (!mounted) return;
-      final l10n = AppLocalizations.of(context)!;
-      setGlobalError(
-        ApiExceptionCode.fromString(
-          e.code,
-        ).asText(context, objectName: l10n.cattlePurchase),
-      );
-    } catch (e) {
-      if (!mounted) return;
-      setGlobalError(e.toString());
-      isLoading = false;
-    }
-  }
-
   Future<void> _confirmClosePurchase(BuildContext context) async {
     final l10n = AppLocalizations.of(context)!;
     final confirmed = await showDialog<bool>(
@@ -557,9 +532,9 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
                               child: CattleListWithEvents(
                                 cattle: selectedCattle,
                                 availableLots: lots,
-                                onAssignLot: _assignLot,
                                 canEditCattle: _canUpdateReception,
                                 onCattleUpdated: _load,
+                                currentLotId: selectedLotId,
                               ),
                             ),
                           ],
@@ -573,7 +548,8 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
                           child: UnassignedCattleList(
                             cattle: unassignedCattle,
                             availableLots: lots,
-                            onAssignLot: _assignLot,
+                            canEditCattle: _canUpdateReception,
+                            onCattleUpdated: _load,
                           ),
                         ),
                       ],
