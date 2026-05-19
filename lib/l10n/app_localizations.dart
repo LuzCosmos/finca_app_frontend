@@ -3644,7 +3644,7 @@ abstract class AppLocalizations {
   /// **'No data'**
   String get devicesList_noBatteryData;
 
-  /// Button to open LW001 bulk import (web only).
+  /// Button to open LW001 bulk import.
   ///
   /// In en, this message translates to:
   /// **'Import'**
@@ -3787,6 +3787,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Device profile is missing or invalid for this tenant.'**
   String get importLw001_reason_DEVICE_PROFILE_ID_INVALID;
+
+  /// No description provided for @importLw001_reason_CHIRPSTACK_PROFILE_ID_REQUIRED.
+  ///
+  /// In en, this message translates to:
+  /// **'The device profile has no ChirpStack profile ID (idChipstack). Configure it before importing.'**
+  String get importLw001_reason_CHIRPSTACK_PROFILE_ID_REQUIRED;
 
   /// No description provided for @importLw001_reason_JOINEUI_INVALID.
   ///

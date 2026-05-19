@@ -17,6 +17,8 @@ class ImportLw001ReasonLocalizations {
         return l10n.importLw001_reason_DEVICE_PROFILE_ID_REQUIRED;
       case 'DEVICE_PROFILE_ID_INVALID':
         return l10n.importLw001_reason_DEVICE_PROFILE_ID_INVALID;
+      case 'CHIRPSTACK_PROFILE_ID_REQUIRED':
+        return l10n.importLw001_reason_CHIRPSTACK_PROFILE_ID_REQUIRED;
       case 'JOINEUI_INVALID':
         return l10n.importLw001_reason_JOINEUI_INVALID;
       case 'APP_KEY_INVALID':

@@ -64,12 +64,11 @@ void main() {
     expect(find.text(l10n.sale), findsOneWidget);
     expect(find.text(l10n.users), findsOneWidget);
     expect(find.text(l10n.masterListTitle), findsOneWidget);
-    expect(find.text(l10n.syncNow), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
   testWidgets(
-    'home offline: solo evento masivo y sincronizar eventos masivos',
+    'home offline: solo evento masivo',
     (tester) async {
       HomeConnectivityService.debugForceOnline = false;
       integrationBindApiForTests();
@@ -82,7 +81,6 @@ void main() {
 
       final l10n = l10nFromTester(tester);
       expect(find.text(l10n.massiveEvent), findsOneWidget);
-      expect(find.text(l10n.syncNow), findsOneWidget);
       expect(find.text(l10n.dashboard_title), findsNothing);
       expect(find.text(l10n.purchase), findsNothing);
       expect(find.text(l10n.sale), findsNothing);

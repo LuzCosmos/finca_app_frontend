@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
@@ -32,7 +31,6 @@ class _DevicesListPageState extends State<DevicesListPage> {
   final _searchCtrl = TextEditingController();
 
   bool get _showImportButton {
-    if (!kIsWeb) return false;
     final permissions = SessionService.permissionsSnapshotForRouteGuard;
     if (permissions == null) return false;
     return devicesCrudlAllowsCreate(permissions);

@@ -2105,6 +2105,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Device profile is missing or invalid for this tenant.';
 
   @override
+  String get importLw001_reason_CHIRPSTACK_PROFILE_ID_REQUIRED =>
+      'The device profile has no ChirpStack profile ID (idChipstack). Configure it before importing.';
+
+  @override
   String get importLw001_reason_JOINEUI_INVALID =>
       'JoinEUI must be 16 hexadecimal characters.';
 

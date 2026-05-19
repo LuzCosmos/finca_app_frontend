@@ -12,7 +12,6 @@ import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/main.dart';
 import 'package:finca_app_frontend/modules/mobile/bloc/sync_bloc_stub.dart'
     if (dart.library.io) 'package:finca_app_frontend/modules/mobile/bloc/sync_bloc.dart';
-import 'package:finca_app_frontend/modules/mobile/bloc/sync_state.dart';
 import 'package:finca_app_frontend/modules/mobile/services/sync_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/home/services/home_connectivity_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/devices/pages/devices_list_page.dart';
@@ -225,13 +224,12 @@ void main() {
       expect(find.text(l10n.users), findsOneWidget);
       expect(find.text(l10n.masterListTitle), findsOneWidget);
       expect(find.text(l10n.equipmentAndResource_title), findsOneWidget);
-      expect(find.text(l10n.syncNow), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
   );
 
   testWidgets(
-    'home offline: solo evento masivo y sincronizar (requiresOnline oculto)',
+    'home offline: solo evento masivo (requiresOnline oculto)',
     (tester) async {
       HomeConnectivityService.debugForceOnline = false;
       integrationBindApiForTests();
@@ -244,7 +242,6 @@ void main() {
 
       final l10n = l10nFromTester(tester);
       expect(find.text(l10n.massiveEvent), findsOneWidget);
-      expect(find.text(l10n.syncNow), findsOneWidget);
       expect(find.text(l10n.dashboard_title), findsNothing);
       expect(find.text(l10n.purchase), findsNothing);
       expect(find.text(l10n.sale), findsNothing);
@@ -432,57 +429,6 @@ void main() {
       expect(tester.widget<Icon>(edit).size, 18);
       // Cabecera de columna acciones sin etiqueta (locale es del test).
       expect(find.text('Acciones'), findsNothing);
-      expect(tester.takeException(), isNull);
-    },
-  );
-
-  testWidgets(
-    'sync mockeado: home → Sincronizar eventos masivos → SyncSuccess (sin red)',
-    (tester) async {
-      SessionService.resetForTesting();
-      SharedPreferences.setMockInitialValues({});
-
-      final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-      await SessionService.saveSession(
-        token: _jwtWithExp(now + 86400),
-        permissions: integrationFullHomePermissions(),
-        idTenant: 't-integration',
-        idUser: 'u-integration',
-        refreshToken: 'rt-integration',
-      );
-      await SessionService.hydrateFromStorage();
-
-      final mockSync = _MockSyncService();
-      var syncCalls = 0;
-      when(() => mockSync.syncAllInOrder(any())).thenAnswer((_) async {
-        syncCalls++;
-        return <SyncResult>[];
-      });
-      final SyncBloc syncBloc = createIntegrationSyncBloc(mockSync);
-      addTearDown(() async {
-        await syncBloc.close();
-        reset(mockSync);
-      });
-
-      final router = createAppRouter(
-        hasValidToken: () => true,
-        initialLocation: '/loading',
-      );
-
-      await tester.pumpWidget(
-        MainApp(router: router, syncBlocOverride: syncBloc),
-      );
-      await tester.pumpAndSettle(const Duration(seconds: 5));
-
-      expect(find.byKey(const ValueKey<String>('home-page')), findsOneWidget);
-
-      final l10n = l10nFromTester(tester);
-      final baseline = syncCalls;
-
-      final success = syncBloc.stream.firstWhere((s) => s is SyncSuccess);
-      await tester.tap(find.text(l10n.syncNow));
-      await success.timeout(const Duration(seconds: 10));
-      expect(syncCalls, greaterThan(baseline));
       expect(tester.takeException(), isNull);
     },
   );

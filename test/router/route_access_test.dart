@@ -316,6 +316,21 @@ void main() {
       );
     });
 
+    test('devicesCrudlAllowsCreate usa bit create del CRUDL devices', () {
+      expect(
+        devicesCrudlAllowsCreate({
+          'PROD_CENTER': <String, dynamic>{'devices': '10000'},
+        }),
+        isTrue,
+      );
+      expect(
+        devicesCrudlAllowsCreate({
+          'PROD_CENTER': <String, dynamic>{'devices': '01000'},
+        }),
+        isFalse,
+      );
+    });
+
     test('/equipment-resources/import requiere create en devices', () {
       expect(
         routeAccessDeniedRedirect(
