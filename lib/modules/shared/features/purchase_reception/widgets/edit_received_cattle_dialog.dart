@@ -597,6 +597,7 @@ class _EditReceivedCattleDialogState extends State<EditReceivedCattleDialog> {
                     SizedBox(
                       width: 120,
                       child: TextFormField(
+                        key: const ValueKey('edit_cattle_weight'),
                         controller: _weightCtrl,
                         decoration: InputDecoration(
                           labelText: l10n.weightKg,
@@ -1071,6 +1072,7 @@ class _EditReceivedCattleDialogState extends State<EditReceivedCattleDialog> {
           child: Text(l10n.cancel),
         ),
         FilledButton(
+          key: const ValueKey('edit_cattle_save'),
           onPressed: _saving ? null : _save,
           child:
               _saving
