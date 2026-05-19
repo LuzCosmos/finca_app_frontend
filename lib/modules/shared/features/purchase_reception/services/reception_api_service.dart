@@ -212,6 +212,32 @@ class ReceptionApiService {
     if (r.statusCode >= 400) throw Exception('Error patch events: ${r.body}');
   }
 
+  Future<void> updateReceivedCattle({
+    required String cattleId,
+    double? receivedWeight,
+    String? eartagLeft,
+    String? eartagRight,
+    String? idLot,
+    String? color,
+    String? comments,
+  }) async {
+    final body = <String, dynamic>{
+      if (receivedWeight != null) 'receivedWeight': receivedWeight,
+      if (eartagLeft != null) 'eartagLeft': eartagLeft,
+      if (eartagRight != null) 'eartagRight': eartagRight,
+      if (idLot != null) 'idLot': idLot,
+      if (color != null) 'color': color,
+      if (comments != null) 'comments': comments,
+    };
+    final r = await BasicApiService.authorizedPatch(
+      Uri.parse('$baseUrl/received-cattle/$cattleId'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(body),
+    );
+    if (r.statusCode >= 200 && r.statusCode < 300) return;
+    BasicApiService.manageNotSuccessResponseCode(r);
+  }
+
   Future<void> updateStatus(String purchaseId, String status) async {
     final url = Uri.parse(
       '${BasicApiService.getApiBaseUrl()}/purchase-receptions/purchase-status/$purchaseId',

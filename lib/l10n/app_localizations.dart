@@ -2785,6 +2785,48 @@ abstract class AppLocalizations {
   /// **'Purchase saving failed.'**
   String get purchase_saveError;
 
+  /// No description provided for @purchase_editTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit purchase'**
+  String get purchase_editTitle;
+
+  /// No description provided for @purchase_editSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase updated successfully.'**
+  String get purchase_editSuccess;
+
+  /// No description provided for @purchase_editLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load purchase for editing.'**
+  String get purchase_editLoadError;
+
+  /// No description provided for @purchase_editSaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save purchase.'**
+  String get purchase_editSaveError;
+
+  /// No description provided for @purchase_editForbiddenReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Received purchases cannot be edited.'**
+  String get purchase_editForbiddenReceived;
+
+  /// No description provided for @purchase_editForbiddenReceptionStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot edit: reception has already started.'**
+  String get purchase_editForbiddenReceptionStarted;
+
+  /// No description provided for @reception_cattleEditSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Cattle data updated.'**
+  String get reception_cattleEditSuccess;
+
   /// No description provided for @cp_error_noLots.
   ///
   /// In en, this message translates to:

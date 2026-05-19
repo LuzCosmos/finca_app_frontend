@@ -692,6 +692,13 @@
   "purchase_dateRequired": "Debes seleccionar una fecha de compra.",
   "purchase_saveSuccess": "Compra guardada exitosamente.",
   "purchase_saveError": "Falló el guardado de compra.",
+  "purchase_editTitle": "Editar compra",
+  "purchase_editSuccess": "Compra actualizada correctamente.",
+  "purchase_editLoadError": "No se pudo cargar la compra para editar.",
+  "purchase_editSaveError": "No se pudo guardar la compra.",
+  "purchase_editForbiddenReceived": "No se puede editar una compra ya recibida.",
+  "purchase_editForbiddenReceptionStarted": "No se puede editar: la recepción ya comenzó.",
+  "reception_cattleEditSuccess": "Datos de la res actualizados.",
   
   "cp_error_noLots": "Debe agregar al menos un lote",
   "cp_error_providerRequired": "Por favor seleccione o cree un proveedor.",
