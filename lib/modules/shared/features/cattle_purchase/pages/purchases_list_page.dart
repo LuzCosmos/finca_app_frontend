@@ -365,9 +365,13 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
                       : _items.isEmpty
                       ? _buildEmptyState(context, l10n)
                       : Card(
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: DataTable(
+                        clipBehavior: Clip.antiAlias,
+                        child: Scrollbar(
+                          child: SingleChildScrollView(
+                            primary: true,
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: DataTable(
                             headingRowColor: WidgetStateProperty.all(
                               Theme.of(
                                 context,
@@ -584,6 +588,8 @@ class _PurchasesListPageState extends State<PurchasesListPage> {
                                       ),
                                     )
                                     .toList(),
+                              ),
+                            ),
                           ),
                         ),
                       ),
