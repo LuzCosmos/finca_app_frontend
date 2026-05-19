@@ -9,7 +9,9 @@ import 'package:finca_app_frontend/l10n/app_localizations.dart';
 List<DropdownMenuItem<int?>> teethWearDropdownItems(
   AppLocalizations l10n, {
   Set<int>? allowedGrades,
+  TextStyle? itemStyle,
 }) {
+  final textStyle = itemStyle ?? const TextStyle();
   final labels = <String>[
     l10n.teethWearGrade0,
     l10n.teethWearGrade1,
@@ -24,15 +26,16 @@ List<DropdownMenuItem<int?>> teethWearDropdownItems(
           : allowedGrades;
   final sorted = grades.toList()..sort();
   return [
-    const DropdownMenuItem<int?>(
+    DropdownMenuItem<int?>(
       value: null,
-      child: Text('—'),
+      child: Text('—', style: textStyle),
     ),
     ...sorted.map(
       (i) => DropdownMenuItem<int?>(
         value: i,
         child: Text(
           '${i.toString()} — ${labels[i]}',
+          style: textStyle,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
         ),

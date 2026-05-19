@@ -6,6 +6,7 @@ import 'package:integration_test/integration_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/core/data/database/database_provider.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/main.dart';
@@ -17,6 +18,7 @@ import 'package:finca_app_frontend/modules/shared/features/home/services/home_co
 import 'package:finca_app_frontend/modules/shared/features/devices/pages/devices_list_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/pages/massive_event_list_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/pages/massive_event_page.dart';
+import 'package:finca_app_frontend/modules/shared/features/purchase_reception/widgets/cattle_list_with_events.dart';
 import 'package:finca_app_frontend/router/router.dart';
 
 import '../test/support/test_l10n.dart';
@@ -392,6 +394,44 @@ void main() {
 
       final l10nHome = l10nFromTester(tester);
       expectAllHomeMenuOptionsVisible(l10nHome);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'recepción: lista con permiso update muestra icono editar azul',
+    (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          locale: const Locale('es'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(
+            body: SizedBox(
+              height: 400,
+              child: CattleListWithEvents(
+                cattle: [
+                  {
+                    'id': 'c-e2e',
+                    'number': '77',
+                    'receivedWeight': 300,
+                    'appliedEvents': <dynamic>[],
+                  },
+                ],
+                availableLots: [],
+                canEditCattle: true,
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      final edit = find.byIcon(Icons.edit);
+      expect(edit, findsOneWidget);
+      expect(tester.widget<Icon>(edit).color, Colors.blue);
+      expect(tester.widget<Icon>(edit).size, 18);
+      // Cabecera de columna acciones sin etiqueta (locale es del test).
+      expect(find.text('Acciones'), findsNothing);
       expect(tester.takeException(), isNull);
     },
   );

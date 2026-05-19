@@ -10,8 +10,14 @@ import 'package:finca_app_frontend/modules/shared/enums/cattle_enums.dart';
 class LotInput extends StatefulWidget {
   final void Function(LotModel) onChanged;
   final VoidCallback? onRemove;
+  final LotModel? initialLot;
 
-  const LotInput({super.key, required this.onChanged, this.onRemove});
+  const LotInput({
+    super.key,
+    required this.onChanged,
+    this.onRemove,
+    this.initialLot,
+  });
 
   @override
   State<LotInput> createState() => LotInputState();
@@ -32,6 +38,28 @@ class LotInputState extends State<LotInput> {
 // ... (keeping other methods same but updating _notifyLotChanged and _onFieldChanged)
 
   PriceInputMode? _lastEditedPriceMode;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialLot != null) {
+      applyInitialLot(widget.initialLot!);
+    }
+  }
+
+  void applyInitialLot(LotModel lot) {
+    _lotNumberController.text = lot.lotNumber;
+    _originController.text = lot.origin;
+    _selectedGender = lot.gender;
+    _cattleCountController.text = '${lot.purchasedCattleCount}';
+    _avgWeightController.text = lot.avgWeight.toStringAsFixed(2);
+    _totalWeightController.text = lot.totalWeight.toStringAsFixed(2);
+    _pricePerKgController.text = lot.pricePerKg.toStringAsFixed(2);
+    _totalValueController.text = lot.totalValue.toStringAsFixed(2);
+    final pricePerHead = lot.avgWeight * lot.pricePerKg;
+    _pricePerHeadController.text = pricePerHead.toStringAsFixed(2);
+    _notifyLotChanged();
+  }
 
   void _onPricePerKgChanged() {
     _lastEditedPriceMode = PriceInputMode.perKg;

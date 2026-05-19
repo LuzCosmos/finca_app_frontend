@@ -9,6 +9,8 @@ class ProviderInput extends StatefulWidget {
   final ProviderService? providerService;
   final void Function(String message)? onError;
   final void Function(String message)? onSuccess;
+  final String? initialProviderId;
+  final String? initialProviderName;
 
   const ProviderInput({
     super.key,
@@ -16,6 +18,8 @@ class ProviderInput extends StatefulWidget {
     this.providerService,
     this.onError,
     this.onSuccess,
+    this.initialProviderId,
+    this.initialProviderName,
   });
 
   @override
@@ -24,6 +28,20 @@ class ProviderInput extends StatefulWidget {
 
 class _ProviderInputState extends State<ProviderInput> {
   ProviderModel? _selectedProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialProviderId != null && widget.initialProviderName != null) {
+      _selectedProvider = ProviderModel(
+        id: widget.initialProviderId!,
+        name: widget.initialProviderName!,
+        nit: '',
+        type: ProviderType.PROVIDER,
+      );
+      widget.onProviderSelected(_selectedProvider!);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +53,7 @@ class _ProviderInputState extends State<ProviderInput> {
         ProviderAutocompleteField(
           label: l10n.provider,
           providerType: ProviderType.PROVIDER.name,
+          initialValue: widget.initialProviderName,
           required: true,
           validator: (_) {
             if (_selectedProvider == null) {
