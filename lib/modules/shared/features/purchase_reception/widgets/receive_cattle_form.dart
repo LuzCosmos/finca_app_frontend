@@ -10,6 +10,7 @@ import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'package:finca_app_frontend/modules/shared/enums/cattle_enums.dart';
 import 'package:finca_app_frontend/modules/shared/features/purchase_reception/utils/dentition_receive_fields.dart';
 import 'package:finca_app_frontend/modules/shared/features/purchase_reception/utils/reception_birth_date_usage_metrics.dart';
+import 'package:finca_app_frontend/modules/shared/features/purchase_reception/utils/reception_form_field_style.dart';
 // Grados desgaste permitidos según tabla SAPA2014 — ver dentition_table_sapa2014.dart.
 import 'package:finca_app_frontend/modules/shared/features/cattle/constants/dentition_table_sapa2014.dart';
 import 'package:finca_app_frontend/modules/shared/features/cattle/widgets/teeth_wear_dropdown_items.dart';
@@ -288,7 +289,7 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
 
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: kReceptionFormOuterPadding,
         child: Form(
           key: _formKey,
           child: Column(
@@ -314,14 +315,14 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                     child: TextFormField(
                       key: const ValueKey('receive_form_number'),
                       controller: _numberController,
-                      decoration: InputDecoration(
+                      style: kReceptionFormFieldTextStyle,
+                      decoration: receptionFormInputDecoration(
                         labelText: l10n.cattleNumber,
-                        border: const OutlineInputBorder(),
                         errorText: _numberExternalError,
                         suffixIcon:
                             _isValidatingNumber
                                 ? const Padding(
-                                  padding: EdgeInsets.all(12.0),
+                                  padding: kReceptionFormLoadingIconPadding,
                                   child: SizedBox(
                                     width: 16,
                                     height: 16,
@@ -362,10 +363,10 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                     child: DropdownButtonFormField<String>(
                       initialValue: selectedLotId,
                       isExpanded: true,
-                      decoration: InputDecoration(
+                      decoration: receptionFormInputDecoration(
                         labelText: l10n.lot,
-                        border: const OutlineInputBorder(),
                       ),
+                      style: kReceptionFormFieldTextStyle,
                       items: [
                         DropdownMenuItem<String>(
                           value: null,
@@ -390,9 +391,9 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                     child: TextFormField(
                       key: const ValueKey('receive_form_weight'),
                       controller: _weightController,
-                      decoration: InputDecoration(
+                      style: kReceptionFormFieldTextStyle,
+                      decoration: receptionFormInputDecoration(
                         labelText: l10n.weightKg,
-                        border: const OutlineInputBorder(),
                       ),
                       keyboardType: TextInputType.number,
                       validator: (v) {
@@ -453,7 +454,8 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                           child: TextFormField(
                             controller: _birthDateAprxController,
                             readOnly: true,
-                            decoration: InputDecoration(
+                            style: kReceptionFormFieldTextStyle,
+                            decoration: receptionFormInputDecoration(
                               labelText: l10n.approxBirthDate,
                               hintText:
                                   dentitionIsCompleteFive([
@@ -471,7 +473,6 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                                       ])
                                       ? l10n.approxBirthFilledViaDentitionHint
                                       : null,
-                              border: const OutlineInputBorder(),
                               suffixIcon: const Icon(Icons.edit_calendar),
                             ),
                             onTap: () => _openApproxBirthEditDialog(),
@@ -497,10 +498,10 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                     child: DropdownButtonFormField<CattleGender>(
                       initialValue: _selectedGender,
                       isExpanded: true,
-                      decoration: InputDecoration(
+                      decoration: receptionFormInputDecoration(
                         labelText: l10n.gender,
-                        border: const OutlineInputBorder(),
                       ),
+                      style: kReceptionFormFieldTextStyle,
                       items:
                           CattleGender.values.map((gender) {
                             return DropdownMenuItem<CattleGender>(
@@ -522,7 +523,10 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                     child: DropdownButtonFormField<String>(
                       initialValue: selectedColorId,
                       isExpanded: true,
-                      decoration: InputDecoration(labelText: l10n.color),
+                      decoration: receptionFormInputDecoration(
+                        labelText: l10n.color,
+                      ),
+                      style: kReceptionFormFieldTextStyle,
                       validator:
                           (value) => value == null ? l10n.fieldRequired : null,
                       items: [
@@ -560,14 +564,14 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                     width: 180,
                     child: TextFormField(
                       controller: _eartagRightController,
-                      decoration: InputDecoration(
+                      style: kReceptionFormFieldTextStyle,
+                      decoration: receptionFormInputDecoration(
                         labelText: l10n.eartagRight,
-                        border: const OutlineInputBorder(),
                         errorText: _eartagRightExternalError,
                         suffixIcon:
                             _isValidatingEartagRight
                                 ? const Padding(
-                                  padding: EdgeInsets.all(12.0),
+                                  padding: kReceptionFormLoadingIconPadding,
                                   child: SizedBox(
                                     width: 16,
                                     height: 16,
@@ -601,14 +605,14 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                     width: 180,
                     child: TextFormField(
                       controller: _eartagLeftController,
-                      decoration: InputDecoration(
+                      style: kReceptionFormFieldTextStyle,
+                      decoration: receptionFormInputDecoration(
                         labelText: l10n.eartagLeft,
-                        border: const OutlineInputBorder(),
                         errorText: _eartagLeftExternalError,
                         suffixIcon:
                             _isValidatingEartagLeft
                                 ? const Padding(
-                                  padding: EdgeInsets.all(12.0),
+                                  padding: kReceptionFormLoadingIconPadding,
                                   child: SizedBox(
                                     width: 16,
                                     height: 16,
@@ -729,16 +733,14 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                             }
                             return null;
                           },
-                          decoration: InputDecoration(
-                            labelText:
-                                l10n.tracker, // using existing label key or new one
-                            hintText:
-                                l10n.searchTracker, // We'll try to use the key if it exists
-                            border: const OutlineInputBorder(),
+                          style: kReceptionFormFieldTextStyle,
+                          decoration: receptionFormInputDecoration(
+                            labelText: l10n.tracker,
+                            hintText: l10n.searchTracker,
                             suffixIcon:
                                 _deviceLoading
                                     ? const Padding(
-                                      padding: EdgeInsets.all(12.0),
+                                      padding: kReceptionFormLoadingIconPadding,
                                       child: SizedBox(
                                         width: 16,
                                         height: 16,
@@ -821,9 +823,9 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                     width: 300,
                     child: TextFormField(
                       controller: _commentsController,
-                      decoration: InputDecoration(
+                      style: kReceptionFormFieldTextStyle,
+                      decoration: receptionFormInputDecoration(
                         labelText: l10n.comments,
-                        border: const OutlineInputBorder(),
                       ),
                       maxLines: 2,
                     ),
@@ -886,9 +888,9 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                                   'receive_quick_dentition_milk_count',
                                 ),
                                 controller: _milkTeethCountController,
-                                decoration: InputDecoration(
+                                style: kReceptionFormFieldTextStyle,
+                                decoration: receptionFormInputDecoration(
                                   labelText: l10n.milkTeethCountShort,
-                                  border: const OutlineInputBorder(),
                                 ),
                                 keyboardType: TextInputType.number,
                               ),
@@ -903,10 +905,10 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                                 ),
                                 initialValue: _milkTeethWearValue,
                                 isExpanded: true,
-                                decoration: InputDecoration(
+                                decoration: receptionFormInputDecoration(
                                   labelText: l10n.milkTeethWearShort,
-                                  border: const OutlineInputBorder(),
                                 ),
+                                style: kReceptionFormFieldTextStyle,
                                 items: teethWearDropdownItems(
                                   l10n,
                                   allowedGrades: milkAllowed,
@@ -923,9 +925,9 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                                   'receive_quick_dentition_perm_count',
                                 ),
                                 controller: _permanentTeethCountController,
-                                decoration: InputDecoration(
+                                style: kReceptionFormFieldTextStyle,
+                                decoration: receptionFormInputDecoration(
                                   labelText: l10n.permanentTeethCountShort,
-                                  border: const OutlineInputBorder(),
                                 ),
                                 keyboardType: TextInputType.number,
                               ),
@@ -940,10 +942,10 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                                 ),
                                 initialValue: _permanentTeethWearValue,
                                 isExpanded: true,
-                                decoration: InputDecoration(
+                                decoration: receptionFormInputDecoration(
                                   labelText: l10n.permanentTeethWearShort,
-                                  border: const OutlineInputBorder(),
                                 ),
+                                style: kReceptionFormFieldTextStyle,
                                 items: teethWearDropdownItems(
                                   l10n,
                                   allowedGrades: permAllowed,
@@ -958,9 +960,9 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                               child: TextFormField(
                                 controller: _dentalEvaluationDateController,
                                 readOnly: true,
-                                decoration: InputDecoration(
+                                style: kReceptionFormFieldTextStyle,
+                                decoration: receptionFormInputDecoration(
                                   labelText: l10n.dentalEvaluationDateShort,
-                                  border: const OutlineInputBorder(),
                                   suffixIcon: const Icon(Icons.calendar_today),
                                 ),
                                 onTap: _pickDentalEvaluationDate,

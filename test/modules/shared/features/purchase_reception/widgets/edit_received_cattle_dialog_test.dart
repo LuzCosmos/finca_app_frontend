@@ -3,6 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/shared/features/purchase_reception/services/reception_api_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/purchase_reception/widgets/edit_received_cattle_dialog.dart';
+
+import '../reception_form_field_test_support.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class _RecordingReceptionApi extends ReceptionApiService {
@@ -82,6 +84,10 @@ void main() {
         find.byKey(const ValueKey('edit_cattle_weight')),
       );
       expect(weightField.controller?.text, '320');
+      expectCompactReceptionFieldDecoration(
+        tester,
+        find.byKey(const ValueKey('edit_cattle_weight')),
+      );
     });
 
     testWidgets('flujo feliz: guardar cierra con true y envía PATCH', (
