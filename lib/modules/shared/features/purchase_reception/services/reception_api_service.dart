@@ -165,21 +165,6 @@ class ReceptionApiService {
     throw Exception('Unexpected status code: ${r.statusCode}');
   }
 
-  Future<void> reassignLot({
-    required String purchaseId,
-    required String animalId,
-    required String lotId,
-  }) async {
-    final r = await BasicApiService.authorizedPatch(
-      Uri.parse('$baseUrl/assign-lot-cattle'),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode({'idLot': lotId, 'idCattle': animalId}),
-    );
-    if (r.statusCode >= 400) throw Exception('Error reasignar lote: ${r.body}');
-  }
-
   Future<List<Map<String, dynamic>>> listAnimalEvents(String animalId) async {
     final r = await BasicApiService.authorizedGet(
       Uri.parse('$baseUrl/animals/$animalId/simple-events'),

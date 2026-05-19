@@ -14,6 +14,7 @@ import 'package:finca_app_frontend/modules/shared/features/purchase_reception/wi
 import 'package:finca_app_frontend/modules/shared/features/purchase_reception/widgets/edit_received_cattle_dialog.dart';
 import 'package:finca_app_frontend/modules/shared/features/purchase_reception/widgets/unassigned_cattle_list.dart';
 
+import '../modules/shared/features/purchase_reception/purchase_reception_list_table_test_support.dart';
 import '../../integration_test/support/integration_test_session.dart';
 
 String _jwtWithExp(int expUnix) {
@@ -87,13 +88,13 @@ void main() {
               {'id': 'u1', 'number': '88', 'receivedWeight': 290},
             ],
             availableLots: [],
-            onAssignLot: (_, __) {},
             canEditCattle: true,
           ),
         ),
       ),
     );
     await tester.pumpAndSettle();
-    expect(find.byIcon(Icons.edit), findsOneWidget);
+    expectCompactEditIconButton(tester);
+    expectNoActionsColumnHeaderLabel(tester);
   });
 }

@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 
+const _kTableHeaderFontSize = 15.0;
+const _kTableRowFontSize = 14.0;
+const _kTableHeaderPadding = EdgeInsets.symmetric(vertical: 2, horizontal: 2);
+const _kTableRowPadding = EdgeInsets.symmetric(vertical: 2, horizontal: 2);
+
 class LotsTable extends StatelessWidget {
   final List<Map<String, dynamic>> lots;
   final String? selectedLotId;
@@ -34,7 +39,7 @@ class LotsTable extends StatelessWidget {
           // Table Header
           Container(
             color: Colors.grey.shade200,
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+            padding: _kTableHeaderPadding,
             child: Row(
               children: [
                 Expanded(
@@ -43,7 +48,7 @@ class LotsTable extends StatelessWidget {
                     l10n.lot,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 12,
+                      fontSize: _kTableHeaderFontSize,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -54,7 +59,7 @@ class LotsTable extends StatelessWidget {
                     l10n.purchasedCount,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 12,
+                      fontSize: _kTableHeaderFontSize,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -65,7 +70,7 @@ class LotsTable extends StatelessWidget {
                     l10n.receivedCount,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 12,
+                      fontSize: _kTableHeaderFontSize,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -76,7 +81,7 @@ class LotsTable extends StatelessWidget {
                     l10n.purchasedAvgWeight,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 11,
+                      fontSize: _kTableHeaderFontSize,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -87,7 +92,7 @@ class LotsTable extends StatelessWidget {
                     l10n.receivedAvgWeight,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 11,
+                      fontSize: _kTableHeaderFontSize,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -134,17 +139,16 @@ class LotsTable extends StatelessWidget {
                               context,
                             ).colorScheme.primary.withValues(alpha: 0.1)
                             : null,
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 8,
-                      horizontal: 4,
-                    ),
+                    padding: _kTableRowPadding,
                     child: Row(
                       children: [
                         Expanded(
                           flex: 2,
                           child: Text(
                             lotNumber.toString(),
-                            style: const TextStyle(fontSize: 12),
+                            style: const TextStyle(
+                              fontSize: _kTableRowFontSize,
+                            ),
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -152,7 +156,9 @@ class LotsTable extends StatelessWidget {
                           flex: 2,
                           child: Text(
                             purchasedCount.toString(),
-                            style: const TextStyle(fontSize: 12),
+                            style: const TextStyle(
+                              fontSize: _kTableRowFontSize,
+                            ),
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -161,7 +167,7 @@ class LotsTable extends StatelessWidget {
                           child: Text(
                             receivedCount.toString(),
                             style: TextStyle(
-                              fontSize: 12,
+                              fontSize: _kTableRowFontSize,
                               color:
                                   receivedCount > purchasedCount
                                       ? Colors.red
@@ -178,7 +184,9 @@ class LotsTable extends StatelessWidget {
                           flex: 3,
                           child: Text(
                             '${avgPurchasedWeight.toStringAsFixed(1)} kg',
-                            style: const TextStyle(fontSize: 11),
+                            style: const TextStyle(
+                              fontSize: _kTableRowFontSize,
+                            ),
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -188,7 +196,9 @@ class LotsTable extends StatelessWidget {
                             receivedCount > 0
                                 ? '${avgReceivedWeight.toStringAsFixed(1)} kg'
                                 : '—',
-                            style: const TextStyle(fontSize: 11),
+                            style: const TextStyle(
+                              fontSize: _kTableRowFontSize,
+                            ),
                             textAlign: TextAlign.center,
                           ),
                         ),

@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:finca_app_frontend/core/utils/date_time_helper.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
-import 'package:finca_app_frontend/modules/shared/features/purchase_reception/widgets/assign_lot_dialog.dart';
 import 'package:finca_app_frontend/modules/shared/features/purchase_reception/widgets/edit_received_cattle_dialog.dart';
+
+const _kTableHeaderFontSize = 15.0;
+const _kTableRowFontSize = 14.0;
+const _kTableHeaderPadding = EdgeInsets.symmetric(vertical: 2, horizontal: 2);
+const _kTableRowPadding = EdgeInsets.symmetric(vertical: 2, horizontal: 2);
+const _kEditIconSize = 18.0;
+const _kActionsColumnWidth = _kEditIconSize + 4;
 
 class CattleListWithEvents extends StatefulWidget {
   final List<Map<String, dynamic>> cattle;
   final List<Map<String, dynamic>> availableLots;
-  final Function(String cattleId, String lotId) onAssignLot;
   final Function(String? cattleId)? onCattleSelected;
   final bool canEditCattle;
   final VoidCallback? onCattleUpdated;
@@ -17,7 +22,6 @@ class CattleListWithEvents extends StatefulWidget {
     super.key,
     required this.cattle,
     required this.availableLots,
-    required this.onAssignLot,
     this.onCattleSelected,
     this.canEditCattle = false,
     this.onCattleUpdated,
@@ -62,10 +66,7 @@ class _CattleListWithEventsState extends State<CattleListWithEvents> {
                 // Table Header
                 Container(
                   color: Colors.grey.shade200,
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 8,
-                    horizontal: 2,
-                  ),
+                  padding: _kTableHeaderPadding,
                   child: Row(
                     children: [
                       Expanded(
@@ -74,7 +75,7 @@ class _CattleListWithEventsState extends State<CattleListWithEvents> {
                           l10n.number,
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 13,
+                            fontSize: _kTableHeaderFontSize,
                           ),
                           textAlign: TextAlign.center,
                         ),
@@ -85,7 +86,7 @@ class _CattleListWithEventsState extends State<CattleListWithEvents> {
                           l10n.weightKg,
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 13,
+                            fontSize: _kTableHeaderFontSize,
                           ),
                           textAlign: TextAlign.center,
                         ),
@@ -96,7 +97,7 @@ class _CattleListWithEventsState extends State<CattleListWithEvents> {
                           l10n.eartagRight,
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 13,
+                            fontSize: _kTableHeaderFontSize,
                           ),
                           textAlign: TextAlign.center,
                         ),
@@ -107,7 +108,7 @@ class _CattleListWithEventsState extends State<CattleListWithEvents> {
                           l10n.eartagLeft,
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 13,
+                            fontSize: _kTableHeaderFontSize,
                           ),
                           textAlign: TextAlign.center,
                         ),
@@ -118,22 +119,12 @@ class _CattleListWithEventsState extends State<CattleListWithEvents> {
                           l10n.tracker,
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 13,
+                            fontSize: _kTableHeaderFontSize,
                           ),
                           textAlign: TextAlign.center,
                         ),
                       ),
-                      Expanded(
-                        flex: 2,
-                        child: Text(
-                          l10n.actions,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 13,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
+                      const SizedBox(width: _kActionsColumnWidth),
                     ],
                   ),
                 ),
@@ -180,25 +171,26 @@ class _CattleListWithEventsState extends State<CattleListWithEvents> {
                                               .primary
                                               .withValues(alpha: 0.1)
                                           : null,
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 2,
-                                    horizontal: 2,
-                                  ),
+                                  padding: _kTableRowPadding,
                                   child: Row(
                                     children: [
                                       Expanded(
-                                        flex: 2,
+                                        flex: 1,
                                         child: Text(
                                           cattle['number'] ?? '—',
-                                          style: const TextStyle(fontSize: 12),
+                                          style: const TextStyle(
+                                            fontSize: _kTableRowFontSize,
+                                          ),
                                           textAlign: TextAlign.center,
                                         ),
                                       ),
                                       Expanded(
-                                        flex: 2,
+                                        flex: 1,
                                         child: Text(
-                                          '${cattle['receivedWeight'] ?? '—'} kg',
-                                          style: const TextStyle(fontSize: 12),
+                                          '${cattle['receivedWeight'] ?? '—'}',
+                                          style: const TextStyle(
+                                            fontSize: _kTableRowFontSize,
+                                          ),
                                           textAlign: TextAlign.center,
                                         ),
                                       ),
@@ -206,7 +198,9 @@ class _CattleListWithEventsState extends State<CattleListWithEvents> {
                                         flex: 1,
                                         child: Text(
                                           _eartagRight(cattle),
-                                          style: const TextStyle(fontSize: 12),
+                                          style: const TextStyle(
+                                            fontSize: _kTableRowFontSize,
+                                          ),
                                           textAlign: TextAlign.center,
                                         ),
                                       ),
@@ -214,7 +208,9 @@ class _CattleListWithEventsState extends State<CattleListWithEvents> {
                                         flex: 1,
                                         child: Text(
                                           _eartagLeft(cattle),
-                                          style: const TextStyle(fontSize: 12),
+                                          style: const TextStyle(
+                                            fontSize: _kTableRowFontSize,
+                                          ),
                                           textAlign: TextAlign.center,
                                         ),
                                       ),
@@ -222,27 +218,44 @@ class _CattleListWithEventsState extends State<CattleListWithEvents> {
                                         flex: 2,
                                         child: Text(
                                           cattle['deviceName'] ?? '—',
-                                          style: const TextStyle(fontSize: 12),
+                                          style: const TextStyle(
+                                            fontSize: _kTableRowFontSize,
+                                          ),
                                           textAlign: TextAlign.center,
                                         ),
                                       ),
-                                      Expanded(
-                                        flex: 2,
-                                        child: Center(
-                                          child: Wrap(
-                                            alignment: WrapAlignment.center,
-                                            spacing: 4,
-                                            children: [
-                                              if (widget.canEditCattle)
-                                                IconButton(
+                                      SizedBox(
+                                        width: _kActionsColumnWidth,
+                                        height: _kEditIconSize,
+                                        child:
+                                            widget.canEditCattle
+                                                ? IconButton(
                                                   tooltip: l10n.edit,
+                                                  padding: EdgeInsets.zero,
+                                                  constraints:
+                                                      const BoxConstraints.tightFor(
+                                                        width:
+                                                            _kActionsColumnWidth,
+                                                        height: _kEditIconSize,
+                                                      ),
+                                                  style: IconButton.styleFrom(
+                                                    tapTargetSize:
+                                                        MaterialTapTargetSize
+                                                            .shrinkWrap,
+                                                    minimumSize: const Size(
+                                                      _kActionsColumnWidth,
+                                                      _kEditIconSize,
+                                                    ),
+                                                    fixedSize: const Size(
+                                                      _kActionsColumnWidth,
+                                                      _kEditIconSize,
+                                                    ),
+                                                  ),
                                                   icon: const Icon(
                                                     Icons.edit,
-                                                    size: 18,
+                                                    size: _kEditIconSize,
                                                     color: Colors.blue,
                                                   ),
-                                                  visualDensity:
-                                                      VisualDensity.compact,
                                                   onPressed: () async {
                                                     final saved = await showDialog<
                                                       bool
@@ -266,52 +279,8 @@ class _CattleListWithEventsState extends State<CattleListWithEvents> {
                                                           ?.call();
                                                     }
                                                   },
-                                                ),
-                                              ElevatedButton.icon(
-                                                onPressed: () async {
-                                                  await showDialog(
-                                                    context: context,
-                                                    builder:
-                                                        (
-                                                          context,
-                                                        ) => AssignLotDialog(
-                                                          availableLots:
-                                                              widget
-                                                                  .availableLots,
-                                                          onAssign: (lotId) {
-                                                            widget.onAssignLot(
-                                                              cattle['id'],
-                                                              lotId,
-                                                            );
-                                                          },
-                                                        ),
-                                                  );
-                                                },
-                                                icon: const Icon(
-                                                  Icons.playlist_add,
-                                                  size: 14,
-                                                ),
-                                                label: Text(
-                                                  l10n.assignSomething(
-                                                    l10n.lot,
-                                                  ),
-                                                  style: const TextStyle(
-                                                    fontSize: 12,
-                                                  ),
-                                                ),
-                                                style: ElevatedButton.styleFrom(
-                                                  visualDensity:
-                                                      VisualDensity.compact,
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                        horizontal: 6,
-                                                        vertical: 2,
-                                                      ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
+                                                )
+                                                : null,
                                       ),
                                     ],
                                   ),

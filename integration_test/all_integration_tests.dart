@@ -419,7 +419,6 @@ void main() {
                   },
                 ],
                 availableLots: [],
-                onAssignLot: (_, __) {},
                 canEditCattle: true,
               ),
             ),
@@ -430,6 +429,10 @@ void main() {
       final edit = find.byIcon(Icons.edit);
       expect(edit, findsOneWidget);
       expect(tester.widget<Icon>(edit).color, Colors.blue);
+      expect(tester.widget<Icon>(edit).size, 18);
+      final context = tester.element(find.byType(MaterialApp));
+      final l10n = AppLocalizations.of(context)!;
+      expect(find.text(l10n.actions), findsNothing);
       expect(tester.takeException(), isNull);
     },
   );

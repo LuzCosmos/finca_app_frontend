@@ -4,6 +4,8 @@ import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/shared/features/purchase_reception/widgets/cattle_list_with_events.dart';
 import 'package:finca_app_frontend/modules/shared/features/purchase_reception/widgets/edit_received_cattle_dialog.dart';
 
+import '../purchase_reception_list_table_test_support.dart';
+
 Widget _wrap(Widget child) {
   return MaterialApp(
     locale: const Locale('es'),
@@ -27,7 +29,6 @@ void main() {
             },
           ],
           availableLots: [],
-          onAssignLot: (_, __) {},
           canEditCattle: false,
         ),
       ),
@@ -35,6 +36,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byIcon(Icons.edit), findsNothing);
+    expectNoActionsColumnHeaderLabel(tester);
   });
 
   testWidgets('con permiso muestra editar azul y abre diálogo', (tester) async {
@@ -52,7 +54,6 @@ void main() {
           availableLots: [
             {'id': 'lot-1', 'lotNumber': 1},
           ],
-          onAssignLot: (_, __) {},
           canEditCattle: true,
           currentLotId: 'lot-1',
         ),
@@ -60,19 +61,17 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    final editIcon = find.byIcon(Icons.edit);
-    expect(editIcon, findsOneWidget);
-    final icon = tester.widget<Icon>(editIcon);
-    expect(icon.color, Colors.blue);
+    expectCompactEditIconButton(tester);
+    expectNoActionsColumnHeaderLabel(tester);
 
-    await tester.tap(editIcon);
+    await tester.tap(find.byIcon(Icons.edit));
     await tester.pumpAndSettle();
 
     expect(find.byType(EditReceivedCattleDialog), findsOneWidget);
     expect(find.textContaining('42'), findsWidgets);
   });
 
-  testWidgets('muestra botón asignar lote junto a editar', (tester) async {
+  testWidgets('sin botón asignar lote (solo editar)', (tester) async {
     await tester.pumpWidget(
       _wrap(
         CattleListWithEvents(
@@ -87,14 +86,39 @@ void main() {
           availableLots: [
             {'id': 'lot-1', 'lotNumber': 1},
           ],
-          onAssignLot: (_, __) {},
           canEditCattle: true,
         ),
       ),
     );
     await tester.pumpAndSettle();
 
-    expect(find.byIcon(Icons.playlist_add), findsOneWidget);
+    expect(find.byIcon(Icons.playlist_add), findsNothing);
     expect(find.byIcon(Icons.edit), findsOneWidget);
+  });
+
+  testWidgets('cabecera sin etiqueta Acciones y filas con tipografía 14px', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _wrap(
+        CattleListWithEvents(
+          cattle: [
+            {
+              'id': 'c1',
+              'number': '7',
+              'receivedWeight': 300,
+              'appliedEvents': <dynamic>[],
+            },
+          ],
+          availableLots: [],
+          canEditCattle: true,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expectNoActionsColumnHeaderLabel(tester);
+    expectTableHeaderTypography(tester, find.byType(CattleListWithEvents));
+    expectTableRowTypography(tester, find.byType(CattleListWithEvents));
   });
 }
