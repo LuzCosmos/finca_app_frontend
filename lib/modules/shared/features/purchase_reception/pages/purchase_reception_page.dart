@@ -16,6 +16,7 @@ import 'package:finca_app_frontend/modules/shared/features/purchase_reception/wi
 import 'package:finca_app_frontend/modules/shared/features/purchase_reception/widgets/cattle_list_with_events.dart';
 import 'package:finca_app_frontend/modules/shared/features/purchase_reception/widgets/unassigned_cattle_list.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
+import 'package:finca_app_frontend/core/services/session_service.dart';
 
 class PurchaseReceptionPage extends StatefulWidget {
   final String purchaseId;
@@ -38,12 +39,25 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
   String? initialCattleNumber;
   String currentCattleNumber = '';
   bool isLoading = true;
+  bool _canUpdateReception = false;
 
   @override
   void initState() {
     super.initState();
     api = ReceptionApiService();
+    _loadPermissions();
     _load();
+  }
+
+  Future<void> _loadPermissions() async {
+    final canUpdate = await SessionService.hasActionPermission(
+      'RECEPTION',
+      'receptions',
+      'update',
+    );
+    if (mounted) {
+      setState(() => _canUpdateReception = canUpdate);
+    }
   }
 
   void setidMassiveEvent(String id) {
@@ -544,6 +558,8 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
                                 cattle: selectedCattle,
                                 availableLots: lots,
                                 onAssignLot: _assignLot,
+                                canEditCattle: _canUpdateReception,
+                                onCattleUpdated: _load,
                               ),
                             ),
                           ],

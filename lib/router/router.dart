@@ -64,6 +64,23 @@ GoRouter createAppRouter({
             ),
       ),
       GoRoute(
+        path: '/purchases/edit/:id',
+        builder: (context, state) {
+          final id = state.pathParameters['id']!;
+          final extra = state.extra;
+          String? providerName;
+          if (extra is Map<String, dynamic>) {
+            providerName = extra['providerName'] as String?;
+          }
+          return OnlineFeatureGate(
+            child: PurchaseFormPage(
+              purchaseId: id,
+              initialProviderName: providerName,
+            ),
+          );
+        },
+      ),
+      GoRoute(
         path: '/purchases',
         name: 'purchasesList',
         builder:

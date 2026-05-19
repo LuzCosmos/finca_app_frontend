@@ -1489,6 +1489,30 @@ class AppLocalizationsEs extends AppLocalizations {
   String get purchase_saveError => 'Falló el guardado de compra.';
 
   @override
+  String get purchase_editTitle => 'Editar compra';
+
+  @override
+  String get purchase_editSuccess => 'Compra actualizada correctamente.';
+
+  @override
+  String get purchase_editLoadError =>
+      'No se pudo cargar la compra para editar.';
+
+  @override
+  String get purchase_editSaveError => 'No se pudo guardar la compra.';
+
+  @override
+  String get purchase_editForbiddenReceived =>
+      'No se puede editar una compra ya recibida.';
+
+  @override
+  String get purchase_editForbiddenReceptionStarted =>
+      'No se puede editar: la recepción ya comenzó.';
+
+  @override
+  String get reception_cattleEditSuccess => 'Datos de la res actualizados.';
+
+  @override
   String get cp_error_noLots => 'Debe agregar al menos un lote';
 
   @override
