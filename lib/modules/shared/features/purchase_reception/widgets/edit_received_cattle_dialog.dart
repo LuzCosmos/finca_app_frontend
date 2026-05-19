@@ -615,21 +615,6 @@ class _EditReceivedCattleDialogState extends State<EditReceivedCattleDialog> {
                         },
                       ),
                     ),
-                    /*SizedBox(
-                      width: 110,
-                      child: CheckboxListTile(
-                        value: _hasHorns,
-                        onChanged:
-                            (v) => setState(() => _hasHorns = v ?? false),
-                        title: Text(
-                          l10n.hasHorns,
-                          style: const TextStyle(fontSize: 14),
-                        ),
-                        dense: true,
-                        controlAffinity: ListTileControlAffinity.leading,
-                        contentPadding: EdgeInsets.zero,
-                      ),
-                    ),*/
                     SizedBox(
                       width: 110,
                       child: Row(
@@ -641,7 +626,6 @@ class _EditReceivedCattleDialogState extends State<EditReceivedCattleDialog> {
                             onChanged:
                                 (v) => setState(() => _hasHorns = v ?? false),
                           ),
-                          const SizedBox(width: 2),
                           Expanded(
                             child: Text(
                               l10n.hasHorns,
@@ -653,17 +637,22 @@ class _EditReceivedCattleDialogState extends State<EditReceivedCattleDialog> {
                     ),
                     SizedBox(
                       width: 120,
-                      child: CheckboxListTile(
-                        value: _isCastrated,
-                        onChanged:
-                            (v) => setState(() => _isCastrated = v ?? false),
-                        title: Text(
-                          l10n.isCastrated,
-                          style: const TextStyle(fontSize: 14),
-                        ),
-                        dense: true,
-                        controlAffinity: ListTileControlAffinity.leading,
-                        contentPadding: EdgeInsets.zero,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Checkbox(
+                            value: _isCastrated,
+                            onChanged:
+                                (v) =>
+                                    setState(() => _isCastrated = v ?? false),
+                          ),
+                          Expanded(
+                            child: Text(
+                              l10n.isCastrated,
+                              style: receptionFormFieldTextStyle(context),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     SizedBox(

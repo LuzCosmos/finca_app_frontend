@@ -96,6 +96,42 @@ void main() {
     expect(find.byIcon(Icons.edit), findsOneWidget);
   });
 
+  testWidgets('evento castración muestra etiqueta localizada, no el id', (
+    tester,
+  ) async {
+    final l10n = await AppLocalizations.delegate.load(const Locale('es'));
+
+    await tester.pumpWidget(
+      _wrap(
+        CattleListWithEvents(
+          cattle: [
+            {
+              'id': 'c1',
+              'number': '1',
+              'receivedWeight': 300,
+              'appliedEvents': [
+                {
+                  'id': 'ase-1',
+                  'type': 'castration',
+                  'data': null,
+                  'appliedAt': '2025-06-01T10:00:00.000Z',
+                },
+              ],
+            },
+          ],
+          availableLots: [],
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('1'));
+    await tester.pumpAndSettle();
+
+    expect(find.text(l10n.eventTypeCastration), findsOneWidget);
+    expect(find.text('ase-1'), findsNothing);
+  });
+
   testWidgets('cabecera sin etiqueta Acciones y filas con tipografía 14px', (
     tester,
   ) async {

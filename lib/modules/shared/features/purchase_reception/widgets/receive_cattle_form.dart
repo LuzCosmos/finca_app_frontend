@@ -418,24 +418,6 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                       },
                     ),
                   ),
-
-                  // Has Horns Checkbox
-                  /*SizedBox(
-                    width: 110,
-                    child: CheckboxListTile(
-                      value: hasHorns,
-                      onChanged: (value) {
-                        setState(() => hasHorns = value ?? false);
-                      },
-                      title: Text(
-                        l10n.hasHorns,
-                        style: const TextStyle(fontSize: 14),
-                      ),
-                      dense: true,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      contentPadding: EdgeInsets.zero,
-                    ),
-                  ),*/
                   SizedBox(
                     width: 110,
                     child: Row(
@@ -461,21 +443,24 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                   // Is Castrated Checkbox
                   SizedBox(
                     width: 120,
-                    child: CheckboxListTile(
-                      value: isCastrated,
-                      onChanged: (value) {
-                        setState(() => isCastrated = value ?? false);
-                      },
-                      title: Text(
-                        l10n.isCastrated,
-                        style: const TextStyle(fontSize: 14),
-                      ),
-                      dense: true,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      contentPadding: EdgeInsets.zero,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Checkbox(
+                          value: isCastrated,
+                          onChanged: (value) {
+                            setState(() => isCastrated = value ?? false);
+                          },
+                        ),
+                        Expanded(
+                          child: Text(
+                            l10n.isCastrated,
+                            style: receptionFormFieldTextStyle(context),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-
                   // Fecha aprox. — diálogo compartido con lista maestra (+ dentición)
                   SizedBox(
                     width: 420,

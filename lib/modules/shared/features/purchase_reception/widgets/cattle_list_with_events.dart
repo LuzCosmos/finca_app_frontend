@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:finca_app_frontend/core/utils/date_time_helper.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
+import 'package:finca_app_frontend/modules/shared/features/purchase_reception/utils/applied_reception_event_label.dart';
 import 'package:finca_app_frontend/modules/shared/features/purchase_reception/widgets/edit_received_cattle_dialog.dart';
 
 const _kTableHeaderFontSize = 15.0;
@@ -360,7 +361,7 @@ class _CattleListWithEventsState extends State<CattleListWithEvents> {
                   ..._buildBrandInfo(data, l10n)
                 else
                   Text(
-                    event['id'] ?? 'Event',
+                    appliedReceptionEventTitle(context, event, l10n),
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 if (event['appliedAt'] != null) ...[
