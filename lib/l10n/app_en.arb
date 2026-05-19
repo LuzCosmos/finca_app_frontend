@@ -948,7 +948,7 @@
   "devicesList_noBatteryData": "No data",
   "@devicesList_noBatteryData": { "description": "Shown when battery status is unknown." },
   "devicesList_importButton": "Import",
-  "@devicesList_importButton": { "description": "Button to open LW001 bulk import (web only)." },
+  "@devicesList_importButton": { "description": "Button to open LW001 bulk import." },
 
   "importLw001_pageTitle": "Import LW001-BG PRO devices",
   "@importLw001_pageTitle": { "description": "Title of bulk import screen." },
@@ -991,6 +991,7 @@
   "importLw001_reason_DEVEUI_ALREADY_EXISTS_UPDATED": "DevEUI already existed in your tenant; device was updated.",
   "importLw001_reason_DEVICE_PROFILE_ID_REQUIRED": "A default device profile is required in the form.",
   "importLw001_reason_DEVICE_PROFILE_ID_INVALID": "Device profile is missing or invalid for this tenant.",
+  "importLw001_reason_CHIRPSTACK_PROFILE_ID_REQUIRED": "The device profile has no ChirpStack profile ID (idChipstack). Configure it before importing.",
   "importLw001_reason_JOINEUI_INVALID": "JoinEUI must be 16 hexadecimal characters.",
   "importLw001_reason_APP_KEY_INVALID": "App Key must be 32 hexadecimal characters.",
   "importLw001_reason_APP_KEY_SCIENTIFIC_NOTATION": "App Key looks like Excel scientific notation; format the cell as text.",

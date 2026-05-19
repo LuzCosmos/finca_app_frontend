@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
+import 'package:finca_app_frontend/modules/shared/features/devices/pages/import_lw001_devices_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/dashboard/page/dashboard_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/bloc/massive_event_bloc.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/pages/massive_event_list_page.dart';
@@ -207,6 +208,33 @@ void main() {
     expect(find.byType(CattleMasterListPage), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets(
+    'autenticado con create en devices: /equipment-resources/import (sin bloqueo móvil)',
+    (tester) async {
+      SessionService.resetForTesting();
+      SharedPreferences.setMockInitialValues({});
+      await SessionService.saveSession(
+        token: 't',
+        permissions: <String, dynamic>{
+          'PROD_CENTER': <String, dynamic>{'devices': '10000'},
+        },
+        idTenant: 'tid',
+        idUser: 'uid',
+      );
+
+      final router = createAppRouter(
+        hasValidToken: () => true,
+        initialLocation: '/equipment-resources/import',
+      );
+      await tester.pumpWidget(buildRouterTestHost(router));
+      await pumpRouterFrames(tester);
+      await tester.pump();
+
+      expect(find.byType(ImportLw001DevicesPage), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
 
   testWidgets('goNamed purchasesList abre PurchasesListPage', (tester) async {
     final router = createAppRouter(
