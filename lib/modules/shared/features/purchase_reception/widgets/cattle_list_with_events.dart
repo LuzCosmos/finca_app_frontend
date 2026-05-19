@@ -70,7 +70,7 @@ class _CattleListWithEventsState extends State<CattleListWithEvents> {
                   child: Row(
                     children: [
                       Expanded(
-                        flex: 2,
+                        flex: 1,
                         child: Text(
                           l10n.number,
                           style: const TextStyle(
@@ -81,7 +81,7 @@ class _CattleListWithEventsState extends State<CattleListWithEvents> {
                         ),
                       ),
                       Expanded(
-                        flex: 2,
+                        flex: 1,
                         child: Text(
                           l10n.weightKg,
                           style: const TextStyle(

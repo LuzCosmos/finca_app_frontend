@@ -62,8 +62,7 @@ class _EditReceivedCattleDialogState extends State<EditReceivedCattleDialog> {
   late final TextEditingController _dentalEvaluationDateCtrl;
   final _trackerFocusNode = FocusNode();
 
-  final List<String> _colors =
-      CattleColor.values.map((e) => e.name).toList();
+  final List<String> _colors = CattleColor.values.map((e) => e.name).toList();
   final List<String> _characteristicOptions =
       CattleCharacteristic.values.map((e) => e.name).toList();
 
@@ -111,9 +110,7 @@ class _EditReceivedCattleDialogState extends State<EditReceivedCattleDialog> {
     );
     _permanentTeethCountCtrl = TextEditingController(
       text:
-          c['permanentTeethCount'] != null
-              ? '${c['permanentTeethCount']}'
-              : '',
+          c['permanentTeethCount'] != null ? '${c['permanentTeethCount']}' : '',
     );
     _dentalEvaluationDateCtrl = TextEditingController(
       text:
@@ -131,15 +128,13 @@ class _EditReceivedCattleDialogState extends State<EditReceivedCattleDialog> {
     _milkTeethWearValue = c['milkTeethWear'] as int?;
     _permanentTeethWearValue = c['permanentTeethWear'] as int?;
     _selectedCharacteristicIds = List<String>.from(
-      (c['characteristics'] as List<dynamic>?)?.map((e) => e.toString()) ??
-          [],
+      (c['characteristics'] as List<dynamic>?)?.map((e) => e.toString()) ?? [],
     );
     final deviceId = c['idDevice']?.toString();
     _selectedDeviceId =
         deviceId != null && deviceId.isNotEmpty ? deviceId : null;
-    _lastSelectedDeviceName = _trackerCtrl.text.trim().isEmpty
-        ? null
-        : _trackerCtrl.text.trim();
+    _lastSelectedDeviceName =
+        _trackerCtrl.text.trim().isEmpty ? null : _trackerCtrl.text.trim();
 
     final genderRaw = c['gender']?.toString();
     if (genderRaw != null) {
@@ -214,7 +209,9 @@ class _EditReceivedCattleDialogState extends State<EditReceivedCattleDialog> {
     super.dispose();
   }
 
-  Future<void> _openApproxBirthEditDialog({bool preferDentition = false}) async {
+  Future<void> _openApproxBirthEditDialog({
+    bool preferDentition = false,
+  }) async {
     final mc = int.tryParse(_milkTeethCountCtrl.text.trim());
     final pc = int.tryParse(_permanentTeethCountCtrl.text.trim());
     final birthText = _birthDateAprxCtrl.text.trim();
@@ -223,8 +220,7 @@ class _EditReceivedCattleDialogState extends State<EditReceivedCattleDialog> {
       context: context,
       builder:
           (ctx) => ApproxBirthDateEditDialog(
-            initialBirthDateAprxDisplay:
-                birthText.isEmpty ? null : birthText,
+            initialBirthDateAprxDisplay: birthText.isEmpty ? null : birthText,
             milkTeethCount: mc,
             permanentTeethCount: pc,
             milkTeethWear: _milkTeethWearValue,
@@ -262,8 +258,7 @@ class _EditReceivedCattleDialogState extends State<EditReceivedCattleDialog> {
 
   Future<void> _pickDentalEvaluationDate() async {
     final now = DateTime.now();
-    final initial =
-        DateTime.tryParse(_dentalEvaluationDateCtrl.text) ?? now;
+    final initial = DateTime.tryParse(_dentalEvaluationDateCtrl.text) ?? now;
     final picked = await showDatePicker(
       context: context,
       initialDate: initial,
@@ -577,17 +572,21 @@ class _EditReceivedCattleDialogState extends State<EditReceivedCattleDialog> {
                         decoration: receptionFormInputDecoration(
                           labelText: l10n.lot,
                         ),
-                        style: kReceptionFormFieldTextStyle,
+                        style: receptionFormFieldTextStyle(context),
                         items: [
                           DropdownMenuItem<String>(
                             value: null,
-                            child: Text(l10n.withoutLot),
+                            child: Text(
+                              l10n.withoutLot,
+                              style: receptionFormFieldTextStyle(context),
+                            ),
                           ),
                           ...widget.availableLots.map(
                             (lot) => DropdownMenuItem<String>(
                               value: lot['id'] as String?,
                               child: Text(
                                 '${l10n.lot} ${lot['lotNumber'] ?? lot['id']}',
+                                style: receptionFormFieldTextStyle(context),
                               ),
                             ),
                           ),
@@ -596,11 +595,11 @@ class _EditReceivedCattleDialogState extends State<EditReceivedCattleDialog> {
                       ),
                     ),
                     SizedBox(
-                      width: 120,
+                      width: 90,
                       child: TextFormField(
                         key: const ValueKey('edit_cattle_weight'),
                         controller: _weightCtrl,
-                        style: kReceptionFormFieldTextStyle,
+                        style: receptionFormFieldTextStyle(context),
                         decoration: receptionFormInputDecoration(
                           labelText: l10n.weightKg,
                         ),
@@ -616,8 +615,8 @@ class _EditReceivedCattleDialogState extends State<EditReceivedCattleDialog> {
                         },
                       ),
                     ),
-                    SizedBox(
-                      width: 120,
+                    /*SizedBox(
+                      width: 110,
                       child: CheckboxListTile(
                         value: _hasHorns,
                         onChanged:
@@ -630,9 +629,30 @@ class _EditReceivedCattleDialogState extends State<EditReceivedCattleDialog> {
                         controlAffinity: ListTileControlAffinity.leading,
                         contentPadding: EdgeInsets.zero,
                       ),
+                    ),*/
+                    SizedBox(
+                      width: 110,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Checkbox(
+                            value: _hasHorns,
+                            visualDensity: VisualDensity.compact,
+                            onChanged:
+                                (v) => setState(() => _hasHorns = v ?? false),
+                          ),
+                          const SizedBox(width: 2),
+                          Expanded(
+                            child: Text(
+                              l10n.hasHorns,
+                              style: receptionFormFieldTextStyle(context),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                     SizedBox(
-                      width: 125,
+                      width: 120,
                       child: CheckboxListTile(
                         value: _isCastrated,
                         onChanged:
@@ -655,7 +675,7 @@ class _EditReceivedCattleDialogState extends State<EditReceivedCattleDialog> {
                             child: TextFormField(
                               controller: _birthDateAprxCtrl,
                               readOnly: true,
-                              style: kReceptionFormFieldTextStyle,
+                              style: receptionFormFieldTextStyle(context),
                               decoration: receptionFormInputDecoration(
                                 labelText: l10n.approxBirthDate,
                                 suffixIcon: const Icon(Icons.edit_calendar),
@@ -677,20 +697,25 @@ class _EditReceivedCattleDialogState extends State<EditReceivedCattleDialog> {
                       ),
                     ),
                     SizedBox(
-                      width: 120,
+                      width: 105,
                       child: DropdownButtonFormField<CattleGender>(
                         value: _selectedGender,
                         isExpanded: true,
                         decoration: receptionFormInputDecoration(
                           labelText: l10n.gender,
                         ),
-                        style: kReceptionFormFieldTextStyle,
+                        style: receptionFormFieldTextStyle(context),
                         items:
                             CattleGender.values
                                 .map(
                                   (g) => DropdownMenuItem(
                                     value: g,
-                                    child: Text(g.localizedName(context)),
+                                    child: Text(
+                                      g.localizedName(context),
+                                      style: receptionFormFieldTextStyle(
+                                        context,
+                                      ),
+                                    ),
                                   ),
                                 )
                                 .toList(),
@@ -701,26 +726,31 @@ class _EditReceivedCattleDialogState extends State<EditReceivedCattleDialog> {
                       ),
                     ),
                     SizedBox(
-                      width: 180,
+                      width: 150,
                       child: DropdownButtonFormField<String>(
                         value: _selectedColor,
                         isExpanded: true,
                         decoration: receptionFormInputDecoration(
                           labelText: l10n.color,
                         ),
-                        style: kReceptionFormFieldTextStyle,
-                        validator:
-                            (v) => v == null ? l10n.fieldRequired : null,
+                        style: receptionFormFieldTextStyle(context),
+                        validator: (v) => v == null ? l10n.fieldRequired : null,
                         items: [
-                          const DropdownMenuItem<String>(
+                          DropdownMenuItem<String>(
                             value: null,
-                            child: Text('—'),
+                            child: Text(
+                              '—',
+                              style: receptionFormFieldTextStyle(context),
+                            ),
                           ),
                           ..._colors.map((color) {
                             final enumVal = CattleColor.fromString(color);
                             return DropdownMenuItem(
                               value: color,
-                              child: Text(enumVal.localizedName(context)),
+                              child: Text(
+                                enumVal.localizedName(context),
+                                style: receptionFormFieldTextStyle(context),
+                              ),
                             );
                           }),
                         ],
@@ -732,13 +762,14 @@ class _EditReceivedCattleDialogState extends State<EditReceivedCattleDialog> {
                       icon: const Icon(Icons.list),
                       label: Text(
                         '${l10n.characteristics} (${_selectedCharacteristicIds.length})',
+                        style: TextStyle(fontSize: kReceptionFormFieldFontSize),
                       ),
                     ),
                     SizedBox(
                       width: 180,
                       child: TextFormField(
                         controller: _eartagRightCtrl,
-                        style: kReceptionFormFieldTextStyle,
+                        style: receptionFormFieldTextStyle(context),
                         decoration: receptionFormInputDecoration(
                           labelText: l10n.eartagRight,
                           errorText: _eartagRightExternalError,
@@ -772,7 +803,7 @@ class _EditReceivedCattleDialogState extends State<EditReceivedCattleDialog> {
                       width: 180,
                       child: TextFormField(
                         controller: _eartagLeftCtrl,
-                        style: kReceptionFormFieldTextStyle,
+                        style: receptionFormFieldTextStyle(context),
                         decoration: receptionFormInputDecoration(
                           labelText: l10n.eartagLeft,
                           errorText: _eartagLeftExternalError,
@@ -859,43 +890,46 @@ class _EditReceivedCattleDialogState extends State<EditReceivedCattleDialog> {
                         },
                         displayStringForOption: (o) => o.name,
                         fieldViewBuilder:
-                            (context, controller, focusNode, onFieldSubmitted) =>
-                                TextFormField(
-                                  controller: controller,
-                                  focusNode: focusNode,
-                                  autovalidateMode:
-                                      AutovalidateMode.onUserInteraction,
-                                  validator: (value) {
-                                    if (value != null &&
-                                        value.isNotEmpty &&
-                                        _selectedDeviceId == null) {
-                                      if (_deviceOptions.isEmpty) {
-                                        return l10n.trackerNotFound;
-                                      }
-                                      return l10n.trackerNotSelected;
-                                    }
-                                    return null;
-                                  },
-                                  style: kReceptionFormFieldTextStyle,
-                                  decoration: receptionFormInputDecoration(
-                                    labelText: l10n.tracker,
-                                    suffixIcon:
-                                        _deviceLoading
-                                            ? const Padding(
-                                              padding:
-                                                  kReceptionFormLoadingIconPadding,
-                                              child: SizedBox(
-                                                width: 16,
-                                                height: 16,
-                                                child:
-                                                    CircularProgressIndicator(
-                                                      strokeWidth: 2,
-                                                    ),
-                                              ),
-                                            )
-                                            : null,
-                                  ),
-                                ),
+                            (
+                              context,
+                              controller,
+                              focusNode,
+                              onFieldSubmitted,
+                            ) => TextFormField(
+                              controller: controller,
+                              focusNode: focusNode,
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                              validator: (value) {
+                                if (value != null &&
+                                    value.isNotEmpty &&
+                                    _selectedDeviceId == null) {
+                                  if (_deviceOptions.isEmpty) {
+                                    return l10n.trackerNotFound;
+                                  }
+                                  return l10n.trackerNotSelected;
+                                }
+                                return null;
+                              },
+                              style: receptionFormFieldTextStyle(context),
+                              decoration: receptionFormInputDecoration(
+                                labelText: l10n.tracker,
+                                suffixIcon:
+                                    _deviceLoading
+                                        ? const Padding(
+                                          padding:
+                                              kReceptionFormLoadingIconPadding,
+                                          child: SizedBox(
+                                            width: 16,
+                                            height: 16,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2,
+                                            ),
+                                          ),
+                                        )
+                                        : null,
+                              ),
+                            ),
                         optionsViewBuilder: (context, onSelected, options) {
                           return Align(
                             alignment: Alignment.topLeft,
@@ -936,7 +970,7 @@ class _EditReceivedCattleDialogState extends State<EditReceivedCattleDialog> {
                       width: 300,
                       child: TextFormField(
                         controller: _commentsCtrl,
-                        style: kReceptionFormFieldTextStyle,
+                        style: receptionFormFieldTextStyle(context),
                         decoration: receptionFormInputDecoration(
                           labelText: l10n.comments,
                         ),
@@ -989,7 +1023,7 @@ class _EditReceivedCattleDialogState extends State<EditReceivedCattleDialog> {
                                 width: 110,
                                 child: TextFormField(
                                   controller: _milkTeethCountCtrl,
-                                  style: kReceptionFormFieldTextStyle,
+                                  style: receptionFormFieldTextStyle(context),
                                   decoration: receptionFormInputDecoration(
                                     labelText: l10n.milkTeethCountShort,
                                   ),
@@ -1004,10 +1038,13 @@ class _EditReceivedCattleDialogState extends State<EditReceivedCattleDialog> {
                                   decoration: receptionFormInputDecoration(
                                     labelText: l10n.milkTeethWearShort,
                                   ),
-                                  style: kReceptionFormFieldTextStyle,
+                                  style: receptionFormFieldTextStyle(context),
                                   items: teethWearDropdownItems(
                                     l10n,
                                     allowedGrades: milkAllowed,
+                                    itemStyle: receptionFormFieldTextStyle(
+                                      context,
+                                    ),
                                   ),
                                   onChanged:
                                       (v) => setState(
@@ -1019,7 +1056,7 @@ class _EditReceivedCattleDialogState extends State<EditReceivedCattleDialog> {
                                 width: 110,
                                 child: TextFormField(
                                   controller: _permanentTeethCountCtrl,
-                                  style: kReceptionFormFieldTextStyle,
+                                  style: receptionFormFieldTextStyle(context),
                                   decoration: receptionFormInputDecoration(
                                     labelText: l10n.permanentTeethCountShort,
                                   ),
@@ -1034,10 +1071,13 @@ class _EditReceivedCattleDialogState extends State<EditReceivedCattleDialog> {
                                   decoration: receptionFormInputDecoration(
                                     labelText: l10n.permanentTeethWearShort,
                                   ),
-                                  style: kReceptionFormFieldTextStyle,
+                                  style: receptionFormFieldTextStyle(context),
                                   items: teethWearDropdownItems(
                                     l10n,
                                     allowedGrades: permAllowed,
+                                    itemStyle: receptionFormFieldTextStyle(
+                                      context,
+                                    ),
                                   ),
                                   onChanged:
                                       (v) => setState(
@@ -1050,7 +1090,7 @@ class _EditReceivedCattleDialogState extends State<EditReceivedCattleDialog> {
                                 child: TextFormField(
                                   controller: _dentalEvaluationDateCtrl,
                                   readOnly: true,
-                                  style: kReceptionFormFieldTextStyle,
+                                  style: receptionFormFieldTextStyle(context),
                                   decoration: receptionFormInputDecoration(
                                     labelText: l10n.dentalEvaluationDateShort,
                                     suffixIcon: const Icon(

@@ -429,7 +429,7 @@ class _HomePageState extends State<HomePage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              _homeSyncHelper.buildSyncSection(context, l10n),
+                              //_homeSyncHelper.buildSyncSection(context, l10n),
                               Expanded(
                                 child: Row(
                                   crossAxisAlignment:
@@ -525,7 +525,7 @@ class _HomePageState extends State<HomePage> {
                         key: const ValueKey<String>('home-compact-layout'),
                         child: Column(
                           children: [
-                            _homeSyncHelper.buildSyncSection(context, l10n),
+//_homeSyncHelper.buildSyncSection(context, l10n),
                             Expanded(
                               child: Center(
                                 child: Wrap(

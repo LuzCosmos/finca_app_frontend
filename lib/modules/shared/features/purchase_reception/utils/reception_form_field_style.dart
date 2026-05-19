@@ -8,13 +8,21 @@ const double kReceptionFormWrapSpacing = 8;
 
 /// Padding interno de [TextFormField] / [DropdownButtonFormField].
 const EdgeInsets kReceptionFormFieldContentPadding = EdgeInsets.symmetric(
-  horizontal: 10,
-  vertical: 8,
+  horizontal: 3,
+  vertical: 6,
 );
 
 const TextStyle kReceptionFormFieldLabelStyle = TextStyle(fontSize: 13);
 
-const TextStyle kReceptionFormFieldTextStyle = TextStyle(fontSize: 14);
+const double kReceptionFormFieldFontSize = 14;
+
+/// Texto visible en campos y dropdowns (evita heredar color claro del tema).
+TextStyle receptionFormFieldTextStyle(BuildContext context) {
+  return TextStyle(
+    fontSize: kReceptionFormFieldFontSize,
+    color: Theme.of(context).colorScheme.onSurface,
+  );
+}
 
 const EdgeInsets kReceptionFormLoadingIconPadding = EdgeInsets.all(8);
 
