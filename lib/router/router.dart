@@ -114,9 +114,11 @@ GoRouter createAppRouter({
         path: '/massive-events/create',
         builder: (context, state) {
           final dataSource = createMassiveEventPageDataSource();
-          return BlocProvider(
-            create: (_) => MassiveEventBloc(dataSource: dataSource),
-            child: const MassiveEventPage(),
+          return OnlineFeatureGate(
+            child: BlocProvider(
+              create: (_) => MassiveEventBloc(dataSource: dataSource),
+              child: const MassiveEventPage(),
+            ),
           );
         },
       ),
@@ -125,15 +127,18 @@ GoRouter createAppRouter({
         builder: (context, state) {
           final dataSource = createMassiveEventPageDataSource();
           final editId = state.uri.queryParameters['id'];
-          return BlocProvider(
-            create: (_) => MassiveEventBloc(dataSource: dataSource),
-            child: MassiveEventPage(initialMassiveEventId: editId),
+          return OnlineFeatureGate(
+            child: BlocProvider(
+              create: (_) => MassiveEventBloc(dataSource: dataSource),
+              child: MassiveEventPage(initialMassiveEventId: editId),
+            ),
           );
         },
       ),
       GoRoute(
         path: '/massive-events',
-        builder: (context, state) => const MassiveEventListPage(),
+        builder: (context, state) =>
+            const OnlineFeatureGate(child: MassiveEventListPage()),
       ),
       GoRoute(
         path: '/users',

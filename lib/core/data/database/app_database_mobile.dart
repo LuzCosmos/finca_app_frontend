@@ -57,8 +57,10 @@ LazyDatabase _openConnection() {
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
+  AppDatabase.forTesting(super.executor);
+
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -92,6 +94,18 @@ class AppDatabase extends _$AppDatabase {
           ),
         );
       }
+      if (from < 5) {
+        await purgeOfflineSyncTables(m.database);
+      }
     },
   );
+}
+
+/// Vacía tablas usadas solo para cola/sync offline (HU móvil online-only).
+/// No afecta `sale_local` ni otras tablas de otros módulos.
+Future<void> purgeOfflineSyncTables(GeneratedDatabase db) async {
+  await db.customStatement('DELETE FROM massive_event_local');
+  await db.customStatement('DELETE FROM simple_event_local');
+  await db.customStatement('DELETE FROM animal_simple_event_local');
+  await db.customStatement('DELETE FROM brand_local');
 }
