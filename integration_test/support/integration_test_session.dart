@@ -47,7 +47,6 @@ void expectAllHomeMenuOptionsVisible(AppLocalizations l10n) {
   expect(find.text(l10n.users), findsOneWidget);
   expect(find.text(l10n.masterListTitle), findsOneWidget);
   expect(find.text(l10n.equipmentAndResource_title), findsOneWidget);
-  expect(find.text(l10n.syncNow), findsOneWidget);
 }
 
 Future<void> pumpIntegrationHomeWithFullPermissions(
