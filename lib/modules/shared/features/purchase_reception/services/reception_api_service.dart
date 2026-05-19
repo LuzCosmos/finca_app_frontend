@@ -214,21 +214,8 @@ class ReceptionApiService {
 
   Future<void> updateReceivedCattle({
     required String cattleId,
-    double? receivedWeight,
-    String? eartagLeft,
-    String? eartagRight,
-    String? idLot,
-    String? color,
-    String? comments,
+    required Map<String, dynamic> body,
   }) async {
-    final body = <String, dynamic>{
-      if (receivedWeight != null) 'receivedWeight': receivedWeight,
-      if (eartagLeft != null) 'eartagLeft': eartagLeft,
-      if (eartagRight != null) 'eartagRight': eartagRight,
-      if (idLot != null) 'idLot': idLot,
-      if (color != null) 'color': color,
-      if (comments != null) 'comments': comments,
-    };
     final r = await BasicApiService.authorizedPatch(
       Uri.parse('$baseUrl/received-cattle/$cattleId'),
       headers: {'Content-Type': 'application/json'},

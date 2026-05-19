@@ -11,6 +11,7 @@ class CattleListWithEvents extends StatefulWidget {
   final Function(String? cattleId)? onCattleSelected;
   final bool canEditCattle;
   final VoidCallback? onCattleUpdated;
+  final String? currentLotId;
 
   const CattleListWithEvents({
     super.key,
@@ -20,6 +21,7 @@ class CattleListWithEvents extends StatefulWidget {
     this.onCattleSelected,
     this.canEditCattle = false,
     this.onCattleUpdated,
+    this.currentLotId,
   });
 
   @override
@@ -235,25 +237,30 @@ class _CattleListWithEventsState extends State<CattleListWithEvents> {
                                                 IconButton(
                                                   tooltip: l10n.edit,
                                                   icon: const Icon(
-                                                    Icons.edit_outlined,
+                                                    Icons.edit,
                                                     size: 18,
+                                                    color: Colors.blue,
                                                   ),
                                                   visualDensity:
                                                       VisualDensity.compact,
                                                   onPressed: () async {
-                                                    final saved =
-                                                        await showDialog<bool>(
-                                                          context: context,
-                                                          builder:
-                                                              (
-                                                                _,
-                                                              ) => EditReceivedCattleDialog(
-                                                                cattle: cattle,
-                                                                availableLots:
-                                                                    widget
-                                                                        .availableLots,
-                                                              ),
-                                                        );
+                                                    final saved = await showDialog<
+                                                      bool
+                                                    >(
+                                                      context: context,
+                                                      builder:
+                                                          (
+                                                            _,
+                                                          ) => EditReceivedCattleDialog(
+                                                            cattle: cattle,
+                                                            availableLots:
+                                                                widget
+                                                                    .availableLots,
+                                                            initialLotId:
+                                                                widget
+                                                                    .currentLotId,
+                                                          ),
+                                                    );
                                                     if (saved == true) {
                                                       widget.onCattleUpdated
                                                           ?.call();

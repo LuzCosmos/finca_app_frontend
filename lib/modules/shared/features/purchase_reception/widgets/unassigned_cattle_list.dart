@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:finca_app_frontend/core/utils/date_time_helper.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/shared/features/purchase_reception/widgets/assign_lot_dialog.dart';
+import 'package:finca_app_frontend/modules/shared/features/purchase_reception/widgets/edit_received_cattle_dialog.dart';
 
 class UnassignedCattleList extends StatefulWidget {
   final List<Map<String, dynamic>> cattle;
   final List<Map<String, dynamic>> availableLots;
   final Function(String cattleId, String lotId) onAssignLot;
   final Function(String? cattleId)? onCattleSelected;
+  final bool canEditCattle;
+  final VoidCallback? onCattleUpdated;
 
   const UnassignedCattleList({
     super.key,
@@ -15,6 +18,8 @@ class UnassignedCattleList extends StatefulWidget {
     required this.availableLots,
     required this.onAssignLot,
     this.onCattleSelected,
+    this.canEditCattle = false,
+    this.onCattleUpdated,
   });
 
   @override
@@ -223,44 +228,83 @@ class _UnassignedCattleListState extends State<UnassignedCattleList> {
                                       Expanded(
                                         flex: 2,
                                         child: Center(
-                                          child: ElevatedButton.icon(
-                                            onPressed: () async {
-                                              await showDialog(
-                                                context: context,
-                                                builder:
-                                                    (
-                                                      context,
-                                                    ) => AssignLotDialog(
-                                                      availableLots:
-                                                          widget.availableLots,
-                                                      onAssign: (lotId) {
-                                                        widget.onAssignLot(
-                                                          animal['id'],
-                                                          lotId,
-                                                        );
-                                                      },
-                                                    ),
-                                              );
-                                            },
-                                            icon: const Icon(
-                                              Icons.playlist_add,
-                                              size: 14,
-                                            ),
-                                            label: Text(
-                                              l10n.assignSomething(l10n.lot),
-                                              style: const TextStyle(
-                                                fontSize: 11,
-                                              ),
-                                            ),
-                                            style: ElevatedButton.styleFrom(
-                                              visualDensity:
-                                                  VisualDensity.compact,
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                    horizontal: 6,
-                                                    vertical: 2,
+                                          child: Wrap(
+                                            alignment: WrapAlignment.center,
+                                            spacing: 4,
+                                            children: [
+                                              if (widget.canEditCattle)
+                                                IconButton(
+                                                  tooltip: l10n.edit,
+                                                  icon: const Icon(
+                                                    Icons.edit,
+                                                    size: 18,
+                                                    color: Colors.blue,
                                                   ),
-                                            ),
+                                                  visualDensity:
+                                                      VisualDensity.compact,
+                                                  onPressed: () async {
+                                                    final saved =
+                                                        await showDialog<bool>(
+                                                          context: context,
+                                                          builder:
+                                                              (
+                                                                _,
+                                                              ) => EditReceivedCattleDialog(
+                                                                cattle: animal,
+                                                                availableLots:
+                                                                    widget
+                                                                        .availableLots,
+                                                              ),
+                                                        );
+                                                    if (saved == true) {
+                                                      widget.onCattleUpdated
+                                                          ?.call();
+                                                    }
+                                                  },
+                                                ),
+                                              ElevatedButton.icon(
+                                                onPressed: () async {
+                                                  await showDialog(
+                                                    context: context,
+                                                    builder:
+                                                        (
+                                                          context,
+                                                        ) => AssignLotDialog(
+                                                          availableLots:
+                                                              widget
+                                                                  .availableLots,
+                                                          onAssign: (lotId) {
+                                                            widget.onAssignLot(
+                                                              animal['id'],
+                                                              lotId,
+                                                            );
+                                                          },
+                                                        ),
+                                                  );
+                                                },
+                                                icon: const Icon(
+                                                  Icons.playlist_add,
+                                                  size: 14,
+                                                ),
+                                                label: Text(
+                                                  l10n.assignSomething(
+                                                    l10n.lot,
+                                                  ),
+                                                  style: const TextStyle(
+                                                    fontSize: 11,
+                                                  ),
+                                                ),
+                                                style: ElevatedButton.styleFrom(
+                                                  visualDensity:
+                                                      VisualDensity.compact,
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                        horizontal: 6,
+                                                        vertical: 2,
+                                                      ),
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
                                       ),
