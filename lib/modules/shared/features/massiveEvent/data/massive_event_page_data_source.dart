@@ -23,14 +23,10 @@ class SaveAnimalSimpleEventsResult {
   final String? newMassiveEventId;
   final List<SimpleEventModel>? remappedSimpleEvents;
 
-  /// En móvil, `false` cuando solo se persistió en Drift a la espera de red.
-  final bool syncedWithServer;
-
   const SaveAnimalSimpleEventsResult({
     required this.animalSimpleEvents,
     this.newMassiveEventId,
     this.remappedSimpleEvents,
-    this.syncedWithServer = true,
   });
 }
 

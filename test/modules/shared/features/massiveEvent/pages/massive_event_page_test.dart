@@ -9,8 +9,6 @@ import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'package:finca_app_frontend/core/utils/language.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
-import 'package:finca_app_frontend/modules/mobile/bloc/sync_bloc.dart';
-import 'package:finca_app_frontend/modules/mobile/services/sync_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/bloc/massive_event_bloc.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/data/massive_event_page_data_source.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/domain/massive_event_session_load.dart';
@@ -25,13 +23,10 @@ import 'package:finca_app_frontend/modules/shared/features/massiveEvent/pages/ma
 // - lib/modules/shared/features/massiveEvent/widgets/event_config_panel.dart
 // - lib/modules/shared/features/massiveEvent/widgets/event_detail_form.dart
 // - lib/modules/shared/features/massiveEvent/bloc/massive_event_bloc.dart (provider)
-// - lib/modules/shared/features/massiveEvent/pages/massive_event_sync_listener_io.dart (SyncBloc)
 // - lib/modules/shared/widgets/finca_scaffold.dart (LocaleBloc, SessionService.isAuthenticated)
 
 class _MockMassiveEventDataSource extends Mock
     implements IMassiveEventPageDataSource {}
-
-class _MockSyncService extends Mock implements SyncService {}
 
 Finder _massiveEventNameField() {
   return find.descendant(
@@ -47,7 +42,6 @@ Future<void> enterMassiveEventName(WidgetTester tester, String name) async {
 
 void main() {
   late _MockMassiveEventDataSource dataSource;
-  late _MockSyncService syncService;
 
   setUpAll(() {
     registerFallbackValue(
@@ -68,10 +62,6 @@ void main() {
     SessionService.resetForTesting();
     SharedPreferences.setMockInitialValues({});
     dataSource = _MockMassiveEventDataSource();
-    syncService = _MockSyncService();
-    when(
-      () => syncService.syncAllInOrder(any()),
-    ).thenAnswer((_) async => <SyncResult>[]);
   });
 
   testWidgets('MassiveEventPage con BlocProvider: título L10n y panel config', (
@@ -92,7 +82,6 @@ void main() {
                 BlocProvider(
                   create: (_) => MassiveEventBloc(dataSource: dataSource),
                 ),
-                BlocProvider(create: (_) => SyncBloc(syncService)),
               ],
               child: const MassiveEventPage(),
             );
@@ -138,7 +127,6 @@ void main() {
                 BlocProvider(
                   create: (_) => MassiveEventBloc(dataSource: dataSource),
                 ),
-                BlocProvider(create: (_) => SyncBloc(syncService)),
               ],
               child: const MassiveEventPage(),
             );
@@ -178,7 +166,6 @@ void main() {
                   BlocProvider(
                     create: (_) => MassiveEventBloc(dataSource: dataSource),
                   ),
-                  BlocProvider(create: (_) => SyncBloc(syncService)),
                 ],
                 child: const MassiveEventPage(),
               );
@@ -295,7 +282,6 @@ void main() {
                 BlocProvider(
                   create: (_) => MassiveEventBloc(dataSource: dataSource),
                 ),
-                BlocProvider(create: (_) => SyncBloc(syncService)),
               ],
               child: const MassiveEventPage(),
             );
@@ -340,7 +326,6 @@ void main() {
                   BlocProvider(
                     create: (_) => MassiveEventBloc(dataSource: dataSource),
                   ),
-                  BlocProvider(create: (_) => SyncBloc(syncService)),
                 ],
                 child: const MassiveEventPage(),
               );
@@ -400,7 +385,6 @@ void main() {
                 BlocProvider(
                   create: (_) => MassiveEventBloc(dataSource: dataSource),
                 ),
-                BlocProvider(create: (_) => SyncBloc(syncService)),
               ],
               child: const MassiveEventPage(),
             );
@@ -467,7 +451,6 @@ void main() {
                 BlocProvider(
                   create: (_) => MassiveEventBloc(dataSource: dataSource),
                 ),
-                BlocProvider(create: (_) => SyncBloc(syncService)),
               ],
               child: const MassiveEventPage(),
             );
@@ -518,7 +501,6 @@ void main() {
                   BlocProvider(
                     create: (_) => MassiveEventBloc(dataSource: dataSource),
                   ),
-                  BlocProvider(create: (_) => SyncBloc(syncService)),
                 ],
                 child: const MassiveEventPage(),
               );
@@ -587,7 +569,6 @@ void main() {
                   BlocProvider(
                     create: (_) => MassiveEventBloc(dataSource: dataSource),
                   ),
-                  BlocProvider(create: (_) => SyncBloc(syncService)),
                 ],
                 child: const MassiveEventPage(initialMassiveEventId: 'me-1'),
               );

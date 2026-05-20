@@ -776,12 +776,6 @@ abstract class AppLocalizations {
   /// **'Massive Events'**
   String get massiveEvents;
 
-  /// Shown on mobile when a massive event exists locally but is not yet synced.
-  ///
-  /// In en, this message translates to:
-  /// **'This event is saved on the device and is pending synchronization with the server.'**
-  String get massiveEventPendingSync;
-
   /// No description provided for @massiveEventsListTitle.
   ///
   /// In en, this message translates to:
@@ -877,18 +871,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Created by'**
   String get massiveEventsColumnCreatedBy;
-
-  /// Table column: for server-backed web list this shows that data comes from the server.
-  ///
-  /// In en, this message translates to:
-  /// **'Sync / source'**
-  String get massiveEventsColumnSync;
-
-  /// Web list: row indicates data loaded from API (always synced with server for this view).
-  ///
-  /// In en, this message translates to:
-  /// **'Server'**
-  String get massiveEventsSyncOnServer;
 
   /// Massive event business status closed (list filter / chip).
   ///
@@ -1008,36 +990,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'OK'**
   String get dialogOk;
-
-  /// Home (mobile) button to upload pending massive events on the device.
-  ///
-  /// In en, this message translates to:
-  /// **'Sync massive events'**
-  String get syncNow;
-
-  /// SnackBar while massive-event sync runs on mobile.
-  ///
-  /// In en, this message translates to:
-  /// **'Syncing massive events…'**
-  String get syncMassiveEventsInProgress;
-
-  /// SnackBar when massive-event sync completes successfully.
-  ///
-  /// In en, this message translates to:
-  /// **'Massive events updated on the server'**
-  String get syncMassiveEventsSuccess;
-
-  /// SnackBar when massive-event sync fails.
-  ///
-  /// In en, this message translates to:
-  /// **'Could not sync massive events: {message}'**
-  String syncMassiveEventsFailure(String message);
-
-  /// Sync button label including pending item count.
-  ///
-  /// In en, this message translates to:
-  /// **'Sync massive events ({count})'**
-  String syncMassiveEventsWithPendingCount(int count);
 
   /// No description provided for @event.
   ///
@@ -2094,12 +2046,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No animals have been added yet'**
   String get noAnimals;
-
-  /// No description provided for @tableSynced.
-  ///
-  /// In en, this message translates to:
-  /// **'Synced'**
-  String get tableSynced;
 
   /// No description provided for @purchaseReceptionTitle.
   ///

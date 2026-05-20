@@ -191,10 +191,6 @@
   "cattlePurchase": "Compra de Ganado",
   "massiveEvent": "Evento masivo",
   "massiveEvents": "Eventos masivos",
-  "massiveEventPendingSync": "Este evento está guardado en el dispositivo y pendiente de sincronizar con el servidor.",
-  "@massiveEventPendingSync": {
-    "description": "Mensaje móvil cuando el evento masivo existe en local pero no está sincronizado."
-  },
   "massiveEventsListTitle": "Eventos masivos",
   "massiveEventsListEmpty": "No hay eventos masivos que mostrar.",
   "massiveEvents_createFirstEvent": "Crea tu primer evento masivo para comenzar",
@@ -220,14 +216,6 @@
   "massiveEventsColumnUpdatedAt": "Última modificación",
   "massiveEventsColumnCreatedAt": "Fecha creación",
   "massiveEventsColumnCreatedBy": "Creado por",
-  "massiveEventsColumnSync": "Sincronización / origen",
-  "@massiveEventsColumnSync": {
-    "description": "Columna: en lista web indica que el dato viene del servidor."
-  },
-  "massiveEventsSyncOnServer": "Servidor",
-  "@massiveEventsSyncOnServer": {
-    "description": "Lista web: la fila proviene de la API (vista siempre alineada con el servidor)."
-  },
   "massiveEventsStatusClosedLabel": "Cerrado",
   "@massiveEventsStatusClosedLabel": {
     "description": "Estado de negocio cerrado (filtro / chip en lista)."
@@ -315,32 +303,6 @@
   "dialogOk": "Aceptar",
   "@dialogOk": {
     "description": "Generic dismiss button for small dialogs."
-  },
-  "syncNow": "Sincronizar eventos masivos",
-  "@syncNow": {
-    "description": "Botón en inicio (móvil) para subir eventos masivos pendientes en el dispositivo."
-  },
-  "syncMassiveEventsInProgress": "Sincronizando eventos masivos…",
-  "@syncMassiveEventsInProgress": {
-    "description": "SnackBar mientras corre la sincronización de eventos masivos en móvil."
-  },
-  "syncMassiveEventsSuccess": "Eventos masivos actualizados en el servidor",
-  "@syncMassiveEventsSuccess": {
-    "description": "SnackBar al terminar bien la sincronización de eventos masivos."
-  },
-  "syncMassiveEventsFailure": "No se pudieron sincronizar los eventos masivos: {message}",
-  "@syncMassiveEventsFailure": {
-    "description": "SnackBar cuando falla la sincronización de eventos masivos.",
-    "placeholders": {
-      "message": { "type": "String" }
-    }
-  },
-  "syncMassiveEventsWithPendingCount": "Sincronizar eventos masivos ({count})",
-  "@syncMassiveEventsWithPendingCount": {
-    "description": "Botón de sincronización con cantidad de pendientes.",
-    "placeholders": {
-      "count": { "type": "int" }
-    }
   },
   "event": "Evento",
   "events": "Eventos",
@@ -549,8 +511,6 @@
   
 
   "noAnimals": "Aún no se han agregado animales",
-
-  "tableSynced": "Sincronizado",
 
   "purchaseReceptionTitle": "Recepción de compra",
   "purchaseBatchesTitle": "Lotes de la compra",

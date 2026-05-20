@@ -395,10 +395,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get massiveEvents => 'Eventos masivos';
 
   @override
-  String get massiveEventPendingSync =>
-      'Este evento está guardado en el dispositivo y pendiente de sincronizar con el servidor.';
-
-  @override
   String get massiveEventsListTitle => 'Eventos masivos';
 
   @override
@@ -452,12 +448,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get massiveEventsColumnCreatedBy => 'Creado por';
-
-  @override
-  String get massiveEventsColumnSync => 'Sincronización / origen';
-
-  @override
-  String get massiveEventsSyncOnServer => 'Servidor';
 
   @override
   String get massiveEventsStatusClosedLabel => 'Cerrado';
@@ -530,26 +520,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get dialogOk => 'Aceptar';
-
-  @override
-  String get syncNow => 'Sincronizar eventos masivos';
-
-  @override
-  String get syncMassiveEventsInProgress => 'Sincronizando eventos masivos…';
-
-  @override
-  String get syncMassiveEventsSuccess =>
-      'Eventos masivos actualizados en el servidor';
-
-  @override
-  String syncMassiveEventsFailure(String message) {
-    return 'No se pudieron sincronizar los eventos masivos: $message';
-  }
-
-  @override
-  String syncMassiveEventsWithPendingCount(int count) {
-    return 'Sincronizar eventos masivos ($count)';
-  }
 
   @override
   String get event => 'Evento';
@@ -1090,9 +1060,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get noAnimals => 'Aún no se han agregado animales';
-
-  @override
-  String get tableSynced => 'Sincronizado';
 
   @override
   String get purchaseReceptionTitle => 'Recepción de compra';

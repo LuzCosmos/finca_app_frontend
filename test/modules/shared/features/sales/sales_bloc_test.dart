@@ -17,7 +17,7 @@ import 'package:finca_app_frontend/modules/shared/features/sales/models/sale_mod
 
 class MockSalesDataSource extends Mock implements ISalesDataSource {}
 
-SaleModel fakeSale({String id = 'sale-1', bool isSynced = false}) {
+SaleModel fakeSale({String id = 'sale-1'}) {
   return SaleModel(
     id: id,
     idTenant: 'tenant-1',
@@ -28,7 +28,6 @@ SaleModel fakeSale({String id = 'sale-1', bool isSynced = false}) {
     totalAmount: 1000,
     totalWeight: 400,
     totalCount: 2,
-    isSynced: isSynced,
   );
 }
 
@@ -71,15 +70,6 @@ void main() {
       );
     });
 
-    test('LoadUnsyncedSales igualdad y props vacíos', () {
-      expect(LoadUnsyncedSales(), LoadUnsyncedSales());
-      expect(LoadUnsyncedSales().props, isEmpty);
-    });
-
-    test('SyncSalesTransaction igualdad y props vacíos', () {
-      expect(SyncSalesTransaction(), SyncSalesTransaction());
-      expect(SyncSalesTransaction().props, isEmpty);
-    });
   });
 
   group('SalesState', () {
@@ -126,15 +116,6 @@ void main() {
       expect(const SalesError('m1').props, ['m1']);
     });
 
-    test('UnsyncedSalesLoaded', () {
-      final sales = [fakeSale()];
-      expect(UnsyncedSalesLoaded(sales), UnsyncedSalesLoaded(sales));
-      expect(UnsyncedSalesLoaded(sales).props, [sales]);
-      expect(
-        UnsyncedSalesLoaded(sales),
-        isNot(UnsyncedSalesLoaded([fakeSale(id: 'x')])),
-      );
-    });
   });
 
   group('SalesBloc', () {
@@ -341,131 +322,6 @@ void main() {
           ],
       verify: (_) {
         verify(() => dataSource.saveSale(any())).called(1);
-        verifyNoMoreInteractions(dataSource);
-      },
-    );
-
-    blocTest<SalesBloc, SalesState>(
-      'LoadUnsyncedSales emite UnsyncedSalesLoaded',
-      build: () {
-        final sales = [fakeSale(id: 'u1')];
-        when(
-          () => dataSource.getUnsyncedSales(),
-        ).thenAnswer((_) async => sales);
-        return SalesBloc(dataSource: dataSource);
-      },
-      act: (bloc) => bloc.add(LoadUnsyncedSales()),
-      expect:
-          () => [
-            SalesLoading(),
-            UnsyncedSalesLoaded([fakeSale(id: 'u1')]),
-          ],
-      verify: (_) {
-        verify(() => dataSource.getUnsyncedSales()).called(1);
-        verifyNoMoreInteractions(dataSource);
-      },
-    );
-
-    blocTest<SalesBloc, SalesState>(
-      'LoadUnsyncedSales lista vacía',
-      build: () {
-        when(
-          () => dataSource.getUnsyncedSales(),
-        ).thenAnswer((_) async => <SaleModel>[]);
-        return SalesBloc(dataSource: dataSource);
-      },
-      act: (bloc) => bloc.add(LoadUnsyncedSales()),
-      expect:
-          () => [
-            SalesLoading(),
-            const UnsyncedSalesLoaded([]),
-          ],
-      verify: (_) {
-        verify(() => dataSource.getUnsyncedSales()).called(1);
-        verifyNoMoreInteractions(dataSource);
-      },
-    );
-
-    blocTest<SalesBloc, SalesState>(
-      'LoadUnsyncedSales error',
-      build: () {
-        when(
-          () => dataSource.getUnsyncedSales(),
-        ).thenThrow(Exception('no-list'));
-        return SalesBloc(dataSource: dataSource);
-      },
-      act: (bloc) => bloc.add(LoadUnsyncedSales()),
-      expect:
-          () => [
-            SalesLoading(),
-            const SalesError('Exception: no-list'),
-          ],
-      verify: (_) {
-        verify(() => dataSource.getUnsyncedSales()).called(1);
-        verifyNoMoreInteractions(dataSource);
-      },
-    );
-
-    blocTest<SalesBloc, SalesState>(
-      'SyncSalesTransaction delega en LoadUnsyncedSales al tener éxito',
-      build: () {
-        final sales = [fakeSale(id: 'synced-1')];
-        when(() => dataSource.syncSales()).thenAnswer((_) async {});
-        when(
-          () => dataSource.getUnsyncedSales(),
-        ).thenAnswer((_) async => sales);
-        return SalesBloc(dataSource: dataSource);
-      },
-      act: (bloc) => bloc.add(SyncSalesTransaction()),
-      expect:
-          () => [
-            SalesLoading(),
-            UnsyncedSalesLoaded([fakeSale(id: 'synced-1')]),
-          ],
-      verify: (_) {
-        verify(() => dataSource.syncSales()).called(1);
-        verify(() => dataSource.getUnsyncedSales()).called(1);
-        verifyNoMoreInteractions(dataSource);
-      },
-    );
-
-    blocTest<SalesBloc, SalesState>(
-      'SyncSalesTransaction error en syncSales',
-      build: () {
-        when(() => dataSource.syncSales()).thenThrow(Exception('sync-bad'));
-        return SalesBloc(dataSource: dataSource);
-      },
-      act: (bloc) => bloc.add(SyncSalesTransaction()),
-      expect:
-          () => [
-            SalesLoading(),
-            const SalesError('Exception: sync-bad'),
-          ],
-      verify: (_) {
-        verify(() => dataSource.syncSales()).called(1);
-        verifyNever(() => dataSource.getUnsyncedSales());
-        verifyNoMoreInteractions(dataSource);
-      },
-    );
-
-    blocTest<SalesBloc, SalesState>(
-      'SyncSalesTransaction sync ok pero falla getUnsyncedSales',
-      build: () {
-        when(() => dataSource.syncSales()).thenAnswer((_) async {});
-        when(
-          () => dataSource.getUnsyncedSales(),
-        ).thenThrow(Exception('reload'));
-        return SalesBloc(dataSource: dataSource);
-      },
-      act: (bloc) => bloc.add(SyncSalesTransaction()),
-      expect:
-          () => [
-            SalesLoading(),
-            const SalesError('Exception: reload'),
-          ],
-      verify: (_) {
-        verify(() => dataSource.syncSales()).called(1);
-        verify(() => dataSource.getUnsyncedSales()).called(1);
         verifyNoMoreInteractions(dataSource);
       },
     );

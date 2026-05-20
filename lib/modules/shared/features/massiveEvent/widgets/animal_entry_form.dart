@@ -237,10 +237,7 @@ class _AnimalEntryFormState extends State<AnimalEntryForm> {
               outcome.remappedSimpleEvents!,
             );
           }
-          toApplyRow.updateWith(
-            outcome.animalSimpleEvents,
-            outcome.syncedWithServer,
-          );
+          toApplyRow.updateWith(outcome.animalSimpleEvents);
           _animalNumberController.clear();
           _weightController.clear();
           _trackerController.clear();

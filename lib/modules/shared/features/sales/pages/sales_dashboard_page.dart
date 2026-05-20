@@ -11,7 +11,7 @@ import 'package:finca_app_frontend/modules/shared/features/sales/models/sale_mod
 import 'dart:async';
 
 import 'package:finca_app_frontend/core/services/api_exception.dart';
-import 'package:finca_app_frontend/core/services/sale_sync_notifier.dart';
+import 'package:finca_app_frontend/core/services/sale_update_notifier.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
 
 class SaleDashboardPage extends StatelessWidget {
@@ -45,13 +45,13 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
   DateTime? _endDate;
   bool canCreate = false;
   bool canUpdate = false;
-  StreamSubscription<String>? _saleSyncSubscription;
+  StreamSubscription<String>? _saleUpdateSubscription;
 
   @override
   void initState() {
     super.initState();
     _loadPermissions();
-    _saleSyncSubscription = SaleSyncNotifier.instance.updatedSaleIds.listen((
+    _saleUpdateSubscription = SaleUpdateNotifier.instance.updatedSaleIds.listen((
       _,
     ) {
       if (mounted) {
@@ -63,7 +63,7 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
 
   @override
   void dispose() {
-    _saleSyncSubscription?.cancel();
+    _saleUpdateSubscription?.cancel();
     super.dispose();
   }
 

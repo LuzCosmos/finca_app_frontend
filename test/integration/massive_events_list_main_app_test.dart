@@ -4,13 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:finca_app_frontend/core/data/database/database_provider.dart';
 import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/main.dart';
+import 'package:finca_app_frontend/modules/shared/features/home/services/home_connectivity_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/pages/massive_event_list_page.dart';
 import 'package:finca_app_frontend/router/router.dart';
 
+import '../support/router_test_host.dart';
 import '../support/test_l10n.dart';
 
 // Integración widget (VM / `flutter test` sin `-d`): MainApp + GoRouter + sesión,
@@ -29,8 +30,12 @@ String _jwtWithExp(int expUnix) {
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  tearDown(() async {
-    await DatabaseProvider.close();
+  setUp(() {
+    HomeConnectivityService.debugForceOnline = true;
+  });
+
+  tearDown(() {
+    HomeConnectivityService.debugForceOnline = null;
     SessionService.resetForTesting();
     BasicApiService.resetForTesting();
   });
@@ -60,7 +65,7 @@ void main() {
       );
 
       await tester.pumpWidget(MainApp(router: router));
-      await tester.pumpAndSettle(const Duration(seconds: 25));
+      await pumpRouterFrames(tester);
 
       expect(find.byType(MassiveEventListPage), findsOneWidget);
       expect(
