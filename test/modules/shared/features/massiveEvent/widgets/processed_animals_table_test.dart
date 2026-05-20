@@ -46,7 +46,6 @@ void main() {
         castrated: true,
         medicalTreatments: ['MedA'],
         brandNames: ['MarcaX'],
-        isSynced: false,
       );
 
       await tester.pumpWidget(
@@ -76,9 +75,6 @@ void main() {
       expect(find.text(l10n.yes), findsOneWidget);
       expect(find.text('MedA'), findsOneWidget);
       expect(find.text('MarcaX'), findsOneWidget);
-      // Columna de sync solo en web (móvil online-only).
-      expect(find.byIcon(Icons.sync_problem), findsNothing);
-      expect(find.text(l10n.tableSynced), findsNothing);
       expect(find.text(l10n.animal), findsOneWidget);
       expect(find.text(l10n.weightKg), findsOneWidget);
     },
@@ -91,7 +87,6 @@ void main() {
       final row = AnimalSimpleEventTableRowModel(
         animalNumber: 'N-100',
         weight: 420,
-        isSynced: true,
       );
 
       await tester.pumpWidget(
@@ -129,7 +124,6 @@ void main() {
       final row = AnimalSimpleEventTableRowModel(
         animalNumber: 'N-200',
         weight: 400,
-        isSynced: true,
       );
 
       await tester.pumpWidget(

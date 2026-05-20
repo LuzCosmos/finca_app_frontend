@@ -14,7 +14,7 @@ import 'package:finca_app_frontend/modules/shared/widgets/message_banner.dart';
 import 'package:finca_app_frontend/modules/shared/features/cattle/widgets/cattle_history_dialogs.dart';
 import 'package:finca_app_frontend/modules/shared/features/cattle/widgets/approx_birth_date_edit_dialog.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
-import 'package:finca_app_frontend/core/services/sale_sync_notifier.dart';
+import 'package:finca_app_frontend/core/services/sale_update_notifier.dart';
 import 'package:finca_app_frontend/core/utils/date_time_helper.dart';
 
 class CattleMasterListPage extends StatefulWidget {
@@ -1352,7 +1352,7 @@ class _CattleMasterListPageState extends State<CattleMasterListPage> {
                                     updatedData['affectedSaleId']?.toString();
                                 if (affectedSaleId != null &&
                                     affectedSaleId.isNotEmpty) {
-                                  SaleSyncNotifier.instance.notifySaleUpdated(
+                                  SaleUpdateNotifier.instance.notifySaleUpdated(
                                     affectedSaleId,
                                   );
                                 }

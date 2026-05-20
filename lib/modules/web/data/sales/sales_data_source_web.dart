@@ -34,11 +34,6 @@ class SalesDataSourceWeb implements ISalesDataSource {
   }
 
   @override
-  Future<List<SaleModel>> getUnsyncedSales() async {
-    return []; // Web is always synced
-  }
-
-  @override
   Future<void> saveSale(SaleModel sale) async {
     var response;
     try {
@@ -68,11 +63,6 @@ class SalesDataSourceWeb implements ISalesDataSource {
     } else {
       throw ApiException('savingObjectError', 'Save sale: Response is null.');
     }
-  }
-
-  @override
-  Future<void> syncSales() async {
-    // No-op
   }
 
   @override

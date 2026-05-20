@@ -11,8 +11,6 @@ class SalesBloc extends Bloc<SalesEvent, SalesState> {
     on<LoadSalesInitialData>(_onLoadInitialData);
     on<SearchCattleByNumber>(_onSearchCattle);
     on<SaveSaleTransaction>(_onSaveSale);
-    on<LoadUnsyncedSales>(_onLoadUnsyncedSales);
-    on<SyncSalesTransaction>(_onSyncSales);
   }
 
   Future<void> _onLoadInitialData(
@@ -71,35 +69,6 @@ class SalesBloc extends Bloc<SalesEvent, SalesState> {
     try {
       await dataSource.saveSale(event.sale);
       emit(SaleSavedSuccess());
-    } catch (e) {
-      emit(SalesError(e.toString()));
-    }
-  }
-
-  Future<void> _onLoadUnsyncedSales(
-    LoadUnsyncedSales event,
-    Emitter<SalesState> emit,
-  ) async {
-    emit(SalesLoading());
-    try {
-      final sales = await dataSource.getUnsyncedSales();
-      emit(UnsyncedSalesLoaded(sales));
-    } catch (e) {
-      emit(SalesError(e.toString()));
-    }
-  }
-
-  Future<void> _onSyncSales(
-    SyncSalesTransaction event,
-    Emitter<SalesState> emit,
-  ) async {
-    // Keep current state or loading?
-    // If showing list, better to show loading indicator overlay or just Loading state.
-    emit(SalesLoading());
-    try {
-      await dataSource.syncSales();
-      // Reload list
-      add(LoadUnsyncedSales());
     } catch (e) {
       emit(SalesError(e.toString()));
     }

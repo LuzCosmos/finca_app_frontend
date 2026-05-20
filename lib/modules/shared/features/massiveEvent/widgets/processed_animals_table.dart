@@ -1,6 +1,5 @@
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/simple_event_type.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/models/animal_simple_event_table_row_model.dart';
 
@@ -203,14 +202,6 @@ class _ProcessedAnimalsTableState extends State<ProcessedAnimalsTable> {
               style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
             ),
           ),
-
-        if (kIsWeb)
-          DataColumn(
-            label: Text(
-              l10n.tableSynced,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-            ),
-          ),
       ],
       rows:
           widget.animalEventsAppliedMap.values.map((animalRow) {
@@ -320,21 +311,6 @@ class _ProcessedAnimalsTableState extends State<ProcessedAnimalsTable> {
                         horizontal: 8,
                       ),
                       child: Text(animalRow.medicalTreatments.join(', ')),
-                    ),
-                  ),
-
-                if (kIsWeb)
-                  DataCell(
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 2),
-                      child: Icon(
-                        animalRow.isSynced
-                            ? Icons.check_circle
-                            : Icons.sync_problem,
-                        color:
-                            animalRow.isSynced ? Colors.green : Colors.orange,
-                        size: 20,
-                      ),
                     ),
                   ),
               ],

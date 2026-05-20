@@ -397,10 +397,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get massiveEvents => 'Massive Events';
 
   @override
-  String get massiveEventPendingSync =>
-      'This event is saved on the device and is pending synchronization with the server.';
-
-  @override
   String get massiveEventsListTitle => 'Massive events';
 
   @override
@@ -452,12 +448,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get massiveEventsColumnCreatedBy => 'Created by';
-
-  @override
-  String get massiveEventsColumnSync => 'Sync / source';
-
-  @override
-  String get massiveEventsSyncOnServer => 'Server';
 
   @override
   String get massiveEventsStatusClosedLabel => 'Closed';
@@ -531,25 +521,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dialogOk => 'OK';
-
-  @override
-  String get syncNow => 'Sync massive events';
-
-  @override
-  String get syncMassiveEventsInProgress => 'Syncing massive events…';
-
-  @override
-  String get syncMassiveEventsSuccess => 'Massive events updated on the server';
-
-  @override
-  String syncMassiveEventsFailure(String message) {
-    return 'Could not sync massive events: $message';
-  }
-
-  @override
-  String syncMassiveEventsWithPendingCount(int count) {
-    return 'Sync massive events ($count)';
-  }
 
   @override
   String get event => 'Event';
@@ -1089,9 +1060,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noAnimals => 'No animals have been added yet';
-
-  @override
-  String get tableSynced => 'Synced';
 
   @override
   String get purchaseReceptionTitle => 'Purchase Reception';

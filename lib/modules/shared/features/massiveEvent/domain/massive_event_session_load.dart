@@ -35,9 +35,8 @@ MassiveSessionLoadResult massiveSessionFromAppliedAnimalsJson(
       models.add(AnimalSimpleEventModel.fromJson(e as Map<String, dynamic>));
     }
     if (models.isEmpty) continue;
-    final row = AnimalSimpleEventTableRowModel.createFromAnimalSimpleEventList(models);
-    row.isSynced = true;
-    animals[animalNumber] = row;
+    animals[animalNumber] =
+        AnimalSimpleEventTableRowModel.createFromAnimalSimpleEventList(models);
   }
   return MassiveSessionLoadResult(
     massive: massive,
@@ -50,18 +49,16 @@ MassiveSessionLoadResult massiveSessionFromAppliedAnimalsJson(
 MassiveSessionLoadResult massiveSessionFromAnimalModels(
   MassiveEventModel massive,
   List<AnimalSimpleEventModel> flat,
-  Map<String, double?> previousWeightByAnimal, {
-  bool markRowsSynced = true,
-}) {
+  Map<String, double?> previousWeightByAnimal,
+) {
   final byAnimal = <String, List<AnimalSimpleEventModel>>{};
   for (final e in flat) {
     byAnimal.putIfAbsent(e.animalNumber, () => []).add(e);
   }
   final animals = <String, AnimalSimpleEventTableRowModel>{};
   for (final entry in byAnimal.entries) {
-    final row = AnimalSimpleEventTableRowModel.createFromAnimalSimpleEventList(entry.value);
-    row.isSynced = markRowsSynced;
-    animals[entry.key] = row;
+    animals[entry.key] =
+        AnimalSimpleEventTableRowModel.createFromAnimalSimpleEventList(entry.value);
   }
   return MassiveSessionLoadResult(
     massive: massive,

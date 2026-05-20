@@ -10,8 +10,6 @@ import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/shared/features/dashboard/page/dashboard_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/home/constants/home_layout_breakpoints.dart';
-import 'package:finca_app_frontend/modules/shared/features/home/home_sync_helper_stub.dart'
-    if (dart.library.io) 'package:finca_app_frontend/modules/shared/features/home/home_sync_helper_io.dart';
 import 'package:finca_app_frontend/modules/shared/features/home/widgets/home_option_with_permission.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/pages/massive_event_list_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/pages/sale_dashboard_page_export.dart';
@@ -62,7 +60,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   late final Future<Map<String, dynamic>> _permissionsFuture;
-  late final HomeSyncHelper _homeSyncHelper;
   StreamSubscription<bool>? _onlineSubscription;
   bool _isOnline = true;
 
@@ -81,7 +78,6 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _homeSyncHelper = createHomeSyncHelper();
     _permissionsFuture = SessionService.getPermissions();
     _wideRailUserCollapsed = _wideRailUserCollapsedSession;
     if (!kIsWeb) {
@@ -94,15 +90,11 @@ class _HomePageState extends State<HomePage> {
         if (mounted) setState(() => _isOnline = online);
       });
     }
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) => _homeSyncHelper.onPostFrame(this),
-    );
   }
 
   @override
   void dispose() {
     _onlineSubscription?.cancel();
-    _homeSyncHelper.dispose();
     super.dispose();
   }
 
@@ -429,7 +421,6 @@ class _HomePageState extends State<HomePage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              //_homeSyncHelper.buildSyncSection(context, l10n),
                               Expanded(
                                 child: Row(
                                   crossAxisAlignment:
@@ -525,7 +516,6 @@ class _HomePageState extends State<HomePage> {
                         key: const ValueKey<String>('home-compact-layout'),
                         child: Column(
                           children: [
-//_homeSyncHelper.buildSyncSection(context, l10n),
                             Expanded(
                               child: Center(
                                 child: Wrap(

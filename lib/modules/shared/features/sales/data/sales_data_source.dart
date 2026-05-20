@@ -7,8 +7,6 @@ abstract class ISalesDataSource {
   ); // Returns Providers (Buyers/Transporters)
   Future<dynamic> getCattleByNumber(String number); // Returns Cattle info
   Future<void> saveSale(SaleModel sale);
-  Future<List<SaleModel>> getUnsyncedSales();
-  Future<void> syncSales();
   Future<void> fetchCatalogs();
 
   // Web Dashboard methods

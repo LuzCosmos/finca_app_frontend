@@ -39,6 +39,33 @@ void integrationResetOnlineApiForTests() {
   BasicApiService.resetForTesting();
 }
 
+/// Avanza frames sin [pumpAndSettle]: spinners y peticiones HTTP lentas no deben bloquear el settle.
+Future<void> integrationPumpRouterFrames(WidgetTester tester) async {
+  await tester.pump();
+  await tester.pump(const Duration(milliseconds: 100));
+  await tester.pump(const Duration(seconds: 2));
+}
+
+/// Permisos CRUDL completos para rutas `/massive-events*` en integración.
+Map<String, dynamic> integrationMassiveEventsPermissions() => {
+  'MASSIVE_EVENTS': {'massive_events': '11111'},
+};
+
+/// Avanza frames hasta que [finder] aparezca o se agote [timeout].
+Future<void> pumpUntilVisible(
+  WidgetTester tester,
+  Finder finder, {
+  Duration timeout = const Duration(seconds: 30),
+  Duration step = const Duration(milliseconds: 100),
+}) async {
+  final deadline = DateTime.now().add(timeout);
+  while (DateTime.now().isBefore(deadline)) {
+    await tester.pump(step);
+    if (finder.evaluate().isNotEmpty) return;
+  }
+  expect(finder, findsOneWidget);
+}
+
 void expectAllHomeMenuOptionsVisible(AppLocalizations l10n) {
   expect(find.text(l10n.dashboard_title), findsOneWidget);
   expect(find.text(l10n.purchase), findsOneWidget);

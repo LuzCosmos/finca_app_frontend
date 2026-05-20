@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:finca_app_frontend/core/services/auth_service.dart';
 import 'package:finca_app_frontend/core/services/auth_exception.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
@@ -18,9 +17,9 @@ class LoginForm extends StatefulWidget {
 
 class _LoginFormState extends State<LoginForm> {
   final _formKey = GlobalKey<FormState>();
-  String username = '';
-  String password = '';
-  String companyUsername = 'GPCB';
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _companyController = TextEditingController(text: 'GPCB');
 
   bool loading = false;
   late final AuthService authService;
@@ -31,15 +30,23 @@ class _LoginFormState extends State<LoginForm> {
     authService = widget.authService ?? AuthService();
   }
 
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    _companyController.dispose();
+    super.dispose();
+  }
+
   void _submit() async {
     if (loading) return;
     if (_formKey.currentState?.validate() != true) return;
     setState(() => loading = true);
     try {
       final result = await authService.login(
-        username: username,
-        password: password,
-        companyUsername: companyUsername,
+        username: _usernameController.text.trim(),
+        password: _passwordController.text,
+        companyUsername: _companyController.text.trim(),
       );
       if (!mounted) return;
       final User user = result['user'];
@@ -87,10 +94,9 @@ class _LoginFormState extends State<LoginForm> {
         children: [
           TextFormField(
             key: const Key('login-username-field'),
-            initialValue: '',
+            controller: _usernameController,
             decoration: InputDecoration(labelText: l10n.username),
             autofillHints: const [AutofillHints.username],
-            onChanged: (val) => username = val,
             validator:
                 (val) =>
                     val == null || val.trim().isEmpty
@@ -99,11 +105,10 @@ class _LoginFormState extends State<LoginForm> {
           ),
           TextFormField(
             key: const Key('login-password-field'),
-            initialValue: '',
+            controller: _passwordController,
             decoration: InputDecoration(labelText: l10n.password),
             obscureText: true,
             autofillHints: const [AutofillHints.password],
-            onChanged: (val) => password = val,
             validator:
                 (val) =>
                     val == null || val.trim().isEmpty
@@ -112,9 +117,8 @@ class _LoginFormState extends State<LoginForm> {
           ),
           TextFormField(
             key: const Key('login-company-field'),
-            initialValue: 'GPCB',
+            controller: _companyController,
             decoration: InputDecoration(labelText: l10n.company),
-            onChanged: (val) => companyUsername = val,
           ),
           const SizedBox(height: 20),
           loading

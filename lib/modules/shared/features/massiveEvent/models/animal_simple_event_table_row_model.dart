@@ -14,7 +14,6 @@ class AnimalSimpleEventTableRowModel {
   List<String> medicalTreatments;
   List<String> brandNames;
   List<String> idBrandsApplied;
-  bool isSynced;
 
   AnimalSimpleEventTableRowModel({
     required this.animalNumber,
@@ -27,7 +26,6 @@ class AnimalSimpleEventTableRowModel {
     List<String>? medicalTreatments,
     List<String>? brandNames,
     List<String>? idBrandsApplied,
-    this.isSynced = false,
   }) : idSimpleEventsApplied = idSimpleEventsApplied ?? [],
        medicalTreatments = medicalTreatments ?? [],
        brandNames = brandNames ?? [],
@@ -113,10 +111,7 @@ class AnimalSimpleEventTableRowModel {
     );
   }
 
-  void updateWith(
-    List<AnimalSimpleEventModel> animalSimpleEvents,
-    bool isSynced,
-  ) {
+  void updateWith(List<AnimalSimpleEventModel> animalSimpleEvents) {
     final weightEvent = animalSimpleEvents.firstWhereOrNull(
       (e) => e.type == SimpleEventType.weight && e.data != null,
     );
@@ -171,7 +166,6 @@ class AnimalSimpleEventTableRowModel {
     this.earTagLeft = earTagLeft ?? this.earTagLeft;
     this.earTagRight = earTagRight ?? this.earTagRight;
     this.castrated = castrated;
-    this.isSynced = isSynced;
     idSimpleEventsApplied =
         {...idSimpleEventsApplied, ...newIdSimpleEventsApplied}.toList();
     medicalTreatments =

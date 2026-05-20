@@ -23,7 +23,3 @@ class SaveSaleTransaction extends SalesEvent {
   @override
   List<Object?> get props => [sale];
 }
-
-class LoadUnsyncedSales extends SalesEvent {}
-
-class SyncSalesTransaction extends SalesEvent {}

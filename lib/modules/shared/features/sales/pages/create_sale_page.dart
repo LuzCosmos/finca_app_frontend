@@ -428,7 +428,6 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
             _notesController.text.trim().isEmpty
                 ? null
                 : _notesController.text.trim(),
-        isSynced: false,
         details: _approvedCattle,
       );
 

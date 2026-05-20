@@ -2,13 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
-import 'package:finca_app_frontend/modules/mobile/bloc/sync_bloc.dart';
-import 'package:finca_app_frontend/modules/mobile/services/sync_service.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/shared/features/home/page/home_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/home/services/home_connectivity_service.dart';
@@ -17,8 +14,6 @@ import 'package:finca_app_frontend/router/router.dart';
 
 import '../../../../support/app_test_host.dart';
 import '../../../../support/router_test_host.dart';
-
-class _MockSyncServiceForHome extends Mock implements SyncService {}
 
 // Bajo prueba:
 // - lib/modules/shared/features/home/page/home_page.dart
@@ -494,11 +489,6 @@ void main() {
   testWidgets('layout ancho: al tocar evento masivo el panel muestra MassiveEventListPage', (
     tester,
   ) async {
-    final syncMock = _MockSyncServiceForHome();
-    when(
-      () => syncMock.syncAllInOrder(any()),
-    ).thenAnswer((_) async => <SyncResult>[]);
-
     await SessionService.saveSession(
       token: 't.ok',
       permissions: {
@@ -514,14 +504,11 @@ void main() {
     await tester.binding.setSurfaceSize(const Size(1100, 800));
 
     await tester.pumpWidget(
-      BlocProvider<SyncBloc>(
-        create: (_) => SyncBloc(syncMock),
-        child: pumpLocalizedMaterialShell(
-          home: Builder(
-            builder: (context) {
-              return const HomePage();
-            },
-          ),
+      pumpLocalizedMaterialShell(
+        home: Builder(
+          builder: (context) {
+            return const HomePage();
+          },
         ),
       ),
     );
