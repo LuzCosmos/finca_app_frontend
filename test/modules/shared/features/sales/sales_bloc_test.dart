@@ -131,10 +131,10 @@ void main() {
       build: () {
         when(() => dataSource.fetchCatalogs()).thenAnswer((_) async {});
         when(
-          () => dataSource.getProviders('BUYER'),
+          () => dataSource.getBusinessPartners('BUYER'),
         ).thenAnswer((_) async => <dynamic>[const {'id': 'buyer-a'}]);
         when(
-          () => dataSource.getProviders('TRANSPORTER'),
+          () => dataSource.getBusinessPartners('TRANSPORTER'),
         ).thenAnswer((_) async => <dynamic>['tr-1']);
         return SalesBloc(dataSource: dataSource);
       },
@@ -149,8 +149,8 @@ void main() {
           ],
       verify: (_) {
         verify(() => dataSource.fetchCatalogs()).called(1);
-        verify(() => dataSource.getProviders('BUYER')).called(1);
-        verify(() => dataSource.getProviders('TRANSPORTER')).called(1);
+        verify(() => dataSource.getBusinessPartners('BUYER')).called(1);
+        verify(() => dataSource.getBusinessPartners('TRANSPORTER')).called(1);
         verifyNoMoreInteractions(dataSource);
       },
     );
@@ -171,17 +171,17 @@ void main() {
           ],
       verify: (_) {
         verify(() => dataSource.fetchCatalogs()).called(1);
-        verifyNever(() => dataSource.getProviders(any()));
+        verifyNever(() => dataSource.getBusinessPartners(any()));
         verifyNoMoreInteractions(dataSource);
       },
     );
 
     blocTest<SalesBloc, SalesState>(
-      'LoadSalesInitialData emite SalesError si getProviders BUYER falla',
+      'LoadSalesInitialData emite SalesError si getBusinessPartners BUYER falla',
       build: () {
         when(() => dataSource.fetchCatalogs()).thenAnswer((_) async {});
         when(
-          () => dataSource.getProviders('BUYER'),
+          () => dataSource.getBusinessPartners('BUYER'),
         ).thenThrow(Exception('buyer-red'));
         return SalesBloc(dataSource: dataSource);
       },
@@ -193,21 +193,21 @@ void main() {
           ],
       verify: (_) {
         verify(() => dataSource.fetchCatalogs()).called(1);
-        verify(() => dataSource.getProviders('BUYER')).called(1);
-        verifyNever(() => dataSource.getProviders('TRANSPORTER'));
+        verify(() => dataSource.getBusinessPartners('BUYER')).called(1);
+        verifyNever(() => dataSource.getBusinessPartners('TRANSPORTER'));
         verifyNoMoreInteractions(dataSource);
       },
     );
 
     blocTest<SalesBloc, SalesState>(
-      'LoadSalesInitialData emite SalesError si getProviders TRANSPORTER falla',
+      'LoadSalesInitialData emite SalesError si getBusinessPartners TRANSPORTER falla',
       build: () {
         when(() => dataSource.fetchCatalogs()).thenAnswer((_) async {});
         when(
-          () => dataSource.getProviders('BUYER'),
+          () => dataSource.getBusinessPartners('BUYER'),
         ).thenAnswer((_) async => <dynamic>[]);
         when(
-          () => dataSource.getProviders('TRANSPORTER'),
+          () => dataSource.getBusinessPartners('TRANSPORTER'),
         ).thenThrow(Exception('transporter-red'));
         return SalesBloc(dataSource: dataSource);
       },
@@ -219,8 +219,8 @@ void main() {
           ],
       verify: (_) {
         verify(() => dataSource.fetchCatalogs()).called(1);
-        verify(() => dataSource.getProviders('BUYER')).called(1);
-        verify(() => dataSource.getProviders('TRANSPORTER')).called(1);
+        verify(() => dataSource.getBusinessPartners('BUYER')).called(1);
+        verify(() => dataSource.getBusinessPartners('TRANSPORTER')).called(1);
         verifyNoMoreInteractions(dataSource);
       },
     );

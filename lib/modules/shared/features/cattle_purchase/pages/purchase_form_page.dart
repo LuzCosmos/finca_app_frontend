@@ -4,9 +4,9 @@ import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'package:finca_app_frontend/modules/shared/widgets/message_banner.dart';
 import 'package:finca_app_frontend/modules/shared/widgets/finca_scaffold.dart';
-import 'package:finca_app_frontend/modules/shared/features/cattle_purchase/widgets/provider_input.dart';
+import 'package:finca_app_frontend/modules/shared/features/cattle_purchase/widgets/business_partner_input.dart';
 import 'package:finca_app_frontend/modules/shared/features/cattle_purchase/widgets/lots_section.dart';
-import 'package:finca_app_frontend/modules/shared/features/cattle_purchase/models/provider.dart';
+import 'package:finca_app_frontend/modules/shared/features/cattle_purchase/models/business_partner.dart';
 import 'package:finca_app_frontend/modules/shared/features/cattle_purchase/models/lot.dart';
 import 'package:finca_app_frontend/modules/shared/features/cattle_purchase/models/purchase_status.dart';
 import 'package:finca_app_frontend/modules/shared/features/cattle_purchase/services/purchases_api_service.dart';
@@ -15,12 +15,12 @@ import 'package:go_router/go_router.dart';
 
 class PurchaseFormPage extends StatefulWidget {
   final String? purchaseId;
-  final String? initialProviderName;
+  final String? initialBusinessPartnerName;
 
   const PurchaseFormPage({
     super.key,
     this.purchaseId,
-    this.initialProviderName,
+    this.initialBusinessPartnerName,
   });
 
   bool get isEditMode => purchaseId != null;
@@ -31,12 +31,12 @@ class PurchaseFormPage extends StatefulWidget {
 
 class _PurchaseFormPageState extends State<PurchaseFormPage> {
   final _formKey = GlobalKey<FormState>();
-  ProviderModel? _selectedProvider;
+  BusinessPartnerModel? _selectedBusinessPartner;
   DateTime _selectedDate = DateTime.now();
   List<LotModel> _lots = [];
   List<LotModel>? _initialLots;
-  String? _initialProviderId;
-  String? _initialProviderLabel;
+  String? _initialBusinessPartnerId;
+  String? _initialBusinessPartnerLabel;
   String? _globalErrorMessage;
   String? _globalSuccessMessage;
   bool _loadingPurchase = false;
@@ -110,18 +110,18 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
               })
               .toList();
 
-      final providerId = data['idProvider']?.toString();
+      final businessPartnerId = data['idProvider']?.toString();
       setState(() {
         _selectedDate = _readPurchaseDate(data['purchaseDate']);
-        _initialProviderId = providerId;
-        _initialProviderLabel =
-            widget.initialProviderName ?? providerId;
-        if (providerId != null && widget.initialProviderName != null) {
-          _selectedProvider = ProviderModel(
-            id: providerId,
-            name: widget.initialProviderName!,
+        _initialBusinessPartnerId = businessPartnerId;
+        _initialBusinessPartnerLabel =
+            widget.initialBusinessPartnerName ?? businessPartnerId;
+        if (businessPartnerId != null && widget.initialBusinessPartnerName != null) {
+          _selectedBusinessPartner = BusinessPartnerModel(
+            id: businessPartnerId,
+            name: widget.initialBusinessPartnerName!,
             nit: '',
-            type: ProviderType.PROVIDER,
+            role: BusinessPartnerRole.PROVIDER,
           );
         }
         _initialLots = lots;
@@ -187,7 +187,7 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
   Future<void> _onSubmit() async {
     final l10n = AppLocalizations.of(context)!;
     if (!_formKey.currentState!.validate()) return;
-    if (_selectedProvider == null) {
+    if (_selectedBusinessPartner == null) {
       _showError(l10n.cp_error_providerRequired);
       return;
     }
@@ -209,7 +209,7 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
       if (widget.isEditMode) {
         await service.updatePurchase(
           id: widget.purchaseId!,
-          idProvider: _selectedProvider!.id,
+          idProvider: _selectedBusinessPartner!.id,
           purchaseDate: _selectedDate,
           lots: lotsJson,
         );
@@ -218,7 +218,7 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
         });
       } else {
         await service.createPurchase(
-          idProvider: _selectedProvider!.id,
+          idProvider: _selectedBusinessPartner!.id,
           purchaseDate: _selectedDate,
           lots: lotsJson,
         );
@@ -320,12 +320,12 @@ class _PurchaseFormPageState extends State<PurchaseFormPage> {
                 ],
               ),
               const SizedBox(height: 5),
-              ProviderInput(
-                initialProviderId: _initialProviderId,
-                initialProviderName: _initialProviderLabel,
-                onProviderSelected: (providerData) {
+              BusinessPartnerInput(
+                initialBusinessPartnerId: _initialBusinessPartnerId,
+                initialBusinessPartnerName: _initialBusinessPartnerLabel,
+                onBusinessPartnerSelected: (businessPartnerData) {
                   setState(() {
-                    _selectedProvider = providerData;
+                    _selectedBusinessPartner = businessPartnerData;
                     _globalErrorMessage = null;
                   });
                 },

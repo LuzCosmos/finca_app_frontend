@@ -22,9 +22,9 @@ class SalesDataSourceWeb implements ISalesDataSource {
   }
 
   @override
-  Future<List> getProviders(String type) async {
+  Future<List> getBusinessPartners(String type) async {
     final res = await BasicApiService.authorizedGet(
-      Uri.parse('$baseUrl/providers'),
+      Uri.parse('$baseUrl/business-partners'),
     );
     if (res.statusCode == 200) {
       final list = jsonDecode(res.body) as List;

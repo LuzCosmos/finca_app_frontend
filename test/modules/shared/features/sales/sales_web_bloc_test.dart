@@ -50,6 +50,25 @@ void main() {
     );
 
     blocTest<SalesWebBloc, SalesWebState>(
+      'LoadBusinessPartnersEvent carga lista en state',
+      build: () {
+        when(() => dataSource.getBusinessPartners(any())).thenAnswer(
+          (_) async => [
+            {'id': 'bp-1', 'name': 'Buyer', 'type': 'BUYER'},
+          ],
+        );
+        return SalesWebBloc(dataSource: dataSource);
+      },
+      act: (bloc) => bloc.add(const LoadBusinessPartnersEvent()),
+      expect: () => [
+        const SalesWebState(status: SalesWebStatus.loading),
+        isA<SalesWebState>()
+            .having((s) => s.status, 'status', SalesWebStatus.success)
+            .having((s) => s.businessPartners?.length, 'count', 1),
+      ],
+    );
+
+    blocTest<SalesWebBloc, SalesWebState>(
       'UpdateSaleWeb emite saleUpdated y recarga listado',
       build: () {
         when(() => dataSource.updateSale(any(), any())).thenAnswer((_) async {});

@@ -19,7 +19,7 @@ void main() {
 
   setUp(() {
     dataSource = MockSalesDataSource();
-    when(() => dataSource.getProviders(any())).thenAnswer((_) async => []);
+    when(() => dataSource.getBusinessPartners(any())).thenAnswer((_) async => []);
     when(() => dataSource.fetchCatalogs()).thenAnswer((_) async {});
   });
 

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'dart:convert';
 import 'package:finca_app_frontend/core/services/basic_api_service.dart';
-import 'package:finca_app_frontend/modules/shared/features/cattle_purchase/models/provider.dart';
+import 'package:finca_app_frontend/modules/shared/features/cattle_purchase/models/business_partner.dart';
 
 /// Provider Autocomplete Field with Create Dialog
 ///
@@ -11,20 +11,20 @@ import 'package:finca_app_frontend/modules/shared/features/cattle_purchase/model
 /// - Search providers by name as user types
 /// - Filter by provider type (BUYER/TRANSPORTER)
 /// - "Create New Provider" option in dropdown
-/// - Opens CreateProviderDialog on create
+/// - Opens CreateBusinessPartnerDialog on create
 /// - Returns selected/created provider ID
-class ProviderAutocompleteField extends StatefulWidget {
+class BusinessPartnerAutocompleteField extends StatefulWidget {
   final String label;
-  final String providerType; // 'BUYER' or 'TRANSPORTER'
+  final String businessPartnerRole; // 'BUYER' or 'TRANSPORTER'
   final String? initialValue;
-  final Function(String? providerId, String? providerName) onChanged;
+  final Function(String? businessPartnerId, String? businessPartnerName) onChanged;
   final String? Function(String?)? validator;
   final bool required;
 
-  const ProviderAutocompleteField({
+  const BusinessPartnerAutocompleteField({
     super.key,
     required this.label,
-    required this.providerType,
+    required this.businessPartnerRole,
     required this.onChanged,
     this.initialValue,
     this.validator,
@@ -32,22 +32,22 @@ class ProviderAutocompleteField extends StatefulWidget {
   });
 
   @override
-  State<ProviderAutocompleteField> createState() =>
-      _ProviderAutocompleteFieldState();
+  State<BusinessPartnerAutocompleteField> createState() =>
+      _BusinessPartnerAutocompleteFieldState();
 }
 
-class _ProviderAutocompleteFieldState extends State<ProviderAutocompleteField> {
+class _BusinessPartnerAutocompleteFieldState extends State<BusinessPartnerAutocompleteField> {
   static const Duration _searchDebounceDuration = Duration(milliseconds: 350);
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
   Timer? _searchDebounce;
   int _searchRequestId = 0;
 
-  List<Map<String, dynamic>> _providers = [];
+  List<Map<String, dynamic>> _businessPartners = [];
   bool _isLoading = false;
   bool _showDropdown = false;
-  String? _selectedProviderId;
-  String? _selectedProviderName;
+  String? _selectedBusinessPartnerId;
+  String? _selectedBusinessPartnerName;
 
   @override
   void initState() {
@@ -73,7 +73,7 @@ class _ProviderAutocompleteFieldState extends State<ProviderAutocompleteField> {
 
     if (query.isEmpty) {
       setState(() {
-        _providers = [];
+        _businessPartners = [];
         _isLoading = false;
         _showDropdown = false;
       });
@@ -94,27 +94,27 @@ class _ProviderAutocompleteFieldState extends State<ProviderAutocompleteField> {
     });
 
     try {
-      final providers = await _searchProviders(query);
+      final providers = await _searchBusinessPartners(query);
       if (!mounted || requestId != _searchRequestId) return;
       setState(() {
-        _providers = providers;
+        _businessPartners = providers;
         _isLoading = false;
       });
     } catch (e) {
       if (!mounted || requestId != _searchRequestId) return;
       setState(() {
         _isLoading = false;
-        _providers = [];
+        _businessPartners = [];
       });
     }
   }
 
-  Future<List<Map<String, dynamic>>> _searchProviders(String name) async {
+  Future<List<Map<String, dynamic>>> _searchBusinessPartners(String name) async {
     final baseUrl = BasicApiService.getApiBaseUrl();
 
     final response = await BasicApiService.authorizedGet(
       Uri.parse(
-        '$baseUrl/providers/search?name=$name&type=${widget.providerType}',
+        '$baseUrl/business-partners/search?name=$name&type=${widget.businessPartnerRole}',
       ),
     );
 
@@ -135,10 +135,10 @@ class _ProviderAutocompleteFieldState extends State<ProviderAutocompleteField> {
     }
   }
 
-  void _selectProvider(String id, String name) {
+  void _selectBusinessPartner(String id, String name) {
     setState(() {
-      _selectedProviderId = id;
-      _selectedProviderName = name;
+      _selectedBusinessPartnerId = id;
+      _selectedBusinessPartnerName = name;
       _controller.text = name;
       _showDropdown = false;
     });
@@ -156,40 +156,40 @@ class _ProviderAutocompleteFieldState extends State<ProviderAutocompleteField> {
       context: context,
       barrierDismissible: true,
       builder:
-          (context) => CreateProviderDialog(providerType: widget.providerType),
+          (context) => CreateBusinessPartnerDialog(businessPartnerRole: widget.businessPartnerRole),
     );
 
     if (result != null && mounted) {
-      _selectProvider(result['id'], result['name']);
+      _selectBusinessPartner(result['id'], result['name']);
 
       // Show success message
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(l10n.provider_createdSuccess(_providerTypeLabel)),
+            content: Text(l10n.provider_createdSuccess(_businessPartnerRoleLabel)),
           ),
         );
       }
     }
   }
 
-  String get _providerTypeLabel {
+  String get _businessPartnerRoleLabel {
     final l10n = AppLocalizations.of(context)!;
-    var providerTypeLabel = '';
-    if (widget.providerType == ProviderType.BUYER.name) {
-      providerTypeLabel = l10n.buyer;
-    } else if (widget.providerType == ProviderType.TRANSPORTER.name) {
-      providerTypeLabel = l10n.transporter;
-    } else if (widget.providerType == ProviderType.PROVIDER.name) {
-      providerTypeLabel = l10n.provider;
+    var businessPartnerRoleLabel = '';
+    if (widget.businessPartnerRole == BusinessPartnerRole.BUYER.name) {
+      businessPartnerRoleLabel = l10n.buyer;
+    } else if (widget.businessPartnerRole == BusinessPartnerRole.TRANSPORTER.name) {
+      businessPartnerRoleLabel = l10n.transporter;
+    } else if (widget.businessPartnerRole == BusinessPartnerRole.PROVIDER.name) {
+      businessPartnerRoleLabel = l10n.provider;
     }
-    return providerTypeLabel;
+    return businessPartnerRoleLabel;
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    var providerTypeLabel = _providerTypeLabel;
+    var businessPartnerRoleLabel = _businessPartnerRoleLabel;
     return TapRegion(
       onTapOutside: (event) {
         if (_showDropdown) {
@@ -235,13 +235,13 @@ class _ProviderAutocompleteFieldState extends State<ProviderAutocompleteField> {
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child:
-                    _providers.isEmpty && !_isLoading
+                    _businessPartners.isEmpty && !_isLoading
                         ? ListTile(
                           leading: const Icon(
                             Icons.add_circle,
                             color: Colors.green,
                           ),
-                          title: Text(l10n.createNewSomething(providerTypeLabel)),
+                          title: Text(l10n.createNewSomething(businessPartnerRoleLabel)),
                           onTap: () {
                             _focusNode.unfocus();
                             _showCreateDialog();
@@ -250,16 +250,16 @@ class _ProviderAutocompleteFieldState extends State<ProviderAutocompleteField> {
                         : ListView(
                           shrinkWrap: true,
                           children: [
-                            ..._providers.map(
-                              (provider) => ListTile(
-                                title: Text(provider['name']),
+                            ..._businessPartners.map(
+                              (businessPartner) => ListTile(
+                                title: Text(businessPartner['name']),
                                 subtitle: Text(
-                                  '${l10n.nit}: ${provider['nit']}',
+                                  '${l10n.nit}: ${businessPartner['nit']}',
                                 ),
                                 onTap:
-                                    () => _selectProvider(
-                                      provider['id'],
-                                      provider['name'],
+                                    () => _selectBusinessPartner(
+                                      businessPartner['id'],
+                                      businessPartner['name'],
                                     ),
                               ),
                             ),
@@ -269,7 +269,7 @@ class _ProviderAutocompleteFieldState extends State<ProviderAutocompleteField> {
                                 Icons.add_circle,
                                 color: Colors.green,
                               ),
-                              title: Text(l10n.createNewSomething(providerTypeLabel)),
+                              title: Text(l10n.createNewSomething(businessPartnerRoleLabel)),
                               onTap: () {
                                 _focusNode.unfocus();
                                 _showCreateDialog();
@@ -292,16 +292,16 @@ class _ProviderAutocompleteFieldState extends State<ProviderAutocompleteField> {
 /// - Type (auto-filled, readonly)
 /// - Address (optional)
 /// - Contact person details (optional)
-class CreateProviderDialog extends StatefulWidget {
-  final String providerType;
+class CreateBusinessPartnerDialog extends StatefulWidget {
+  final String businessPartnerRole;
 
-  const CreateProviderDialog({super.key, required this.providerType});
+  const CreateBusinessPartnerDialog({super.key, required this.businessPartnerRole});
 
   @override
-  State<CreateProviderDialog> createState() => _CreateProviderDialogState();
+  State<CreateBusinessPartnerDialog> createState() => _CreateBusinessPartnerDialogState();
 }
 
-class _CreateProviderDialogState extends State<CreateProviderDialog> {
+class _CreateBusinessPartnerDialogState extends State<CreateBusinessPartnerDialog> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _nitController = TextEditingController();
@@ -325,20 +325,20 @@ class _CreateProviderDialogState extends State<CreateProviderDialog> {
     super.dispose();
   }
 
-  String get _providerTypeLabel {
+  String get _businessPartnerRoleLabel {
     final l10n = AppLocalizations.of(context)!;
-    var providerTypeLabel = '';
-    if (widget.providerType == ProviderType.BUYER.name) {
-      providerTypeLabel = l10n.buyer;
-    } else if (widget.providerType == ProviderType.TRANSPORTER.name) {
-      providerTypeLabel = l10n.transporter;
-    } else if (widget.providerType == ProviderType.PROVIDER.name) {
-      providerTypeLabel = l10n.provider;
+    var businessPartnerRoleLabel = '';
+    if (widget.businessPartnerRole == BusinessPartnerRole.BUYER.name) {
+      businessPartnerRoleLabel = l10n.buyer;
+    } else if (widget.businessPartnerRole == BusinessPartnerRole.TRANSPORTER.name) {
+      businessPartnerRoleLabel = l10n.transporter;
+    } else if (widget.businessPartnerRole == BusinessPartnerRole.PROVIDER.name) {
+      businessPartnerRoleLabel = l10n.provider;
     }
-    return providerTypeLabel;
+    return businessPartnerRoleLabel;
   }
 
-  Future<void> _createProvider() async {
+  Future<void> _createBusinessPartner() async {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isCreating = true);
@@ -347,14 +347,14 @@ class _CreateProviderDialogState extends State<CreateProviderDialog> {
       final baseUrl = BasicApiService.getApiBaseUrl();
 
       final response = await BasicApiService.authorizedPost(
-        Uri.parse('$baseUrl/providers'),
+        Uri.parse('$baseUrl/business-partners'),
         headers: {
           'Content-Type': 'application/json',
         },
         body: json.encode({
           'name': _nameController.text.trim(),
           'nit': _nitController.text.trim(),
-          'type': widget.providerType,
+          'type': widget.businessPartnerRole,
           'address':
               _addressController.text.trim().isEmpty
                   ? null
@@ -391,7 +391,7 @@ class _CreateProviderDialogState extends State<CreateProviderDialog> {
         final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(l10n.provider_createError(_providerTypeLabel)),
+            content: Text(l10n.provider_createError(_businessPartnerRoleLabel)),
           ),
         );
       }
@@ -405,10 +405,10 @@ class _CreateProviderDialogState extends State<CreateProviderDialog> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final providerTypeLabel = _providerTypeLabel;
+    final businessPartnerRoleLabel = _businessPartnerRoleLabel;
 
     return AlertDialog(
-      title: Text(l10n.createNewSomething(providerTypeLabel)),
+      title: Text(l10n.createNewSomething(businessPartnerRoleLabel)),
       content: SizedBox(
         width: 500,
         child: Form(
@@ -423,7 +423,7 @@ class _CreateProviderDialogState extends State<CreateProviderDialog> {
                   controller: _nameController,
                   decoration: InputDecoration(
                     labelText:
-                        '${l10n.provider_providerName(providerTypeLabel)} *',
+                        '${l10n.provider_providerName(businessPartnerRoleLabel)} *',
                     border: const OutlineInputBorder(),
                   ),
                   validator: (val) {
@@ -522,7 +522,7 @@ class _CreateProviderDialogState extends State<CreateProviderDialog> {
           child: Text(l10n.cancel),
         ),
         ElevatedButton(
-          onPressed: _isCreating ? null : _createProvider,
+          onPressed: _isCreating ? null : _createBusinessPartner,
           child:
               _isCreating
                   ? SizedBox(
