@@ -10,12 +10,14 @@ class SaleConfirmationDialog extends StatelessWidget {
   final List<SaleDetailModel> approvedCattle;
   final double totalAmount;
   final double totalWeight;
+  final bool isEditMode;
 
   const SaleConfirmationDialog({
     super.key,
     required this.approvedCattle,
     required this.totalAmount,
     required this.totalWeight,
+    this.isEditMode = false,
   });
 
   @override
@@ -28,7 +30,9 @@ class SaleConfirmationDialog extends StatelessWidget {
         children: [
           Icon(Icons.warning_amber, color: Colors.orange, size: 28),
           const SizedBox(width: 12),
-          Text(l10n.sale_confirm_title),
+          Text(
+            isEditMode ? l10n.sale_confirm_edit_title : l10n.sale_confirm_title,
+          ),
         ],
       ),
       content: SizedBox(
@@ -236,7 +240,11 @@ class SaleConfirmationDialog extends StatelessWidget {
         ElevatedButton.icon(
           onPressed: () => Navigator.of(context).pop(true),
           icon: const Icon(Icons.check_circle),
-          label: Text(l10n.sale_confirm_proceed),
+          label: Text(
+            isEditMode
+                ? l10n.sale_confirm_edit_proceed
+                : l10n.sale_confirm_proceed,
+          ),
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.green,
             foregroundColor: Colors.white,

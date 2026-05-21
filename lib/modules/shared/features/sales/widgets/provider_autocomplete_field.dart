@@ -52,6 +52,9 @@ class _ProviderAutocompleteFieldState extends State<ProviderAutocompleteField> {
   @override
   void initState() {
     super.initState();
+    if (widget.initialValue != null && widget.initialValue!.isNotEmpty) {
+      _controller.text = widget.initialValue!;
+    }
     _controller.addListener(_onSearchInputChanged);
   }
 

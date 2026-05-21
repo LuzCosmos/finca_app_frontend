@@ -594,6 +594,14 @@
   "sale_creating": "Creando venta...",
   "sale_created": "Venta creada exitosamente",
   "sale_createError": "Error al crear venta",
+  "sale_editTitle": "Editar venta",
+  "sale_editSuccess": "Venta actualizada exitosamente",
+  "sale_editLoadError": "No se pudo cargar la venta para editar",
+  "sale_editSaveError": "Error al guardar los cambios de la venta",
+  "sale_editSaving": "Guardando cambios...",
+  "sale_saveChanges": "Guardar cambios",
+  "sale_confirm_edit_title": "Confirmar edición de venta",
+  "sale_confirm_edit_proceed": "Confirmar y guardar",
 
   "user_editUserPageMessage": "Esta funcionalidad está en desarrollo",
 

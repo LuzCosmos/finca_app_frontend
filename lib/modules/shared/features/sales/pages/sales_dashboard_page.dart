@@ -51,14 +51,14 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
   void initState() {
     super.initState();
     _loadPermissions();
-    _saleUpdateSubscription = SaleUpdateNotifier.instance.updatedSaleIds.listen((
-      _,
-    ) {
-      if (mounted) {
-        final bloc = context.read<SalesWebBloc>();
-        bloc.add(LoadSalesWeb(query: bloc.state.query));
-      }
-    });
+    _saleUpdateSubscription = SaleUpdateNotifier.instance.updatedSaleIds.listen(
+      (_) {
+        if (mounted) {
+          final bloc = context.read<SalesWebBloc>();
+          bloc.add(LoadSalesWeb(query: bloc.state.query));
+        }
+      },
+    );
   }
 
   @override
@@ -145,61 +145,6 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
           ),
         ),
       ),
-    );
-  }
-
-  void _showEditDialog(
-    BuildContext context,
-    SaleModel sale,
-    AppLocalizations l10n,
-  ) {
-    final noteController = TextEditingController(text: sale.notes);
-    final formKey = GlobalKey<FormState>();
-
-    showDialog(
-      context: context,
-      builder: (dialogContext) {
-        return AlertDialog(
-          title: Text(l10n.editSomething(l10n.sale)),
-          content: Form(
-            key: formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  '${l10n.sales_transactionDate}: ${DateFormat('yyyy-MM-dd').format(sale.transactionDate)}',
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: noteController,
-                  decoration: InputDecoration(labelText: l10n.comments),
-                  maxLines: 3,
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(dialogContext),
-              child: Text(l10n.cancel),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                if (formKey.currentState!.validate()) {
-                  context.read<SalesWebBloc>().add(
-                    UpdateSaleWeb(
-                      id: sale.id,
-                      updates: {'notes': noteController.text},
-                    ),
-                  );
-                  Navigator.pop(dialogContext);
-                }
-              },
-              child: Text(l10n.save),
-            ),
-          ],
-        );
-      },
     );
   }
 
@@ -616,9 +561,13 @@ class _SaleDashboardViewState extends State<_SaleDashboardView> {
                         ),
                         if (canUpdate)
                           IconButton(
-                            icon: const Icon(Icons.edit, size: 20),
+                            icon: const Icon(
+                              Icons.edit,
+                              color: Colors.blue,
+                              size: 20,
+                            ),
                             onPressed:
-                                () => _showEditDialog(context, sale, l10n),
+                                () => context.push('/sales/edit/${sale.id}'),
                             tooltip: l10n.edit,
                           ),
                       ],

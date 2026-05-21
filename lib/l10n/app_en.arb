@@ -594,6 +594,14 @@
   "sale_creating": "Creating sale...",
   "sale_created": "Sale created successfully",
   "sale_createError": "Error creating sale",
+  "sale_editTitle": "Edit sale",
+  "sale_editSuccess": "Sale updated successfully",
+  "sale_editLoadError": "Could not load the sale for editing",
+  "sale_editSaveError": "Error saving sale changes",
+  "sale_editSaving": "Saving changes...",
+  "sale_saveChanges": "Save changes",
+  "sale_confirm_edit_title": "Confirm sale edit",
+  "sale_confirm_edit_proceed": "Confirm and save",
 
   "user_editUserPageMessage": "This feature is under development",
 

@@ -11,5 +11,6 @@ abstract class ISalesDataSource {
 
   // Web Dashboard methods
   Future<PaginatedSales> getSales(SalesQuery query);
-  Future<void> updateSale(String id, Map<String, dynamic> updates);
+  Future<SaleModel> getSaleById(String id);
+  Future<void> updateSale(String id, SaleModel sale);
 }

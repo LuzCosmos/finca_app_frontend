@@ -17,9 +17,14 @@ import 'package:finca_app_frontend/modules/shared/features/cattle/services/cattl
 import 'package:uuid/uuid.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:finca_app_frontend/modules/shared/enums/cattle_enums.dart';
+import 'package:finca_app_frontend/core/services/sale_update_notifier.dart';
 
 class CreateSalePage extends StatelessWidget {
-  const CreateSalePage({super.key});
+  final String? saleId;
+
+  const CreateSalePage({super.key, this.saleId});
+
+  bool get isEditMode => saleId != null;
 
   @override
   Widget build(BuildContext context) {
@@ -28,13 +33,17 @@ class CreateSalePage extends StatelessWidget {
           (context) =>
               SalesWebBloc(dataSource: createSalesDataSource())
                 ..add(const LoadProvidersEvent()),
-      child: const _CreateSaleView(),
+      child: _CreateSaleView(saleId: saleId),
     );
   }
 }
 
 class _CreateSaleView extends StatefulWidget {
-  const _CreateSaleView();
+  final String? saleId;
+
+  const _CreateSaleView({this.saleId});
+
+  bool get isEditMode => saleId != null;
 
   @override
   State<_CreateSaleView> createState() => _CreateSaleViewState();
@@ -60,12 +69,68 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
 
   bool _isValidatingCattle = false;
   bool _trackerRemoved = false;
+  bool _loadingSale = false;
+  bool _didStartEditLoad = false;
+  String? _loadError;
+  String? _editingSaleId;
+  String? _initialBuyerName;
+  String? _initialTransporterName;
   final _cattleService = CattleMasterService();
 
   @override
   void initState() {
     super.initState();
     _pricePerKgController.addListener(_onPriceChanged);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (widget.isEditMode && !_didStartEditLoad) {
+      _didStartEditLoad = true;
+      _loadSaleForEdit();
+    }
+  }
+
+  Future<void> _loadSaleForEdit() async {
+    if (!mounted) return;
+    setState(() {
+      _loadingSale = true;
+      _loadError = null;
+    });
+    try {
+      final sale = await createSalesDataSource().getSaleById(widget.saleId!);
+      if (!mounted) return;
+      _populateFromSale(sale);
+      setState(() => _loadingSale = false);
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _loadingSale = false;
+        _loadError = AppLocalizations.of(context)!.sale_editLoadError;
+      });
+    }
+  }
+
+  void _populateFromSale(SaleModel sale) {
+    _editingSaleId = sale.id;
+    _transactionDate = sale.transactionDate;
+    _selectedBuyerId = sale.buyerId;
+    _selectedTransporterId = sale.transporterId;
+    _initialBuyerName = sale.buyerName;
+    _initialTransporterName = sale.transporterName;
+    _minWeightController.text = sale.minWeightConfig.toString();
+    _pricePerKgController.text = sale.valuePerKgConfig.toString();
+    _notesController.text = sale.notes ?? '';
+    _approvedCattle.clear();
+    _rejectedCattle.clear();
+    for (final detail in sale.details) {
+      if (detail.isApproved) {
+        _approvedCattle.add(detail);
+      } else {
+        _rejectedCattle.add(detail);
+      }
+    }
   }
 
   void _onPriceChanged() {
@@ -262,7 +327,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
         children: [
           // Section Header
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
             decoration: BoxDecoration(
               color: color.withValues(alpha: 0.1),
               borderRadius: const BorderRadius.vertical(
@@ -292,7 +357,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
           // Content
           if (isEmpty)
             Padding(
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               child: Center(
                 child: Text(
                   emptyMessage,
@@ -309,14 +374,20 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
               itemBuilder: (context, index) {
                 final item = cattle[index];
                 return Padding(
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 2,
+                  ),
                   child: Row(
                     children: [
                       Expanded(
-                        flex: 2,
+                        flex: 1,
                         child: Text(
                           '${l10n.cattle} #${item.cattleNumber}',
-                          style: const TextStyle(fontWeight: FontWeight.w500),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w500,
+                            height: 1.2,
+                          ),
                         ),
                       ),
                       Expanded(
@@ -341,9 +412,15 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                           ),
                         ),
                       IconButton(
-                        icon: const Icon(Icons.delete, size: 20),
+                        icon: const Icon(Icons.delete, size: 18),
                         onPressed: () => onRemove(index),
                         color: Colors.red,
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(
+                          minWidth: 32,
+                          minHeight: 18,
+                        ),
+                        visualDensity: VisualDensity.compact,
                       ),
                     ],
                   ),
@@ -378,6 +455,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
             approvedCattle: _approvedCattle,
             totalAmount: _totalAmount,
             totalWeight: _totalWeight,
+            isEditMode: widget.isEditMode,
           ),
     );
 
@@ -401,7 +479,9 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                 ),
               ),
               const SizedBox(width: 16),
-              Text(l10n.sale_creating),
+              Text(
+                widget.isEditMode ? l10n.sale_editSaving : l10n.sale_creating,
+              ),
             ],
           ),
           duration: const Duration(
@@ -412,10 +492,10 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
     }
 
     try {
-      // 1. Create sale with APPROVED cattle only
+      final allDetails = [..._approvedCattle, ..._rejectedCattle];
       final sale = SaleModel(
-        id: const Uuid().v4(),
-        idTenant: '', // Will be set by backend
+        id: widget.isEditMode ? _editingSaleId! : const Uuid().v4(),
+        idTenant: '',
         transactionDate: _transactionDate,
         buyerId: _selectedBuyerId!,
         transporterId: _selectedTransporterId,
@@ -428,41 +508,14 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
             _notesController.text.trim().isEmpty
                 ? null
                 : _notesController.text.trim(),
-        details: _approvedCattle,
+        details: widget.isEditMode ? allDetails : _approvedCattle,
       );
 
-      // 2. Update cattle status to SOLD
-      /*final cattleIds = _approvedCattle.map((c) => c.cattleId).toList();
-      await CattleValidationService.bulkUpdateCattleStatus(
-        cattleIds: cattleIds,
-        status: 'SOLD',
-      );*/
-
-      // 3. Submit sale
       if (mounted) {
-        context.read<SalesWebBloc>().add(CreateSaleEvent(sale: sale));
-
-        // Dismiss loading snackbar
-        ScaffoldMessenger.of(context).clearSnackBars();
-
-        // Show success message
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Row(
-              children: [
-                Icon(Icons.check_circle, color: Colors.white),
-                const SizedBox(width: 12),
-                Text(l10n.sale_created),
-              ],
-            ),
-            backgroundColor: Colors.green,
-            duration: const Duration(seconds: 3),
-          ),
-        );
-
-        // Navigate back to sales dashboard
-        if (mounted) {
-          context.push('/sales');
+        if (widget.isEditMode) {
+          context.read<SalesWebBloc>().add(UpdateSaleWeb(sale: sale));
+        } else {
+          context.read<SalesWebBloc>().add(CreateSaleEvent(sale: sale));
         }
       }
     } catch (e) {
@@ -477,7 +530,13 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
               children: [
                 Icon(Icons.error, color: Colors.white),
                 const SizedBox(width: 12),
-                Expanded(child: Text(l10n.sale_createError)),
+                Expanded(
+                  child: Text(
+                    widget.isEditMode
+                        ? l10n.sale_editSaveError
+                        : l10n.sale_createError,
+                  ),
+                ),
               ],
             ),
             backgroundColor: Colors.red,
@@ -499,19 +558,47 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
             context,
           ).showSnackBar(SnackBar(content: Text(l10n.saleSavedSuccess)));
           context.push('/sales');
-        } else if (state.status == SalesWebStatus.failure &&
-            state.error != null) {
+        } else if (state.status == SalesWebStatus.saleUpdated) {
           ScaffoldMessenger.of(
             context,
-          ).showSnackBar(SnackBar(content: Text('Error: ${state.error}')));
+          ).showSnackBar(SnackBar(content: Text(l10n.sale_editSuccess)));
+          SaleUpdateNotifier.instance.notifySaleUpdated(_editingSaleId ?? '');
+          context.push('/sales');
+        } else if (state.status == SalesWebStatus.failure &&
+            state.error != null) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                widget.isEditMode
+                    ? l10n.sale_editSaveError
+                    : 'Error: ${state.error}',
+              ),
+            ),
+          );
         }
       },
       child: FincaScaffold(
-        title: l10n.sale,
+        title: widget.isEditMode ? l10n.sale_editTitle : l10n.sale,
         body: BlocBuilder<SalesWebBloc, SalesWebState>(
           builder: (context, state) {
-            if (state.status == SalesWebStatus.loading &&
-                state.providers == null) {
+            if (_loadError != null) {
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Text(
+                    _loadError!,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              );
+            }
+            if (_loadingSale ||
+                (state.status == SalesWebStatus.loading &&
+                    state.providers == null)) {
               return const Center(child: CircularProgressIndicator());
             }
 
@@ -635,6 +722,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
             ProviderAutocompleteField(
               label: l10n.label_buyer_required,
               providerType: ProviderType.BUYER.name,
+              initialValue: _initialBuyerName,
               onChanged:
                   (id, name) => setState(() {
                     _selectedBuyerId = id;
@@ -650,6 +738,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
             ProviderAutocompleteField(
               label: l10n.label_transporter_optional,
               providerType: ProviderType.TRANSPORTER.name,
+              initialValue: _initialTransporterName,
               onChanged:
                   (id, name) => setState(() {
                     _selectedTransporterId = id;
@@ -933,7 +1022,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                 ),
               ),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: 8),
 
             // Approved Cattle Section
             _buildCattleListSection(
@@ -947,7 +1036,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
               onRemove: _removeApprovedCattle,
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
 
             // Rejected Cattle Section
             if (_rejectedCattle.isNotEmpty)
@@ -1032,7 +1121,8 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                 const SizedBox(width: 8),
                 ElevatedButton(
                   onPressed:
-                      state.status == SalesWebStatus.loading
+                      state.status == SalesWebStatus.loading ||
+                              _loadError != null
                           ? null
                           : _submitSale,
                   style: ElevatedButton.styleFrom(
@@ -1055,7 +1145,11 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                               ),
                             ),
                           )
-                          : Text(l10n.create),
+                          : Text(
+                            widget.isEditMode
+                                ? l10n.sale_saveChanges
+                                : l10n.create,
+                          ),
                 ),
               ],
             ),
