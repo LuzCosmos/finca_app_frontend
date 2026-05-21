@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/bloc/sales_web_bloc.dart';
+import 'package:finca_app_frontend/modules/shared/features/sales/data/sales_data_source.dart';
 import 'package:finca_app_frontend/modules/web/data/sales/sales_data_source_web_interface.dart';
 import 'package:finca_app_frontend/modules/shared/widgets/finca_scaffold.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/models/sale_model.dart';
@@ -21,8 +22,9 @@ import 'package:finca_app_frontend/core/services/sale_update_notifier.dart';
 
 class CreateSalePage extends StatelessWidget {
   final String? saleId;
+  final ISalesDataSource? dataSource;
 
-  const CreateSalePage({super.key, this.saleId});
+  const CreateSalePage({super.key, this.saleId, this.dataSource});
 
   bool get isEditMode => saleId != null;
 
@@ -31,7 +33,7 @@ class CreateSalePage extends StatelessWidget {
     return BlocProvider(
       create:
           (context) =>
-              SalesWebBloc(dataSource: createSalesDataSource())
+              SalesWebBloc(dataSource: dataSource ?? createSalesDataSource())
                 ..add(const LoadProvidersEvent()),
       child: _CreateSaleView(saleId: saleId),
     );
@@ -99,7 +101,9 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
       _loadError = null;
     });
     try {
-      final sale = await createSalesDataSource().getSaleById(widget.saleId!);
+      final sale = await context.read<SalesWebBloc>().dataSource.getSaleById(
+        widget.saleId!,
+      );
       if (!mounted) return;
       _populateFromSale(sale);
       setState(() => _loadingSale = false);
@@ -1037,7 +1041,6 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
             ),
 
             const SizedBox(height: 12),
-
             // Rejected Cattle Section
             if (_rejectedCattle.isNotEmpty)
               _buildCattleListSection(

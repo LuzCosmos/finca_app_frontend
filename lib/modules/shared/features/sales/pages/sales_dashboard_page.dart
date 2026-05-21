@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/bloc/sales_web_bloc.dart';
+import 'package:finca_app_frontend/modules/shared/features/sales/data/sales_data_source.dart';
 import 'package:finca_app_frontend/modules/web/data/sales/sales_data_source_web_interface.dart';
 import 'package:finca_app_frontend/modules/shared/widgets/finca_scaffold.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/models/sales_query_models.dart';
@@ -15,16 +16,17 @@ import 'package:finca_app_frontend/core/services/sale_update_notifier.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
 
 class SaleDashboardPage extends StatelessWidget {
-  const SaleDashboardPage({super.key, this.embedded = false});
+  const SaleDashboardPage({super.key, this.embedded = false, this.dataSource});
 
   final bool embedded;
+  final ISalesDataSource? dataSource;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create:
           (context) =>
-              SalesWebBloc(dataSource: createSalesDataSource())
+              SalesWebBloc(dataSource: dataSource ?? createSalesDataSource())
                 ..add(const LoadSalesWeb()),
       child: _SaleDashboardView(embedded: embedded),
     );

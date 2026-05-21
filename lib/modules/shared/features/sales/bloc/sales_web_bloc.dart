@@ -174,7 +174,15 @@ class SalesWebBloc extends Bloc<SalesWebEvent, SalesWebState> {
     emit(state.copyWith(status: SalesWebStatus.loading));
     try {
       await dataSource.updateSale(event.sale.id, event.sale);
-      emit(state.copyWith(status: SalesWebStatus.saleUpdated));
+      final query = state.query;
+      final refreshed = await dataSource.getSales(query);
+      emit(
+        state.copyWith(
+          status: SalesWebStatus.saleUpdated,
+          sales: refreshed,
+          query: query,
+        ),
+      );
     } on ApiException catch (e) {
       emit(state.copyWith(status: SalesWebStatus.failure, error: e.code));
     } catch (e) {
