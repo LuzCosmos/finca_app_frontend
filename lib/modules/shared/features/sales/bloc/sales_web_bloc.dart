@@ -20,8 +20,8 @@ class LoadSalesWeb extends SalesWebEvent {
   List<Object?> get props => [query];
 }
 
-class LoadProvidersEvent extends SalesWebEvent {
-  const LoadProvidersEvent();
+class LoadBusinessPartnersEvent extends SalesWebEvent {
+  const LoadBusinessPartnersEvent();
 }
 
 class CreateSaleEvent extends SalesWebEvent {
@@ -54,14 +54,14 @@ class SalesWebState extends Equatable {
   final PaginatedSales? sales;
   final SalesQuery query;
   final String? error;
-  final List<Map<String, dynamic>>? providers;
+  final List<Map<String, dynamic>>? businessPartners;
 
   const SalesWebState({
     this.status = SalesWebStatus.initial,
     this.sales,
     this.query = const SalesQueryDefaults(),
     this.error,
-    this.providers,
+    this.businessPartners,
   });
   // Note: Const default constructor for SalesQuery
 
@@ -70,19 +70,19 @@ class SalesWebState extends Equatable {
     PaginatedSales? sales,
     SalesQuery? query,
     String? error,
-    List<Map<String, dynamic>>? providers,
+    List<Map<String, dynamic>>? businessPartners,
   }) {
     return SalesWebState(
       status: status ?? this.status,
       sales: sales ?? this.sales,
       query: query ?? this.query,
       error: error,
-      providers: providers ?? this.providers,
+      businessPartners: businessPartners ?? this.businessPartners,
     );
   }
 
   @override
-  List<Object?> get props => [status, sales, query, error, providers];
+  List<Object?> get props => [status, sales, query, error, businessPartners];
 }
 
 class SalesQueryDefaults extends SalesQuery {
@@ -95,7 +95,7 @@ class SalesWebBloc extends Bloc<SalesWebEvent, SalesWebState> {
 
   SalesWebBloc({required this.dataSource}) : super(const SalesWebState()) {
     on<LoadSalesWeb>(_onLoadSales);
-    on<LoadProvidersEvent>(_onLoadProviders);
+    on<LoadBusinessPartnersEvent>(_onLoadBusinessPartners);
     on<CreateSaleEvent>(_onCreateSale);
     on<UpdateSaleWeb>(_onUpdateSale);
   }
@@ -122,17 +122,18 @@ class SalesWebBloc extends Bloc<SalesWebEvent, SalesWebState> {
     }
   }
 
-  Future<void> _onLoadProviders(
-    LoadProvidersEvent event,
+  Future<void> _onLoadBusinessPartners(
+    LoadBusinessPartnersEvent event,
     Emitter<SalesWebState> emit,
   ) async {
     emit(state.copyWith(status: SalesWebStatus.loading));
     try {
-      final providers = await dataSource.getProviders('');
+      final businessPartners = await dataSource.getBusinessPartners('');
       emit(
         state.copyWith(
           status: SalesWebStatus.success,
-          providers: providers.map((p) => p as Map<String, dynamic>).toList(),
+          businessPartners:
+              businessPartners.map((p) => p as Map<String, dynamic>).toList(),
         ),
       );
     } on ApiException catch (e) {
@@ -141,7 +142,7 @@ class SalesWebBloc extends Bloc<SalesWebEvent, SalesWebState> {
       emit(
         state.copyWith(
           status: SalesWebStatus.failure,
-          error: 'Failed to load providers: $e',
+          error: 'Failed to load business partners: $e',
         ),
       );
     }

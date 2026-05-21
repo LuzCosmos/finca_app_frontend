@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/data/sales_data_source.dart';
-import 'package:finca_app_frontend/modules/shared/features/cattle_purchase/models/provider.dart';
+import 'package:finca_app_frontend/modules/shared/features/cattle_purchase/models/business_partner.dart';
 import 'sales_event.dart';
 import 'sales_state.dart';
 
@@ -20,9 +20,11 @@ class SalesBloc extends Bloc<SalesEvent, SalesState> {
     emit(SalesLoading());
     try {
       await dataSource.fetchCatalogs();
-      final buyers = await dataSource.getProviders(ProviderType.BUYER.name);
-      final transporters = await dataSource.getProviders(
-        ProviderType.TRANSPORTER.name,
+      final buyers = await dataSource.getBusinessPartners(
+        BusinessPartnerRole.BUYER.name,
+      );
+      final transporters = await dataSource.getBusinessPartners(
+        BusinessPartnerRole.TRANSPORTER.name,
       );
       emit(SalesReady(buyers: buyers, transporters: transporters));
     } catch (e) {
