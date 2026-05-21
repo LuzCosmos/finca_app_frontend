@@ -17,6 +17,9 @@ http.Client createRouterMockHttpClient() {
     if (path.contains('/roles')) {
       return http.Response('[]', 200);
     }
+    if (path.contains('/locations/latest/cattle')) {
+      return http.Response('[]', 200);
+    }
     if (path.contains('/users') ||
         path.contains('/purchases') ||
         path.contains('/sales') ||

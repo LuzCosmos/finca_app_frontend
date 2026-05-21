@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -11,6 +12,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 /// Widget tests (`flutter test`, incl. `-p chrome`) no definen siempre `FLUTTER_TEST`
 /// como `dart-define`: detectamos también el binding de test.
 bool _useCattleMapTestPlaceholder() {
+  if (CattleLastLocationsMapWidget.debugDisableTestPlaceholder == true) {
+    return false;
+  }
   if (const bool.fromEnvironment('FLUTTER_TEST')) {
     return true;
   }
@@ -19,6 +23,10 @@ bool _useCattleMapTestPlaceholder() {
 }
 
 class CattleLastLocationsMapWidget extends StatefulWidget {
+  /// Permite montar el mapa real en pruebas con stub HTTP (p. ej. widget test de esta HU).
+  @visibleForTesting
+  static bool? debugDisableTestPlaceholder;
+
   final double height;
   final double initialZoom;
 
