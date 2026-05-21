@@ -999,6 +999,48 @@ class AppLocalizationsEn extends AppLocalizations {
   String get minWeightKg => 'Min. Weight (Kg)';
 
   @override
+  String get sale_minWeight_changeTitle => 'Update minimum weight?';
+
+  @override
+  String sale_minWeight_changeMessage(
+    String buyerName,
+    String current,
+    String buyerDefault,
+  ) {
+    return 'Buyer changed to $buyerName. Current minimum weight: $current kg. Buyer default: $buyerDefault kg.';
+  }
+
+  @override
+  String sale_minWeight_useBuyerDefault(String weight) {
+    return 'Use buyer weight ($weight kg)';
+  }
+
+  @override
+  String sale_minWeight_keepCurrent(String weight) {
+    return 'Keep current ($weight kg)';
+  }
+
+  @override
+  String get sale_minWeight_reclassifyTitle =>
+      'Reclassify cattle for new minimum weight?';
+
+  @override
+  String sale_minWeight_reclassifyMessage(
+    String previous,
+    String newMin,
+    int approvedCount,
+    int rejectedCount,
+  ) {
+    return 'Minimum weight changed from $previous kg to $newMin kg. There are $approvedCount approved and $rejectedCount rejected. Reclassify them automatically using the new minimum?';
+  }
+
+  @override
+  String get sale_minWeight_reclassifyYes => 'Yes, reclassify';
+
+  @override
+  String get sale_minWeight_reclassifyNo => 'No, keep classification';
+
+  @override
   String get purchasedAvgWeight => 'Purchased Avg. Weight (kg)';
 
   @override

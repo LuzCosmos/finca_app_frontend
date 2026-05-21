@@ -999,6 +999,48 @@ class AppLocalizationsEs extends AppLocalizations {
   String get minWeightKg => 'Peso Mín. (Kg)';
 
   @override
+  String get sale_minWeight_changeTitle => '¿Actualizar peso mínimo?';
+
+  @override
+  String sale_minWeight_changeMessage(
+    String buyerName,
+    String current,
+    String buyerDefault,
+  ) {
+    return 'Cambió el comprador a $buyerName. Peso mínimo actual: $current kg. Peso mínimo del comprador: $buyerDefault kg.';
+  }
+
+  @override
+  String sale_minWeight_useBuyerDefault(String weight) {
+    return 'Usar peso del comprador ($weight kg)';
+  }
+
+  @override
+  String sale_minWeight_keepCurrent(String weight) {
+    return 'Mantener actual ($weight kg)';
+  }
+
+  @override
+  String get sale_minWeight_reclassifyTitle =>
+      '¿Reclasificar reses según el nuevo peso mínimo?';
+
+  @override
+  String sale_minWeight_reclassifyMessage(
+    String previous,
+    String newMin,
+    int approvedCount,
+    int rejectedCount,
+  ) {
+    return 'El peso mínimo cambió de $previous kg a $newMin kg. Hay $approvedCount aprobadas y $rejectedCount rechazadas. ¿Desea reclasificarlas automáticamente según el nuevo mínimo?';
+  }
+
+  @override
+  String get sale_minWeight_reclassifyYes => 'Sí, reclasificar';
+
+  @override
+  String get sale_minWeight_reclassifyNo => 'No, mantener clasificación';
+
+  @override
   String get purchasedAvgWeight => 'Peso Prom. Comprado (kg)';
 
   @override

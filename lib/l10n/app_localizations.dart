@@ -1921,6 +1921,63 @@ abstract class AppLocalizations {
   /// **'Min. Weight (Kg)'**
   String get minWeightKg;
 
+  /// No description provided for @sale_minWeight_changeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update minimum weight?'**
+  String get sale_minWeight_changeTitle;
+
+  /// No description provided for @sale_minWeight_changeMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Buyer changed to {buyerName}. Current minimum weight: {current} kg. Buyer default: {buyerDefault} kg.'**
+  String sale_minWeight_changeMessage(
+    String buyerName,
+    String current,
+    String buyerDefault,
+  );
+
+  /// No description provided for @sale_minWeight_useBuyerDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Use buyer weight ({weight} kg)'**
+  String sale_minWeight_useBuyerDefault(String weight);
+
+  /// No description provided for @sale_minWeight_keepCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep current ({weight} kg)'**
+  String sale_minWeight_keepCurrent(String weight);
+
+  /// No description provided for @sale_minWeight_reclassifyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reclassify cattle for new minimum weight?'**
+  String get sale_minWeight_reclassifyTitle;
+
+  /// No description provided for @sale_minWeight_reclassifyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum weight changed from {previous} kg to {newMin} kg. There are {approvedCount} approved and {rejectedCount} rejected. Reclassify them automatically using the new minimum?'**
+  String sale_minWeight_reclassifyMessage(
+    String previous,
+    String newMin,
+    int approvedCount,
+    int rejectedCount,
+  );
+
+  /// No description provided for @sale_minWeight_reclassifyYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, reclassify'**
+  String get sale_minWeight_reclassifyYes;
+
+  /// No description provided for @sale_minWeight_reclassifyNo.
+  ///
+  /// In en, this message translates to:
+  /// **'No, keep classification'**
+  String get sale_minWeight_reclassifyNo;
+
   /// No description provided for @purchasedAvgWeight.
   ///
   /// In en, this message translates to:

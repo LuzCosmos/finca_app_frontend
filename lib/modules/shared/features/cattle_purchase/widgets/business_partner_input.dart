@@ -61,7 +61,7 @@ class _BusinessPartnerInputState extends State<BusinessPartnerInput> {
             }
             return null;
           },
-          onChanged: (id, name) {
+          onChanged: (id, name, {buyerMinWeightKg}) {
             if (id == null || name == null) {
               setState(() => _selectedBusinessPartner = null);
               return;
