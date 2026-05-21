@@ -1293,6 +1293,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sale_createError => 'Error creating sale';
 
   @override
+  String get sale_editTitle => 'Edit sale';
+
+  @override
+  String get sale_editSuccess => 'Sale updated successfully';
+
+  @override
+  String get sale_editLoadError => 'Could not load the sale for editing';
+
+  @override
+  String get sale_editSaveError => 'Error saving sale changes';
+
+  @override
+  String get sale_editSaving => 'Saving changes...';
+
+  @override
+  String get sale_saveChanges => 'Save changes';
+
+  @override
+  String get sale_confirm_edit_title => 'Confirm sale edit';
+
+  @override
+  String get sale_confirm_edit_proceed => 'Confirm and save';
+
+  @override
   String get user_editUserPageMessage => 'This feature is under development';
 
   @override

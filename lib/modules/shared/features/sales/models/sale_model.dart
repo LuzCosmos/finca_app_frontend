@@ -15,6 +15,7 @@ class SaleModel extends Equatable {
   final String? notes;
   final List<SaleDetailModel> details;
   final String? buyerName; // Flattened for display
+  final String? transporterName;
 
   const SaleModel({
     required this.id,
@@ -30,6 +31,7 @@ class SaleModel extends Equatable {
     this.notes,
     this.details = const [],
     this.buyerName,
+    this.transporterName,
   });
   
   SaleModel copyWith({
@@ -46,6 +48,7 @@ class SaleModel extends Equatable {
     String? notes,
     List<SaleDetailModel>? details,
     String? buyerName,
+    String? transporterName,
   }) {
     return SaleModel(
       id: id ?? this.id,
@@ -61,6 +64,7 @@ class SaleModel extends Equatable {
       notes: notes ?? this.notes,
       details: details ?? this.details,
       buyerName: buyerName ?? this.buyerName,
+      transporterName: transporterName ?? this.transporterName,
     );
   }
 
@@ -81,6 +85,8 @@ class SaleModel extends Equatable {
           ?.map((e) => SaleDetailModel.fromJson(e))
           .toList() ?? [],
       buyerName: json['buyer'] != null ? json['buyer']['name'] : null,
+      transporterName:
+          json['transporter'] != null ? json['transporter']['name'] : null,
     );
   }
 
@@ -139,5 +145,6 @@ class SaleModel extends Equatable {
         notes,
         details,
         buyerName,
+        transporterName,
       ];
 }

@@ -107,6 +107,15 @@ GoRouter createAppRouter({
                 const OnlineFeatureGate(child: CreateSalePage()),
       ),
       GoRoute(
+        path: '/sales/edit/:id',
+        builder: (context, state) {
+          final id = state.pathParameters['id']!;
+          return OnlineFeatureGate(
+            child: CreateSalePage(saleId: id),
+          );
+        },
+      ),
+      GoRoute(
         path: '/loading',
         builder: (context, state) => const LoadingPage(),
       ),

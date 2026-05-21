@@ -1293,6 +1293,30 @@ class AppLocalizationsEs extends AppLocalizations {
   String get sale_createError => 'Error al crear venta';
 
   @override
+  String get sale_editTitle => 'Editar venta';
+
+  @override
+  String get sale_editSuccess => 'Venta actualizada exitosamente';
+
+  @override
+  String get sale_editLoadError => 'No se pudo cargar la venta para editar';
+
+  @override
+  String get sale_editSaveError => 'Error al guardar los cambios de la venta';
+
+  @override
+  String get sale_editSaving => 'Guardando cambios...';
+
+  @override
+  String get sale_saveChanges => 'Guardar cambios';
+
+  @override
+  String get sale_confirm_edit_title => 'Confirmar edición de venta';
+
+  @override
+  String get sale_confirm_edit_proceed => 'Confirmar y guardar';
+
+  @override
   String get user_editUserPageMessage =>
       'Esta funcionalidad está en desarrollo';
 

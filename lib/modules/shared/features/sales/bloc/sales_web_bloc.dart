@@ -32,13 +32,22 @@ class CreateSaleEvent extends SalesWebEvent {
 }
 
 class UpdateSaleWeb extends SalesWebEvent {
-  final String id;
-  final Map<String, dynamic> updates;
-  const UpdateSaleWeb({required this.id, required this.updates});
+  final SaleModel sale;
+  const UpdateSaleWeb({required this.sale});
+
+  @override
+  List<Object?> get props => [sale];
 }
 
 // State
-enum SalesWebStatus { initial, loading, success, failure, saleCreated }
+enum SalesWebStatus {
+  initial,
+  loading,
+  success,
+  failure,
+  saleCreated,
+  saleUpdated,
+}
 
 class SalesWebState extends Equatable {
   final SalesWebStatus status;
@@ -162,12 +171,18 @@ class SalesWebBloc extends Bloc<SalesWebEvent, SalesWebState> {
     UpdateSaleWeb event,
     Emitter<SalesWebState> emit,
   ) async {
-    // We don't set global loading, maybe just optimistic update or specific loading?
-    // For simplicity, reload after update.
     emit(state.copyWith(status: SalesWebStatus.loading));
     try {
-      await dataSource.updateSale(event.id, event.updates);
-      add(const LoadSalesWeb()); // Reload list
+      await dataSource.updateSale(event.sale.id, event.sale);
+      final query = state.query;
+      final refreshed = await dataSource.getSales(query);
+      emit(
+        state.copyWith(
+          status: SalesWebStatus.saleUpdated,
+          sales: refreshed,
+          query: query,
+        ),
+      );
     } on ApiException catch (e) {
       emit(state.copyWith(status: SalesWebStatus.failure, error: e.code));
     } catch (e) {

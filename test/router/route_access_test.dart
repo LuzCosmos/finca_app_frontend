@@ -373,6 +373,27 @@ void main() {
       );
     });
 
+    test('/sales/edit/:id requiere bit update en sales', () {
+      expect(
+        routeAccessDeniedRedirect(
+          path: '/sales/edit/abc',
+          permissions: {
+            'COMMERCE': <String, dynamic>{'sales': '10001'},
+          },
+        ),
+        '/home',
+      );
+      expect(
+        routeAccessDeniedRedirect(
+          path: '/sales/edit/abc',
+          permissions: {
+            'COMMERCE': <String, dynamic>{'sales': '00100'},
+          },
+        ),
+        isNull,
+      );
+    });
+
     test('/sales/create requiere COMMERCE.sales', () {
       expect(
         routeAccessDeniedRedirect(

@@ -43,6 +43,26 @@ bool commercePurchasesAllowsUpdate(Map<String, dynamic> permissions) {
   return _commercePurchasesCrudlBit(permissions, 2);
 }
 
+/// Bit 2 (update) del CRUDL de `COMMERCE` / `sales`.
+bool commerceSalesAllowsUpdate(Map<String, dynamic> permissions) {
+  return _commerceSalesCrudlBit(permissions, 2);
+}
+
+bool _commerceSalesCrudlBit(Map<String, dynamic> permissions, int index) {
+  final moduleData = permissions['COMMERCE'];
+  if (moduleData is! Map) return false;
+  final value = moduleData['sales'];
+  if (value is bool) return value;
+  if (value is String) {
+    final lower = value.toLowerCase().trim();
+    if (lower == 'true' || lower == '1') return true;
+    final normalized = _normalizeMassiveEventsCrudlMask(value);
+    if (normalized == null || normalized.length <= index) return false;
+    return normalized[index] == '1';
+  }
+  return false;
+}
+
 bool _commercePurchasesCrudlBit(Map<String, dynamic> permissions, int index) {
   final moduleData = permissions['COMMERCE'];
   if (moduleData is! Map) return false;
@@ -136,6 +156,11 @@ String? routeAccessDeniedRedirect({
       if (!canList && !canCreate) {
         return '/home';
       }
+    }
+    return null;
+  } else if (path.startsWith('/sales/edit/')) {
+    if (!commerceSalesAllowsUpdate(permissions)) {
+      return '/home';
     }
     return null;
   } else if (path.startsWith('/sales')) {

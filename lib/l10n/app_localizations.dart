@@ -2437,6 +2437,54 @@ abstract class AppLocalizations {
   /// **'Error creating sale'**
   String get sale_createError;
 
+  /// No description provided for @sale_editTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit sale'**
+  String get sale_editTitle;
+
+  /// No description provided for @sale_editSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Sale updated successfully'**
+  String get sale_editSuccess;
+
+  /// No description provided for @sale_editLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load the sale for editing'**
+  String get sale_editLoadError;
+
+  /// No description provided for @sale_editSaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error saving sale changes'**
+  String get sale_editSaveError;
+
+  /// No description provided for @sale_editSaving.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving changes...'**
+  String get sale_editSaving;
+
+  /// No description provided for @sale_saveChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Save changes'**
+  String get sale_saveChanges;
+
+  /// No description provided for @sale_confirm_edit_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm sale edit'**
+  String get sale_confirm_edit_title;
+
+  /// No description provided for @sale_confirm_edit_proceed.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm and save'**
+  String get sale_confirm_edit_proceed;
+
   /// No description provided for @user_editUserPageMessage.
   ///
   /// In en, this message translates to:

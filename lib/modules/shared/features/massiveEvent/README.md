@@ -4,7 +4,7 @@ Feature compartido (web y móvil): creación y gestión de **eventos masivos** y
 
 **Móvil (online-only, sin SQLite):** `createMassiveEventPageDataSource()` delega en `MassiveEventPageDataSourceWeb` (solo HTTP). No hay capa Drift ni `finca_app.db`. Rutas `/massive-events*` con `OnlineFeatureGate`. Sin UI de sincronización local (sin columna `tableSynced` ni banners de pendiente de sync).
 
-Documentación de producto: [`finca_app_docs/user_histories/uh-evento-masivo-lista.md`](../../../../../../finca_app_docs/user_histories/uh-evento-masivo-lista.md), [`finca_app_docs/mejoras/mejora-evento-masivo-lista.md`](../../../../../../finca_app_docs/mejoras/mejora-evento-masivo-lista.md), validación/edición/analíticas: [`finca_app_docs/user_histories/uh-evento-masivo-validacion-edicion-analiticas.md`](../../../../../../finca_app_docs/user_histories/uh-evento-masivo-validacion-edicion-analiticas.md), [`finca_app_docs/mejoras/mejora-evento-masivo-validacion-edicion-analiticas.md`](../../../../../../finca_app_docs/mejoras/mejora-evento-masivo-validacion-edicion-analiticas.md).
+Documentación de producto: [`finca_app_docs/HU/uh-evento-masivo-lista.md`](../../../../../../finca_app_docs/HU/uh-evento-masivo-lista.md), [`finca_app_docs/mejoras/mejora-evento-masivo-lista.md`](../../../../../../finca_app_docs/mejoras/mejora-evento-masivo-lista.md), validación/edición/analíticas: [`finca_app_docs/HU/uh-evento-masivo-validacion-edicion-analiticas.md`](../../../../../../finca_app_docs/HU/uh-evento-masivo-validacion-edicion-analiticas.md), [`finca_app_docs/mejoras/mejora-evento-masivo-validacion-edicion-analiticas.md`](../../../../../../finca_app_docs/mejoras/mejora-evento-masivo-validacion-edicion-analiticas.md).
 
 ---
 

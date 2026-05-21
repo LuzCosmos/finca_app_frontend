@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
-
 class AppTheme {
-  
   // 0xFF7CA77C first green
   // 0xFF6CA36C
   // 014325
@@ -55,14 +53,9 @@ class AppTheme {
       style: ElevatedButton.styleFrom(
         backgroundColor: kPrimary,
         foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-        textStyle: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
-        ),
+        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
       ),
     ),
 
@@ -71,9 +64,7 @@ class AppTheme {
         backgroundColor: const WidgetStatePropertyAll(kPrimary),
         foregroundColor: const WidgetStatePropertyAll(Colors.white),
         shape: WidgetStatePropertyAll(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
         padding: const WidgetStatePropertyAll(
           EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -92,6 +83,10 @@ class AppTheme {
     ),
 
     inputDecorationTheme: const InputDecorationTheme(
+      contentPadding: EdgeInsets.symmetric(
+        horizontal: 8,
+        vertical: 4, // valor vertical que quieras
+      ),
       floatingLabelStyle: TextStyle(
         color: kPrimary,
         fontWeight: FontWeight.w600,
@@ -99,26 +94,14 @@ class AppTheme {
     ),
 
     textTheme: const TextTheme(
-      bodyLarge: TextStyle(
-        fontSize: 16,
-        color: Color(0xFF1E2D26),
-      ),
-      bodyMedium: TextStyle(
-        fontSize: 14,
-        color: Color(0xFF1E2D26),
-      ),
+      bodyLarge: TextStyle(fontSize: 16, color: Color(0xFF1E2D26)),
+      bodyMedium: TextStyle(fontSize: 14, color: Color(0xFF1E2D26)),
     ),
 
     // Evita que los números del calendario se corten en el popup de columnas tipo date (p. ej. PlutoGrid)
     datePickerTheme: DatePickerThemeData(
-      dayStyle: const TextStyle(
-        fontSize: 14,
-        height: 2.0,
-      ),
-      weekdayStyle: const TextStyle(
-        fontSize: 12,
-        height: 1.8,
-      ),
+      dayStyle: const TextStyle(fontSize: 14, height: 2.0),
+      weekdayStyle: const TextStyle(fontSize: 12, height: 1.8),
     ),
   );
 }
