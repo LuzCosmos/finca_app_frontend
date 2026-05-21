@@ -4,6 +4,10 @@ import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'dart:convert';
 import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/cattle_purchase/models/business_partner.dart';
+import 'package:finca_app_frontend/modules/shared/features/sales/models/business_partner_extra_config.dart';
+
+typedef BusinessPartnerChangedCallback =
+    void Function(String? businessPartnerId, String? businessPartnerName, {double? buyerMinWeightKg});
 
 /// Provider Autocomplete Field with Create Dialog
 ///
@@ -17,7 +21,7 @@ class BusinessPartnerAutocompleteField extends StatefulWidget {
   final String label;
   final String businessPartnerRole; // 'BUYER' or 'TRANSPORTER'
   final String? initialValue;
-  final Function(String? businessPartnerId, String? businessPartnerName) onChanged;
+  final BusinessPartnerChangedCallback onChanged;
   final String? Function(String?)? validator;
   final bool required;
 
@@ -127,6 +131,7 @@ class _BusinessPartnerAutocompleteFieldState extends State<BusinessPartnerAutoco
               'name': p['name'],
               'nit': p['nit'],
               'type': p['type'],
+              'extraConfig': p['extraConfig'] ?? p['extra_config'],
             },
           )
           .toList();
@@ -135,14 +140,25 @@ class _BusinessPartnerAutocompleteFieldState extends State<BusinessPartnerAutoco
     }
   }
 
-  void _selectBusinessPartner(String id, String name) {
+  double? _buyerMinWeightKgFromPartner(Map<String, dynamic> partner) {
+    if (widget.businessPartnerRole != BusinessPartnerRole.BUYER.name) {
+      return null;
+    }
+    return BusinessPartnerExtraConfig.fromJson(partner['extraConfig'])?.salesMinWeightKg;
+  }
+
+  void _selectBusinessPartner(Map<String, dynamic> partner) {
+    final id = partner['id'] as String;
+    final name = partner['name'] as String;
+    final buyerMinWeightKg = _buyerMinWeightKgFromPartner(partner);
+
     setState(() {
       _selectedBusinessPartnerId = id;
       _selectedBusinessPartnerName = name;
       _controller.text = name;
       _showDropdown = false;
     });
-    widget.onChanged(id, name);
+    widget.onChanged(id, name, buyerMinWeightKg: buyerMinWeightKg);
   }
 
   Future<void> _showCreateDialog() async {
@@ -160,7 +176,7 @@ class _BusinessPartnerAutocompleteFieldState extends State<BusinessPartnerAutoco
     );
 
     if (result != null && mounted) {
-      _selectBusinessPartner(result['id'], result['name']);
+      _selectBusinessPartner(result);
 
       // Show success message
       if (mounted) {
@@ -256,11 +272,7 @@ class _BusinessPartnerAutocompleteFieldState extends State<BusinessPartnerAutoco
                                 subtitle: Text(
                                   '${l10n.nit}: ${businessPartner['nit']}',
                                 ),
-                                onTap:
-                                    () => _selectBusinessPartner(
-                                      businessPartner['id'],
-                                      businessPartner['name'],
-                                    ),
+                                onTap: () => _selectBusinessPartner(businessPartner),
                               ),
                             ),
                             const Divider(),
@@ -305,6 +317,7 @@ class _CreateBusinessPartnerDialogState extends State<CreateBusinessPartnerDialo
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _nitController = TextEditingController();
+  final _minWeightController = TextEditingController();
   final _addressController = TextEditingController();
   final _contactNameController = TextEditingController();
   final _phone1Controller = TextEditingController();
@@ -313,10 +326,13 @@ class _CreateBusinessPartnerDialogState extends State<CreateBusinessPartnerDialo
 
   bool _isCreating = false;
 
+  bool get _isBuyerRole => widget.businessPartnerRole == BusinessPartnerRole.BUYER.name;
+
   @override
   void dispose() {
     _nameController.dispose();
     _nitController.dispose();
+    _minWeightController.dispose();
     _addressController.dispose();
     _contactNameController.dispose();
     _phone1Controller.dispose();
@@ -345,43 +361,55 @@ class _CreateBusinessPartnerDialogState extends State<CreateBusinessPartnerDialo
 
     try {
       final baseUrl = BasicApiService.getApiBaseUrl();
+      final body = <String, dynamic>{
+        'name': _nameController.text.trim(),
+        'nit': _nitController.text.trim(),
+        'type': widget.businessPartnerRole,
+        'address':
+            _addressController.text.trim().isEmpty
+                ? null
+                : _addressController.text.trim(),
+        'contactPersonName':
+            _contactNameController.text.trim().isEmpty
+                ? null
+                : _contactNameController.text.trim(),
+        'phone1':
+            _phone1Controller.text.trim().isEmpty
+                ? null
+                : _phone1Controller.text.trim(),
+        'phone2':
+            _phone2Controller.text.trim().isEmpty
+                ? null
+                : _phone2Controller.text.trim(),
+        'email':
+            _emailController.text.trim().isEmpty
+                ? null
+                : _emailController.text.trim(),
+      };
+
+      if (_isBuyerRole) {
+        final minWeight = double.parse(_minWeightController.text.trim());
+        body['extraConfig'] = BusinessPartnerExtraConfig(salesMinWeightKg: minWeight).toCreatePayload();
+      }
 
       final response = await BasicApiService.authorizedPost(
         Uri.parse('$baseUrl/business-partners'),
         headers: {
           'Content-Type': 'application/json',
         },
-        body: json.encode({
-          'name': _nameController.text.trim(),
-          'nit': _nitController.text.trim(),
-          'type': widget.businessPartnerRole,
-          'address':
-              _addressController.text.trim().isEmpty
-                  ? null
-                  : _addressController.text.trim(),
-          'contactPersonName':
-              _contactNameController.text.trim().isEmpty
-                  ? null
-                  : _contactNameController.text.trim(),
-          'phone1':
-              _phone1Controller.text.trim().isEmpty
-                  ? null
-                  : _phone1Controller.text.trim(),
-          'phone2':
-              _phone2Controller.text.trim().isEmpty
-                  ? null
-                  : _phone2Controller.text.trim(),
-          'email':
-              _emailController.text.trim().isEmpty
-                  ? null
-                  : _emailController.text.trim(),
-        }),
+        body: json.encode(body),
       );
 
       if (response.statusCode == 201) {
-        final data = json.decode(response.body);
+        final data = json.decode(response.body) as Map<String, dynamic>;
         if (mounted) {
-          Navigator.of(context).pop({'id': data['id'], 'name': data['name']});
+          Navigator.of(context).pop({
+            'id': data['id'],
+            'name': data['name'],
+            'nit': data['nit'],
+            'type': data['type'],
+            'extraConfig': data['extraConfig'] ?? data['extra_config'],
+          });
         }
       } else {
         throw Exception('Failed to create provider');
@@ -456,6 +484,28 @@ class _CreateBusinessPartnerDialogState extends State<CreateBusinessPartnerDialo
                   },
                 ),
                 const SizedBox(height: 16),
+
+                if (_isBuyerRole) ...[
+                  TextFormField(
+                    controller: _minWeightController,
+                    decoration: InputDecoration(
+                      labelText: l10n.minWeightKg,
+                      border: const OutlineInputBorder(),
+                    ),
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    validator: (val) {
+                      if (val == null || val.trim().isEmpty) {
+                        return l10n.fieldRequired;
+                      }
+                      final num = double.tryParse(val.trim());
+                      if (num == null || num <= 0) {
+                        return l10n.error_invalid_number;
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                ],
 
                 // Address
                 TextFormField(

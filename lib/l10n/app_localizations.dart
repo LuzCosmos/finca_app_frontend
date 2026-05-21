@@ -1921,6 +1921,34 @@ abstract class AppLocalizations {
   /// **'Min. Weight (Kg)'**
   String get minWeightKg;
 
+  /// No description provided for @sale_minWeight_changeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update minimum weight?'**
+  String get sale_minWeight_changeTitle;
+
+  /// No description provided for @sale_minWeight_changeMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Buyer changed to {buyerName}. Current minimum weight: {current} kg. Buyer default: {buyerDefault} kg.'**
+  String sale_minWeight_changeMessage(
+    String buyerName,
+    String current,
+    String buyerDefault,
+  );
+
+  /// No description provided for @sale_minWeight_useBuyerDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Use buyer weight ({weight} kg)'**
+  String sale_minWeight_useBuyerDefault(String weight);
+
+  /// No description provided for @sale_minWeight_keepCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep current ({weight} kg)'**
+  String sale_minWeight_keepCurrent(String weight);
+
   /// No description provided for @purchasedAvgWeight.
   ///
   /// In en, this message translates to:

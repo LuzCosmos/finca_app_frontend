@@ -473,6 +473,23 @@
   "pricePerHead": "Avg. Price per Head", 
   
   "minWeightKg": "Min. Weight (Kg)",
+  "sale_minWeight_changeTitle": "Update minimum weight?",
+  "sale_minWeight_changeMessage": "Buyer changed to {buyerName}. Current minimum weight: {current} kg. Buyer default: {buyerDefault} kg.",
+  "@sale_minWeight_changeMessage": {
+    "placeholders": {
+      "buyerName": { "type": "String" },
+      "current": { "type": "String" },
+      "buyerDefault": { "type": "String" }
+    }
+  },
+  "sale_minWeight_useBuyerDefault": "Use buyer weight ({weight} kg)",
+  "@sale_minWeight_useBuyerDefault": {
+    "placeholders": { "weight": { "type": "String" } }
+  },
+  "sale_minWeight_keepCurrent": "Keep current ({weight} kg)",
+  "@sale_minWeight_keepCurrent": {
+    "placeholders": { "weight": { "type": "String" } }
+  },
   "purchasedAvgWeight": "Purchased Avg. Weight (kg)",
   "receivedAvgWeight": "Received Avg. Weight (kg)",
   "unassignedCattle": "Cattle without an identified lot",

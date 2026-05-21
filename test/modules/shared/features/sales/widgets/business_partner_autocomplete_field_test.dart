@@ -63,7 +63,7 @@ void main() {
               body: BusinessPartnerAutocompleteField(
                 label: 'Proveedor test',
                 businessPartnerRole: BusinessPartnerRole.PROVIDER.name,
-                onChanged: (id, name) {
+                onChanged: (id, name, {buyerMinWeightKg}) {
                   selectedId = id;
                   selectedName = name;
                 },
@@ -109,7 +109,7 @@ void main() {
               body: BusinessPartnerAutocompleteField(
                 label: 'Comprador test',
                 businessPartnerRole: BusinessPartnerRole.BUYER.name,
-                onChanged: (_, __) {},
+                onChanged: (_, __, {buyerMinWeightKg}) {},
               ),
             ),
           ),

@@ -999,6 +999,28 @@ class AppLocalizationsEs extends AppLocalizations {
   String get minWeightKg => 'Peso Mín. (Kg)';
 
   @override
+  String get sale_minWeight_changeTitle => '¿Actualizar peso mínimo?';
+
+  @override
+  String sale_minWeight_changeMessage(
+    String buyerName,
+    String current,
+    String buyerDefault,
+  ) {
+    return 'Cambió el comprador a $buyerName. Peso mínimo actual: $current kg. Peso mínimo del comprador: $buyerDefault kg.';
+  }
+
+  @override
+  String sale_minWeight_useBuyerDefault(String weight) {
+    return 'Usar peso del comprador ($weight kg)';
+  }
+
+  @override
+  String sale_minWeight_keepCurrent(String weight) {
+    return 'Mantener actual ($weight kg)';
+  }
+
+  @override
   String get purchasedAvgWeight => 'Peso Prom. Comprado (kg)';
 
   @override

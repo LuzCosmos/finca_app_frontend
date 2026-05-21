@@ -11,6 +11,7 @@ import 'package:finca_app_frontend/modules/shared/features/sales/models/sale_mod
 import 'package:finca_app_frontend/modules/shared/features/sales/models/sale_detail_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/cattle_purchase/models/business_partner.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/widgets/business_partner_autocomplete_field.dart';
+import 'package:finca_app_frontend/modules/shared/features/sales/widgets/min_weight_buyer_change_dialog.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/widgets/weight_approval_dialog.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/widgets/sale_confirmation_dialog.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/services/cattle_validation_service.dart';
@@ -167,8 +168,54 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
     super.dispose();
   }
 
-  double get _minWeight => double.tryParse(_minWeightController.text) ?? 0;
+  double get _minWeight => double.tryParse(_minWeightController.text.trim()) ?? 0;
   double get _pricePerKg => double.tryParse(_pricePerKgController.text) ?? 0;
+
+  String _formatMinWeightForField(double value) {
+    if (value == value.roundToDouble()) {
+      return value.toStringAsFixed(0);
+    }
+    return value.toStringAsFixed(2);
+  }
+
+  Future<void> _onBuyerChanged(
+    String? id,
+    String? name, {
+    double? buyerMinWeightKg,
+  }) async {
+    setState(() => _selectedBuyerId = id);
+
+    if (id == null || buyerMinWeightKg == null) {
+      return;
+    }
+
+    final current = _minWeight;
+    if (current <= 0) {
+      setState(() {
+        _minWeightController.text = _formatMinWeightForField(buyerMinWeightKg);
+      });
+      return;
+    }
+
+    if ((current - buyerMinWeightKg).abs() < 0.001) {
+      return;
+    }
+
+    final choice = await showMinWeightBuyerChangeDialog(
+      context: context,
+      buyerName: name ?? '',
+      currentMinWeightKg: current,
+      buyerDefaultMinWeightKg: buyerMinWeightKg,
+    );
+
+    if (!mounted) return;
+
+    if (choice == MinWeightBuyerChangeChoice.useBuyerDefault) {
+      setState(() {
+        _minWeightController.text = _formatMinWeightForField(buyerMinWeightKg);
+      });
+    }
+  }
 
   double _calculateCattlePrice(double weight) {
     final effectiveWeight = weight >= _minWeight ? weight : _minWeight;
@@ -727,10 +774,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
               label: l10n.label_buyer_required,
               businessPartnerRole: BusinessPartnerRole.BUYER.name,
               initialValue: _initialBuyerName,
-              onChanged:
-                  (id, name) => setState(() {
-                    _selectedBuyerId = id;
-                  }),
+              onChanged: _onBuyerChanged,
               validator:
                   (val) =>
                       _selectedBuyerId == null
@@ -744,7 +788,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
               businessPartnerRole: BusinessPartnerRole.TRANSPORTER.name,
               initialValue: _initialTransporterName,
               onChanged:
-                  (id, name) => setState(() {
+                  (id, name, {buyerMinWeightKg}) => setState(() {
                     _selectedTransporterId = id;
                   }),
             ),

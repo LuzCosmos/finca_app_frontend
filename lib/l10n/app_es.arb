@@ -473,6 +473,23 @@
   "pricePerHead": "Precio Prom. por Res", 
   
   "minWeightKg": "Peso Mín. (Kg)",
+  "sale_minWeight_changeTitle": "¿Actualizar peso mínimo?",
+  "sale_minWeight_changeMessage": "Cambió el comprador a {buyerName}. Peso mínimo actual: {current} kg. Peso mínimo del comprador: {buyerDefault} kg.",
+  "@sale_minWeight_changeMessage": {
+    "placeholders": {
+      "buyerName": { "type": "String" },
+      "current": { "type": "String" },
+      "buyerDefault": { "type": "String" }
+    }
+  },
+  "sale_minWeight_useBuyerDefault": "Usar peso del comprador ({weight} kg)",
+  "@sale_minWeight_useBuyerDefault": {
+    "placeholders": { "weight": { "type": "String" } }
+  },
+  "sale_minWeight_keepCurrent": "Mantener actual ({weight} kg)",
+  "@sale_minWeight_keepCurrent": {
+    "placeholders": { "weight": { "type": "String" } }
+  },
   "purchasedAvgWeight": "Peso Prom. Comprado (kg)",
   "receivedAvgWeight": "Peso Prom. Recibido (kg)",
   "unassignedCattle": "Reses sin lote identificado",
