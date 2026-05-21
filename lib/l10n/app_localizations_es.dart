@@ -2253,4 +2253,45 @@ class AppLocalizationsEs extends AppLocalizations {
   String importLw001_reason_unknown(String code) {
     return 'Error de importación ($code).';
   }
+
+  @override
+  String get scale_connected => 'Pesa conectada';
+
+  @override
+  String get scale_disconnected => 'Pesa desconectada';
+
+  @override
+  String get scale_reconnecting => 'Reconectando pesa…';
+
+  @override
+  String get scale_error => 'Error de pesa';
+
+  @override
+  String scale_liveWeight(String weight, String unit) {
+    return 'En vivo: $weight $unit';
+  }
+
+  @override
+  String get scale_stable => 'Estable';
+
+  @override
+  String get scale_unstable => 'Inestable';
+
+  @override
+  String get scale_useStableWeight => 'Usar peso estable';
+
+  @override
+  String get scale_notStable => 'Espere una lectura estable antes de aplicar';
+
+  @override
+  String get scale_noReading => 'Sin lectura aún';
+
+  @override
+  String scale_weightApplied(String weight) {
+    return 'Peso aplicado: $weight kg';
+  }
+
+  @override
+  String get scale_selectWeightCell =>
+      'Edite una celda de peso en la grilla antes de aplicar';
 }

@@ -1032,6 +1032,31 @@
   "importLw001_reason_FILE_EMPTY": "The file has no data rows.",
   "importLw001_reason_ROW_PROCESS_FAILED": "Could not process this row.",
   "importLw001_reason_unknown": "Import error ({code}).",
-  "@importLw001_reason_unknown": { "description": "Fallback for unknown reason codes.", "placeholders": { "code": { "type": "String" } } }
+  "@importLw001_reason_unknown": { "description": "Fallback for unknown reason codes.", "placeholders": { "code": { "type": "String" } } },
+
+  "scale_connected": "Scale connected",
+  "@scale_connected": { "description": "Scale bridge connection status" },
+  "scale_disconnected": "Scale disconnected",
+  "@scale_disconnected": { "description": "Scale not connected" },
+  "scale_reconnecting": "Scale reconnecting…",
+  "@scale_reconnecting": { "description": "Scale reconnecting" },
+  "scale_error": "Scale error",
+  "@scale_error": { "description": "Scale connection error" },
+  "scale_liveWeight": "Live: {weight} {unit}",
+  "@scale_liveWeight": { "description": "Live weight from scale", "placeholders": { "weight": { "type": "String" }, "unit": { "type": "String" } } },
+  "scale_stable": "Stable",
+  "@scale_stable": { "description": "Weight is stable" },
+  "scale_unstable": "Unstable",
+  "@scale_unstable": { "description": "Weight not stable yet" },
+  "scale_useStableWeight": "Use stable weight",
+  "@scale_useStableWeight": { "description": "Button to apply stable weight to form" },
+  "scale_notStable": "Wait for a stable reading before applying",
+  "@scale_notStable": { "description": "Stable weight not available" },
+  "scale_noReading": "No reading yet",
+  "@scale_noReading": { "description": "No scale data received" },
+  "scale_weightApplied": "Weight applied: {weight} kg",
+  "@scale_weightApplied": { "description": "Snackbar after applying weight", "placeholders": { "weight": { "type": "String" } } },
+  "scale_selectWeightCell": "Edit a weight column cell before applying scale weight",
+  "@scale_selectWeightCell": { "description": "PlutoGrid hint when no cell in edit" }
 
 }

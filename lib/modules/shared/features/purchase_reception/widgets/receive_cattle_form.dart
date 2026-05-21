@@ -16,6 +16,7 @@ import 'package:finca_app_frontend/modules/shared/features/cattle/constants/dent
 import 'package:finca_app_frontend/modules/shared/features/cattle/widgets/teeth_wear_dropdown_items.dart';
 import 'package:finca_app_frontend/modules/shared/features/cattle/widgets/approx_birth_date_edit_dialog.dart';
 import 'package:finca_app_frontend/modules/shared/features/cattle/services/cattle_master_service.dart';
+import 'package:finca_app_frontend/modules/shared/features/hardware/widgets/live_scale_reading_panel.dart';
 
 class ReceiveCattleForm extends StatefulWidget {
   final String? currentNumber;
@@ -308,7 +309,12 @@ class _ReceiveCattleFormState extends State<ReceiveCattleForm> {
                 ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 1),
-
+              LiveScaleReadingPanel(
+                onApplyStableWeight: (_, formatted) {
+                  _weightController.text = formatted;
+                  setState(() {});
+                },
+              ),
               Wrap(
                 spacing: 12,
                 runSpacing: 12,
