@@ -2,7 +2,7 @@ import 'package:finca_app_frontend/modules/shared/features/sales/models/sale_mod
 import 'package:finca_app_frontend/modules/shared/features/sales/models/sales_query_models.dart';
 
 abstract class ISalesDataSource {
-  Future<List<dynamic>> getProviders(
+  Future<List<dynamic>> getBusinessPartners(
     String type,
   ); // Returns Providers (Buyers/Transporters)
   Future<dynamic> getCattleByNumber(String number); // Returns Cattle info

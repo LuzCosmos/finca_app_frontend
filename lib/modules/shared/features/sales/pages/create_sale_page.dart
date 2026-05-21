@@ -9,8 +9,8 @@ import 'package:finca_app_frontend/modules/web/data/sales/sales_data_source_web_
 import 'package:finca_app_frontend/modules/shared/widgets/finca_scaffold.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/models/sale_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/models/sale_detail_model.dart';
-import 'package:finca_app_frontend/modules/shared/features/cattle_purchase/models/provider.dart';
-import 'package:finca_app_frontend/modules/shared/features/sales/widgets/provider_autocomplete_field.dart';
+import 'package:finca_app_frontend/modules/shared/features/cattle_purchase/models/business_partner.dart';
+import 'package:finca_app_frontend/modules/shared/features/sales/widgets/business_partner_autocomplete_field.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/widgets/weight_approval_dialog.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/widgets/sale_confirmation_dialog.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/services/cattle_validation_service.dart';
@@ -34,7 +34,7 @@ class CreateSalePage extends StatelessWidget {
       create:
           (context) =>
               SalesWebBloc(dataSource: dataSource ?? createSalesDataSource())
-                ..add(const LoadProvidersEvent()),
+                ..add(const LoadBusinessPartnersEvent()),
       child: _CreateSaleView(saleId: saleId),
     );
   }
@@ -602,18 +602,18 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
             }
             if (_loadingSale ||
                 (state.status == SalesWebStatus.loading &&
-                    state.providers == null)) {
+                    state.businessPartners == null)) {
               return const Center(child: CircularProgressIndicator());
             }
 
             final buyers =
-                state.providers
-                    ?.where((p) => p['type'] == ProviderType.BUYER.name)
+                state.businessPartners
+                    ?.where((p) => p['type'] == BusinessPartnerRole.BUYER.name)
                     .toList() ??
                 [];
             final transporters =
-                state.providers
-                    ?.where((p) => p['type'] == ProviderType.TRANSPORTER.name)
+                state.businessPartners
+                    ?.where((p) => p['type'] == BusinessPartnerRole.TRANSPORTER.name)
                     .toList() ??
                 [];
 
@@ -723,9 +723,9 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
             const SizedBox(height: 16),
 
             // Buyer Autocomplete (replaces dropdown)
-            ProviderAutocompleteField(
+            BusinessPartnerAutocompleteField(
               label: l10n.label_buyer_required,
-              providerType: ProviderType.BUYER.name,
+              businessPartnerRole: BusinessPartnerRole.BUYER.name,
               initialValue: _initialBuyerName,
               onChanged:
                   (id, name) => setState(() {
@@ -739,9 +739,9 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
             ),
             const SizedBox(height: 16),
             // Transporter Autocomplete (replaces dropdown)
-            ProviderAutocompleteField(
+            BusinessPartnerAutocompleteField(
               label: l10n.label_transporter_optional,
-              providerType: ProviderType.TRANSPORTER.name,
+              businessPartnerRole: BusinessPartnerRole.TRANSPORTER.name,
               initialValue: _initialTransporterName,
               onChanged:
                   (id, name) => setState(() {

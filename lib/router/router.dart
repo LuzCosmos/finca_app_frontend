@@ -67,14 +67,14 @@ GoRouter createAppRouter({
         builder: (context, state) {
           final id = state.pathParameters['id']!;
           final extra = state.extra;
-          String? providerName;
+          String? businessPartnerName;
           if (extra is Map<String, dynamic>) {
-            providerName = extra['providerName'] as String?;
+            businessPartnerName = extra['businessPartnerName'] as String?;
           }
           return OnlineFeatureGate(
             child: PurchaseFormPage(
               purchaseId: id,
-              initialProviderName: providerName,
+              initialBusinessPartnerName: businessPartnerName,
             ),
           );
         },
