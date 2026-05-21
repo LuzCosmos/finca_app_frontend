@@ -653,13 +653,13 @@ abstract class AppLocalizations {
   /// Title for the reports section in the dashboard.
   ///
   /// In en, this message translates to:
-  /// **'Reports'**
+  /// **'General reports'**
   String get dashboard_reportsTitle;
 
   /// Subtitle for the reports section.
   ///
   /// In en, this message translates to:
-  /// **'Report widgets filtered by role and permissions.'**
+  /// **'Inventory, care and average daily gain overview.'**
   String get dashboard_reportsSubtitle;
 
   /// Temporary reports section message in the dashboard.
@@ -667,6 +667,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reusable report widgets will appear here as they are implemented. Each report keeps its own access filter.'**
   String get dashboard_reportsPending;
+
+  /// Error loading general reports.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load reports.'**
+  String get reports_general_loadError;
+
+  /// Care feed report widget title.
+  ///
+  /// In en, this message translates to:
+  /// **'Cattle on care feed'**
+  String get reports_onFeed_title;
+
+  /// Empty operational inventory for care.
+  ///
+  /// In en, this message translates to:
+  /// **'No active or sold cattle.'**
+  String get reports_onFeed_empty;
+
+  /// Care report legend.
+  ///
+  /// In en, this message translates to:
+  /// **'On care = new feed start date recorded.'**
+  String get reports_onFeed_legend;
+
+  /// No description provided for @reports_onFeed_onFeed.
+  ///
+  /// In en, this message translates to:
+  /// **'On care: {count}'**
+  String reports_onFeed_onFeed(int count);
+
+  /// No description provided for @reports_onFeed_active.
+  ///
+  /// In en, this message translates to:
+  /// **'Active: {count}'**
+  String reports_onFeed_active(int count);
+
+  /// No description provided for @reports_onFeed_sold.
+  ///
+  /// In en, this message translates to:
+  /// **'Sold: {count}'**
+  String reports_onFeed_sold(int count);
+
+  /// No description provided for @reports_onFeed_total.
+  ///
+  /// In en, this message translates to:
+  /// **'Total: {count}'**
+  String reports_onFeed_total(int count);
+
+  /// Status distribution widget title.
+  ///
+  /// In en, this message translates to:
+  /// **'Cattle by status'**
+  String get reports_byStatus_title;
+
+  /// Empty status widget.
+  ///
+  /// In en, this message translates to:
+  /// **'No cattle registered.'**
+  String get reports_byStatus_empty;
+
+  /// No description provided for @reports_byStatus_total.
+  ///
+  /// In en, this message translates to:
+  /// **'Total: {count}'**
+  String reports_byStatus_total(int count);
+
+  /// No description provided for @reports_status_active.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get reports_status_active;
+
+  /// No description provided for @reports_status_sold.
+  ///
+  /// In en, this message translates to:
+  /// **'Sold'**
+  String get reports_status_sold;
+
+  /// No description provided for @reports_status_dead.
+  ///
+  /// In en, this message translates to:
+  /// **'Dead'**
+  String get reports_status_dead;
+
+  /// No description provided for @reports_status_lost.
+  ///
+  /// In en, this message translates to:
+  /// **'Lost'**
+  String get reports_status_lost;
+
+  /// ADG widget title.
+  ///
+  /// In en, this message translates to:
+  /// **'Average daily gain'**
+  String get reports_adg_title;
+
+  /// ADG widget subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Farm average (kg/day)'**
+  String get reports_adg_subtitle;
+
+  /// No ADG data.
+  ///
+  /// In en, this message translates to:
+  /// **'Not enough data to calculate average daily gain.'**
+  String get reports_adg_empty;
+
+  /// No description provided for @reports_adg_value.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} kg/day'**
+  String reports_adg_value(String value);
 
   /// No description provided for @date.
   ///
