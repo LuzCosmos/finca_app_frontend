@@ -51,7 +51,7 @@ class _GeneralReportsDashboardSectionState extends State<GeneralReportsDashboard
               physics: const NeverScrollableScrollPhysics(),
               mainAxisSpacing: 12,
               crossAxisSpacing: 12,
-              childAspectRatio: crossAxisCount == 1 ? 1.35 : 0.95,
+              childAspectRatio: crossAxisCount == 1 ? 1.15 : 0.72,
               children: [
                 CattleOnFeedReportWidget(
                   isLoading: embedded.$1,
