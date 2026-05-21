@@ -1021,6 +1021,26 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get sale_minWeight_reclassifyTitle =>
+      '¿Reclasificar reses según el nuevo peso mínimo?';
+
+  @override
+  String sale_minWeight_reclassifyMessage(
+    String previous,
+    String newMin,
+    int approvedCount,
+    int rejectedCount,
+  ) {
+    return 'El peso mínimo cambió de $previous kg a $newMin kg. Hay $approvedCount aprobadas y $rejectedCount rechazadas. ¿Desea reclasificarlas automáticamente según el nuevo mínimo?';
+  }
+
+  @override
+  String get sale_minWeight_reclassifyYes => 'Sí, reclasificar';
+
+  @override
+  String get sale_minWeight_reclassifyNo => 'No, mantener clasificación';
+
+  @override
   String get purchasedAvgWeight => 'Peso Prom. Comprado (kg)';
 
   @override

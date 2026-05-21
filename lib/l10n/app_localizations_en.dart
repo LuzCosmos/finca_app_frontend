@@ -1021,6 +1021,26 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get sale_minWeight_reclassifyTitle =>
+      'Reclassify cattle for new minimum weight?';
+
+  @override
+  String sale_minWeight_reclassifyMessage(
+    String previous,
+    String newMin,
+    int approvedCount,
+    int rejectedCount,
+  ) {
+    return 'Minimum weight changed from $previous kg to $newMin kg. There are $approvedCount approved and $rejectedCount rejected. Reclassify them automatically using the new minimum?';
+  }
+
+  @override
+  String get sale_minWeight_reclassifyYes => 'Yes, reclassify';
+
+  @override
+  String get sale_minWeight_reclassifyNo => 'No, keep classification';
+
+  @override
   String get purchasedAvgWeight => 'Purchased Avg. Weight (kg)';
 
   @override

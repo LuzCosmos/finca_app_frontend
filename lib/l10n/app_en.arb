@@ -490,6 +490,18 @@
   "@sale_minWeight_keepCurrent": {
     "placeholders": { "weight": { "type": "String" } }
   },
+  "sale_minWeight_reclassifyTitle": "Reclassify cattle for new minimum weight?",
+  "sale_minWeight_reclassifyMessage": "Minimum weight changed from {previous} kg to {newMin} kg. There are {approvedCount} approved and {rejectedCount} rejected. Reclassify them automatically using the new minimum?",
+  "@sale_minWeight_reclassifyMessage": {
+    "placeholders": {
+      "previous": { "type": "String" },
+      "newMin": { "type": "String" },
+      "approvedCount": { "type": "int" },
+      "rejectedCount": { "type": "int" }
+    }
+  },
+  "sale_minWeight_reclassifyYes": "Yes, reclassify",
+  "sale_minWeight_reclassifyNo": "No, keep classification",
   "purchasedAvgWeight": "Purchased Avg. Weight (kg)",
   "receivedAvgWeight": "Received Avg. Weight (kg)",
   "unassignedCattle": "Cattle without an identified lot",

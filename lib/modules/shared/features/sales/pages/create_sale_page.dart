@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -11,7 +13,9 @@ import 'package:finca_app_frontend/modules/shared/features/sales/models/sale_mod
 import 'package:finca_app_frontend/modules/shared/features/sales/models/sale_detail_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/cattle_purchase/models/business_partner.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/widgets/business_partner_autocomplete_field.dart';
+import 'package:finca_app_frontend/modules/shared/features/sales/utils/sale_min_weight_classification.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/widgets/min_weight_buyer_change_dialog.dart';
+import 'package:finca_app_frontend/modules/shared/features/sales/widgets/min_weight_reclassify_cattle_dialog.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/widgets/weight_approval_dialog.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/widgets/sale_confirmation_dialog.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/services/cattle_validation_service.dart';
@@ -55,6 +59,7 @@ class _CreateSaleView extends StatefulWidget {
 class _CreateSaleViewState extends State<_CreateSaleView> {
   final _formKey = GlobalKey<FormState>();
   final _minWeightController = TextEditingController();
+  final _minWeightFocusNode = FocusNode();
   final _pricePerKgController = TextEditingController();
   final _notesController = TextEditingController();
 
@@ -80,10 +85,19 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
   String? _initialTransporterName;
   final _cattleService = CattleMasterService();
 
+  /// Min weight (kg) used when the current approved/rejected lists were classified.
+  double? _minWeightUsedForClassification;
+
+  /// Value in the min-weight field when it last gained focus (manual edits).
+  double? _minWeightWhenFieldFocused;
+
+  bool _isCommittingMinWeightField = false;
+
   @override
   void initState() {
     super.initState();
     _pricePerKgController.addListener(_onPriceChanged);
+    _minWeightFocusNode.addListener(_onMinWeightFocusChanged);
   }
 
   @override
@@ -136,6 +150,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
         _rejectedCattle.add(detail);
       }
     }
+    _minWeightUsedForClassification = sale.minWeightConfig;
   }
 
   void _onPriceChanged() {
@@ -158,9 +173,26 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
     });
   }
 
+  void _onMinWeightFocusChanged() {
+    if (_minWeightFocusNode.hasFocus) {
+      _minWeightWhenFieldFocused = _minWeight;
+      return;
+    }
+    _scheduleMinWeightFieldCommit();
+  }
+
+  void _scheduleMinWeightFieldCommit() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      unawaited(_onMinWeightFieldCommitted());
+    });
+  }
+
   @override
   void dispose() {
+    _minWeightFocusNode.removeListener(_onMinWeightFocusChanged);
     _minWeightController.dispose();
+    _minWeightFocusNode.dispose();
     _pricePerKgController.dispose();
     _notesController.dispose();
     _cattleIdController.dispose();
@@ -178,6 +210,116 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
     return value.toStringAsFixed(2);
   }
 
+  bool get _hasCattleInLists =>
+      _approvedCattle.isNotEmpty || _rejectedCattle.isNotEmpty;
+
+  void _ensureClassificationMinInitialized(double minWeightKg) {
+    if (_minWeightUsedForClassification == null && minWeightKg > 0) {
+      _minWeightUsedForClassification = minWeightKg;
+    }
+  }
+
+  void _syncClassificationMinAfterCattleAdded() {
+    final min = _minWeight;
+    if (min > 0) {
+      _ensureClassificationMinInitialized(min);
+    }
+  }
+
+  Future<void> _promptReclassificationIfNeeded({
+    required double previousMin,
+    required double newMin,
+  }) async {
+    if (newMin <= 0) return;
+    if ((newMin - previousMin).abs() < 0.001) {
+      if (!_hasCattleInLists) {
+        _minWeightUsedForClassification = newMin;
+      }
+      return;
+    }
+
+    if (!_hasCattleInLists) {
+      _minWeightUsedForClassification = newMin;
+      return;
+    }
+
+    final choice = await showMinWeightReclassifyCattleDialog(
+      context: context,
+      previousMinWeightKg: previousMin,
+      newMinWeightKg: newMin,
+      approvedCount: _approvedCattle.length,
+      rejectedCount: _rejectedCattle.length,
+    );
+
+    if (!mounted) return;
+
+    final l10n = AppLocalizations.of(context)!;
+
+    if (choice == MinWeightReclassifyChoice.reclassify) {
+      setState(() {
+        _reclassifyCattleForMinWeight(newMin, l10n.cattle_rejectionReason);
+        _minWeightUsedForClassification = newMin;
+      });
+      return;
+    }
+
+    setState(() {
+      _recalculateApprovedPricesWithoutReclassify();
+    });
+  }
+
+  void _reclassifyCattleForMinWeight(double minNuevo, String rejectionReason) {
+    final all = [..._approvedCattle, ..._rejectedCattle];
+    final result = SaleMinWeightClassification.partition(
+      all,
+      minNuevo,
+      _pricePerKg,
+      rejectionReason,
+    );
+    _approvedCattle
+      ..clear()
+      ..addAll(result.approved);
+    _rejectedCattle
+      ..clear()
+      ..addAll(result.rejected);
+  }
+
+  void _recalculateApprovedPricesWithoutReclassify() {
+    for (int i = 0; i < _approvedCattle.length; i++) {
+      final item = _approvedCattle[i];
+      _approvedCattle[i] = SaleDetailModel(
+        id: item.id,
+        saleId: item.saleId,
+        cattleId: item.cattleId,
+        cattleNumber: item.cattleNumber,
+        measuredWeight: item.measuredWeight,
+        calculatedPrice: _calculateCattlePrice(item.measuredWeight),
+        isApproved: item.isApproved,
+        rejectionReason: item.rejectionReason,
+        trackerRemoved: item.trackerRemoved,
+      );
+    }
+  }
+
+  Future<void> _applyMinWeightChangeFromField() async {
+    final newMin = _minWeight;
+    if (newMin <= 0) return;
+
+    var previousMin = _minWeightUsedForClassification;
+    if (previousMin == null && _hasCattleInLists) {
+      final atFocus = _minWeightWhenFieldFocused;
+      if (atFocus != null && atFocus > 0) {
+        previousMin = atFocus;
+      }
+    }
+    if (previousMin == null) {
+      _minWeightUsedForClassification = newMin;
+      return;
+    }
+
+    await _promptReclassificationIfNeeded(previousMin: previousMin, newMin: newMin);
+  }
+
   Future<void> _onBuyerChanged(
     String? id,
     String? name, {
@@ -185,35 +327,55 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
   }) async {
     setState(() => _selectedBuyerId = id);
 
-    if (id == null || buyerMinWeightKg == null) {
+    if (id == null) {
       return;
     }
 
-    final current = _minWeight;
-    if (current <= 0) {
-      setState(() {
-        _minWeightController.text = _formatMinWeightForField(buyerMinWeightKg);
-      });
-      return;
-    }
+    final previousClassificationMin = _minWeightUsedForClassification ?? _minWeight;
+    var fieldMinBefore = _minWeight;
 
-    if ((current - buyerMinWeightKg).abs() < 0.001) {
-      return;
-    }
+    if (buyerMinWeightKg != null && buyerMinWeightKg > 0) {
+      if (fieldMinBefore <= 0) {
+        setState(() {
+          _minWeightController.text = _formatMinWeightForField(buyerMinWeightKg);
+        });
+        fieldMinBefore = buyerMinWeightKg;
+      } else if ((fieldMinBefore - buyerMinWeightKg).abs() >= 0.001) {
+        final choice = await showMinWeightBuyerChangeDialog(
+          context: context,
+          buyerName: name ?? '',
+          currentMinWeightKg: fieldMinBefore,
+          buyerDefaultMinWeightKg: buyerMinWeightKg,
+        );
 
-    final choice = await showMinWeightBuyerChangeDialog(
-      context: context,
-      buyerName: name ?? '',
-      currentMinWeightKg: current,
-      buyerDefaultMinWeightKg: buyerMinWeightKg,
-    );
+        if (!mounted) return;
+
+        if (choice == MinWeightBuyerChangeChoice.useBuyerDefault) {
+          setState(() {
+            _minWeightController.text = _formatMinWeightForField(buyerMinWeightKg);
+          });
+        }
+      }
+    }
 
     if (!mounted) return;
 
-    if (choice == MinWeightBuyerChangeChoice.useBuyerDefault) {
-      setState(() {
-        _minWeightController.text = _formatMinWeightForField(buyerMinWeightKg);
-      });
+    final newMin = _minWeight;
+    if (newMin > 0) {
+      await _promptReclassificationIfNeeded(
+        previousMin: previousClassificationMin,
+        newMin: newMin,
+      );
+    }
+  }
+
+  Future<void> _onMinWeightFieldCommitted() async {
+    if (_isCommittingMinWeightField) return;
+    _isCommittingMinWeightField = true;
+    try {
+      await _applyMinWeightChangeFromField();
+    } finally {
+      _isCommittingMinWeightField = false;
     }
   }
 
@@ -325,6 +487,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
           } else {
             _rejectedCattle.add(cattleDetail);
           }
+          _syncClassificationMinAfterCattleAdded();
           _cattleIdController.clear();
           _cattleWeightController.clear();
           _trackerRemoved = false;
@@ -806,6 +969,7 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                 Expanded(
                   child: TextFormField(
                     controller: _minWeightController,
+                    focusNode: _minWeightFocusNode,
                     decoration: InputDecoration(
                       labelText: l10n.minWeightKg,
                       border: const OutlineInputBorder(),
@@ -814,6 +978,9 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                       decimal: true,
                     ),
                     onChanged: (_) => setState(() {}),
+                    onEditingComplete: _onMinWeightFieldCommitted,
+                    onFieldSubmitted: (_) => _onMinWeightFieldCommitted(),
+                    onTapOutside: (_) => _scheduleMinWeightFieldCommit(),
                     validator: (val) {
                       if (val == null || val.isEmpty) {
                         return l10n.fieldRequired;

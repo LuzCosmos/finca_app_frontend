@@ -490,6 +490,18 @@
   "@sale_minWeight_keepCurrent": {
     "placeholders": { "weight": { "type": "String" } }
   },
+  "sale_minWeight_reclassifyTitle": "¿Reclasificar reses según el nuevo peso mínimo?",
+  "sale_minWeight_reclassifyMessage": "El peso mínimo cambió de {previous} kg a {newMin} kg. Hay {approvedCount} aprobadas y {rejectedCount} rechazadas. ¿Desea reclasificarlas automáticamente según el nuevo mínimo?",
+  "@sale_minWeight_reclassifyMessage": {
+    "placeholders": {
+      "previous": { "type": "String" },
+      "newMin": { "type": "String" },
+      "approvedCount": { "type": "int" },
+      "rejectedCount": { "type": "int" }
+    }
+  },
+  "sale_minWeight_reclassifyYes": "Sí, reclasificar",
+  "sale_minWeight_reclassifyNo": "No, mantener clasificación",
   "purchasedAvgWeight": "Peso Prom. Comprado (kg)",
   "receivedAvgWeight": "Peso Prom. Recibido (kg)",
   "unassignedCattle": "Reses sin lote identificado",
