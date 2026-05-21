@@ -6,31 +6,25 @@ import 'package:integration_test/integration_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:finca_app_frontend/core/data/database/database_provider.dart';
+import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
 import 'package:finca_app_frontend/main.dart';
-import 'package:finca_app_frontend/modules/mobile/bloc/sync_bloc_stub.dart'
-    if (dart.library.io) 'package:finca_app_frontend/modules/mobile/bloc/sync_bloc.dart';
-import 'package:finca_app_frontend/modules/mobile/bloc/sync_state.dart';
-import 'package:finca_app_frontend/modules/mobile/services/sync_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/home/services/home_connectivity_service.dart';
 import 'package:finca_app_frontend/modules/shared/features/devices/pages/devices_list_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/pages/massive_event_list_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/pages/massive_event_page.dart';
+import 'package:finca_app_frontend/modules/shared/features/purchase_reception/widgets/cattle_list_with_events.dart';
 import 'package:finca_app_frontend/router/router.dart';
 
 import '../test/support/test_l10n.dart';
 import 'support/integration_fake_auth_service.dart';
 import 'support/integration_test_session.dart';
-import 'support/sync_bloc_factory.dart';
 
 // Suite única de integration_test: un solo bundle evita en macOS el fallo
 // "Unable to start the app on the device" / "log reader stopped" al ejecutar
 // `flutter test integration_test/ -d macos` con varios archivos (segundo launch).
 //
-// Bajo prueba: MainApp, router, sesión, lista masivos, dispositivos (Equipment and Resource), login fake, SyncBloc.
-
-class _MockSyncService extends Mock implements SyncService {}
+// Bajo prueba: MainApp, router, sesión, lista masivos, dispositivos (Equipment and Resource), login fake.
 
 String _jwtWithExp(int expUnix) {
   final header = base64Url.encode(
@@ -53,8 +47,7 @@ void main() {
     integrationBindOnlineApiForTests();
   });
 
-  tearDown(() async {
-    await DatabaseProvider.close();
+  tearDown(() {
     SessionService.resetForTesting();
     integrationResetOnlineApiForTests();
   });
@@ -68,9 +61,7 @@ void main() {
       final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
       await SessionService.saveSession(
         token: _jwtWithExp(now + 86400),
-        permissions: {
-          'MASSIVE_EVENTS': {'massive_events': true},
-        },
+        permissions: integrationMassiveEventsPermissions(),
         idTenant: 't-integration-list',
         idUser: 'u-integration-list',
         refreshToken: 'rt',
@@ -83,13 +74,13 @@ void main() {
       );
 
       await tester.pumpWidget(MainApp(router: router));
-      await tester.pumpAndSettle(const Duration(seconds: 20));
+      await integrationPumpRouterFrames(tester);
+      await pumpUntilVisible(
+        tester,
+        find.byKey(const ValueKey<String>('massive-event-list-page')),
+      );
 
       expect(find.byType(MassiveEventListPage), findsOneWidget);
-      expect(
-        find.byKey(const ValueKey<String>('massive-event-list-page')),
-        findsOneWidget,
-      );
       final l10n = l10nFromTester(tester);
       expect(find.text(l10n.retry), findsOneWidget);
       expect(tester.takeException(), isNull);
@@ -120,13 +111,13 @@ void main() {
       );
 
       await tester.pumpWidget(MainApp(router: router));
-      await tester.pumpAndSettle(const Duration(seconds: 20));
+      await integrationPumpRouterFrames(tester);
+      await pumpUntilVisible(
+        tester,
+        find.byKey(const ValueKey<String>('devices-list-page')),
+      );
 
       expect(find.byType(DevicesListPage), findsOneWidget);
-      expect(
-        find.byKey(const ValueKey<String>('devices-list-page')),
-        findsOneWidget,
-      );
       final l10n = l10nFromTester(tester);
       expect(find.text(l10n.devicesList_retry), findsOneWidget);
       expect(tester.takeException(), isNull);
@@ -142,9 +133,7 @@ void main() {
       final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
       await SessionService.saveSession(
         token: _jwtWithExp(now + 86400),
-        permissions: {
-          'MASSIVE_EVENTS': {'massive_events': true},
-        },
+        permissions: integrationMassiveEventsPermissions(),
         idTenant: 't-integration-edit',
         idUser: 'u-integration-edit',
         refreshToken: 'rt',
@@ -158,11 +147,15 @@ void main() {
       );
 
       await tester.pumpWidget(MainApp(router: router));
-      await tester.pumpAndSettle(const Duration(seconds: 20));
+      await integrationPumpRouterFrames(tester);
+      await pumpUntilVisible(tester, find.byType(MassiveEventPage));
 
-      expect(find.byType(MassiveEventPage), findsOneWidget);
       final l10n = l10nFromTester(tester);
-      expect(find.textContaining(l10n.massiveEventLoadSessionError), findsOneWidget);
+      await pumpUntilVisible(
+        tester,
+        find.textContaining(l10n.massiveEventLoadSessionError),
+      );
+      expect(find.byType(MassiveEventPage), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
   );
@@ -223,13 +216,12 @@ void main() {
       expect(find.text(l10n.users), findsOneWidget);
       expect(find.text(l10n.masterListTitle), findsOneWidget);
       expect(find.text(l10n.equipmentAndResource_title), findsOneWidget);
-      expect(find.text(l10n.syncNow), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
   );
 
   testWidgets(
-    'home offline: solo evento masivo y sincronizar (requiresOnline oculto)',
+    'home offline: solo evento masivo (requiresOnline oculto)',
     (tester) async {
       HomeConnectivityService.debugForceOnline = false;
       integrationBindApiForTests();
@@ -242,7 +234,6 @@ void main() {
 
       final l10n = l10nFromTester(tester);
       expect(find.text(l10n.massiveEvent), findsOneWidget);
-      expect(find.text(l10n.syncNow), findsOneWidget);
       expect(find.text(l10n.dashboard_title), findsNothing);
       expect(find.text(l10n.purchase), findsNothing);
       expect(find.text(l10n.sale), findsNothing);
@@ -355,26 +346,19 @@ void main() {
       SessionService.resetForTesting();
       SharedPreferences.setMockInitialValues({});
       await SessionService.hydrateFromStorage();
-
-      final mockSync = _MockSyncService();
-      when(() => mockSync.syncAllInOrder(any())).thenAnswer((_) async => <SyncResult>[]);
-      final SyncBloc syncBloc = createIntegrationSyncBloc(mockSync);
-      addTearDown(() async {
-        await syncBloc.close();
-        reset(mockSync);
-      });
+      integrationForceOnlineForTests();
 
       final router = createAppRouter(
+        hasValidToken: SessionService.hasValidTokenSync,
         initialLocation: '/loading',
         loginAuthService: IntegrationFakeAuthService(),
       );
 
-      await tester.pumpWidget(
-        MainApp(router: router, syncBlocOverride: syncBloc),
+      await tester.pumpWidget(MainApp(router: router));
+      await pumpUntilVisible(
+        tester,
+        find.byKey(const ValueKey<String>('login-page')),
       );
-      await tester.pumpAndSettle(const Duration(seconds: 5));
-
-      expect(find.byKey(const ValueKey<String>('login-page')), findsOneWidget);
 
       await tester.enterText(
         find.byKey(const Key('login-username-field')),
@@ -384,65 +368,55 @@ void main() {
         find.byKey(const Key('login-password-field')),
         'cualquiera',
       );
-      final l10n = l10nFromTester(tester);
-      await tester.tap(find.text(l10n.login));
-      await tester.pumpAndSettle(const Duration(seconds: 10));
+      await tester.tap(find.byType(ElevatedButton));
+      await tester.pump();
 
-      expect(find.byKey(const ValueKey<String>('home-page')), findsOneWidget);
+      await pumpUntilVisible(
+        tester,
+        find.byKey(const ValueKey<String>('home-page')),
+      );
 
       final l10nHome = l10nFromTester(tester);
       expectAllHomeMenuOptionsVisible(l10nHome);
+      expect(SessionService.hasValidTokenSync(), isTrue);
       expect(tester.takeException(), isNull);
     },
   );
 
   testWidgets(
-    'sync mockeado: home → Sincronizar eventos masivos → SyncSuccess (sin red)',
+    'recepción: lista con permiso update muestra icono editar azul',
     (tester) async {
-      SessionService.resetForTesting();
-      SharedPreferences.setMockInitialValues({});
-
-      final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-      await SessionService.saveSession(
-        token: _jwtWithExp(now + 86400),
-        permissions: integrationFullHomePermissions(),
-        idTenant: 't-integration',
-        idUser: 'u-integration',
-        refreshToken: 'rt-integration',
-      );
-      await SessionService.hydrateFromStorage();
-
-      final mockSync = _MockSyncService();
-      var syncCalls = 0;
-      when(() => mockSync.syncAllInOrder(any())).thenAnswer((_) async {
-        syncCalls++;
-        return <SyncResult>[];
-      });
-      final SyncBloc syncBloc = createIntegrationSyncBloc(mockSync);
-      addTearDown(() async {
-        await syncBloc.close();
-        reset(mockSync);
-      });
-
-      final router = createAppRouter(
-        hasValidToken: () => true,
-        initialLocation: '/loading',
-      );
-
       await tester.pumpWidget(
-        MainApp(router: router, syncBlocOverride: syncBloc),
+        MaterialApp(
+          locale: const Locale('es'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(
+            body: SizedBox(
+              height: 400,
+              child: CattleListWithEvents(
+                cattle: [
+                  {
+                    'id': 'c-e2e',
+                    'number': '77',
+                    'receivedWeight': 300,
+                    'appliedEvents': <dynamic>[],
+                  },
+                ],
+                availableLots: [],
+                canEditCattle: true,
+              ),
+            ),
+          ),
+        ),
       );
-      await tester.pumpAndSettle(const Duration(seconds: 5));
-
-      expect(find.byKey(const ValueKey<String>('home-page')), findsOneWidget);
-
-      final l10n = l10nFromTester(tester);
-      final baseline = syncCalls;
-
-      final success = syncBloc.stream.firstWhere((s) => s is SyncSuccess);
-      await tester.tap(find.text(l10n.syncNow));
-      await success.timeout(const Duration(seconds: 10));
-      expect(syncCalls, greaterThan(baseline));
+      await tester.pumpAndSettle();
+      final edit = find.byIcon(Icons.edit);
+      expect(edit, findsOneWidget);
+      expect(tester.widget<Icon>(edit).color, Colors.blue);
+      expect(tester.widget<Icon>(edit).size, 18);
+      // Cabecera de columna acciones sin etiqueta (locale es del test).
+      expect(find.text('Acciones'), findsNothing);
       expect(tester.takeException(), isNull);
     },
   );

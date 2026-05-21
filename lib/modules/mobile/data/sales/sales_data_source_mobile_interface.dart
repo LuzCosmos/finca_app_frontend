@@ -1,8 +1,7 @@
-import 'package:finca_app_frontend/core/data/database/database_provider_io.dart';
-import 'package:finca_app_frontend/modules/mobile/data/sales/sales_data_source_mobile.dart';
 import 'package:finca_app_frontend/modules/shared/features/sales/data/sales_data_source.dart';
+import 'package:finca_app_frontend/modules/web/data/sales/sales_data_source_web.dart';
 
+/// Móvil online-only: misma implementación que web (solo API).
 ISalesDataSource createSalesDataSource() {
-  final db = DatabaseProvider.database;
-  return SalesDataSourceMobile(db);
+  return SalesDataSourceWeb();
 }

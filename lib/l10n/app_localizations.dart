@@ -653,13 +653,13 @@ abstract class AppLocalizations {
   /// Title for the reports section in the dashboard.
   ///
   /// In en, this message translates to:
-  /// **'Reports'**
+  /// **'General reports'**
   String get dashboard_reportsTitle;
 
   /// Subtitle for the reports section.
   ///
   /// In en, this message translates to:
-  /// **'Report widgets filtered by role and permissions.'**
+  /// **'Inventory, care and average daily gain overview.'**
   String get dashboard_reportsSubtitle;
 
   /// Temporary reports section message in the dashboard.
@@ -667,6 +667,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reusable report widgets will appear here as they are implemented. Each report keeps its own access filter.'**
   String get dashboard_reportsPending;
+
+  /// Error loading general reports.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load reports.'**
+  String get reports_general_loadError;
+
+  /// Care feed report widget title.
+  ///
+  /// In en, this message translates to:
+  /// **'Cattle on care feed'**
+  String get reports_onFeed_title;
+
+  /// Empty operational inventory for care.
+  ///
+  /// In en, this message translates to:
+  /// **'No active or sold cattle.'**
+  String get reports_onFeed_empty;
+
+  /// Care report legend.
+  ///
+  /// In en, this message translates to:
+  /// **'On care = new feed start date recorded.'**
+  String get reports_onFeed_legend;
+
+  /// No description provided for @reports_onFeed_onFeed.
+  ///
+  /// In en, this message translates to:
+  /// **'On care: {count}'**
+  String reports_onFeed_onFeed(int count);
+
+  /// No description provided for @reports_onFeed_active.
+  ///
+  /// In en, this message translates to:
+  /// **'Active: {count}'**
+  String reports_onFeed_active(int count);
+
+  /// No description provided for @reports_onFeed_sold.
+  ///
+  /// In en, this message translates to:
+  /// **'Sold: {count}'**
+  String reports_onFeed_sold(int count);
+
+  /// No description provided for @reports_onFeed_total.
+  ///
+  /// In en, this message translates to:
+  /// **'Total: {count}'**
+  String reports_onFeed_total(int count);
+
+  /// Status distribution widget title.
+  ///
+  /// In en, this message translates to:
+  /// **'Cattle by status'**
+  String get reports_byStatus_title;
+
+  /// Empty status widget.
+  ///
+  /// In en, this message translates to:
+  /// **'No cattle registered.'**
+  String get reports_byStatus_empty;
+
+  /// No description provided for @reports_byStatus_total.
+  ///
+  /// In en, this message translates to:
+  /// **'Total: {count}'**
+  String reports_byStatus_total(int count);
+
+  /// No description provided for @reports_status_active.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get reports_status_active;
+
+  /// No description provided for @reports_status_sold.
+  ///
+  /// In en, this message translates to:
+  /// **'Sold'**
+  String get reports_status_sold;
+
+  /// No description provided for @reports_status_dead.
+  ///
+  /// In en, this message translates to:
+  /// **'Dead'**
+  String get reports_status_dead;
+
+  /// No description provided for @reports_status_lost.
+  ///
+  /// In en, this message translates to:
+  /// **'Lost'**
+  String get reports_status_lost;
+
+  /// ADG widget title.
+  ///
+  /// In en, this message translates to:
+  /// **'Average daily gain'**
+  String get reports_adg_title;
+
+  /// ADG widget subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Farm average (kg/day)'**
+  String get reports_adg_subtitle;
+
+  /// No ADG data.
+  ///
+  /// In en, this message translates to:
+  /// **'Not enough data to calculate average daily gain.'**
+  String get reports_adg_empty;
+
+  /// No description provided for @reports_adg_value.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} kg/day'**
+  String reports_adg_value(String value);
 
   /// No description provided for @date.
   ///
@@ -776,12 +890,6 @@ abstract class AppLocalizations {
   /// **'Massive Events'**
   String get massiveEvents;
 
-  /// Shown on mobile when a massive event exists locally but is not yet synced.
-  ///
-  /// In en, this message translates to:
-  /// **'This event is saved on the device and is pending synchronization with the server.'**
-  String get massiveEventPendingSync;
-
   /// No description provided for @massiveEventsListTitle.
   ///
   /// In en, this message translates to:
@@ -877,18 +985,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Created by'**
   String get massiveEventsColumnCreatedBy;
-
-  /// Table column: for server-backed web list this shows that data comes from the server.
-  ///
-  /// In en, this message translates to:
-  /// **'Sync / source'**
-  String get massiveEventsColumnSync;
-
-  /// Web list: row indicates data loaded from API (always synced with server for this view).
-  ///
-  /// In en, this message translates to:
-  /// **'Server'**
-  String get massiveEventsSyncOnServer;
 
   /// Massive event business status closed (list filter / chip).
   ///
@@ -1008,36 +1104,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'OK'**
   String get dialogOk;
-
-  /// Home (mobile) button to upload pending massive events on the device.
-  ///
-  /// In en, this message translates to:
-  /// **'Sync massive events'**
-  String get syncNow;
-
-  /// SnackBar while massive-event sync runs on mobile.
-  ///
-  /// In en, this message translates to:
-  /// **'Syncing massive events…'**
-  String get syncMassiveEventsInProgress;
-
-  /// SnackBar when massive-event sync completes successfully.
-  ///
-  /// In en, this message translates to:
-  /// **'Massive events updated on the server'**
-  String get syncMassiveEventsSuccess;
-
-  /// SnackBar when massive-event sync fails.
-  ///
-  /// In en, this message translates to:
-  /// **'Could not sync massive events: {message}'**
-  String syncMassiveEventsFailure(String message);
-
-  /// Sync button label including pending item count.
-  ///
-  /// In en, this message translates to:
-  /// **'Sync massive events ({count})'**
-  String syncMassiveEventsWithPendingCount(int count);
 
   /// No description provided for @event.
   ///
@@ -1969,6 +2035,63 @@ abstract class AppLocalizations {
   /// **'Min. Weight (Kg)'**
   String get minWeightKg;
 
+  /// No description provided for @sale_minWeight_changeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update minimum weight?'**
+  String get sale_minWeight_changeTitle;
+
+  /// No description provided for @sale_minWeight_changeMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Buyer changed to {buyerName}. Current minimum weight: {current} kg. Buyer default: {buyerDefault} kg.'**
+  String sale_minWeight_changeMessage(
+    String buyerName,
+    String current,
+    String buyerDefault,
+  );
+
+  /// No description provided for @sale_minWeight_useBuyerDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Use buyer weight ({weight} kg)'**
+  String sale_minWeight_useBuyerDefault(String weight);
+
+  /// No description provided for @sale_minWeight_keepCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep current ({weight} kg)'**
+  String sale_minWeight_keepCurrent(String weight);
+
+  /// No description provided for @sale_minWeight_reclassifyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reclassify cattle for new minimum weight?'**
+  String get sale_minWeight_reclassifyTitle;
+
+  /// No description provided for @sale_minWeight_reclassifyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum weight changed from {previous} kg to {newMin} kg. There are {approvedCount} approved and {rejectedCount} rejected. Reclassify them automatically using the new minimum?'**
+  String sale_minWeight_reclassifyMessage(
+    String previous,
+    String newMin,
+    int approvedCount,
+    int rejectedCount,
+  );
+
+  /// No description provided for @sale_minWeight_reclassifyYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, reclassify'**
+  String get sale_minWeight_reclassifyYes;
+
+  /// No description provided for @sale_minWeight_reclassifyNo.
+  ///
+  /// In en, this message translates to:
+  /// **'No, keep classification'**
+  String get sale_minWeight_reclassifyNo;
+
   /// No description provided for @purchasedAvgWeight.
   ///
   /// In en, this message translates to:
@@ -2094,12 +2217,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No animals have been added yet'**
   String get noAnimals;
-
-  /// No description provided for @tableSynced.
-  ///
-  /// In en, this message translates to:
-  /// **'Synced'**
-  String get tableSynced;
 
   /// No description provided for @purchaseReceptionTitle.
   ///
@@ -2491,6 +2608,54 @@ abstract class AppLocalizations {
   /// **'Error creating sale'**
   String get sale_createError;
 
+  /// No description provided for @sale_editTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit sale'**
+  String get sale_editTitle;
+
+  /// No description provided for @sale_editSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Sale updated successfully'**
+  String get sale_editSuccess;
+
+  /// No description provided for @sale_editLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load the sale for editing'**
+  String get sale_editLoadError;
+
+  /// No description provided for @sale_editSaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error saving sale changes'**
+  String get sale_editSaveError;
+
+  /// No description provided for @sale_editSaving.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving changes...'**
+  String get sale_editSaving;
+
+  /// No description provided for @sale_saveChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Save changes'**
+  String get sale_saveChanges;
+
+  /// No description provided for @sale_confirm_edit_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm sale edit'**
+  String get sale_confirm_edit_title;
+
+  /// No description provided for @sale_confirm_edit_proceed.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm and save'**
+  String get sale_confirm_edit_proceed;
+
   /// No description provided for @user_editUserPageMessage.
   ///
   /// In en, this message translates to:
@@ -2784,6 +2949,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Purchase saving failed.'**
   String get purchase_saveError;
+
+  /// No description provided for @purchase_editTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit purchase'**
+  String get purchase_editTitle;
+
+  /// No description provided for @purchase_editSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase updated successfully.'**
+  String get purchase_editSuccess;
+
+  /// No description provided for @purchase_editLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load purchase for editing.'**
+  String get purchase_editLoadError;
+
+  /// No description provided for @purchase_editSaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save purchase.'**
+  String get purchase_editSaveError;
+
+  /// No description provided for @purchase_editForbiddenReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Received purchases cannot be edited.'**
+  String get purchase_editForbiddenReceived;
+
+  /// No description provided for @purchase_editForbiddenReceptionStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot edit: reception has already started.'**
+  String get purchase_editForbiddenReceptionStarted;
+
+  /// No description provided for @reception_cattleEditSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Cattle data updated.'**
+  String get reception_cattleEditSuccess;
 
   /// No description provided for @cp_error_noLots.
   ///
@@ -3602,7 +3809,7 @@ abstract class AppLocalizations {
   /// **'No data'**
   String get devicesList_noBatteryData;
 
-  /// Button to open LW001 bulk import (web only).
+  /// Button to open LW001 bulk import.
   ///
   /// In en, this message translates to:
   /// **'Import'**
@@ -3745,6 +3952,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Device profile is missing or invalid for this tenant.'**
   String get importLw001_reason_DEVICE_PROFILE_ID_INVALID;
+
+  /// No description provided for @importLw001_reason_CHIRPSTACK_PROFILE_ID_REQUIRED.
+  ///
+  /// In en, this message translates to:
+  /// **'The device profile has no ChirpStack profile ID (idChipstack). Configure it before importing.'**
+  String get importLw001_reason_CHIRPSTACK_PROFILE_ID_REQUIRED;
 
   /// No description provided for @importLw001_reason_JOINEUI_INVALID.
   ///

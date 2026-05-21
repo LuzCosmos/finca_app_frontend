@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:finca_app_frontend/core/services/session_service.dart';
+import 'package:finca_app_frontend/modules/shared/features/home/services/home_connectivity_service.dart';
 import 'package:finca_app_frontend/router/router.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/pages/massive_event_page.dart';
 import '../support/router_test_host.dart';
@@ -13,6 +14,11 @@ void main() {
   setUp(() {
     SessionService.resetForTesting();
     SharedPreferences.setMockInitialValues({});
+    HomeConnectivityService.debugForceOnline = true;
+  });
+
+  tearDown(() {
+    HomeConnectivityService.debugForceOnline = null;
   });
 
   testWidgets('desde /loading sin sesión → login', (tester) async {

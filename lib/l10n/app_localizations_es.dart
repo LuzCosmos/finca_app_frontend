@@ -326,15 +326,86 @@ class AppLocalizationsEs extends AppLocalizations {
       'Última ubicación reportada por cada res con rastreador.';
 
   @override
-  String get dashboard_reportsTitle => 'Reportes';
+  String get dashboard_reportsTitle => 'Reportes generales';
 
   @override
   String get dashboard_reportsSubtitle =>
-      'Widgets de reportes filtrados por rol y permisos.';
+      'Resumen de inventario, cuido y ganancia diaria promedio.';
 
   @override
   String get dashboard_reportsPending =>
       'Los widgets de reportes reutilizables se mostrarán aquí conforme se implementen. Cada reporte conserva su propio filtro de acceso.';
+
+  @override
+  String get reports_general_loadError => 'No se pudieron cargar los reportes.';
+
+  @override
+  String get reports_onFeed_title => 'Reses en cuido';
+
+  @override
+  String get reports_onFeed_empty => 'No hay reses activas ni vendidas.';
+
+  @override
+  String get reports_onFeed_legend =>
+      'En cuido = con fecha de inicio de alimentación registrada.';
+
+  @override
+  String reports_onFeed_onFeed(int count) {
+    return 'En cuido: $count';
+  }
+
+  @override
+  String reports_onFeed_active(int count) {
+    return 'Activas: $count';
+  }
+
+  @override
+  String reports_onFeed_sold(int count) {
+    return 'Vendidas: $count';
+  }
+
+  @override
+  String reports_onFeed_total(int count) {
+    return 'Total: $count';
+  }
+
+  @override
+  String get reports_byStatus_title => 'Reses por estado';
+
+  @override
+  String get reports_byStatus_empty => 'No hay reses registradas.';
+
+  @override
+  String reports_byStatus_total(int count) {
+    return 'Total: $count';
+  }
+
+  @override
+  String get reports_status_active => 'Activas';
+
+  @override
+  String get reports_status_sold => 'Vendidas';
+
+  @override
+  String get reports_status_dead => 'Muertas';
+
+  @override
+  String get reports_status_lost => 'Perdidas';
+
+  @override
+  String get reports_adg_title => 'Ganancia diaria promedio';
+
+  @override
+  String get reports_adg_subtitle => 'Promedio de finca (kg/día)';
+
+  @override
+  String get reports_adg_empty =>
+      'No hay datos para calcular la ganancia diaria promedio.';
+
+  @override
+  String reports_adg_value(String value) {
+    return '$value kg/día';
+  }
 
   @override
   String get date => 'Fecha';
@@ -395,10 +466,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get massiveEvents => 'Eventos masivos';
 
   @override
-  String get massiveEventPendingSync =>
-      'Este evento está guardado en el dispositivo y pendiente de sincronizar con el servidor.';
-
-  @override
   String get massiveEventsListTitle => 'Eventos masivos';
 
   @override
@@ -452,12 +519,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get massiveEventsColumnCreatedBy => 'Creado por';
-
-  @override
-  String get massiveEventsColumnSync => 'Sincronización / origen';
-
-  @override
-  String get massiveEventsSyncOnServer => 'Servidor';
 
   @override
   String get massiveEventsStatusClosedLabel => 'Cerrado';
@@ -530,26 +591,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get dialogOk => 'Aceptar';
-
-  @override
-  String get syncNow => 'Sincronizar eventos masivos';
-
-  @override
-  String get syncMassiveEventsInProgress => 'Sincronizando eventos masivos…';
-
-  @override
-  String get syncMassiveEventsSuccess =>
-      'Eventos masivos actualizados en el servidor';
-
-  @override
-  String syncMassiveEventsFailure(String message) {
-    return 'No se pudieron sincronizar los eventos masivos: $message';
-  }
-
-  @override
-  String syncMassiveEventsWithPendingCount(int count) {
-    return 'Sincronizar eventos masivos ($count)';
-  }
 
   @override
   String get event => 'Evento';
@@ -1029,6 +1070,48 @@ class AppLocalizationsEs extends AppLocalizations {
   String get minWeightKg => 'Peso Mín. (Kg)';
 
   @override
+  String get sale_minWeight_changeTitle => '¿Actualizar peso mínimo?';
+
+  @override
+  String sale_minWeight_changeMessage(
+    String buyerName,
+    String current,
+    String buyerDefault,
+  ) {
+    return 'Cambió el comprador a $buyerName. Peso mínimo actual: $current kg. Peso mínimo del comprador: $buyerDefault kg.';
+  }
+
+  @override
+  String sale_minWeight_useBuyerDefault(String weight) {
+    return 'Usar peso del comprador ($weight kg)';
+  }
+
+  @override
+  String sale_minWeight_keepCurrent(String weight) {
+    return 'Mantener actual ($weight kg)';
+  }
+
+  @override
+  String get sale_minWeight_reclassifyTitle =>
+      '¿Reclasificar reses según el nuevo peso mínimo?';
+
+  @override
+  String sale_minWeight_reclassifyMessage(
+    String previous,
+    String newMin,
+    int approvedCount,
+    int rejectedCount,
+  ) {
+    return 'El peso mínimo cambió de $previous kg a $newMin kg. Hay $approvedCount aprobadas y $rejectedCount rechazadas. ¿Desea reclasificarlas automáticamente según el nuevo mínimo?';
+  }
+
+  @override
+  String get sale_minWeight_reclassifyYes => 'Sí, reclasificar';
+
+  @override
+  String get sale_minWeight_reclassifyNo => 'No, mantener clasificación';
+
+  @override
   String get purchasedAvgWeight => 'Peso Prom. Comprado (kg)';
 
   @override
@@ -1090,9 +1173,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get noAnimals => 'Aún no se han agregado animales';
-
-  @override
-  String get tableSynced => 'Sincronizado';
 
   @override
   String get purchaseReceptionTitle => 'Recepción de compra';
@@ -1326,6 +1406,30 @@ class AppLocalizationsEs extends AppLocalizations {
   String get sale_createError => 'Error al crear venta';
 
   @override
+  String get sale_editTitle => 'Editar venta';
+
+  @override
+  String get sale_editSuccess => 'Venta actualizada exitosamente';
+
+  @override
+  String get sale_editLoadError => 'No se pudo cargar la venta para editar';
+
+  @override
+  String get sale_editSaveError => 'Error al guardar los cambios de la venta';
+
+  @override
+  String get sale_editSaving => 'Guardando cambios...';
+
+  @override
+  String get sale_saveChanges => 'Guardar cambios';
+
+  @override
+  String get sale_confirm_edit_title => 'Confirmar edición de venta';
+
+  @override
+  String get sale_confirm_edit_proceed => 'Confirmar y guardar';
+
+  @override
   String get user_editUserPageMessage =>
       'Esta funcionalidad está en desarrollo';
 
@@ -1487,6 +1591,30 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get purchase_saveError => 'Falló el guardado de compra.';
+
+  @override
+  String get purchase_editTitle => 'Editar compra';
+
+  @override
+  String get purchase_editSuccess => 'Compra actualizada correctamente.';
+
+  @override
+  String get purchase_editLoadError =>
+      'No se pudo cargar la compra para editar.';
+
+  @override
+  String get purchase_editSaveError => 'No se pudo guardar la compra.';
+
+  @override
+  String get purchase_editForbiddenReceived =>
+      'No se puede editar una compra ya recibida.';
+
+  @override
+  String get purchase_editForbiddenReceptionStarted =>
+      'No se puede editar: la recepción ya comenzó.';
+
+  @override
+  String get reception_cattleEditSuccess => 'Datos de la res actualizados.';
 
   @override
   String get cp_error_noLots => 'Debe agregar al menos un lote';
@@ -2088,6 +2216,10 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get importLw001_reason_DEVICE_PROFILE_ID_INVALID =>
       'El perfil de dispositivo no existe o no es válido para este tenant.';
+
+  @override
+  String get importLw001_reason_CHIRPSTACK_PROFILE_ID_REQUIRED =>
+      'El perfil no tiene ID de perfil en ChirpStack (idChipstack). Configúrelo antes de importar.';
 
   @override
   String get importLw001_reason_JOINEUI_INVALID =>

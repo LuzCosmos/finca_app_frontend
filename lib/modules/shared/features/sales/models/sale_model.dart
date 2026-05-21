@@ -13,9 +13,9 @@ class SaleModel extends Equatable {
   final double totalWeight;
   final int totalCount;
   final String? notes;
-  final bool isSynced;
   final List<SaleDetailModel> details;
   final String? buyerName; // Flattened for display
+  final String? transporterName;
 
   const SaleModel({
     required this.id,
@@ -29,9 +29,9 @@ class SaleModel extends Equatable {
     required this.totalWeight,
     required this.totalCount,
     this.notes,
-    this.isSynced = false,
     this.details = const [],
     this.buyerName,
+    this.transporterName,
   });
   
   SaleModel copyWith({
@@ -46,9 +46,9 @@ class SaleModel extends Equatable {
     double? totalWeight,
     int? totalCount,
     String? notes,
-    bool? isSynced,
     List<SaleDetailModel>? details,
     String? buyerName,
+    String? transporterName,
   }) {
     return SaleModel(
       id: id ?? this.id,
@@ -62,9 +62,9 @@ class SaleModel extends Equatable {
       totalWeight: totalWeight ?? this.totalWeight,
       totalCount: totalCount ?? this.totalCount,
       notes: notes ?? this.notes,
-      isSynced: isSynced ?? this.isSynced,
       details: details ?? this.details,
       buyerName: buyerName ?? this.buyerName,
+      transporterName: transporterName ?? this.transporterName,
     );
   }
 
@@ -81,11 +81,12 @@ class SaleModel extends Equatable {
       totalWeight: _parseDouble(json['total_weight_kg'] ?? json['totalWeightKg']), // Note: Backend DTO calls it totalWeightKg. Entity totalAmount.
       totalCount: json['total_animal_count'] ?? json['totalAnimalCount'] ?? 0,
       notes: json['notes'],
-      isSynced: true, // If from JSON (backend), it's synced.
       details: (json['details'] as List<dynamic>?)
           ?.map((e) => SaleDetailModel.fromJson(e))
           .toList() ?? [],
       buyerName: json['buyer'] != null ? json['buyer']['name'] : null,
+      transporterName:
+          json['transporter'] != null ? json['transporter']['name'] : null,
     );
   }
 
@@ -142,8 +143,8 @@ class SaleModel extends Equatable {
         totalWeight,
         totalCount,
         notes,
-        isSynced,
         details,
         buyerName,
+        transporterName,
       ];
 }

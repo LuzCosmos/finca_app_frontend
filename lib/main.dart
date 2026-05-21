@@ -8,10 +8,7 @@ import 'package:finca_app_frontend/core/utils/language.dart';
 import 'router/router.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:finca_app_frontend/core/theme/theme.dart';
-import 'package:finca_app_frontend/core/bootstrap/mobile_sync_provider.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
-import 'package:finca_app_frontend/modules/mobile/bloc/sync_bloc_stub.dart'
-    if (dart.library.io) 'package:finca_app_frontend/modules/mobile/bloc/sync_bloc.dart';
 import 'package:flutter/foundation.dart' show debugPrint, kIsWeb;
 
 class _ErrorApp extends StatelessWidget {
@@ -84,10 +81,7 @@ class MainApp extends StatelessWidget {
   /// Si es null, se usa [appRouter] (comportamiento en producción).
   final GoRouter? router;
 
-  /// Solo integración / tests: evita crear `SyncBloc` real (red y Drift).
-  final SyncBloc? syncBlocOverride;
-
-  const MainApp({super.key, this.router, this.syncBlocOverride});
+  const MainApp({super.key, this.router});
 
   @override
   Widget build(BuildContext context) {
@@ -95,16 +89,13 @@ class MainApp extends StatelessWidget {
       providers: [BlocProvider<LocaleBloc>(create: (_) => LocaleBloc())],
       child: BlocBuilder<LocaleBloc, LocaleState>(
         builder: (context, state) {
-          return wrapMobileSyncScope(
-            MaterialApp.router(
-              debugShowCheckedModeBanner: false,
-              locale: state.selectedLanguage.localeValue,
-              supportedLocales: AppLocalizations.supportedLocales,
-              localizationsDelegates: AppLocalizations.localizationsDelegates,
-              theme: AppTheme.lightTheme,
-              routerConfig: router ?? appRouter,
-            ),
-            syncBlocOverride: syncBlocOverride,
+          return MaterialApp.router(
+            debugShowCheckedModeBanner: false,
+            locale: state.selectedLanguage.localeValue,
+            supportedLocales: AppLocalizations.supportedLocales,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            theme: AppTheme.lightTheme,
+            routerConfig: router ?? appRouter,
           );
         },
       ),

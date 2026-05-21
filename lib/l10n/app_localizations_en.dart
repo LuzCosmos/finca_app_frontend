@@ -328,15 +328,85 @@ class AppLocalizationsEn extends AppLocalizations {
       'Last reported location for each tracked animal.';
 
   @override
-  String get dashboard_reportsTitle => 'Reports';
+  String get dashboard_reportsTitle => 'General reports';
 
   @override
   String get dashboard_reportsSubtitle =>
-      'Report widgets filtered by role and permissions.';
+      'Inventory, care and average daily gain overview.';
 
   @override
   String get dashboard_reportsPending =>
       'Reusable report widgets will appear here as they are implemented. Each report keeps its own access filter.';
+
+  @override
+  String get reports_general_loadError => 'Could not load reports.';
+
+  @override
+  String get reports_onFeed_title => 'Cattle on care feed';
+
+  @override
+  String get reports_onFeed_empty => 'No active or sold cattle.';
+
+  @override
+  String get reports_onFeed_legend => 'On care = new feed start date recorded.';
+
+  @override
+  String reports_onFeed_onFeed(int count) {
+    return 'On care: $count';
+  }
+
+  @override
+  String reports_onFeed_active(int count) {
+    return 'Active: $count';
+  }
+
+  @override
+  String reports_onFeed_sold(int count) {
+    return 'Sold: $count';
+  }
+
+  @override
+  String reports_onFeed_total(int count) {
+    return 'Total: $count';
+  }
+
+  @override
+  String get reports_byStatus_title => 'Cattle by status';
+
+  @override
+  String get reports_byStatus_empty => 'No cattle registered.';
+
+  @override
+  String reports_byStatus_total(int count) {
+    return 'Total: $count';
+  }
+
+  @override
+  String get reports_status_active => 'Active';
+
+  @override
+  String get reports_status_sold => 'Sold';
+
+  @override
+  String get reports_status_dead => 'Dead';
+
+  @override
+  String get reports_status_lost => 'Lost';
+
+  @override
+  String get reports_adg_title => 'Average daily gain';
+
+  @override
+  String get reports_adg_subtitle => 'Farm average (kg/day)';
+
+  @override
+  String get reports_adg_empty =>
+      'Not enough data to calculate average daily gain.';
+
+  @override
+  String reports_adg_value(String value) {
+    return '$value kg/day';
+  }
 
   @override
   String get date => 'Date';
@@ -397,10 +467,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get massiveEvents => 'Massive Events';
 
   @override
-  String get massiveEventPendingSync =>
-      'This event is saved on the device and is pending synchronization with the server.';
-
-  @override
   String get massiveEventsListTitle => 'Massive events';
 
   @override
@@ -452,12 +518,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get massiveEventsColumnCreatedBy => 'Created by';
-
-  @override
-  String get massiveEventsColumnSync => 'Sync / source';
-
-  @override
-  String get massiveEventsSyncOnServer => 'Server';
 
   @override
   String get massiveEventsStatusClosedLabel => 'Closed';
@@ -531,25 +591,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dialogOk => 'OK';
-
-  @override
-  String get syncNow => 'Sync massive events';
-
-  @override
-  String get syncMassiveEventsInProgress => 'Syncing massive events…';
-
-  @override
-  String get syncMassiveEventsSuccess => 'Massive events updated on the server';
-
-  @override
-  String syncMassiveEventsFailure(String message) {
-    return 'Could not sync massive events: $message';
-  }
-
-  @override
-  String syncMassiveEventsWithPendingCount(int count) {
-    return 'Sync massive events ($count)';
-  }
 
   @override
   String get event => 'Event';
@@ -1028,6 +1069,48 @@ class AppLocalizationsEn extends AppLocalizations {
   String get minWeightKg => 'Min. Weight (Kg)';
 
   @override
+  String get sale_minWeight_changeTitle => 'Update minimum weight?';
+
+  @override
+  String sale_minWeight_changeMessage(
+    String buyerName,
+    String current,
+    String buyerDefault,
+  ) {
+    return 'Buyer changed to $buyerName. Current minimum weight: $current kg. Buyer default: $buyerDefault kg.';
+  }
+
+  @override
+  String sale_minWeight_useBuyerDefault(String weight) {
+    return 'Use buyer weight ($weight kg)';
+  }
+
+  @override
+  String sale_minWeight_keepCurrent(String weight) {
+    return 'Keep current ($weight kg)';
+  }
+
+  @override
+  String get sale_minWeight_reclassifyTitle =>
+      'Reclassify cattle for new minimum weight?';
+
+  @override
+  String sale_minWeight_reclassifyMessage(
+    String previous,
+    String newMin,
+    int approvedCount,
+    int rejectedCount,
+  ) {
+    return 'Minimum weight changed from $previous kg to $newMin kg. There are $approvedCount approved and $rejectedCount rejected. Reclassify them automatically using the new minimum?';
+  }
+
+  @override
+  String get sale_minWeight_reclassifyYes => 'Yes, reclassify';
+
+  @override
+  String get sale_minWeight_reclassifyNo => 'No, keep classification';
+
+  @override
   String get purchasedAvgWeight => 'Purchased Avg. Weight (kg)';
 
   @override
@@ -1089,9 +1172,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noAnimals => 'No animals have been added yet';
-
-  @override
-  String get tableSynced => 'Synced';
 
   @override
   String get purchaseReceptionTitle => 'Purchase Reception';
@@ -1325,6 +1405,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sale_createError => 'Error creating sale';
 
   @override
+  String get sale_editTitle => 'Edit sale';
+
+  @override
+  String get sale_editSuccess => 'Sale updated successfully';
+
+  @override
+  String get sale_editLoadError => 'Could not load the sale for editing';
+
+  @override
+  String get sale_editSaveError => 'Error saving sale changes';
+
+  @override
+  String get sale_editSaving => 'Saving changes...';
+
+  @override
+  String get sale_saveChanges => 'Save changes';
+
+  @override
+  String get sale_confirm_edit_title => 'Confirm sale edit';
+
+  @override
+  String get sale_confirm_edit_proceed => 'Confirm and save';
+
+  @override
   String get user_editUserPageMessage => 'This feature is under development';
 
   @override
@@ -1484,6 +1588,29 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get purchase_saveError => 'Purchase saving failed.';
+
+  @override
+  String get purchase_editTitle => 'Edit purchase';
+
+  @override
+  String get purchase_editSuccess => 'Purchase updated successfully.';
+
+  @override
+  String get purchase_editLoadError => 'Could not load purchase for editing.';
+
+  @override
+  String get purchase_editSaveError => 'Could not save purchase.';
+
+  @override
+  String get purchase_editForbiddenReceived =>
+      'Received purchases cannot be edited.';
+
+  @override
+  String get purchase_editForbiddenReceptionStarted =>
+      'Cannot edit: reception has already started.';
+
+  @override
+  String get reception_cattleEditSuccess => 'Cattle data updated.';
 
   @override
   String get cp_error_noLots => 'You must add at least one lot';
@@ -2080,6 +2207,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get importLw001_reason_DEVICE_PROFILE_ID_INVALID =>
       'Device profile is missing or invalid for this tenant.';
+
+  @override
+  String get importLw001_reason_CHIRPSTACK_PROFILE_ID_REQUIRED =>
+      'The device profile has no ChirpStack profile ID (idChipstack). Configure it before importing.';
 
   @override
   String get importLw001_reason_JOINEUI_INVALID =>

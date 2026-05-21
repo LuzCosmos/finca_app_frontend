@@ -6,8 +6,13 @@ import 'package:intl/intl.dart';
 
 class LotsSection extends StatefulWidget {
   final void Function(List<LotModel>) onLotsChanged;
+  final List<LotModel>? initialLots;
 
-  const LotsSection({super.key, required this.onLotsChanged});
+  const LotsSection({
+    super.key,
+    required this.onLotsChanged,
+    this.initialLots,
+  });
 
   @override
   State<LotsSection> createState() => LotsSectionState();
@@ -16,6 +21,39 @@ class LotsSection extends StatefulWidget {
 class LotsSectionState extends State<LotsSection> {
   final List<GlobalKey<LotInputState>> _lotKeys = [];
   final ScrollController _horizontalScrollController = ScrollController();
+  bool _seededInitialLots = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _seedInitialLotsIfNeeded();
+  }
+
+  @override
+  void didUpdateWidget(covariant LotsSection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.initialLots != null &&
+        widget.initialLots != oldWidget.initialLots) {
+      _seededInitialLots = false;
+      _lotKeys.clear();
+      _seedInitialLotsIfNeeded();
+    }
+  }
+
+  void _seedInitialLotsIfNeeded() {
+    final initial = widget.initialLots;
+    if (_seededInitialLots || initial == null || initial.isEmpty) return;
+    _seededInitialLots = true;
+    for (var i = 0; i < initial.length; i++) {
+      _lotKeys.add(GlobalKey<LotInputState>());
+    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      for (var i = 0; i < initial.length && i < _lotKeys.length; i++) {
+        _lotKeys[i].currentState?.applyInitialLot(initial[i]);
+      }
+      _notifyChange();
+    });
+  }
 
   @override
   void dispose() {

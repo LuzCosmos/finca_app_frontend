@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:finca_app_frontend/core/services/basic_api_service.dart';
 import 'package:finca_app_frontend/core/services/session_service.dart';
+import 'package:finca_app_frontend/modules/shared/features/devices/pages/import_lw001_devices_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/dashboard/page/dashboard_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/bloc/massive_event_bloc.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/pages/massive_event_list_page.dart';
@@ -19,6 +20,7 @@ import 'package:finca_app_frontend/modules/shared/features/sales/pages/create_sa
 import 'package:finca_app_frontend/modules/shared/features/home/services/home_connectivity_service.dart';
 import 'package:finca_app_frontend/router/router.dart';
 
+import '../support/router_mock_http_client.dart';
 import '../support/router_test_host.dart';
 import '../support/test_l10n.dart';
 
@@ -61,12 +63,14 @@ void main() {
 
   /// Sesión con permisos completos (setUp) + token válido vía [hasValidToken].
   Future<void> pumpAuthenticated(WidgetTester tester, String location) async {
-    final router = createAppRouter(
-      hasValidToken: () => true,
-      initialLocation: location,
-    );
-    await tester.pumpWidget(buildRouterTestHost(router));
-    await pumpRouterFrames(tester);
+    await runWithRouterMockHttp(() async {
+      final router = createAppRouter(
+        hasValidToken: () => true,
+        initialLocation: location,
+      );
+      await tester.pumpWidget(buildRouterTestHost(router));
+      await pumpRouterFrames(tester);
+    });
   }
 
   testWidgets('autenticado: /home construye HomePage', (tester) async {
@@ -153,6 +157,11 @@ void main() {
     expect(find.byType(CreateSalePage), findsOneWidget);
   });
 
+  testWidgets('autenticado: /sales/edit/:id', (tester) async {
+    await pumpAuthenticated(tester, '/sales/edit/abc-sale-id');
+    expect(find.byType(CreateSalePage), findsOneWidget);
+  });
+
   testWidgets('autenticado: /massive-events muestra MassiveEventListPage', (
     tester,
   ) async {
@@ -165,17 +174,19 @@ void main() {
   testWidgets('autenticado: /massive-events/create expone MassiveEventBloc', (
     tester,
   ) async {
-    final router = createAppRouter(
-      hasValidToken: () => true,
-      initialLocation: '/massive-events/create',
-    );
-    await tester.pumpWidget(buildRouterTestHost(router));
-    await pumpRouterFrames(tester);
-    await tester.pump(const Duration(seconds: 2));
+    await runWithRouterMockHttp(() async {
+      final router = createAppRouter(
+        hasValidToken: () => true,
+        initialLocation: '/massive-events/create',
+      );
+      await tester.pumpWidget(buildRouterTestHost(router));
+      await pumpRouterFrames(tester);
+      await tester.pump(const Duration(seconds: 2));
 
-    expect(find.byType(MassiveEventPage), findsOneWidget);
-    final BuildContext ctx = tester.element(find.byType(MassiveEventPage));
-    expect(ctx.read<MassiveEventBloc>(), isA<MassiveEventBloc>());
+      expect(find.byType(MassiveEventPage), findsOneWidget);
+      final BuildContext ctx = tester.element(find.byType(MassiveEventPage));
+      expect(ctx.read<MassiveEventBloc>(), isA<MassiveEventBloc>());
+    });
   });
 
   testWidgets('autenticado: /users', (tester) async {
@@ -208,33 +219,64 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets(
+    'autenticado con create en devices: /equipment-resources/import (sin bloqueo móvil)',
+    (tester) async {
+      SessionService.resetForTesting();
+      SharedPreferences.setMockInitialValues({});
+      await SessionService.saveSession(
+        token: 't',
+        permissions: <String, dynamic>{
+          'PROD_CENTER': <String, dynamic>{'devices': '10000'},
+        },
+        idTenant: 'tid',
+        idUser: 'uid',
+      );
+
+      final router = createAppRouter(
+        hasValidToken: () => true,
+        initialLocation: '/equipment-resources/import',
+      );
+      await tester.pumpWidget(buildRouterTestHost(router));
+      await pumpRouterFrames(tester);
+      await tester.pump();
+
+      expect(find.byType(ImportLw001DevicesPage), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   testWidgets('goNamed purchasesList abre PurchasesListPage', (tester) async {
-    final router = createAppRouter(
-      hasValidToken: () => true,
-      initialLocation: '/home',
-    );
-    await tester.pumpWidget(buildRouterTestHost(router));
-    await pumpRouterFrames(tester);
-    router.goNamed('purchasesList');
-    await tester.pump();
-    await tester.pump(const Duration(seconds: 2));
-    expect(find.byType(PurchasesListPage), findsOneWidget);
+    await runWithRouterMockHttp(() async {
+      final router = createAppRouter(
+        hasValidToken: () => true,
+        initialLocation: '/home',
+      );
+      await tester.pumpWidget(buildRouterTestHost(router));
+      await pumpRouterFrames(tester);
+      router.goNamed('purchasesList');
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 2));
+      expect(find.byType(PurchasesListPage), findsOneWidget);
+    });
   });
 
   testWidgets('goNamed purchasesPending abre lista pendiente', (tester) async {
-    final router = createAppRouter(
-      hasValidToken: () => true,
-      initialLocation: '/home',
-    );
-    await tester.pumpWidget(buildRouterTestHost(router));
-    await pumpRouterFrames(tester);
-    router.goNamed('purchasesPending');
-    await tester.pump();
-    await tester.pump(const Duration(seconds: 2));
-    expect(find.byType(PurchasesListPage), findsOneWidget);
-    final page = tester.widget<PurchasesListPage>(
-      find.byType(PurchasesListPage),
-    );
-    expect(page.initialStatusFilter, 'open');
+    await runWithRouterMockHttp(() async {
+      final router = createAppRouter(
+        hasValidToken: () => true,
+        initialLocation: '/home',
+      );
+      await tester.pumpWidget(buildRouterTestHost(router));
+      await pumpRouterFrames(tester);
+      router.goNamed('purchasesPending');
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 2));
+      expect(find.byType(PurchasesListPage), findsOneWidget);
+      final page = tester.widget<PurchasesListPage>(
+        find.byType(PurchasesListPage),
+      );
+      expect(page.initialStatusFilter, 'open');
+    });
   });
 }

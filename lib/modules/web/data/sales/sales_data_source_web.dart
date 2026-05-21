@@ -22,20 +22,15 @@ class SalesDataSourceWeb implements ISalesDataSource {
   }
 
   @override
-  Future<List> getProviders(String type) async {
+  Future<List> getBusinessPartners(String type) async {
     final res = await BasicApiService.authorizedGet(
-      Uri.parse('$baseUrl/providers'),
+      Uri.parse('$baseUrl/business-partners'),
     );
     if (res.statusCode == 200) {
       final list = jsonDecode(res.body) as List;
       return list.where((p) => p['type'] == type).toList();
     }
     return [];
-  }
-
-  @override
-  Future<List<SaleModel>> getUnsyncedSales() async {
-    return []; // Web is always synced
   }
 
   @override
@@ -68,11 +63,6 @@ class SalesDataSourceWeb implements ISalesDataSource {
     } else {
       throw ApiException('savingObjectError', 'Save sale: Response is null.');
     }
-  }
-
-  @override
-  Future<void> syncSales() async {
-    // No-op
   }
 
   @override
@@ -116,8 +106,33 @@ class SalesDataSourceWeb implements ISalesDataSource {
   }
 
   @override
-  Future<void> updateSale(String id, Map<String, dynamic> updates) async {
-    final baseUrl = BasicApiService.getApiBaseUrl();
+  Future<SaleModel> getSaleById(String id) async {
+    var response;
+    try {
+      response = await BasicApiService.authorizedGet(
+        Uri.parse('$baseUrl/sales/$id'),
+      );
+    } catch (e) {
+      if (e is SocketException || e is http.ClientException) {
+        throw ApiException(
+          'serverConnectionError',
+          'Error al obtener venta: $e',
+        );
+      }
+      throw ApiException('readingObjectError', 'Error al obtener venta: $e');
+    }
+    if (response == null) {
+      throw ApiException('readingObjectError', 'Get sale: Response is null.');
+    }
+    if (response.statusCode == 200) {
+      return SaleModel.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
+    }
+    BasicApiService.manageNotSuccessResponseCode(response);
+    throw ApiException('readingObjectError', 'Failed to load sale');
+  }
+
+  @override
+  Future<void> updateSale(String id, SaleModel sale) async {
     if (baseUrl.isEmpty) throw Exception('API_URL is not configured');
 
     final res = await BasicApiService.authorizedPut(
@@ -125,7 +140,7 @@ class SalesDataSourceWeb implements ISalesDataSource {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: jsonEncode(updates),
+      body: jsonEncode(sale.toJsonCreate()),
     );
     if (res.statusCode != 200) {
       BasicApiService.manageNotSuccessResponseCode(res);

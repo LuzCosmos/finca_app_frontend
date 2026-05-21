@@ -164,12 +164,47 @@
   "@dashboard_cattleMapTitle": { "description": "Título de la sección de mapa de ganado en dashboard." },
   "dashboard_cattleMapSubtitle": "Última ubicación reportada por cada res con rastreador.",
   "@dashboard_cattleMapSubtitle": { "description": "Subtítulo de la sección de mapa de ganado." },
-  "dashboard_reportsTitle": "Reportes",
+  "dashboard_reportsTitle": "Reportes generales",
   "@dashboard_reportsTitle": { "description": "Título de la sección de reportes en dashboard." },
-  "dashboard_reportsSubtitle": "Widgets de reportes filtrados por rol y permisos.",
+  "dashboard_reportsSubtitle": "Resumen de inventario, cuido y ganancia diaria promedio.",
   "@dashboard_reportsSubtitle": { "description": "Subtítulo de la sección de reportes." },
   "dashboard_reportsPending": "Los widgets de reportes reutilizables se mostrarán aquí conforme se implementen. Cada reporte conserva su propio filtro de acceso.",
   "@dashboard_reportsPending": { "description": "Mensaje temporal de sección de reportes en dashboard." },
+
+  "reports_general_loadError": "No se pudieron cargar los reportes.",
+  "@reports_general_loadError": { "description": "Error al cargar reportes generales." },
+  "reports_onFeed_title": "Reses en cuido",
+  "@reports_onFeed_title": { "description": "Título widget reporte cuido." },
+  "reports_onFeed_empty": "No hay reses activas ni vendidas.",
+  "@reports_onFeed_empty": { "description": "Vacío inventario operativo cuido." },
+  "reports_onFeed_legend": "En cuido = con fecha de inicio de alimentación registrada.",
+  "@reports_onFeed_legend": { "description": "Leyenda widget cuido." },
+  "reports_onFeed_onFeed": "En cuido: {count}",
+  "@reports_onFeed_onFeed": { "placeholders": { "count": { "type": "int" } } },
+  "reports_onFeed_active": "Activas: {count}",
+  "@reports_onFeed_active": { "placeholders": { "count": { "type": "int" } } },
+  "reports_onFeed_sold": "Vendidas: {count}",
+  "@reports_onFeed_sold": { "placeholders": { "count": { "type": "int" } } },
+  "reports_onFeed_total": "Total: {count}",
+  "@reports_onFeed_total": { "placeholders": { "count": { "type": "int" } } },
+  "reports_byStatus_title": "Reses por estado",
+  "@reports_byStatus_title": { "description": "Título widget estados." },
+  "reports_byStatus_empty": "No hay reses registradas.",
+  "@reports_byStatus_empty": { "description": "Vacío widget estados." },
+  "reports_byStatus_total": "Total: {count}",
+  "@reports_byStatus_total": { "placeholders": { "count": { "type": "int" } } },
+  "reports_status_active": "Activas",
+  "reports_status_sold": "Vendidas",
+  "reports_status_dead": "Muertas",
+  "reports_status_lost": "Perdidas",
+  "reports_adg_title": "Ganancia diaria promedio",
+  "@reports_adg_title": { "description": "Título widget GMD." },
+  "reports_adg_subtitle": "Promedio de finca (kg/día)",
+  "@reports_adg_subtitle": { "description": "Subtítulo widget GMD." },
+  "reports_adg_empty": "No hay datos para calcular la ganancia diaria promedio.",
+  "@reports_adg_empty": { "description": "Sin datos GMD." },
+  "reports_adg_value": "{value} kg/día",
+  "@reports_adg_value": { "placeholders": { "value": { "type": "String" } } },
 
   "date": "Fecha",
   "dateSomething": "Fecha de {object}",
@@ -191,10 +226,6 @@
   "cattlePurchase": "Compra de Ganado",
   "massiveEvent": "Evento masivo",
   "massiveEvents": "Eventos masivos",
-  "massiveEventPendingSync": "Este evento está guardado en el dispositivo y pendiente de sincronizar con el servidor.",
-  "@massiveEventPendingSync": {
-    "description": "Mensaje móvil cuando el evento masivo existe en local pero no está sincronizado."
-  },
   "massiveEventsListTitle": "Eventos masivos",
   "massiveEventsListEmpty": "No hay eventos masivos que mostrar.",
   "massiveEvents_createFirstEvent": "Crea tu primer evento masivo para comenzar",
@@ -220,14 +251,6 @@
   "massiveEventsColumnUpdatedAt": "Última modificación",
   "massiveEventsColumnCreatedAt": "Fecha creación",
   "massiveEventsColumnCreatedBy": "Creado por",
-  "massiveEventsColumnSync": "Sincronización / origen",
-  "@massiveEventsColumnSync": {
-    "description": "Columna: en lista web indica que el dato viene del servidor."
-  },
-  "massiveEventsSyncOnServer": "Servidor",
-  "@massiveEventsSyncOnServer": {
-    "description": "Lista web: la fila proviene de la API (vista siempre alineada con el servidor)."
-  },
   "massiveEventsStatusClosedLabel": "Cerrado",
   "@massiveEventsStatusClosedLabel": {
     "description": "Estado de negocio cerrado (filtro / chip en lista)."
@@ -315,32 +338,6 @@
   "dialogOk": "Aceptar",
   "@dialogOk": {
     "description": "Generic dismiss button for small dialogs."
-  },
-  "syncNow": "Sincronizar eventos masivos",
-  "@syncNow": {
-    "description": "Botón en inicio (móvil) para subir eventos masivos pendientes en el dispositivo."
-  },
-  "syncMassiveEventsInProgress": "Sincronizando eventos masivos…",
-  "@syncMassiveEventsInProgress": {
-    "description": "SnackBar mientras corre la sincronización de eventos masivos en móvil."
-  },
-  "syncMassiveEventsSuccess": "Eventos masivos actualizados en el servidor",
-  "@syncMassiveEventsSuccess": {
-    "description": "SnackBar al terminar bien la sincronización de eventos masivos."
-  },
-  "syncMassiveEventsFailure": "No se pudieron sincronizar los eventos masivos: {message}",
-  "@syncMassiveEventsFailure": {
-    "description": "SnackBar cuando falla la sincronización de eventos masivos.",
-    "placeholders": {
-      "message": { "type": "String" }
-    }
-  },
-  "syncMassiveEventsWithPendingCount": "Sincronizar eventos masivos ({count})",
-  "@syncMassiveEventsWithPendingCount": {
-    "description": "Botón de sincronización con cantidad de pendientes.",
-    "placeholders": {
-      "count": { "type": "int" }
-    }
   },
   "event": "Evento",
   "events": "Eventos",
@@ -511,6 +508,35 @@
   "pricePerHead": "Precio Prom. por Res", 
   
   "minWeightKg": "Peso Mín. (Kg)",
+  "sale_minWeight_changeTitle": "¿Actualizar peso mínimo?",
+  "sale_minWeight_changeMessage": "Cambió el comprador a {buyerName}. Peso mínimo actual: {current} kg. Peso mínimo del comprador: {buyerDefault} kg.",
+  "@sale_minWeight_changeMessage": {
+    "placeholders": {
+      "buyerName": { "type": "String" },
+      "current": { "type": "String" },
+      "buyerDefault": { "type": "String" }
+    }
+  },
+  "sale_minWeight_useBuyerDefault": "Usar peso del comprador ({weight} kg)",
+  "@sale_minWeight_useBuyerDefault": {
+    "placeholders": { "weight": { "type": "String" } }
+  },
+  "sale_minWeight_keepCurrent": "Mantener actual ({weight} kg)",
+  "@sale_minWeight_keepCurrent": {
+    "placeholders": { "weight": { "type": "String" } }
+  },
+  "sale_minWeight_reclassifyTitle": "¿Reclasificar reses según el nuevo peso mínimo?",
+  "sale_minWeight_reclassifyMessage": "El peso mínimo cambió de {previous} kg a {newMin} kg. Hay {approvedCount} aprobadas y {rejectedCount} rechazadas. ¿Desea reclasificarlas automáticamente según el nuevo mínimo?",
+  "@sale_minWeight_reclassifyMessage": {
+    "placeholders": {
+      "previous": { "type": "String" },
+      "newMin": { "type": "String" },
+      "approvedCount": { "type": "int" },
+      "rejectedCount": { "type": "int" }
+    }
+  },
+  "sale_minWeight_reclassifyYes": "Sí, reclasificar",
+  "sale_minWeight_reclassifyNo": "No, mantener clasificación",
   "purchasedAvgWeight": "Peso Prom. Comprado (kg)",
   "receivedAvgWeight": "Peso Prom. Recibido (kg)",
   "unassignedCattle": "Reses sin lote identificado",
@@ -549,8 +575,6 @@
   
 
   "noAnimals": "Aún no se han agregado animales",
-
-  "tableSynced": "Sincronizado",
 
   "purchaseReceptionTitle": "Recepción de compra",
   "purchaseBatchesTitle": "Lotes de la compra",
@@ -634,6 +658,14 @@
   "sale_creating": "Creando venta...",
   "sale_created": "Venta creada exitosamente",
   "sale_createError": "Error al crear venta",
+  "sale_editTitle": "Editar venta",
+  "sale_editSuccess": "Venta actualizada exitosamente",
+  "sale_editLoadError": "No se pudo cargar la venta para editar",
+  "sale_editSaveError": "Error al guardar los cambios de la venta",
+  "sale_editSaving": "Guardando cambios...",
+  "sale_saveChanges": "Guardar cambios",
+  "sale_confirm_edit_title": "Confirmar edición de venta",
+  "sale_confirm_edit_proceed": "Confirmar y guardar",
 
   "user_editUserPageMessage": "Esta funcionalidad está en desarrollo",
 
@@ -692,6 +724,13 @@
   "purchase_dateRequired": "Debes seleccionar una fecha de compra.",
   "purchase_saveSuccess": "Compra guardada exitosamente.",
   "purchase_saveError": "Falló el guardado de compra.",
+  "purchase_editTitle": "Editar compra",
+  "purchase_editSuccess": "Compra actualizada correctamente.",
+  "purchase_editLoadError": "No se pudo cargar la compra para editar.",
+  "purchase_editSaveError": "No se pudo guardar la compra.",
+  "purchase_editForbiddenReceived": "No se puede editar una compra ya recibida.",
+  "purchase_editForbiddenReceptionStarted": "No se puede editar: la recepción ya comenzó.",
+  "reception_cattleEditSuccess": "Datos de la res actualizados.",
   
   "cp_error_noLots": "Debe agregar al menos un lote",
   "cp_error_providerRequired": "Por favor seleccione o cree un proveedor.",
@@ -941,7 +980,7 @@
   "devicesList_noBatteryData": "Sin dato",
   "@devicesList_noBatteryData": { "description": "Cuando no hay estado de batería." },
   "devicesList_importButton": "Importar",
-  "@devicesList_importButton": { "description": "Botón para abrir importación masiva LW001 (solo web)." },
+  "@devicesList_importButton": { "description": "Botón para abrir importación masiva LW001." },
 
   "importLw001_pageTitle": "Importar dispositivos LW001-BG PRO",
   "importLw001_helpIntro": "Suba una hoja con exactamente estas cabeceras en la fila 1, columnas A a D, en este orden:",
@@ -967,6 +1006,7 @@
   "importLw001_reason_DEVEUI_ALREADY_EXISTS_UPDATED": "El DevEUI ya existía en su tenant; se actualizó el dispositivo.",
   "importLw001_reason_DEVICE_PROFILE_ID_REQUIRED": "Se requiere un perfil por defecto en el formulario.",
   "importLw001_reason_DEVICE_PROFILE_ID_INVALID": "El perfil de dispositivo no existe o no es válido para este tenant.",
+  "importLw001_reason_CHIRPSTACK_PROFILE_ID_REQUIRED": "El perfil no tiene ID de perfil en ChirpStack (idChipstack). Configúrelo antes de importar.",
   "importLw001_reason_JOINEUI_INVALID": "JoinEUI debe ser 16 caracteres hexadecimales.",
   "importLw001_reason_APP_KEY_INVALID": "App Key debe ser 32 caracteres hexadecimales.",
   "importLw001_reason_APP_KEY_SCIENTIFIC_NOTATION": "App Key parece notación científica de Excel; formatee la celda como texto.",

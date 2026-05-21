@@ -4,12 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:finca_app_frontend/core/bootstrap/massive_event_sync_status.dart';
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/domain/massive_event_close_failure_mapper.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/domain/massive_event_close_validation.dart';
 import 'package:finca_app_frontend/modules/shared/features/massiveEvent/domain/massive_event_weight_stats.dart';
-import 'package:finca_app_frontend/modules/shared/features/massiveEvent/pages/massive_event_sync_listener.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'package:finca_app_frontend/modules/shared/widgets/finca_scaffold.dart';
 import 'package:finca_app_frontend/modules/shared/widgets/message_banner.dart';
@@ -46,7 +44,6 @@ class _MassiveEventPageState extends State<MassiveEventPage> {
   String? _globalErrorMessage;
   String? _globalSuccessMessage;
   String? _globalInfoMessage;
-  bool _massivePendingSync = false;
   bool _loadingSession = false;
   bool _sessionReadOnly = false;
   Map<String, double?> _previousWeightByAnimal = {};
@@ -85,25 +82,12 @@ class _MassiveEventPageState extends State<MassiveEventPage> {
         _sessionReadOnly = session.massive.status == 'closed';
         _loadingSession = false;
       });
-      if (!kIsWeb) {
-        await _refreshMassivePendingSync();
-      }
     } catch (_) {
       if (!mounted) return;
       final l10n = AppLocalizations.of(context)!;
       setState(() {
         _loadingSession = false;
         _globalErrorMessage = l10n.massiveEventLoadSessionError;
-      });
-    }
-  }
-
-  Future<void> _refreshMassivePendingSync() async {
-    if (kIsWeb || idMassiveEvent == null) return;
-    final pending = await isMassiveEventPendingSync(idMassiveEvent!);
-    if (mounted) {
-      setState(() {
-        _massivePendingSync = pending;
       });
     }
   }
@@ -368,12 +352,7 @@ class _MassiveEventPageState extends State<MassiveEventPage> {
       eventDateEditable: idMassiveEvent == null,
       simpleEvents: simpleEvents,
       idMassiveEvent: idMassiveEvent,
-      onMassiveEventCreated: (newId) {
-        setidMassiveEvent(newId);
-        if (!kIsWeb) {
-          setState(() => _massivePendingSync = true);
-        }
-      },
+      onMassiveEventCreated: setidMassiveEvent,
       showError: setGlobalError,
       showSuccess: setGlobalSuccess,
       showInfo: setGlobalInfo,
@@ -397,14 +376,6 @@ class _MassiveEventPageState extends State<MassiveEventPage> {
       showError: setGlobalError,
       showSuccess: setGlobalSuccess,
       showInfo: setGlobalInfo,
-      onMassiveBranchSyncedFromServer:
-          !kIsWeb
-              ? (newId, simples) {
-                setidMassiveEvent(newId);
-                setEvents(simples);
-                _refreshMassivePendingSync();
-              }
-              : null,
     );
     final animalEntryForm = AbsorbPointer(
       absorbing: _sessionReadOnly || _loadingSession,
@@ -428,9 +399,6 @@ class _MassiveEventPageState extends State<MassiveEventPage> {
                   ? l10n.simpleEventAdded
                   : state.messageKey;
           setGlobalSuccess(msg);
-          if (!kIsWeb) {
-            _refreshMassivePendingSync();
-          }
         }
         if (state is MassiveEventError) {
           String msg =
@@ -453,10 +421,6 @@ class _MassiveEventPageState extends State<MassiveEventPage> {
               MessageBanner.success(_globalSuccessMessage!),
             if (_globalInfoMessage != null)
               MessageBanner.info(_globalInfoMessage!),
-            if (!kIsWeb &&
-                idMassiveEvent != null &&
-                _massivePendingSync)
-              MessageBanner.info(l10n.massiveEventPendingSync),
             if (_sessionReadOnly)
               MessageBanner.info(l10n.massiveEventClosedReadOnly),
 
@@ -513,11 +477,6 @@ class _MassiveEventPageState extends State<MassiveEventPage> {
           ],
         ),
       ),
-    );
-
-    page = wrapMassiveEventPageSyncListener(
-      child: page,
-      onSyncSuccess: _refreshMassivePendingSync,
     );
 
     return page;

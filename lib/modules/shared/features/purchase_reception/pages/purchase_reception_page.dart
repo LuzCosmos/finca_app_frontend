@@ -16,6 +16,7 @@ import 'package:finca_app_frontend/modules/shared/features/purchase_reception/wi
 import 'package:finca_app_frontend/modules/shared/features/purchase_reception/widgets/cattle_list_with_events.dart';
 import 'package:finca_app_frontend/modules/shared/features/purchase_reception/widgets/unassigned_cattle_list.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
+import 'package:finca_app_frontend/core/services/session_service.dart';
 
 class PurchaseReceptionPage extends StatefulWidget {
   final String purchaseId;
@@ -38,12 +39,25 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
   String? initialCattleNumber;
   String currentCattleNumber = '';
   bool isLoading = true;
+  bool _canUpdateReception = false;
 
   @override
   void initState() {
     super.initState();
     api = ReceptionApiService();
+    _loadPermissions();
     _load();
+  }
+
+  Future<void> _loadPermissions() async {
+    final canUpdate = await SessionService.hasActionPermission(
+      'RECEPTION',
+      'receptions',
+      'update',
+    );
+    if (mounted) {
+      setState(() => _canUpdateReception = canUpdate);
+    }
   }
 
   void setidMassiveEvent(String id) {
@@ -183,31 +197,6 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
     );
     await _load();
     setGlobalSuccess(l10n.receivedOk);
-  }
-
-  Future<void> _assignLot(String cattleId, String lotId) async {
-    final l10n = AppLocalizations.of(context)!;
-    try {
-      await api.reassignLot(
-        purchaseId: widget.purchaseId,
-        animalId: cattleId,
-        lotId: lotId,
-      );
-      await _load();
-      setGlobalSuccess(l10n.lotAssignedSuccessfully);
-    } on ApiException catch (e) {
-      if (!mounted) return;
-      final l10n = AppLocalizations.of(context)!;
-      setGlobalError(
-        ApiExceptionCode.fromString(
-          e.code,
-        ).asText(context, objectName: l10n.cattlePurchase),
-      );
-    } catch (e) {
-      if (!mounted) return;
-      setGlobalError(e.toString());
-      isLoading = false;
-    }
   }
 
   Future<void> _confirmClosePurchase(BuildContext context) async {
@@ -543,7 +532,9 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
                               child: CattleListWithEvents(
                                 cattle: selectedCattle,
                                 availableLots: lots,
-                                onAssignLot: _assignLot,
+                                canEditCattle: _canUpdateReception,
+                                onCattleUpdated: _load,
+                                currentLotId: selectedLotId,
                               ),
                             ),
                           ],
@@ -557,7 +548,8 @@ class _PurchaseReceptionPageState extends State<PurchaseReceptionPage> {
                           child: UnassignedCattleList(
                             cattle: unassignedCattle,
                             availableLots: lots,
-                            onAssignLot: _assignLot,
+                            canEditCattle: _canUpdateReception,
+                            onCattleUpdated: _load,
                           ),
                         ),
                       ],

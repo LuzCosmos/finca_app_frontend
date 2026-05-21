@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import '../models/sale_model.dart';
 
 abstract class SalesState extends Equatable {
   const SalesState();
@@ -40,10 +39,3 @@ class SalesError extends SalesState {
 }
 
 class SaleSavedSuccess extends SalesState {}
-
-class UnsyncedSalesLoaded extends SalesState {
-  final List<SaleModel> sales;
-  const UnsyncedSalesLoaded(this.sales);
-  @override
-  List<Object?> get props => [sales];
-}

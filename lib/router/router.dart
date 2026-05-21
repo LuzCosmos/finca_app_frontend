@@ -18,7 +18,6 @@ import 'package:finca_app_frontend/modules/shared/features/users/pages/users_lis
 import 'package:finca_app_frontend/modules/shared/features/cattle/pages/cattle_master_list_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/devices/pages/devices_list_page.dart';
 import 'package:finca_app_frontend/modules/shared/features/devices/pages/import_lw001_devices_page.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:finca_app_frontend/modules/shared/features/devices/screens/device_remote_config_screen.dart';
 import 'package:finca_app_frontend/router/route_access.dart';
 import 'package:finca_app_frontend/modules/shared/widgets/online_feature_gate.dart';
@@ -64,6 +63,23 @@ GoRouter createAppRouter({
             ),
       ),
       GoRoute(
+        path: '/purchases/edit/:id',
+        builder: (context, state) {
+          final id = state.pathParameters['id']!;
+          final extra = state.extra;
+          String? businessPartnerName;
+          if (extra is Map<String, dynamic>) {
+            businessPartnerName = extra['businessPartnerName'] as String?;
+          }
+          return OnlineFeatureGate(
+            child: PurchaseFormPage(
+              purchaseId: id,
+              initialBusinessPartnerName: businessPartnerName,
+            ),
+          );
+        },
+      ),
+      GoRoute(
         path: '/purchases',
         name: 'purchasesList',
         builder:
@@ -91,6 +107,15 @@ GoRouter createAppRouter({
                 const OnlineFeatureGate(child: CreateSalePage()),
       ),
       GoRoute(
+        path: '/sales/edit/:id',
+        builder: (context, state) {
+          final id = state.pathParameters['id']!;
+          return OnlineFeatureGate(
+            child: CreateSalePage(saleId: id),
+          );
+        },
+      ),
+      GoRoute(
         path: '/loading',
         builder: (context, state) => const LoadingPage(),
       ),
@@ -98,9 +123,11 @@ GoRouter createAppRouter({
         path: '/massive-events/create',
         builder: (context, state) {
           final dataSource = createMassiveEventPageDataSource();
-          return BlocProvider(
-            create: (_) => MassiveEventBloc(dataSource: dataSource),
-            child: const MassiveEventPage(),
+          return OnlineFeatureGate(
+            child: BlocProvider(
+              create: (_) => MassiveEventBloc(dataSource: dataSource),
+              child: const MassiveEventPage(),
+            ),
           );
         },
       ),
@@ -109,15 +136,18 @@ GoRouter createAppRouter({
         builder: (context, state) {
           final dataSource = createMassiveEventPageDataSource();
           final editId = state.uri.queryParameters['id'];
-          return BlocProvider(
-            create: (_) => MassiveEventBloc(dataSource: dataSource),
-            child: MassiveEventPage(initialMassiveEventId: editId),
+          return OnlineFeatureGate(
+            child: BlocProvider(
+              create: (_) => MassiveEventBloc(dataSource: dataSource),
+              child: MassiveEventPage(initialMassiveEventId: editId),
+            ),
           );
         },
       ),
       GoRoute(
         path: '/massive-events',
-        builder: (context, state) => const MassiveEventListPage(),
+        builder: (context, state) =>
+            const OnlineFeatureGate(child: MassiveEventListPage()),
       ),
       GoRoute(
         path: '/users',
@@ -177,10 +207,6 @@ GoRouter createAppRouter({
 
       if (loading) {
         return loggedIn ? '/home' : '/login';
-      }
-
-      if (path.startsWith('/equipment-resources/import') && !kIsWeb) {
-        return '/home';
       }
 
       if (!loggedIn && !loggingIn) {

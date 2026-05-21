@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:finca_app_frontend/l10n/app_localizations.dart';
 import 'package:finca_app_frontend/modules/shared/features/locations/widgets/cattle_last_locations_map_widget.dart';
+import 'package:finca_app_frontend/modules/shared/features/reports/widgets/general_reports_dashboard_section.dart';
 import 'package:finca_app_frontend/modules/shared/widgets/finca_scaffold.dart';
 
 class DashboardPage extends StatelessWidget {
@@ -50,7 +51,7 @@ class DashboardPage extends StatelessWidget {
                       title: l10n.dashboard_reportsTitle,
                       subtitle: l10n.dashboard_reportsSubtitle,
                       icon: Icons.analytics_outlined,
-                      child: const _ReportsDashboardPlaceholder(),
+                      child: const GeneralReportsDashboardSection(),
                     ),
                   ],
                 ),
@@ -105,35 +106,3 @@ class _DashboardSectionCard extends StatelessWidget {
   }
 }
 
-class _ReportsDashboardPlaceholder extends StatelessWidget {
-  const _ReportsDashboardPlaceholder();
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(Icons.widgets_outlined, color: theme.colorScheme.primary),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                l10n.dashboard_reportsPending,
-                style: theme.textTheme.bodyMedium,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}

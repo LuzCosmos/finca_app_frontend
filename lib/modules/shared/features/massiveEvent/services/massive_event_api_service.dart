@@ -265,15 +265,16 @@ class MassiveEventApiService {
     final String baseUrl = BasicApiService.getApiBaseUrl();
     final payload = {
       'applied': {
-        "idMassiveEvent": animalSimpleEvents.first.idMassiveEvent,
-        "events":
+        'cattleNumber': cattleNumber.trim(),
+        'idMassiveEvent': animalSimpleEvents.first.idMassiveEvent,
+        'events':
             animalSimpleEvents
                 .map((e) => e.toJsonOnlineCreateApiForSingleAnimal())
                 .toList(),
       },
     };
     final response = await BasicApiService.authorizedPost(
-      Uri.parse('$baseUrl/cattle/apply-events/$cattleNumber'),
+      Uri.parse('$baseUrl/cattle/apply-events'),
       headers: {
         'Content-Type': 'application/json',
       },

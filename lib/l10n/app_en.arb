@@ -164,12 +164,47 @@
   "@dashboard_cattleMapTitle": { "description": "Title for the cattle map section in the dashboard." },
   "dashboard_cattleMapSubtitle": "Last reported location for each tracked animal.",
   "@dashboard_cattleMapSubtitle": { "description": "Subtitle for the cattle map section." },
-  "dashboard_reportsTitle": "Reports",
+  "dashboard_reportsTitle": "General reports",
   "@dashboard_reportsTitle": { "description": "Title for the reports section in the dashboard." },
-  "dashboard_reportsSubtitle": "Report widgets filtered by role and permissions.",
+  "dashboard_reportsSubtitle": "Inventory, care and average daily gain overview.",
   "@dashboard_reportsSubtitle": { "description": "Subtitle for the reports section." },
   "dashboard_reportsPending": "Reusable report widgets will appear here as they are implemented. Each report keeps its own access filter.",
   "@dashboard_reportsPending": { "description": "Temporary reports section message in the dashboard." },
+
+  "reports_general_loadError": "Could not load reports.",
+  "@reports_general_loadError": { "description": "Error loading general reports." },
+  "reports_onFeed_title": "Cattle on care feed",
+  "@reports_onFeed_title": { "description": "Care feed report widget title." },
+  "reports_onFeed_empty": "No active or sold cattle.",
+  "@reports_onFeed_empty": { "description": "Empty operational inventory for care." },
+  "reports_onFeed_legend": "On care = new feed start date recorded.",
+  "@reports_onFeed_legend": { "description": "Care report legend." },
+  "reports_onFeed_onFeed": "On care: {count}",
+  "@reports_onFeed_onFeed": { "placeholders": { "count": { "type": "int" } } },
+  "reports_onFeed_active": "Active: {count}",
+  "@reports_onFeed_active": { "placeholders": { "count": { "type": "int" } } },
+  "reports_onFeed_sold": "Sold: {count}",
+  "@reports_onFeed_sold": { "placeholders": { "count": { "type": "int" } } },
+  "reports_onFeed_total": "Total: {count}",
+  "@reports_onFeed_total": { "placeholders": { "count": { "type": "int" } } },
+  "reports_byStatus_title": "Cattle by status",
+  "@reports_byStatus_title": { "description": "Status distribution widget title." },
+  "reports_byStatus_empty": "No cattle registered.",
+  "@reports_byStatus_empty": { "description": "Empty status widget." },
+  "reports_byStatus_total": "Total: {count}",
+  "@reports_byStatus_total": { "placeholders": { "count": { "type": "int" } } },
+  "reports_status_active": "Active",
+  "reports_status_sold": "Sold",
+  "reports_status_dead": "Dead",
+  "reports_status_lost": "Lost",
+  "reports_adg_title": "Average daily gain",
+  "@reports_adg_title": { "description": "ADG widget title." },
+  "reports_adg_subtitle": "Farm average (kg/day)",
+  "@reports_adg_subtitle": { "description": "ADG widget subtitle." },
+  "reports_adg_empty": "Not enough data to calculate average daily gain.",
+  "@reports_adg_empty": { "description": "No ADG data." },
+  "reports_adg_value": "{value} kg/day",
+  "@reports_adg_value": { "placeholders": { "value": { "type": "String" } } },
 
   "date": "Date",
   "dateSomething": "{object} Date",
@@ -191,10 +226,6 @@
   "cattlePurchase": "Cattle Purchase",
   "massiveEvent": "Massive Event",
   "massiveEvents": "Massive Events",
-  "massiveEventPendingSync": "This event is saved on the device and is pending synchronization with the server.",
-  "@massiveEventPendingSync": {
-    "description": "Shown on mobile when a massive event exists locally but is not yet synced."
-  },
   "massiveEventsListTitle": "Massive events",
   "massiveEventsListEmpty": "There are no massive events to show.",
   "massiveEvents_createFirstEvent": "Create your first massive event to get started",
@@ -220,14 +251,6 @@
   "massiveEventsColumnUpdatedAt": "Last updated",
   "massiveEventsColumnCreatedAt": "Created at",
   "massiveEventsColumnCreatedBy": "Created by",
-  "massiveEventsColumnSync": "Sync / source",
-  "@massiveEventsColumnSync": {
-    "description": "Table column: for server-backed web list this shows that data comes from the server."
-  },
-  "massiveEventsSyncOnServer": "Server",
-  "@massiveEventsSyncOnServer": {
-    "description": "Web list: row indicates data loaded from API (always synced with server for this view)."
-  },
   "massiveEventsStatusClosedLabel": "Closed",
   "@massiveEventsStatusClosedLabel": {
     "description": "Massive event business status closed (list filter / chip)."
@@ -315,32 +338,6 @@
   "dialogOk": "OK",
   "@dialogOk": {
     "description": "Generic dismiss button for small dialogs."
-  },
-  "syncNow": "Sync massive events",
-  "@syncNow": {
-    "description": "Home (mobile) button to upload pending massive events on the device."
-  },
-  "syncMassiveEventsInProgress": "Syncing massive events…",
-  "@syncMassiveEventsInProgress": {
-    "description": "SnackBar while massive-event sync runs on mobile."
-  },
-  "syncMassiveEventsSuccess": "Massive events updated on the server",
-  "@syncMassiveEventsSuccess": {
-    "description": "SnackBar when massive-event sync completes successfully."
-  },
-  "syncMassiveEventsFailure": "Could not sync massive events: {message}",
-  "@syncMassiveEventsFailure": {
-    "description": "SnackBar when massive-event sync fails.",
-    "placeholders": {
-      "message": { "type": "String" }
-    }
-  },
-  "syncMassiveEventsWithPendingCount": "Sync massive events ({count})",
-  "@syncMassiveEventsWithPendingCount": {
-    "description": "Sync button label including pending item count.",
-    "placeholders": {
-      "count": { "type": "int" }
-    }
   },
   "event": "Event",
   "events": "Events",
@@ -511,6 +508,35 @@
   "pricePerHead": "Avg. Price per Head", 
   
   "minWeightKg": "Min. Weight (Kg)",
+  "sale_minWeight_changeTitle": "Update minimum weight?",
+  "sale_minWeight_changeMessage": "Buyer changed to {buyerName}. Current minimum weight: {current} kg. Buyer default: {buyerDefault} kg.",
+  "@sale_minWeight_changeMessage": {
+    "placeholders": {
+      "buyerName": { "type": "String" },
+      "current": { "type": "String" },
+      "buyerDefault": { "type": "String" }
+    }
+  },
+  "sale_minWeight_useBuyerDefault": "Use buyer weight ({weight} kg)",
+  "@sale_minWeight_useBuyerDefault": {
+    "placeholders": { "weight": { "type": "String" } }
+  },
+  "sale_minWeight_keepCurrent": "Keep current ({weight} kg)",
+  "@sale_minWeight_keepCurrent": {
+    "placeholders": { "weight": { "type": "String" } }
+  },
+  "sale_minWeight_reclassifyTitle": "Reclassify cattle for new minimum weight?",
+  "sale_minWeight_reclassifyMessage": "Minimum weight changed from {previous} kg to {newMin} kg. There are {approvedCount} approved and {rejectedCount} rejected. Reclassify them automatically using the new minimum?",
+  "@sale_minWeight_reclassifyMessage": {
+    "placeholders": {
+      "previous": { "type": "String" },
+      "newMin": { "type": "String" },
+      "approvedCount": { "type": "int" },
+      "rejectedCount": { "type": "int" }
+    }
+  },
+  "sale_minWeight_reclassifyYes": "Yes, reclassify",
+  "sale_minWeight_reclassifyNo": "No, keep classification",
   "purchasedAvgWeight": "Purchased Avg. Weight (kg)",
   "receivedAvgWeight": "Received Avg. Weight (kg)",
   "unassignedCattle": "Cattle without an identified lot",
@@ -549,8 +575,6 @@
   
 
   "noAnimals": "No animals have been added yet",
-
-  "tableSynced": "Synced",
 
   "purchaseReceptionTitle": "Purchase Reception",
   "purchaseBatchesTitle": "Purchase Lots",
@@ -634,6 +658,14 @@
   "sale_creating": "Creating sale...",
   "sale_created": "Sale created successfully",
   "sale_createError": "Error creating sale",
+  "sale_editTitle": "Edit sale",
+  "sale_editSuccess": "Sale updated successfully",
+  "sale_editLoadError": "Could not load the sale for editing",
+  "sale_editSaveError": "Error saving sale changes",
+  "sale_editSaving": "Saving changes...",
+  "sale_saveChanges": "Save changes",
+  "sale_confirm_edit_title": "Confirm sale edit",
+  "sale_confirm_edit_proceed": "Confirm and save",
 
   "user_editUserPageMessage": "This feature is under development",
 
@@ -692,6 +724,13 @@
   "purchase_dateRequired": "You must select a purchase date.",
   "purchase_saveSuccess": "Purchase saved successfully.",
   "purchase_saveError": "Purchase saving failed.",
+  "purchase_editTitle": "Edit purchase",
+  "purchase_editSuccess": "Purchase updated successfully.",
+  "purchase_editLoadError": "Could not load purchase for editing.",
+  "purchase_editSaveError": "Could not save purchase.",
+  "purchase_editForbiddenReceived": "Received purchases cannot be edited.",
+  "purchase_editForbiddenReceptionStarted": "Cannot edit: reception has already started.",
+  "reception_cattleEditSuccess": "Cattle data updated.",
   
   "cp_error_noLots": "You must add at least one lot",
   "cp_error_providerRequired": "Please select or create a provider.",
@@ -941,7 +980,7 @@
   "devicesList_noBatteryData": "No data",
   "@devicesList_noBatteryData": { "description": "Shown when battery status is unknown." },
   "devicesList_importButton": "Import",
-  "@devicesList_importButton": { "description": "Button to open LW001 bulk import (web only)." },
+  "@devicesList_importButton": { "description": "Button to open LW001 bulk import." },
 
   "importLw001_pageTitle": "Import LW001-BG PRO devices",
   "@importLw001_pageTitle": { "description": "Title of bulk import screen." },
@@ -984,6 +1023,7 @@
   "importLw001_reason_DEVEUI_ALREADY_EXISTS_UPDATED": "DevEUI already existed in your tenant; device was updated.",
   "importLw001_reason_DEVICE_PROFILE_ID_REQUIRED": "A default device profile is required in the form.",
   "importLw001_reason_DEVICE_PROFILE_ID_INVALID": "Device profile is missing or invalid for this tenant.",
+  "importLw001_reason_CHIRPSTACK_PROFILE_ID_REQUIRED": "The device profile has no ChirpStack profile ID (idChipstack). Configure it before importing.",
   "importLw001_reason_JOINEUI_INVALID": "JoinEUI must be 16 hexadecimal characters.",
   "importLw001_reason_APP_KEY_INVALID": "App Key must be 32 hexadecimal characters.",
   "importLw001_reason_APP_KEY_SCIENTIFIC_NOTATION": "App Key looks like Excel scientific notation; format the cell as text.",

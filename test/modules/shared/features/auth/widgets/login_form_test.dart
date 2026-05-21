@@ -115,7 +115,7 @@ void main() {
           tester.widget<TextFormField>(
             find.byKey(const Key('login-company-field')),
           );
-      expect(field.initialValue, 'GPCB');
+      expect(field.controller?.text, 'GPCB');
       expect(find.text('GPCB'), findsWidgets);
     });
   });
@@ -271,7 +271,7 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(auth.loginCallCount, 1);
-        expect(auth.lastCompanyUsername, '   ');
+        expect(auth.lastCompanyUsername, '');
       },
     );
   });

@@ -29,6 +29,13 @@ void main() {
       isNotEmpty,
     );
     expect(
+      ImportLw001ReasonLocalizations.message(
+        l10n,
+        'CHIRPSTACK_PROFILE_ID_REQUIRED',
+      ),
+      l10n.importLw001_reason_CHIRPSTACK_PROFILE_ID_REQUIRED,
+    );
+    expect(
       ImportLw001ReasonLocalizations.message(l10n, 'UNKNOWN_CODE'),
       contains('UNKNOWN_CODE'),
     );

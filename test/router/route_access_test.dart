@@ -263,6 +263,27 @@ void main() {
       },
     );
 
+    test('/purchases/edit/:id requiere bit update en purchases', () {
+      expect(
+        routeAccessDeniedRedirect(
+          path: '/purchases/edit/abc',
+          permissions: {
+            'COMMERCE': <String, dynamic>{'purchases': '10001'},
+          },
+        ),
+        '/home',
+      );
+      expect(
+        routeAccessDeniedRedirect(
+          path: '/purchases/edit/abc',
+          permissions: {
+            'COMMERCE': <String, dynamic>{'purchases': '00100'},
+          },
+        ),
+        isNull,
+      );
+    });
+
     test('subrutas purchases y recepción usan COMMERCE.purchases', () {
       final onlySales = <String, dynamic>{
         'COMMERCE': <String, dynamic>{'sales': true},
@@ -292,6 +313,21 @@ void main() {
           permissions: purchases,
         ),
         isNull,
+      );
+    });
+
+    test('devicesCrudlAllowsCreate usa bit create del CRUDL devices', () {
+      expect(
+        devicesCrudlAllowsCreate({
+          'PROD_CENTER': <String, dynamic>{'devices': '10000'},
+        }),
+        isTrue,
+      );
+      expect(
+        devicesCrudlAllowsCreate({
+          'PROD_CENTER': <String, dynamic>{'devices': '01000'},
+        }),
+        isFalse,
       );
     });
 
@@ -331,6 +367,27 @@ void main() {
           path: '/equipment-resources',
           permissions: {
             'PROD_CENTER': <String, dynamic>{'devices': '00001'},
+          },
+        ),
+        isNull,
+      );
+    });
+
+    test('/sales/edit/:id requiere bit update en sales', () {
+      expect(
+        routeAccessDeniedRedirect(
+          path: '/sales/edit/abc',
+          permissions: {
+            'COMMERCE': <String, dynamic>{'sales': '10001'},
+          },
+        ),
+        '/home',
+      );
+      expect(
+        routeAccessDeniedRedirect(
+          path: '/sales/edit/abc',
+          permissions: {
+            'COMMERCE': <String, dynamic>{'sales': '00100'},
           },
         ),
         isNull,
