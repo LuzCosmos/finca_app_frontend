@@ -328,15 +328,85 @@ class AppLocalizationsEn extends AppLocalizations {
       'Last reported location for each tracked animal.';
 
   @override
-  String get dashboard_reportsTitle => 'Reports';
+  String get dashboard_reportsTitle => 'General reports';
 
   @override
   String get dashboard_reportsSubtitle =>
-      'Report widgets filtered by role and permissions.';
+      'Inventory, care and average daily gain overview.';
 
   @override
   String get dashboard_reportsPending =>
       'Reusable report widgets will appear here as they are implemented. Each report keeps its own access filter.';
+
+  @override
+  String get reports_general_loadError => 'Could not load reports.';
+
+  @override
+  String get reports_onFeed_title => 'Cattle on care feed';
+
+  @override
+  String get reports_onFeed_empty => 'No active or sold cattle.';
+
+  @override
+  String get reports_onFeed_legend => 'On care = new feed start date recorded.';
+
+  @override
+  String reports_onFeed_onFeed(int count) {
+    return 'On care: $count';
+  }
+
+  @override
+  String reports_onFeed_active(int count) {
+    return 'Active: $count';
+  }
+
+  @override
+  String reports_onFeed_sold(int count) {
+    return 'Sold: $count';
+  }
+
+  @override
+  String reports_onFeed_total(int count) {
+    return 'Total: $count';
+  }
+
+  @override
+  String get reports_byStatus_title => 'Cattle by status';
+
+  @override
+  String get reports_byStatus_empty => 'No cattle registered.';
+
+  @override
+  String reports_byStatus_total(int count) {
+    return 'Total: $count';
+  }
+
+  @override
+  String get reports_status_active => 'Active';
+
+  @override
+  String get reports_status_sold => 'Sold';
+
+  @override
+  String get reports_status_dead => 'Dead';
+
+  @override
+  String get reports_status_lost => 'Lost';
+
+  @override
+  String get reports_adg_title => 'Average daily gain';
+
+  @override
+  String get reports_adg_subtitle => 'Farm average (kg/day)';
+
+  @override
+  String get reports_adg_empty =>
+      'Not enough data to calculate average daily gain.';
+
+  @override
+  String reports_adg_value(String value) {
+    return '$value kg/day';
+  }
 
   @override
   String get date => 'Date';

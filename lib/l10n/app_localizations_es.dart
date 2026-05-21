@@ -326,15 +326,86 @@ class AppLocalizationsEs extends AppLocalizations {
       'Última ubicación reportada por cada res con rastreador.';
 
   @override
-  String get dashboard_reportsTitle => 'Reportes';
+  String get dashboard_reportsTitle => 'Reportes generales';
 
   @override
   String get dashboard_reportsSubtitle =>
-      'Widgets de reportes filtrados por rol y permisos.';
+      'Resumen de inventario, cuido y ganancia diaria promedio.';
 
   @override
   String get dashboard_reportsPending =>
       'Los widgets de reportes reutilizables se mostrarán aquí conforme se implementen. Cada reporte conserva su propio filtro de acceso.';
+
+  @override
+  String get reports_general_loadError => 'No se pudieron cargar los reportes.';
+
+  @override
+  String get reports_onFeed_title => 'Reses en cuido';
+
+  @override
+  String get reports_onFeed_empty => 'No hay reses activas ni vendidas.';
+
+  @override
+  String get reports_onFeed_legend =>
+      'En cuido = con fecha de inicio de alimentación registrada.';
+
+  @override
+  String reports_onFeed_onFeed(int count) {
+    return 'En cuido: $count';
+  }
+
+  @override
+  String reports_onFeed_active(int count) {
+    return 'Activas: $count';
+  }
+
+  @override
+  String reports_onFeed_sold(int count) {
+    return 'Vendidas: $count';
+  }
+
+  @override
+  String reports_onFeed_total(int count) {
+    return 'Total: $count';
+  }
+
+  @override
+  String get reports_byStatus_title => 'Reses por estado';
+
+  @override
+  String get reports_byStatus_empty => 'No hay reses registradas.';
+
+  @override
+  String reports_byStatus_total(int count) {
+    return 'Total: $count';
+  }
+
+  @override
+  String get reports_status_active => 'Activas';
+
+  @override
+  String get reports_status_sold => 'Vendidas';
+
+  @override
+  String get reports_status_dead => 'Muertas';
+
+  @override
+  String get reports_status_lost => 'Perdidas';
+
+  @override
+  String get reports_adg_title => 'Ganancia diaria promedio';
+
+  @override
+  String get reports_adg_subtitle => 'Promedio de finca (kg/día)';
+
+  @override
+  String get reports_adg_empty =>
+      'No hay datos para calcular la ganancia diaria promedio.';
+
+  @override
+  String reports_adg_value(String value) {
+    return '$value kg/día';
+  }
 
   @override
   String get date => 'Fecha';
