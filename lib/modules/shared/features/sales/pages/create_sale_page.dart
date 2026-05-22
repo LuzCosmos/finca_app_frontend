@@ -1050,13 +1050,6 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 24),
-            LiveScaleReadingPanel(
-              onApplyStableWeight: (_, formatted) {
-                _cattleWeightController.text = formatted;
-                setState(() {});
-              },
-            ),
-            const SizedBox(height: 12),
 
             // Add Cattle Form
             Row(
@@ -1184,15 +1177,28 @@ class _CreateSaleViewState extends State<_CreateSaleView> {
                 ),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: TextFormField(
-                    controller: _cattleWeightController,
-                    decoration: InputDecoration(
-                      labelText: l10n.weightKg,
-                      border: const OutlineInputBorder(),
-                    ),
-                    keyboardType: const TextInputType.numberWithOptions(
-                      decimal: true,
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      LiveScaleReadingPanel(
+                        onApplyStableWeight: (_, formatted) {
+                          _cattleWeightController.text = formatted;
+                          setState(() {});
+                        },
+                      ),
+                      TextFormField(
+                        key: const ValueKey('create_sale_cattle_weight'),
+                        controller: _cattleWeightController,
+                        decoration: InputDecoration(
+                          labelText: l10n.weightKg,
+                          border: const OutlineInputBorder(),
+                        ),
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(width: 12),

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:finca_app_frontend/core/services/api_exception.dart';
 import 'package:finca_app_frontend/modules/shared/features/hardware/models/scale_reading_model.dart';
 import 'package:finca_app_frontend/modules/shared/features/hardware/services/scale_reading_api_service.dart';
@@ -8,6 +9,19 @@ import 'package:finca_app_frontend/modules/shared/features/hardware/services/sca
 class ScaleReadingService {
   ScaleReadingService._();
   static final ScaleReadingService instance = ScaleReadingService._();
+
+  /// Solo tests: evita polling HTTP y usa [debugState] fijo.
+  @visibleForTesting
+  static ScaleReadingState? debugState;
+
+  @visibleForTesting
+  static void resetDebugState() {
+    debugState = null;
+    instance._listeners = 0;
+    instance._pollTimer?.cancel();
+    instance._pollTimer = null;
+    instance._state = ScaleReadingState.empty;
+  }
 
   final ScaleReadingApiService _api = ScaleReadingApiService();
   final _controller = StreamController<ScaleReadingState>.broadcast();
@@ -29,6 +43,11 @@ class ScaleReadingService {
 
   void startListening() {
     _listeners += 1;
+    final debug = debugState;
+    if (debug != null) {
+      _emit(debug);
+      return;
+    }
     if (_pollTimer != null) return;
     unawaited(_bindAndPoll());
     _pollTimer = Timer.periodic(const Duration(milliseconds: 800), (_) {

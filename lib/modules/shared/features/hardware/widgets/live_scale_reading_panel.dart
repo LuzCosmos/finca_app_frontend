@@ -112,48 +112,72 @@ class _LiveScaleReadingPanelState extends State<LiveScaleReadingPanel> {
           )
         : l10n.scale_noReading;
 
+    final applyButton = Tooltip(
+      message: canApply ? '' : l10n.scale_notStable,
+      child: FilledButton.tonal(
+        onPressed: canApply ? () => _applyStable(l10n) : null,
+        child: Text(l10n.scale_useStableWeight),
+      ),
+    );
+
+    final statusTexts = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          _statusLabel(l10n),
+          style: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        Text(liveText, style: const TextStyle(fontSize: 11)),
+        Text(
+          stable?.isStable == true ? l10n.scale_stable : l10n.scale_unstable,
+          style: TextStyle(
+            fontSize: 11,
+            color: stable?.isStable == true
+                ? Colors.green.shade700
+                : Colors.orange.shade800,
+          ),
+        ),
+      ],
+    );
+
+    final statusRow = Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(_statusIcon(), color: _statusColor(context), size: 20),
+        const SizedBox(width: 8),
+        Expanded(child: statusTexts),
+      ],
+    );
+
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        child: Row(
-          children: [
-            Icon(_statusIcon(), color: _statusColor(context), size: 20),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            if (constraints.maxWidth < 300) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text(
-                    _statusLabel(l10n),
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  Text(liveText, style: const TextStyle(fontSize: 11)),
-                  Text(
-                    stable?.isStable == true
-                        ? l10n.scale_stable
-                        : l10n.scale_unstable,
-                    style: TextStyle(
-                      fontSize: 11,
-                      color: stable?.isStable == true
-                          ? Colors.green.shade700
-                          : Colors.orange.shade800,
-                    ),
-                  ),
+                  statusRow,
+                  const SizedBox(height: 8),
+                  applyButton,
                 ],
-              ),
-            ),
-            Tooltip(
-              message: canApply ? '' : l10n.scale_notStable,
-              child: FilledButton.tonal(
-                onPressed: canApply ? () => _applyStable(l10n) : null,
-                child: Text(l10n.scale_useStableWeight),
-              ),
-            ),
-          ],
+              );
+            }
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(_statusIcon(), color: _statusColor(context), size: 20),
+                const SizedBox(width: 8),
+                Expanded(child: statusTexts),
+                applyButton,
+              ],
+            );
+          },
         ),
       ),
     );
